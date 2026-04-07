@@ -1,0 +1,35 @@
+---
+interface Props {
+  gradient: string;
+  tag: string;
+  showOutlineBtn?: boolean;
+  cardColors: string[];
+}
+
+const { gradient, tag, showOutlineBtn = false, cardColors } = Astro.props;
+---
+
+<div class="border border-t-0 border-border rounded-b overflow-hidden">
+  <div class="px-4 pt-6 pb-5 text-white relative" style={`background: ${gradient};`}>
+    <span class="inline-block bg-white/20 px-2 py-0.5 rounded text-[0.55rem] font-semibold uppercase tracking-wide mb-2">
+      {tag}
+    </span>
+    <div class="h-2.5 w-3/4 bg-white/90 rounded-sm mb-1.5"></div>
+    <div class="h-1.5 w-1/2 bg-white/40 rounded-sm mb-3"></div>
+    <div class="flex gap-1.5">
+      <span class="block h-4 w-[52px] bg-primary rounded-sm"></span>
+      {showOutlineBtn && <span class="block h-4 w-[52px] bg-transparent border border-white/50 rounded-sm"></span>}
+    </div>
+  </div>
+  <div class="flex gap-2 p-3 bg-gray-100">
+    {cardColors.map(color => (
+      <div class="flex-1 bg-white rounded overflow-hidden shadow-sm">
+        <div class="h-8 w-full" style={`background: ${color};`}></div>
+        <div class="p-1.5">
+          <div class="h-1 bg-gray-200 rounded-sm mb-1"></div>
+          <div class="h-1 bg-gray-200 rounded-sm w-[65%]"></div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

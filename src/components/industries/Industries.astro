@@ -1,0 +1,76 @@
+---
+import PortfolioCard from './PortfolioCard.astro';
+
+const cards = [
+  {
+    url: 'realestate-demo.com',
+    gradient: 'linear-gradient(135deg, #1a1a2e, #16213e)',
+    tag: 'Featured Listing',
+    showOutlineBtn: true,
+    cardColors: ['#e8d5b7', '#c9b896', '#a89a7d'],
+    industry: 'Real Estate',
+    title: 'Property Listings & Agent Portfolios',
+    description: 'IDX-ready sites with property search, virtual tours, and lead capture forms.',
+  },
+  {
+    url: 'restaurant-demo.com',
+    gradient: 'linear-gradient(135deg, #2d1b00, #5c3d1e)',
+    tag: 'Reserve a Table',
+    showOutlineBtn: false,
+    cardColors: ['#d4a574', '#c9956b', '#b8845c'],
+    industry: 'Restaurants & Hospitality',
+    title: 'Menus, Reservations & Online Ordering',
+    description: 'Mouth-watering designs with integrated booking and ordering systems.',
+  },
+  {
+    url: 'fitness-demo.com',
+    gradient: 'linear-gradient(135deg, #0d0d0d, #1a1a2e)',
+    tag: 'Join Now',
+    showOutlineBtn: true,
+    cardColors: ['#7ec8e3', '#5ba3c9', '#3d8ab0'],
+    industry: 'Fitness & Wellness',
+    title: 'Class Schedules & Membership Signups',
+    description: 'Energetic sites with booking integrations, class timetables, and member portals.',
+  },
+  {
+    url: 'law-demo.com',
+    gradient: 'linear-gradient(135deg, #1b2838, #2c3e50)',
+    tag: 'Free Consultation',
+    showOutlineBtn: false,
+    cardColors: ['#8b9dc3', '#7589ad', '#5f7597'],
+    industry: 'Legal & Professional Services',
+    title: 'Practice Pages & Client Intake',
+    description: 'Authoritative, trust-building designs with consultation booking and case inquiry forms.',
+  },
+  {
+    url: 'ecommerce-demo.com',
+    gradient: 'linear-gradient(135deg, #2d2d2d, #4a4a4a)',
+    tag: 'New Arrivals',
+    showOutlineBtn: true,
+    cardColors: ['#f0c27f', '#e0a85e', '#d09040'],
+    industry: 'E-Commerce & Retail',
+    title: 'Product Catalogs & Online Stores',
+    description: 'Conversion-optimized storefronts with cart, checkout, and inventory management.',
+  },
+  {
+    url: 'healthcare-demo.com',
+    gradient: 'linear-gradient(135deg, #0f4c5c, #1a7a8a)',
+    tag: 'Book Appointment',
+    showOutlineBtn: false,
+    cardColors: ['#a8dadc', '#8ecae6', '#74b9d4'],
+    industry: 'Healthcare & Medical',
+    title: 'Patient Portals & Appointment Booking',
+    description: 'HIPAA-conscious designs with appointment scheduling and patient resources.',
+  },
+];
+---
+
+<section class="py-24 bg-light" id="industries">
+  <div class="max-w-[1140px] mx-auto px-6">
+    <h2 class="text-3xl lg:text-4xl font-bold text-dark text-center mb-3 tracking-tight">Industries We Serve</h2>
+    <p class="text-center text-muted text-lg max-w-[600px] mx-auto mb-14">From local shops to professional services — we build websites that convert.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+      {cards.map(card => <PortfolioCard {...card} />)}
+    </div>
+  </div>
+</section>

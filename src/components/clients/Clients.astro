@@ -1,0 +1,21 @@
+---
+const clients = [
+  { name: "Dataverse", logo: "/clients/dataverse-logo.jpg", url: "#", height: "h-16" },
+  { name: "EasyCare", logo: "/clients/easycare-logo.png", url: "https://www.ecaretransinc.com", height: "h-24" },
+  { name: "GMS", logo: "/clients/gms-logo.svg", url: "https://www.globalmusicsolutions.ca", height: "h-16" },
+  { name: "MTA", logo: "/clients/mta-logo.jpg", url: "#", height: "h-16" },
+];
+---
+
+<section class="py-16 bg-light" id="clients">
+  <div class="max-w-[1140px] mx-auto px-6">
+    <p class="text-center text-sm font-semibold uppercase tracking-widest text-muted mb-10">Our Clients</p>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center justify-items-center">
+      {clients.map((client) => (
+        <a href={client.url} target="_blank" rel="noopener noreferrer" class:list={["flex items-center justify-center w-full px-4 hover:opacity-75 transition-opacity duration-300", client.height]}>
+          <img src={client.logo} alt={client.name} class="max-h-full max-w-full object-contain mix-blend-multiply" />
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

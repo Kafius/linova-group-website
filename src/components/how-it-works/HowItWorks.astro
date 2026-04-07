@@ -1,0 +1,19 @@
+---
+import Step from './Step.astro';
+
+const steps = [
+  { number: 1, title: 'Tell Us Your Vision', description: "Share your goals, brand, and inspiration. We'll handle the rest." },
+  { number: 2, title: 'We Design & Build', description: 'Our team crafts a custom, responsive website tailored to your business.' },
+  { number: 3, title: 'Launch & Grow', description: 'Go live with confidence. We provide support so you can focus on your business.' },
+];
+---
+
+<section class="py-24" id="how-it-works">
+  <div class="max-w-[1140px] mx-auto px-6">
+    <h2 class="text-3xl lg:text-4xl font-bold text-dark text-center mb-3 tracking-tight">How It Works</h2>
+    <p class="text-center text-muted text-lg max-w-[600px] mx-auto mb-14">Three simple steps to your new website.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      {steps.map(step => <Step {...step} />)}
+    </div>
+  </div>
+</section>

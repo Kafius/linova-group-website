@@ -1,0 +1,17 @@
+# build output
+dist/
+.vercel/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# environment variables
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,74 @@
+---
+---
+
+<nav class="fixed top-0 left-0 right-0 z-[1000] bg-white/95 backdrop-blur-md border-b border-border transition-shadow duration-200" id="navbar">
+  <div class="max-w-[1140px] mx-auto px-6 flex items-center justify-between h-[72px]">
+    <a href="#" class="flex items-center">
+      <img src="/linova-logo-horizontal.png" alt="Linova Group" class="h-14" />
+    </a>
+    <button class="flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1 md:hidden" id="navToggle" aria-label="Toggle navigation">
+      <span class="block w-6 h-0.5 bg-dark rounded-sm transition-all duration-300 origin-center"></span>
+      <span class="block w-6 h-0.5 bg-dark rounded-sm transition-all duration-300 origin-center"></span>
+      <span class="block w-6 h-0.5 bg-dark rounded-sm transition-all duration-300 origin-center"></span>
+    </button>
+    <ul class="hidden md:flex items-center gap-8" id="navLinks">
+      <li><a href="#how-it-works" class="text-muted font-medium text-sm hover:text-dark transition-colors duration-200">How It Works</a></li>
+      <li><a href="#industries" class="text-muted font-medium text-sm hover:text-dark transition-colors duration-200">Industries</a></li>
+      <li><a href="#why-us" class="text-muted font-medium text-sm hover:text-dark transition-colors duration-200">Why Us</a></li>
+      <li><a href="#contact" class="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200">Get Started</a></li>
+    </ul>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="md:hidden overflow-hidden transition-all duration-300 max-h-0" id="mobileMenu">
+    <ul class="flex flex-col border-t border-border bg-white shadow-lg">
+      <li><a href="#how-it-works" class="block py-3.5 px-6 text-center text-muted font-medium text-sm hover:text-dark transition-colors" data-nav-link>How It Works</a></li>
+      <li><a href="#industries" class="block py-3.5 px-6 text-center text-muted font-medium text-sm hover:text-dark transition-colors" data-nav-link>Industries</a></li>
+      <li><a href="#why-us" class="block py-3.5 px-6 text-center text-muted font-medium text-sm hover:text-dark transition-colors" data-nav-link>Why Us</a></li>
+      <li class="px-6 py-2 flex justify-center"><a href="#contact" class="inline-block px-5 py-2 text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors" data-nav-link>Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const navbar = document.getElementById('navbar');
+  const spans = navToggle?.querySelectorAll('span');
+
+  let isOpen = false;
+
+  navToggle?.addEventListener('click', () => {
+    isOpen = !isOpen;
+    if (mobileMenu) {
+      mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + 'px' : '0';
+    }
+    if (spans) {
+      if (isOpen) {
+        spans[0].style.transform = 'translateY(7px) rotate(45deg)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+      } else {
+        spans[0].style.transform = '';
+        spans[1].style.opacity = '';
+        spans[2].style.transform = '';
+      }
+    }
+  });
+
+  document.querySelectorAll('[data-nav-link]').forEach(link => {
+    link.addEventListener('click', () => {
+      isOpen = false;
+      if (mobileMenu) mobileMenu.style.maxHeight = '0';
+      if (spans) {
+        spans[0].style.transform = '';
+        spans[1].style.opacity = '';
+        spans[2].style.transform = '';
+      }
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    navbar?.classList.toggle('shadow-md', window.scrollY > 10);
+  });
+</script>
