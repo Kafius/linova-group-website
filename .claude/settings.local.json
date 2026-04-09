@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"construction company website transformation before after premium\" --design-system -p \"Linova Group Services\" -f markdown)",
+      "Bash(python3 skills/ui-ux-pro-max/scripts/search.py \"construction company website transformation before after premium\" --design-system -p \"Linova Group Services\" -f markdown)"
+    ]
+  }
+}
