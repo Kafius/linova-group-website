@@ -16,16 +16,16 @@ interface Props {
 const { url, gradient, tag, showOutlineBtn = false, cardColors, industry, title, description } = Astro.props;
 ---
 
-<div class="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.08),0_4px_10px_rgba(0,0,0,0.04)] transition-all duration-200">
+<div class="group bg-white rounded-2xl overflow-hidden border border-border hover:-translate-y-1.5 hover:shadow-[0_20px_48px_rgba(0,0,0,0.09)] transition-all duration-300 cursor-default">
   <div class="p-4 pb-0">
     <BrowserChrome url={url} />
     <MockupContent gradient={gradient} tag={tag} showOutlineBtn={showOutlineBtn} cardColors={cardColors} />
   </div>
-  <div class="p-5">
-    <span class="inline-block bg-light text-primary text-xs font-semibold px-2.5 py-1 rounded-full mb-2.5 uppercase tracking-wide">
+  <div class="p-6">
+    <span class="inline-block bg-light text-primary text-[0.7rem] font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-wide">
       {industry}
     </span>
-    <h3 class="text-dark font-semibold text-base mb-1.5">{title}</h3>
+    <h3 class="text-dark font-bold text-base mb-2">{title}</h3>
     <p class="text-muted text-sm leading-relaxed">{description}</p>
   </div>
 </div>

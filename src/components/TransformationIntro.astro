@@ -1,0 +1,547 @@
+---
+// TransformationIntro.astro
+// On load: shows a generic "before" website.
+// ~450ms later: each element morphs into the real Linova site in a staggered sequence.
+// Once transforms complete the overlay fades out, revealing the live site.
+---
+
+<div id="trf-overlay" aria-hidden="true">
+
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <div class="trf-nav-wrap">
+
+    <!-- Single nav bar — morphs its own shape on transform -->
+    <div class="trf-nav" id="trf-nav">
+      <div class="trf-logo-area">
+        <span class="trf-logo-text">Linova</span>
+        <img class="trf-logo-img" src="/linova-logo-horizontal.png" alt="Linova Group" />
+      </div>
+      <div class="trf-links-area">
+        <!-- Before: plain blue underlined links -->
+        <div class="trf-nav-links-before">
+          <a>Services</a>
+          <a>Showcase</a>
+          <a>Get Started</a>
+        </div>
+        <!-- After: real styled links matching Navbar -->
+        <div class="trf-nav-links-after">
+          <a>Services</a>
+          <a>Showcase</a>
+          <a class="trf-links-cta">Get Started</a>
+        </div>
+      </div>
+      <div class="trf-hamburger"><span></span><span></span><span></span></div>
+    </div>
+
+  </div>
+
+  <!-- ── HERO ────────────────────────────────────────────────── -->
+  <div class="trf-hero-wrap">
+
+    <!-- Background: blurry photo fades out → overlay dark gradient shows through -->
+    <div class="trf-h-before trf-bg-before" style="--d:0.5s"></div>
+
+    <div class="trf-hero-content">
+      <h1 id="trf-el-h1" class="trf-h1-before">
+        Premium Websites<br />Powered by the future.
+      </h1>
+      <p id="trf-el-sub" class="trf-sub-before">
+        Linova Group delivers beautifully crafted, high-performance websites — without the inflated agency price tag.
+      </p>
+      <div id="trf-el-ctas" class="trf-ctas-before">
+        <a class="trf-btn-generic-a">Learn More</a>
+        <a class="trf-btn-generic-b">Contact Us</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+/* ── Overlay ──────────────────────────────────────────────────── */
+#trf-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  /* Dark blue — matches real Hero; beige bg-before sits on top and fades first */
+  background: linear-gradient(135deg, #16172f 0%, #26275E 50%, #1e1f4a 100%);
+  /* Final fade-out — triggered by JS after element transforms finish */
+  transition: opacity 0.35s ease;
+}
+#trf-overlay.trf-done { opacity: 0; pointer-events: none; }
+
+/* ── Before / After visibility rules ─────────────────────────── */
+/*
+  .trf-before: visible by default, exits when .trf-transforming is set
+  .trf-after:  hidden by default,  enters when .trf-transforming is set
+  Each element uses CSS custom property --d as its transition-delay.
+*/
+.trf-before {
+  transition: opacity 0.38s ease var(--d, 0s), transform 0.38s ease var(--d, 0s);
+}
+.trf-after {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease var(--d, 0s), transform 0.5s ease var(--d, 0s);
+}
+
+#trf-overlay.trf-transforming .trf-before {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+#trf-overlay.trf-transforming .trf-after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Stack (overlapping before/after pairs) ───────────────────── */
+.trf-stack {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+.trf-stack > * { grid-area: 1 / 1; width: 100%; }
+
+/* ── NAV WRAPPER ──────────────────────────────────────────────── */
+.trf-nav-wrap {
+  position: relative;
+  width: 100%;
+  height: 68px; /* tall enough for the pill at top:4px + height:64px */
+  /* no background — overlay's blue gradient shows through */
+}
+
+/* Single nav bar — starts flat, morphs into the pill shape */
+.trf-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 0;
+
+  transition:
+    top           0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    left          0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    right         0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    height        0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Step 1: geometry only — shrinks to pill footprint via JS-measured values */
+#trf-overlay.trf-transforming .trf-nav {
+  top:           var(--nav-to-top,    4px);
+  left:          var(--nav-to-left,   16px);
+  right:         var(--nav-to-right,  16px);
+  height:        var(--nav-to-height, 64px);
+  border-radius: var(--nav-to-radius, 16px);
+}
+
+/* Logo area — grid-stacks text and image so both occupy the same cell.
+   Cell is sized by the image (wider element); text sits left-aligned inside it. */
+.trf-logo-area {
+  display: grid;
+  align-items: center;
+}
+.trf-logo-area > * {
+  grid-area: 1 / 1;
+}
+
+.trf-logo-text {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a1a1a;
+  white-space: nowrap;
+  display: inline-block;
+  transform-origin: left center;
+  justify-self: start;
+  z-index: 1;
+}
+
+.trf-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  opacity: 0;
+  justify-self: start;
+}
+
+/* ── Logo animation on transform ────────────────────────── */
+/* Phase 1: text grows then fades out completely */
+#trf-overlay.trf-transforming .trf-logo-text {
+  animation: trf-logo-grow-fade 1.0s ease both;
+  animation-delay: 0.25s;
+  /* done at 0.25 + 1.0 = 1.25s */
+}
+/* Phase 2: logo image fades in only after text is fully gone */
+#trf-overlay.trf-transforming .trf-logo-img {
+  animation: trf-logo-img-in 0.4s ease both;
+  animation-delay: 1.3s;
+}
+
+@keyframes trf-logo-grow-fade {
+  0%   { transform: scale(1);    opacity: 1; }
+  45%  { transform: scale(2.2);  opacity: 1; } /* grown to logo visual size */
+  65%  { transform: scale(2.2);  opacity: 1; } /* hold */
+  100% { transform: scale(2.2);  opacity: 0; } /* fade out */
+}
+
+@keyframes trf-logo-img-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Links area — grid-stacks before and after groups */
+.trf-links-area {
+  display: grid;
+  align-items: center;
+}
+.trf-links-area > * {
+  grid-area: 1 / 1;
+  justify-self: end;
+}
+
+/* Before: plain blue underlined links */
+.trf-nav-links-before {
+  display: flex;
+  gap: 20px;
+  transform-origin: right center;
+}
+.trf-nav-links-before a {
+  color: #0000cc;
+  text-decoration: underline;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* After: real Navbar-styled links */
+.trf-nav-links-after {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  opacity: 0;
+}
+.trf-nav-links-after a {
+  color: #6b7280;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+.trf-links-cta {
+  background: #26275E;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 8px 20px;
+  border-radius: 12px;
+}
+
+/* ── Links animation on transform ───────────────────────── */
+#trf-overlay.trf-transforming .trf-nav-links-before {
+  animation: trf-links-grow-fade 1.0s ease both;
+  animation-delay: 0.25s;
+}
+#trf-overlay.trf-transforming .trf-nav-links-after {
+  animation: trf-logo-img-in 0.4s ease both;
+  animation-delay: 1.3s;
+}
+
+@keyframes trf-links-grow-fade {
+  0%   { transform: scale(1);    opacity: 1; }
+  45%  { transform: scale(1.4);  opacity: 1; }
+  65%  { transform: scale(1.4);  opacity: 1; }
+  100% { transform: scale(1.4);  opacity: 0; }
+}
+
+.trf-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+}
+.trf-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #444;
+}
+
+/* ── HERO WRAPPER ─────────────────────────────────────────────── */
+.trf-hero-wrap {
+  position: relative;
+  height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* BEFORE background: blurry stock-photo gradient */
+.trf-bg-before {
+  position: absolute;
+  inset: -5%;
+  background:
+    radial-gradient(ellipse at 25% 45%, rgba(205, 180, 145, 0.95) 0%, transparent 45%),
+    radial-gradient(ellipse at 75% 55%, rgba(160, 185, 165, 0.85) 0%, transparent 45%),
+    radial-gradient(ellipse at 55% 15%, rgba(215, 205, 185, 0.80) 0%, transparent 55%),
+    radial-gradient(ellipse at 40% 80%, rgba(190, 170, 145, 0.70) 0%, transparent 45%),
+    linear-gradient(145deg, #c5b49a 0%, #b4c0ac 45%, #a4b4c0 100%);
+  filter: blur(18px) saturate(0.65);
+  transform: scale(1.08);
+  --d: 0s;
+}
+
+/* ── HERO CONTENT ─────────────────────────────────────────────── */
+.trf-hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1140px;
+  padding: 0 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ── Before text — white so it's readable on both warm photo and dark bg */
+.trf-h1-before {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: clamp(28px, 6vw, 56px);
+  color: #1a1a1a;
+  font-weight: bold;
+  line-height: 1.15;
+  margin: 0;
+  text-align: center;
+}
+.trf-sub-before {
+  font-size: 15px;
+  color: rgba(0,0,0,0.6);
+  line-height: 1.65;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.trf-ctas-before {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.trf-btn-generic-a {
+  display: inline-block;
+  padding: 10px 26px;
+  background: #1a1a1a;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid #1a1a1a;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.trf-btn-generic-b {
+  display: inline-block;
+  padding: 10px 26px;
+  background: transparent;
+  color: rgba(0,0,0,0.6);
+  text-decoration: none;
+  font-size: 13px;
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+/* ── Before text move→grow→fade animations (triggered by .trf-transforming) ── */
+/* Each element first slides to where the real hero element sits (translateY --dy),
+   then scales up to match the real element's size, then fades out.             */
+/* Hero text starts only after the background has turned blue (~1.2s) */
+#trf-overlay.trf-transforming .trf-h1-before {
+  animation: trf-h1-gf  1.4s ease both 1.3s;
+}
+#trf-overlay.trf-transforming .trf-sub-before {
+  animation: trf-sub-gf 1.4s ease both 1.45s;
+}
+#trf-overlay.trf-transforming .trf-ctas-before {
+  animation: trf-cta-gf 1.4s ease both 1.6s;
+}
+
+/* 0–28%: move to real position  |  28–58%: scale up  |  58–75%: hold  |  75–100%: fade */
+@keyframes trf-h1-gf {
+  0%   { transform: translateY(0)              scale(1);    opacity: 1; }
+  28%  { transform: translateY(var(--dy, 0px)) scale(1);    opacity: 1; }
+  58%  { transform: translateY(var(--dy, 0px)) scale(1.3);  opacity: 1; }
+  75%  { transform: translateY(var(--dy, 0px)) scale(1.3);  opacity: 1; }
+  100% { transform: translateY(var(--dy, 0px)) scale(1.3);  opacity: 0; }
+}
+@keyframes trf-sub-gf {
+  0%   { transform: translateY(0)              scale(1);     opacity: 1; }
+  28%  { transform: translateY(var(--dy, 0px)) scale(1);     opacity: 1; }
+  58%  { transform: translateY(var(--dy, 0px)) scale(1.35);  opacity: 1; }
+  75%  { transform: translateY(var(--dy, 0px)) scale(1.35);  opacity: 1; }
+  100% { transform: translateY(var(--dy, 0px)) scale(1.35);  opacity: 0; }
+}
+@keyframes trf-cta-gf {
+  0%   { transform: translateY(0)              scale(1);     opacity: 1; }
+  28%  { transform: translateY(var(--dy, 0px)) scale(1);     opacity: 1; }
+  58%  { transform: translateY(var(--dy, 0px)) scale(1.45);  opacity: 1; }
+  75%  { transform: translateY(var(--dy, 0px)) scale(1.45);  opacity: 1; }
+  100% { transform: translateY(var(--dy, 0px)) scale(1.45);  opacity: 0; }
+}
+
+
+/* ── Hero before / after system ──────────────────────────────────
+   Separate from the nav system so hero uses longer, smoother durations.
+   trf-h-before: visible, fades up and out on transform
+   trf-h-after:  hidden,  fades up and in  on transform            */
+.trf-h-before {
+  transition: opacity 0.7s ease var(--d, 0s), transform 0.7s ease var(--d, 0s);
+}
+.trf-h-after {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease var(--d, 0s), transform 0.7s ease var(--d, 0s);
+}
+#trf-overlay.trf-transforming .trf-h-before {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+#trf-overlay.trf-transforming .trf-h-after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .trf-nav-links-before { display: none; }
+  .trf-hamburger { display: flex; }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .trf-before { transition: opacity 0.3s ease; }
+  #trf-overlay.trf-transforming .trf-logo-text,
+  #trf-overlay.trf-transforming .trf-nav-links-before {
+    animation: none;
+    opacity: 0;
+  }
+  #trf-overlay.trf-transforming .trf-logo-img,
+  #trf-overlay.trf-transforming .trf-nav-links-after {
+    animation: none;
+    opacity: 1;
+  }
+}
+</style>
+
+<script>
+(function () {
+  const overlay = document.getElementById('trf-overlay');
+  const tNav    = document.getElementById('trf-nav');
+  if (!overlay || !tNav) return;
+
+  // No transition on mobile — remove overlay immediately and bail
+  if (document.documentElement.clientWidth < 768) {
+    overlay.remove();
+    return;
+  }
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const HOLD     = reduced ? 200  : 480;
+  const MORPH    = reduced ? 300  : 3200;
+  const FADE_OUT = 350;
+
+  // ── Hide badge + stats immediately so they can animate in at the end ──
+  // We do this via JS (not CSS) so they stay visible if JS fails or the
+  // overlay is skipped (e.g. prefers-reduced-motion or cached navigation).
+  const heroBadge    = document.getElementById('hero-badge') as HTMLElement | null;
+  const heroStats    = document.getElementById('hero-stats') as HTMLElement | null;
+  const heroStatItems = Array.from(document.querySelectorAll<HTMLElement>('.hero-stat-item'));
+
+  function hideForReveal(el: HTMLElement) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(12px)';
+  }
+  function revealEl(el: HTMLElement, delayMs: number) {
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      el.style.opacity    = '1';
+      el.style.transform  = 'translateY(0)';
+    }, delayMs);
+  }
+
+  if (!reduced) {
+    if (heroBadge) hideForReveal(heroBadge);
+    // Stats container: hide via opacity so the border-top stays invisible until reveal
+    if (heroStats) { heroStats.style.opacity = '0'; }
+    heroStatItems.forEach(el => hideForReveal(el));
+  }
+
+  // Measure the real navbar pill and store its exact position as CSS vars.
+  // This runs immediately so the values are ready before the animation fires.
+  const realNav = document.getElementById('navbar');
+  if (realNav) {
+    const r = realNav.getBoundingClientRect();
+    const radius = window.getComputedStyle(realNav).borderRadius;
+    tNav.style.setProperty('--nav-to-top',    r.top + 'px');
+    tNav.style.setProperty('--nav-to-left',   r.left + 'px');
+    tNav.style.setProperty('--nav-to-right',  (document.documentElement.clientWidth - r.right) + 'px');
+    tNav.style.setProperty('--nav-to-height', r.height + 'px');
+    tNav.style.setProperty('--nav-to-radius', radius);
+  }
+
+  // Measure each overlay hero element vs its real counterpart and store --dy.
+  // translateY(--dy) slides the before-text to sit exactly over the real text
+  // before it scales and fades — making the transformation feel positional.
+  function measureHeroDelta(overlayId: string, realId: string) {
+    const overlayEl = document.getElementById(overlayId);
+    const realEl    = document.getElementById(realId);
+    if (!overlayEl || !realEl) return;
+    const oRect = overlayEl.getBoundingClientRect();
+    const rRect = realEl.getBoundingClientRect();
+    // Centre-to-centre delta so both elements align at the same visual midpoint
+    const dy = (rRect.top + rRect.height / 2) - (oRect.top + oRect.height / 2);
+    overlayEl.style.setProperty('--dy', dy + 'px');
+  }
+
+  measureHeroDelta('trf-el-h1',   'real-hero-h1');
+  measureHeroDelta('trf-el-sub',  'real-hero-sub');
+  measureHeroDelta('trf-el-ctas', 'real-hero-ctas');
+
+  setTimeout(() => {
+    overlay.classList.add('trf-transforming');
+
+    setTimeout(() => {
+      overlay.classList.add('trf-done');
+
+      // ── Staggered reveal of badge + stats as overlay fades out ──
+      // badge appears right as the overlay fade begins (~0ms)
+      // stats container snaps visible just before stat[0] so its border-top
+      // doesn't flash alone; each stat item slides up one by one after that.
+      if (!reduced) {
+        if (heroBadge) revealEl(heroBadge, 0);
+
+        const STATS_START = 180;        // ms after trf-done
+        const STAT_GAP    = 160;        // ms between each stat
+
+        if (heroStats) {
+          // Make the container visible instantly just before the first stat animates
+          setTimeout(() => { heroStats.style.opacity = '1'; }, STATS_START - 20);
+        }
+        heroStatItems.forEach((el, i) => revealEl(el, STATS_START + i * STAT_GAP));
+      }
+
+      setTimeout(() => overlay.remove(), FADE_OUT + 50);
+    }, MORPH);
+
+  }, HOLD);
+})();
+</script>

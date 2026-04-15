@@ -8,10 +8,13 @@ interface Props {
 const { title, description, icon } = Astro.props;
 ---
 
-<div class="text-center">
-  <div class="w-14 h-14 bg-light text-primary rounded-lg inline-flex items-center justify-center mb-4">
+<div class="group relative bg-white border border-border rounded-2xl p-7 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(38,39,94,0.08)] hover:-translate-y-0.5 transition-all duration-300 cursor-default overflow-hidden">
+  <!-- Top accent line -->
+  <div class="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background: linear-gradient(90deg, #26275E, #4f51b5);"></div>
+
+  <div class="w-12 h-12 bg-light text-primary rounded-xl inline-flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
     <Fragment set:html={icon} />
   </div>
-  <h3 class="text-dark font-semibold text-base mb-2">{title}</h3>
-  <p class="text-muted text-sm">{description}</p>
+  <h3 class="text-dark font-bold text-base mb-2">{title}</h3>
+  <p class="text-muted text-sm leading-relaxed">{description}</p>
 </div>

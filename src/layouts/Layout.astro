@@ -6,7 +6,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'Linova Group builds stunning, high-performance websites for a fraction of the cost of traditional agencies.' } = Astro.props;
+const { title, description = 'Linova Group — Powered by the future. Premium web design and development for businesses ready to grow.' } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,7 +18,7 @@ const { title, description = 'Linova Group builds stunning, high-performance web
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/linova-logo.svg" />
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V6RVGVM23G"></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-V6RVGVM23G"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -27,7 +27,7 @@ const { title, description = 'Linova Group builds stunning, high-performance web
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body class="font-sans text-gray-600 leading-relaxed">
     <slot />

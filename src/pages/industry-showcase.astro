@@ -1,0 +1,529 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/navbar/Navbar.astro';
+import Footer from '../components/footer/Footer.astro';
+
+const categories = [
+  { id: 'all',          label: 'All Industries' },
+  { id: 'trades',       label: 'Trades & Construction' },
+  { id: 'food',         label: 'Food & Hospitality' },
+  { id: 'health',       label: 'Health & Wellness' },
+  { id: 'professional', label: 'Professional Services' },
+  { id: 'retail',       label: 'Retail & Commerce' },
+  { id: 'creative',     label: 'Creative & Lifestyle' },
+];
+---
+
+<Layout title="Industry Showcase — Linova Group" description="Browse website mockups for 25+ industries. See how Linova Group designs sites tailored to construction, restaurants, legal, medical, e-commerce, and more.">
+  <Navbar />
+
+  <!-- Hero -->
+  <section class="relative pt-36 pb-20 overflow-hidden text-white" style="background: linear-gradient(135deg, #16172f 0%, #26275E 50%, #1e1f4a 100%);">
+    <div class="absolute inset-0 opacity-[0.045]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute top-0 right-1/4 w-[520px] h-[320px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(96,165,250,0.07) 0%, transparent 70%); filter: blur(70px);"></div>
+    <div class="absolute bottom-0 left-1/3 w-[400px] h-[280px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(79,70,229,0.1) 0%, transparent 70%); filter: blur(60px);"></div>
+    <div class="relative max-w-[1140px] mx-auto px-6 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/75 text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-8 backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"></span>
+        Industry Showcase
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-[3.75rem] font-extrabold tracking-tight leading-[1.07] mb-5">
+        A Website Built<br class="hidden sm:block" /> for Your Industry
+      </h1>
+      <p class="text-white/55 text-lg max-w-[560px] mx-auto leading-relaxed font-medium">
+        Browse real design mockups for 25 industries. Every site is tailored to how your customers search, decide, and convert.
+      </p>
+    </div>
+  </section>
+
+  <!-- Sticky search + filter bar -->
+  <div class="sticky top-[84px] z-40 bg-white border-b border-border shadow-sm" id="showcase-bar">
+    <div class="max-w-[1140px] mx-auto px-6 py-3 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+      <!-- Search -->
+      <div class="relative w-full sm:w-64 flex-shrink-0">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="text"
+          id="industry-search"
+          placeholder="Search industries…"
+          autocomplete="off"
+          class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-border bg-light text-sm text-dark placeholder:text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all duration-200"
+        />
+      </div>
+      <!-- Category pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1">
+        {categories.map((cat, i) => (
+          <button
+            data-cat={cat.id}
+            class={`cat-btn flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${i === 0 ? 'bg-primary text-white' : 'bg-light text-muted hover:text-dark hover:bg-[#e8edf2]'}`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+      <!-- Count -->
+      <span class="text-xs text-muted whitespace-nowrap flex-shrink-0" id="ind-count">25 industries</span>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <section class="py-12 bg-[#f8fafc] min-h-[400px]">
+    <div class="max-w-[1140px] mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="industry-grid">
+        <!-- Populated by JS -->
+      </div>
+      <div class="hidden flex-col items-center justify-center py-20 text-center" id="no-results">
+        <div class="w-14 h-14 rounded-full bg-light flex items-center justify-center mb-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <p class="text-dark font-semibold mb-1">No results found</p>
+        <p class="text-muted text-sm">Try a different search or <button class="text-primary underline" id="clear-search">clear the filter</button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expanded panel -->
+  <div class="hidden border-t-[3px] border-primary bg-white" id="industry-panel">
+    <div class="max-w-[1140px] mx-auto px-6 py-12">
+      <button id="panel-back" class="inline-flex items-center gap-2 text-sm text-muted hover:text-dark transition-colors mb-10 cursor-pointer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to showcase
+      </button>
+      <div class="grid lg:grid-cols-5 gap-12 items-center">
+        <div class="lg:col-span-2 order-2 lg:order-1" id="panel-copy"></div>
+        <div class="lg:col-span-3 order-1 lg:order-2" id="panel-mockup"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom CTA -->
+  <section class="relative py-24 overflow-hidden text-white text-center" style="background: linear-gradient(135deg, #16172f 0%, #26275E 60%, #1e1f4a 100%);">
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="relative max-w-[640px] mx-auto px-6">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-blue-300/70 mb-4">Any Industry</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight">Don't See Your Industry?</h2>
+      <p class="text-white/55 text-lg mb-8 leading-relaxed">We design for any business. Tell us about yours and we'll show you what's possible.</p>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold bg-white text-primary hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] transition-all duration-200 cursor-pointer">
+        Get a Free Quote
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const CAT_LABELS = { trades:'Trades & Construction', food:'Food & Hospitality', health:'Health & Wellness', professional:'Professional Services', retail:'Retail & Commerce', creative:'Creative & Lifestyle' };
+
+const INDUSTRIES = [
+  // TRADES
+  { id:'construction', label:'Construction', category:'trades', icon:'M2 20h20M4 20V10l8-6 8 6v10M10 20v-6h4v6', tagline:'From blueprints to final coat', desc:'Turn project inquiries into booked contracts. Sites that showcase craftsmanship and earn trust before the first call.', features:['Project portfolio & photo galleries','Online quote request forms','License & insurance display','Google Reviews & trust badges'], cta:'Get a Construction Website', template:'dark', cfg:{ accent:'#f97316', dim:'rgba(249,115,22,0.18)', bg:'#0d1117', nav:'#161b22', border:'#21262d', muted:'#8b949e', biz:'APEX CONSTRUCTION', domain:'apexconstruction.com', hl:'Built Right.\nBuilt to Last.', sub:'From ground-up commercial builds to full home renovations — on time, on budget.', stats:[['500+','Projects'],['20yr','Experience'],['4.9★','Google'],['A+','BBB']], chips:['General Contracting','Home Renovation','Commercial Build-Out','Roofing'] } },
+  { id:'plumbing', label:'Plumbing & HVAC', category:'trades', icon:'M12 22V2M4 6h16M4 18h16', tagline:'Always on call, always reliable', desc:'Emergency call-ready sites that convert panicked searchers into booked jobs. Built for local SEO so you show up first.', features:['Emergency call button (always visible)','Service area pages','Before/after project gallery','Online booking & estimates'], cta:'Get a Plumbing Website', template:'dark', cfg:{ accent:'#3b82f6', dim:'rgba(59,130,246,0.18)', bg:'#050c18', nav:'#071120', border:'#0f1f35', muted:'#6b8aad', biz:'FLOW MASTER PLUMBING', domain:'flowmasterplumbing.com', hl:'No Drip Too Small.\nNo Job Too Big.', sub:'24/7 emergency plumbing & HVAC. Same-day service across the Greater Metro Area.', stats:[['24/7','Available'],['800+','Jobs Done'],['5★','Rated'],['Licensed','& Insured']], chips:['Emergency Plumbing','HVAC Install','Drain Cleaning','Water Heater'] } },
+  { id:'electrician', label:'Electrician', category:'trades', icon:'M13 2L3 14h9l-1 8 10-12h-9l1-8z', tagline:'Wired for trust and conversions', desc:'Professional sites for licensed electricians that rank on Google and turn local searches into phone calls and booked jobs.', features:['Local SEO-optimised service pages','Emergency contact widget','Commercial & residential portfolio','Certifications & licensing display'], cta:'Get an Electrician Website', template:'dark', cfg:{ accent:'#eab308', dim:'rgba(234,179,8,0.18)', bg:'#0c0a00', nav:'#141200', border:'#222000', muted:'#8a8000', biz:'SPARK PRO ELECTRIC', domain:'sparkproelectric.com', hl:'Power On.\nProblems Off.', sub:'Licensed master electricians for residential and commercial clients. Available 24/7.', stats:[['15yr','Experience'],['2,000+','Jobs'],['5★','Rated'],['Master','Licensed']], chips:['Panel Upgrades','EV Charger Install','Commercial Wiring','Emergency Service'] } },
+  { id:'landscaping', label:'Landscaping', category:'trades', icon:'M12 22V8M5 12c0 0 2-5 7-5s7 5 7 5M5 17c0 0 2-3 7-3s7 3 7 3', tagline:'Beautiful results that speak for themselves', desc:'Stunning sites with seasonal service pages that drive consistent revenue from lawn care, landscaping design, and maintenance contracts.', features:['Seasonal service packages','Photo portfolio & transformations','Online quote request','Maintenance contract subscriptions'], cta:'Get a Landscaping Website', template:'dark', cfg:{ accent:'#22c55e', dim:'rgba(34,197,94,0.18)', bg:'#030d07', nav:'#050f09', border:'#0b1e0f', muted:'#4a7a5a', biz:'GREENSCAPES CO.', domain:'greenscapesco.com', hl:'Your Property,\nPerfected.', sub:'Custom landscape design, lawn maintenance, and seasonal services — year-round care for every property.', stats:[['1,200+','Properties'],['18yr','Experience'],['Top Rated','Locally'],['Insured','Team']], chips:['Landscape Design','Lawn Maintenance','Irrigation Systems','Snow Removal'] } },
+
+  // FOOD
+  { id:'restaurant', label:'Restaurant', category:'food', icon:'M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3', tagline:'Turn hungry searchers into guests', desc:'A stunning online presence that fills tables. From your menu to reservations, we make it effortless for guests to choose you.', features:['Full menu with dietary info','OpenTable/Resy reservation widget','Google Maps & hours embed','Online ordering integration'], cta:'Get a Restaurant Website', template:'luxury', cfg:{ accent:'#d4a843', dim:'rgba(212,168,67,0.15)', bg:'#0e0702', nav:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.08)', muted:'rgba(255,255,255,0.45)', biz:'La Maison', sub2:'Fine Dining', domain:'lamaisondining.com', hl:'An Evening to\nRemember', accentWord:'Remember', body:'Crafted cuisine, curated wine, and an atmosphere that turns dinner into a memory.', hours:['Tue – Thu  5:00 – 10:00 PM','Fri – Sat  5:00 – 11:30 PM'], cats:['Starters','Mains','Seafood','Vegetarian','Desserts','Wine List'], cta2:'Reserve a Table' } },
+  { id:'cafe', label:'Coffee Shop', category:'food', icon:'M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z', tagline:'The neighbourhood\'s favourite spot', desc:'Cosy, warm sites that capture your café\'s personality and keep regulars coming back — plus new customers finding you through local search.', features:['Menu with seasonal specials','Online pre-ordering','Loyalty programme sign-up','Event & live music listings'], cta:'Get a Café Website', template:'luxury', cfg:{ accent:'#b45309', dim:'rgba(180,83,9,0.15)', bg:'#100800', nav:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.08)', muted:'rgba(255,255,255,0.45)', biz:'Ember & Oak', sub2:'Specialty Coffee', domain:'emberandoak.com', hl:'Slow Down.\nSip Something\nWarm.', accentWord:'Warm.', body:'Specialty coffee, handcrafted pastries, and a seat by the window. Your daily ritual starts here.', hours:['Mon – Fri  7:00 AM – 6:00 PM','Sat – Sun  8:00 AM – 5:00 PM'], cats:['Espresso','Cold Brew','Teas','Pastries','Sandwiches','Merch'], cta2:'Order Ahead' } },
+  { id:'bakery', label:'Bakery', category:'food', icon:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', tagline:'Fresh baked orders, every morning', desc:'Mouth-watering sites that showcase your creations and drive pre-orders for custom cakes, seasonal specials, and wholesale accounts.', features:['Pre-order & custom cake forms','Daily specials & seasonal menu','Wedding & event cake gallery','Wholesale enquiry page'], cta:'Get a Bakery Website', template:'luxury', cfg:{ accent:'#f59e0b', dim:'rgba(245,158,11,0.15)', bg:'#0f0a02', nav:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.08)', muted:'rgba(255,255,255,0.45)', biz:'The Golden Crust', sub2:'Artisan Bakery', domain:'thegoldencrust.com', hl:'Baked with Love.\nEaten with Joy.', accentWord:'Joy.', body:'Fresh from the oven every morning. Sourdoughs, pastries, and custom cakes made to order.', hours:['Tue – Fri  7:00 AM – 5:00 PM','Sat – Sun  7:00 AM – 3:00 PM'], cats:['Breads','Pastries','Custom Cakes','Gluten-Free','Seasonal','Pre-Order'], cta2:'Place a Pre-Order' } },
+  { id:'hotel', label:'Hotel & Lodging', category:'food', icon:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10', tagline:'Book direct. Stay more.', desc:'Luxury-feel hotel sites with direct booking integration that reduce OTA commission dependency and build lasting guest loyalty.', features:['Direct booking engine integration','Room showcase & virtual tours','Packages & seasonal offers','Guest loyalty programme'], cta:'Get a Hotel Website', template:'luxury', cfg:{ accent:'#c4a882', dim:'rgba(196,168,130,0.15)', bg:'#080604', nav:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.08)', muted:'rgba(255,255,255,0.45)', biz:'The Ashgrove', sub2:'Boutique Hotel', domain:'theashgrove.com', hl:'A Stay You\'ll\nNever Forget.', accentWord:'Forget.', body:'Tucked away in the heart of the city — luxurious rooms, attentive service, and memories that last.', hours:['Check-in  3:00 PM','Check-out  11:00 AM'], cats:['Rooms','Suites','Spa','Dining','Weddings','Gift Cards'], cta2:'Check Availability' } },
+
+  // HEALTH
+  { id:'medical', label:'Medical Practice', category:'health', icon:'M22 12h-4l-3 9L9 3l-3 9H2', tagline:'Make it easy for patients to choose you', desc:'Clean, trustworthy sites that answer patient questions and drive appointment bookings. Warm design with a clinical-grade feel.', features:['Online appointment booking','Doctor profiles & specialties','Patient portal & insurance info','Conditions & treatment resources'], cta:'Get a Medical Website', template:'professional', cfg:{ accent:'#2563eb', aLight:'#eff6ff', aBorder:'#bfdbfe', bg:'#ffffff', border:'#e0f2fe', muted:'#64748b', dark:'#0f172a', biz:'Northside Medical', sub2:'Family Health Centre', domain:'northsidemedical.com', badge:'Now Accepting New Patients', badgeColor:'#dbeafe', badgeText:'#2563eb', hl:'Your Health,\nOur Priority', body:'Comprehensive, compassionate care for the whole family — from checkups to specialist referrals.', cta1:'Book Appointment', cta2:'Virtual Visit', chips:['Family Medicine','Preventive Care','Women\'s Health','Pediatrics','Mental Health'], hasWidget:true, widgetLabel:'Quick Booking' } },
+  { id:'dental', label:'Dental Practice', category:'health', icon:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z', tagline:'Keep the waiting room full', desc:'Modern dental sites with online booking, smile gallery showcases, and patient-friendly content that reduce new-patient anxiety.', features:['New patient forms & intake online','Treatment & before/after gallery','Insurance acceptance list','Appointment reminders via SMS'], cta:'Get a Dental Website', template:'professional', cfg:{ accent:'#0891b2', aLight:'#ecfeff', aBorder:'#a5f3fc', bg:'#ffffff', border:'#cffafe', muted:'#64748b', dark:'#0f172a', biz:'Bright Smile Dental', sub2:'Family & Cosmetic Dentistry', domain:'brightsmile.com', badge:'New Patients Welcome', badgeColor:'#cffafe', badgeText:'#0e7490', hl:'Your Smile,\nOur Expertise', body:'General, cosmetic, and orthodontic care for the whole family — all under one roof.', cta1:'Book Appointment', cta2:'View Smile Gallery', chips:['General Dentistry','Teeth Whitening','Invisalign','Implants','Kids Dentistry'], hasWidget:true, widgetLabel:'Request Appointment' } },
+  { id:'fitness', label:'Fitness Gym', category:'health', icon:'M6 4v16M18 4v16M6 12h12M4 6h4M4 18h4M16 6h4M16 18h4', tagline:'Turn browsers into members', desc:'High-energy sites that motivate visitors to take action. Showcase classes, trainers, and results — and convert traffic into memberships.', features:['Class schedule & online booking','Membership plan comparisons','Trainer profiles & certifications','Free trial & lead capture CTAs'], cta:'Get a Gym Website', template:'dark', cfg:{ accent:'#06b6d4', dim:'rgba(6,182,212,0.18)', bg:'#050a12', nav:'#07101d', border:'rgba(6,182,212,0.15)', muted:'rgba(255,255,255,0.4)', biz:'APEX FITNESS', domain:'apexfitness.com', hl:'Train Harder.\nLive Better.', sub:'State-of-the-art equipment, expert coaching, and a community that pushes you further.', stats:[['50+','Classes/Wk'],['15','Trainers'],['No','Contracts'],['1,500+','Members']], chips:['HIIT & Cardio','Strength Training','Group Classes','Personal Training'] } },
+  { id:'yoga', label:'Yoga & Pilates', category:'health', icon:'M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z', tagline:'Find stillness. Find clients.', desc:'Calming, beautiful studio sites that communicate your philosophy and make it effortless for new students to take their first class.', features:['Mindbody / Vagaro integration','Class schedule & workshop events','Instructor bios & philosophy','First class free offer pages'], cta:'Get a Studio Website', template:'wellness', cfg:{ accent:'#8b5cf6', aLight:'#f5f3ff', aBorder:'#ddd6fe', bg:'#faf9ff', border:'#ede9fe', muted:'#64748b', dark:'#1e1b4b', biz:'Serenity Studio', sub2:'Yoga & Pilates', domain:'serenitystudio.com', badge:'New Students — First Class Free', badgeColor:'#ede9fe', badgeText:'#7c3aed', hl:'Find Your\nBalance', body:'A welcoming community for all levels. Yoga, Pilates, meditation, and workshops for mind, body & soul.', cta1:'Book Your First Class', cta2:'View Schedule', classes:[{name:'Morning Flow',time:'7:00 AM',level:'All Levels',open:3},{name:'Power Pilates',time:'9:30 AM',level:'Intermediate',open:8},{name:'Yin & Restore',time:'12:00 PM',level:'All Levels',open:12},{name:'Evening Vinyasa',time:'6:00 PM',level:'All Levels',open:5}] } },
+  { id:'spa', label:'Spa & Massage', category:'health', icon:'M12 3c-4.5 0-8 3.5-8 8s3.5 8 8 8 8-3.5 8-8-3.5-8-8-8z', tagline:'Luxury that books itself', desc:'Serene, editorial-quality sites that communicate luxury and calm — and convert casual browsers into loyal regulars.', features:['Online booking & gift certificates','Service menu with descriptions','Membership & package bundles','Team profiles & credentials'], cta:'Get a Spa Website', template:'wellness', cfg:{ accent:'#be185d', aLight:'#fdf2f8', aBorder:'#fbcfe8', bg:'#fdf7f7', border:'#fce7f3', muted:'#64748b', dark:'#1a0a12', biz:'Aura Spa & Wellness', sub2:'Day Spa', domain:'auraspa.com', badge:'Gift Certificates Available', badgeColor:'#fce7f3', badgeText:'#9d174d', hl:'Escape the\nEveryday', body:'Premium massages, facials, and body treatments in a tranquil setting. Because you deserve it.', cta1:'Book a Treatment', cta2:'View Services', classes:[{name:'Swedish Massage',time:'60 min',level:'$120',open:-1},{name:'Hot Stone',time:'90 min',level:'$175',open:-1},{name:'Deep Tissue',time:'60 min',level:'$135',open:-1},{name:'Signature Facial',time:'75 min',level:'$145',open:-1}] } },
+
+  // PROFESSIONAL
+  { id:'legal', label:'Law Firm', category:'professional', icon:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', tagline:'Authority that earns trust before the first call', desc:'Professional, credibility-first websites that position your firm as the obvious choice. Built to rank and convert serious inquiries.', features:['Practice area SEO pages','Attorney bios & credentials','Case result highlights','Free consultation booking'], cta:'Get a Law Firm Website', template:'professional', cfg:{ accent:'#1e3a5f', aLight:'#f0f4f8', aBorder:'#c8d8e8', bg:'#f8f9fc', border:'#e2e8f0', muted:'#64748b', dark:'#0f172a', biz:'Meridian Law', sub2:'Group LLP', domain:'meridianlaw.com', badge:'Trusted Legal Counsel Since 1998', badgeColor:'#dce8f8', badgeText:'#1e3a5f', hl:'Protecting Your Rights.\nFighting for\nYour Future.', body:'Our attorneys bring decades of experience to every case. We fight for the outcomes our clients deserve.', cta1:'Free Consultation', cta2:'Call (416) 555-0192', chips:['Personal Injury','Family Law','Real Estate','Corporate Law','Criminal Defence'], hasWidget:false } },
+  { id:'accounting', label:'Accounting & Finance', category:'professional', icon:'M9 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-3M9 7V5a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v2M9 7h6', tagline:'Numbers handled. Growth unlocked.', desc:'Credible, conversion-focused sites for accountants and financial advisors that win corporate clients and generate referrals.', features:['Service-specific landing pages','Client portal links','Tax deadline resource hub','Industry specialisation pages'], cta:'Get an Accounting Website', template:'professional', cfg:{ accent:'#4f46e5', aLight:'#eef2ff', aBorder:'#c7d2fe', bg:'#f8faff', border:'#e0e7ff', muted:'#64748b', dark:'#0f172a', biz:'Summit Advisory', sub2:'Accounting & Tax', domain:'summitadvisory.com', badge:'CPA — Chartered Accountants', badgeColor:'#e0e7ff', badgeText:'#4338ca', hl:'Your Finances.\nIn Expert Hands.', body:'From bookkeeping to business tax strategy, we help small and mid-sized businesses grow with confidence.', cta1:'Book a Discovery Call', cta2:'Download Tax Checklist', chips:['Business Tax','Bookkeeping','Payroll','Financial Planning','Audit & Assurance'], hasWidget:true, widgetLabel:'Schedule a Call' } },
+  { id:'realestate', label:'Real Estate', category:'professional', icon:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10', tagline:'Where listings become leads', desc:'Modern property sites that capture buyer and seller leads around the clock. Beautiful listing pages that get shown, not scrolled past.', features:['Property listings & search filters','Lead capture & CRM integration','Agent & team profile pages','Neighbourhood guides & market stats'], cta:'Get a Real Estate Website', template:'professional', cfg:{ accent:'#1a3a5c', aLight:'#f0f4f8', aBorder:'#c8d8e8', bg:'#fafaf8', border:'#e8e4dc', muted:'#64748b', dark:'#0f172a', biz:'Prestige Realty', sub2:'Group', domain:'prestigerealty.com', badge:'Greater Metro Area — Est. 2008', badgeColor:'#dde8f2', badgeText:'#1a3a5c', hl:'Find Your\nDream Property', body:'Connecting buyers and sellers across the city. Expert agents, exceptional results.', cta1:'Search Listings', cta2:'Get a Home Valuation', chips:['Residential Sales','Commercial','Luxury Homes','Rentals','Property Management'], hasWidget:false } },
+  { id:'insurance', label:'Insurance Agency', category:'professional', icon:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', tagline:'Protection made simple', desc:'Trustworthy insurance agency sites that explain complex products simply and generate warm inbound leads ready to get a quote.', features:['Instant online quote forms','Coverage comparison pages','Client claims portal link','Life event coverage guides'], cta:'Get an Insurance Website', template:'professional', cfg:{ accent:'#1e40af', aLight:'#eff6ff', aBorder:'#bfdbfe', bg:'#f8faff', border:'#dbeafe', muted:'#64748b', dark:'#0f172a', biz:'Shield Insurance', sub2:'Agency', domain:'shieldinsurance.com', badge:'Trusted by 4,200+ Families', badgeColor:'#dbeafe', badgeText:'#1e40af', hl:'Protect What\nMatters Most', body:'Comprehensive insurance for individuals, families, and businesses. Independent brokers — we work for you.', cta1:'Get a Free Quote', cta2:'Compare Plans', chips:['Home Insurance','Auto Insurance','Life Insurance','Business','Travel'], hasWidget:true, widgetLabel:'Get a Quote' } },
+
+  // RETAIL
+  { id:'ecommerce', label:'E-Commerce Store', category:'retail', icon:'M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0', tagline:'Your store, open 24/7', desc:'Beautiful online stores that convert. Every page is optimised to reduce drop-off and increase average order value.', features:['Product catalog with search & filters','Cart, checkout & payment processing','Inventory & order management','Abandoned cart & email automation'], cta:'Get an E-Commerce Website', template:'shop', cfg:{ accent:'#6366f1', bg:'linear-gradient(120deg,#6366f1 0%,#8b5cf6 100%)', biz:'novashop', domain:'novashop.com', tag:'New Arrivals — Spring 2026', hl:'Fresh Styles\nJust Dropped', cta1:'Shop New In', cta2:'Up to 40% Off', products:[{n:'Merino Knit Sweater',p:'$89',w:'$119',r:'4.8',rv:124,s:true},{n:'Slim Chino Pants',p:'$65',w:null,r:'4.6',rv:89,s:false},{n:'Linen Shirt',p:'$54',w:'$75',r:'4.9',rv:203,s:true},{n:'Canvas Sneakers',p:'$112',w:null,r:'4.7',rv:57,s:false}] } },
+  { id:'boutique', label:'Boutique Fashion', category:'retail', icon:'M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z', tagline:'Style that sells itself', desc:'Editorial, fashion-forward sites that build brand identity and turn Instagram followers into paying customers.', features:['Lookbook & editorial gallery','Instagram shop integration','Size guide & style quiz','Loyalty rewards programme'], cta:'Get a Boutique Website', template:'shop', cfg:{ accent:'#ec4899', bg:'linear-gradient(120deg,#ec4899 0%,#f43f5e 100%)', biz:'maison·elle', domain:'maisonelle.com', tag:'Spring / Summer 2026 Collection', hl:'Effortless Style,\nCurated for You', cta1:'Shop the Collection', cta2:'New Season Looks', products:[{n:'Linen Wrap Dress',p:'$149',w:'$195',r:'4.9',rv:87,s:true},{n:'Silk Blouse',p:'$98',w:null,r:'4.7',rv:52,s:false},{n:'Wide-Leg Trousers',p:'$125',w:'$160',r:'4.8',rv:73,s:true},{n:'Cashmere Cardigan',p:'$185',w:null,r:'5.0',rv:31,s:false}] } },
+  { id:'auto', label:'Auto Dealership', category:'retail', icon:'M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v5M14 17h2m4 0h2M17 14v6M3 17h2', tagline:'Drive more test drives online', desc:'High-converting dealership sites with inventory search, financing calculators, and lead capture that keep your sales floor busy.', features:['Vehicle inventory with search & filters','Financing calculator & pre-approval','Trade-in value estimator','Service booking for existing customers'], cta:'Get a Dealership Website', template:'dark', cfg:{ accent:'#dc2626', dim:'rgba(220,38,38,0.18)', bg:'#0a0a0c', nav:'#101012', border:'#1e1e22', muted:'#6b7280', biz:'IRONGATE MOTORS', domain:'irongatemotors.com', hl:'Drive Your\nDream Car Today.', sub:'Hundreds of new and pre-owned vehicles. Financing available for all credit types.', stats:[['400+','In Stock'],['All Credit','Welcome'],['Certified','Pre-Owned'],['5★','Dealer']], chips:['New Vehicles','Pre-Owned','Finance & Leasing','Service Centre'] } },
+  { id:'pet', label:'Pet Services', category:'retail', icon:'M14 16c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zM6 8c0 1.1-.9 2-2 2S2 9.1 2 8s.9-2 2-2 2 .9 2 2zm12 0c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z', tagline:'Trusted by pet parents everywhere', desc:'Friendly, fun sites for groomers, vets, boarding kennels, and pet stores that build trust and make booking easy.', features:['Online appointment & boarding booking','Meet the team & certifications','Pet care tips blog','Loyalty cards & referral programme'], cta:'Get a Pet Services Website', template:'professional', cfg:{ accent:'#f97316', aLight:'#fff7ed', aBorder:'#fed7aa', bg:'#fffbf5', border:'#fed7aa', muted:'#64748b', dark:'#0f172a', biz:'Happy Paws', sub2:'Pet Care & Grooming', domain:'happypawscare.com', badge:'Accepting New Clients', badgeColor:'#ffedd5', badgeText:'#ea580c', hl:'Your Pet Deserves\nthe Very Best', body:'Full-service grooming, daycare, boarding, and veterinary care. Because they\'re family.', cta1:'Book an Appointment', cta2:'View Our Services', chips:['Dog Grooming','Cat Grooming','Dog Daycare','Boarding','Veterinary Care'], hasWidget:true, widgetLabel:'Book Now' } },
+
+  // CREATIVE
+  { id:'photography', label:'Photography', category:'creative', icon:'M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', tagline:'Portfolio that books you while you sleep', desc:'Stunning, fast-loading portfolio sites that showcase your work beautifully and convert visitors into inquiries with minimal friction.', features:['Full-screen gallery & portfolio','Client gallery delivery portal','Pricing & package pages','Contact & inquiry forms'], cta:'Get a Photography Website', template:'creative', cfg:{ accent:'#d97706', bg:'#0a0800', biz:'Marcus Cole', sub2:'Photography', domain:'marcuscole.com', tagline2:'Documentary & Portrait Photographer', hl:'Moments Worth\nRemembering Forever.', body:'Award-winning photographer based in Vancouver. Specialising in weddings, portraits, and editorial.', cta1:'View Portfolio', cta2:'Book a Session', swatches:['#2d1b08','#1a1a2e','#0d2818','#1e0a0a','#0a1a2e','#1a0d2e','#14180a','#200808'] } },
+  { id:'wedding', label:'Wedding Planning', category:'creative', icon:'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z', tagline:'Their perfect day starts with your site', desc:'Romantic, editorial wedding planner sites that attract premium clients and clearly communicate your unique planning style.', features:['Real wedding gallery','Vendor partner showcase','Package & service pages','Initial consultation booking'], cta:'Get a Wedding Website', template:'creative', cfg:{ accent:'#be185d', bg:'#0a0407', biz:'Ever After', sub2:'Wedding & Events', domain:'everafterweddings.com', tagline2:'Luxury Wedding Planner', hl:'Your Story.\nYour Way.\nPerfectly Told.', body:'Bespoke wedding planning for couples who believe every detail matters. Let\'s create something unforgettable.', cta1:'View Real Weddings', cta2:'Plan Your Day', swatches:['#2d1520','#1a1020','#200f18','#150d1a','#1e1020','#180812','#140a18','#1c0e16'] } },
+  { id:'interior', label:'Interior Design', category:'creative', icon:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10', tagline:'Showcase the spaces you transform', desc:'Elevated, editorial sites that attract high-value residential and commercial interior design clients through beautiful project showcases.', features:['Project portfolio with before/after','Service & style packages','Client testimonial showcase','Design consultation booking'], cta:'Get an Interior Design Website', template:'creative', cfg:{ accent:'#a16207', bg:'#080603', biz:'Estudio Blanche', sub2:'Interior Design', domain:'estudioblanche.com', tagline2:'Residential & Commercial Design', hl:'Spaces Designed\nto Be Lived In.', body:'Timeless interiors that balance beauty and function. From concept to completion, we handle everything.', cta1:'View Projects', cta2:'Book a Consult', swatches:['#1a1206','#0e0c06','#180e04','#100e0a','#1a1408','#0c0a06','#160c04','#12100a'] } },
+  { id:'marketing', label:'Marketing Agency', category:'creative', icon:'M13 10V3L4 14h7v7l9-11h-7z', tagline:'Grow faster, look smarter', desc:'Bold agency sites that position you as the go-to partner for growth. Highlight case studies, results, and services with confidence.', features:['Case study & results showcase','Service & pricing pages','Lead magnet & funnel pages','Team & culture pages'], cta:'Get an Agency Website', template:'dark', cfg:{ accent:'#a855f7', dim:'rgba(168,85,247,0.18)', bg:'#060208', nav:'#0a030f', border:'#160a22', muted:'rgba(255,255,255,0.4)', biz:'SIGNAL AGENCY', domain:'signalagency.com', hl:'Grow Faster.\nLook Smarter.', sub:'Full-stack digital marketing — paid ads, SEO, content, and web. Real results for ambitious brands.', stats:[['$48M+','Adspend Managed'],['220+','Clients'],['4.3x','Avg. ROAS'],['6yr','In Business']], chips:['Paid Media','SEO & Content','Web Design','Email Marketing'] } },
+];
+
+// ─── TEMPLATES ───────────────────────────────────────────────────────────────
+function tmplDark(c) {
+  const chips = c.chips.map(s=>`<div style="background:${c.nav};border:1px solid ${c.border};color:${c.muted};font-size:10px;padding:6px 14px;border-radius:4px;white-space:nowrap;">${s}</div>`).join('');
+  const stats = c.stats.map(([v,l])=>`<div style="text-align:center;"><div style="color:${c.accent};font-size:20px;font-weight:900;line-height:1;">${v}</div><div style="color:${c.muted};font-size:8px;text-transform:uppercase;letter-spacing:1px;margin-top:3px;">${l}</div></div>`).join('');
+  return `<div style="background:${c.bg};width:780px;height:500px;font-family:system-ui,sans-serif;overflow:hidden;">
+<div style="background:${c.nav};padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${c.border};">
+<div style="display:flex;align-items:center;gap:8px;"><div style="width:26px;height:26px;background:${c.accent};border-radius:5px;flex-shrink:0;"></div><span style="color:#fff;font-weight:900;font-size:12px;letter-spacing:1px;">${c.biz}</span></div>
+<div style="display:flex;gap:16px;align-items:center;"><span style="color:${c.muted};font-size:10px;">Services</span><span style="color:${c.muted};font-size:10px;">Portfolio</span><span style="color:${c.muted};font-size:10px;">About</span><div style="background:${c.accent};color:#fff;font-size:10px;font-weight:700;padding:7px 16px;border-radius:5px;">${c.chips[0] ? 'Get a Quote' : 'Contact'}</div></div>
+</div>
+<div style="padding:32px;position:relative;overflow:hidden;background:linear-gradient(145deg,${c.bg},${c.nav});">
+<div style="position:absolute;top:-40px;right:-20px;width:220px;height:220px;background:radial-gradient(circle,${c.dim} 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+<div style="color:${c.accent};font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:inline-block;background:${c.dim};padding:4px 12px;border-radius:20px;">${c.biz}</div>
+<div style="color:#fff;font-size:30px;font-weight:900;line-height:1.1;margin-bottom:12px;">${c.hl.replace(/\n/g,'<br/>')}</div>
+<div style="color:${c.muted};font-size:11px;max-width:340px;line-height:1.7;margin-bottom:20px;">${c.sub}</div>
+<div style="display:flex;gap:10px;margin-bottom:24px;">
+<div style="background:${c.accent};color:#fff;font-size:11px;font-weight:700;padding:10px 22px;border-radius:6px;">Get a Quote</div>
+<div style="color:${c.muted};font-size:11px;padding:10px 22px;border-radius:6px;border:1px solid ${c.border};">Learn More</div>
+</div>
+<div style="display:flex;gap:28px;padding-top:20px;border-top:1px solid ${c.border};">${stats}</div>
+</div>
+<div style="background:${c.nav};border-top:1px solid ${c.border};padding:12px 32px;display:flex;gap:10px;flex-wrap:wrap;overflow:hidden;">${chips}</div>
+</div>`;
+}
+
+function tmplLuxury(c) {
+  const cats = c.cats.map((l,i)=>`<div style="font-size:10px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer;${i===0?`background:${c.accent};color:${c.bg};`:`color:${c.muted};border:1px solid ${c.border};`}">${l}</div>`).join('');
+  const hl = c.hl.split('\n');
+  const lastWord = c.accentWord;
+  const hlHtml = hl.map((line,i) => {
+    if (i === hl.length-1 && lastWord) {
+      return line.replace(lastWord, `<span style="color:${c.accent};font-weight:800;font-style:normal;">${lastWord}</span>`);
+    }
+    return line;
+  }).join('<br/>');
+  return `<div style="background:${c.bg};width:780px;height:500px;font-family:system-ui,sans-serif;overflow:hidden;">
+<div style="background:${c.nav};padding:12px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${c.border};">
+<div style="text-align:center;"><div style="color:${c.accent};font-size:14px;font-weight:900;letter-spacing:4px;text-transform:uppercase;line-height:1;">${c.biz}</div><div style="color:${c.accent};opacity:0.55;font-size:7.5px;letter-spacing:3px;text-transform:uppercase;margin-top:1px;">${c.sub2}</div></div>
+<div style="display:flex;gap:22px;align-items:center;"><span style="color:${c.muted};font-size:10px;">Menu</span><span style="color:${c.muted};font-size:10px;">Events</span><span style="color:${c.muted};font-size:10px;">About</span><div style="border:1px solid ${c.accent};color:${c.accent};font-size:10px;font-weight:700;padding:7px 16px;border-radius:4px;letter-spacing:1px;">${c.cta2.toUpperCase()}</div></div>
+</div>
+<div style="background:linear-gradient(170deg,${c.bg} 0%,${c.bg} 100%);padding:30px 32px 22px;position:relative;overflow:hidden;">
+<div style="position:absolute;top:0;right:0;width:260px;height:200px;background:radial-gradient(circle at 70% 30%,${c.dim} 0%,transparent 70%);pointer-events:none;"></div>
+<div style="display:flex;align-items:flex-start;justify-content:space-between;">
+<div style="flex:1;">
+<div style="color:${c.accent};opacity:0.6;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;">${c.sub2}</div>
+<div style="color:#fff;font-size:30px;font-weight:300;line-height:1.2;margin-bottom:8px;font-style:italic;">${hlHtml}</div>
+<div style="color:${c.muted};font-size:11px;max-width:280px;line-height:1.7;margin-bottom:20px;">${c.body}</div>
+<div style="display:flex;gap:10px;">
+<div style="background:${c.accent};color:${c.bg};font-size:11px;font-weight:800;padding:10px 22px;border-radius:4px;">${c.cta2}</div>
+<div style="color:${c.muted};font-size:11px;padding:10px 22px;border-radius:4px;border:1px solid ${c.border};">View Menu</div>
+</div>
+</div>
+<div style="background:rgba(255,255,255,0.04);border:1px solid ${c.accent};opacity:0.7;border-radius:10px;padding:14px 18px;text-align:center;flex-shrink:0;margin-left:16px;min-width:140px;">
+<div style="color:${c.accent};font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">Hours</div>
+${c.hours.map(h=>`<div style="color:rgba(255,255,255,0.7);font-size:9px;line-height:1.9;">${h}</div>`).join('<div style="border-top:1px solid rgba(255,255,255,0.08);margin:6px 0;"></div>')}
+</div>
+</div>
+</div>
+<div style="background:rgba(255,255,255,0.03);border-top:1px solid ${c.border};padding:12px 32px;display:flex;gap:8px;align-items:center;">${cats}</div>
+</div>`;
+}
+
+function tmplProfessional(c) {
+  const widget = c.hasWidget ? `<div style="background:white;border:1px solid ${c.aBorder};border-radius:12px;padding:16px 18px;flex-shrink:0;margin-left:16px;box-shadow:0 4px 16px rgba(0,0,0,0.06);min-width:140px;"><div style="color:${c.dark};font-size:10px;font-weight:800;margin-bottom:10px;">${c.widgetLabel}</div><div style="background:${c.aLight};border:1px solid ${c.aBorder};border-radius:6px;padding:7px 10px;margin-bottom:6px;color:${c.muted};font-size:9px;">Select type...</div><div style="background:${c.aLight};border:1px solid ${c.aBorder};border-radius:6px;padding:7px 10px;margin-bottom:10px;color:${c.muted};font-size:9px;">Choose a date...</div><div style="background:${c.accent};color:white;font-size:10px;font-weight:700;padding:8px;border-radius:6px;text-align:center;">${c.cta1}</div></div>` : '';
+  const items = (c.chips||[]).map(s=>`<div style="background:${c.aLight};color:${c.accent};font-size:9px;font-weight:600;padding:5px 12px;border-radius:20px;white-space:nowrap;">${s}</div>`).join('');
+  return `<div style="background:${c.bg};width:780px;height:500px;font-family:system-ui,sans-serif;overflow:hidden;">
+<div style="background:white;padding:11px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${c.border};box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+<div><div style="color:${c.dark};font-size:13px;font-weight:800;line-height:1.2;">${c.biz}</div><div style="color:${c.accent};font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${c.sub2}</div></div>
+<div style="display:flex;gap:20px;align-items:center;"><span style="color:${c.muted};font-size:10px;">Services</span><span style="color:${c.muted};font-size:10px;">Team</span><span style="color:${c.muted};font-size:10px;">Contact</span><div style="background:${c.accent};color:white;font-size:10px;font-weight:700;padding:7px 16px;border-radius:5px;">${c.cta1}</div></div>
+</div>
+<div style="background:linear-gradient(160deg,${c.aLight} 0%,${c.bg} 100%);padding:28px 32px 20px;position:relative;overflow:hidden;">
+<div style="position:absolute;right:-20px;top:-20px;width:200px;height:180px;background:radial-gradient(circle,${c.aBorder} 0%,transparent 70%);pointer-events:none;"></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;">
+<div style="flex:1;">
+<div style="display:inline-flex;align-items:center;gap:6px;background:${c.badgeColor};color:${c.badgeText};font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;"><div style="width:5px;height:5px;background:${c.accent};border-radius:50%;flex-shrink:0;"></div>${c.badge}</div>
+<div style="color:${c.dark};font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px;">${c.hl.replace(/\n/g,'<br/>')}</div>
+<div style="color:${c.muted};font-size:11px;max-width:300px;line-height:1.7;margin-bottom:18px;">${c.body}</div>
+<div style="display:flex;gap:10px;">
+<div style="background:${c.accent};color:white;font-size:11px;font-weight:700;padding:10px 22px;border-radius:6px;">${c.cta1}</div>
+<div style="color:${c.accent};font-size:11px;padding:10px 22px;border-radius:6px;border:1px solid ${c.aBorder};background:white;">${c.cta2}</div>
+</div>
+</div>
+${widget}
+</div>
+</div>
+<div style="background:white;border-top:1px solid ${c.border};padding:12px 32px;display:flex;gap:8px;flex-wrap:wrap;overflow:hidden;">${items}</div>
+</div>`;
+}
+
+function tmplShop(c) {
+  const prods = c.products.map(p=>`<div style="background:white;border:1px solid #f1f5f9;border-radius:10px;overflow:hidden;flex:1;">
+<div style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);height:70px;position:relative;display:flex;align-items:center;justify-content:center;">
+${p.s?`<div style="position:absolute;top:6px;right:6px;background:#f43f5e;color:white;font-size:7px;font-weight:800;padding:2px 6px;border-radius:3px;">SALE</div>`:''}
+<div style="width:30px;height:42px;background:${c.accent}22;border-radius:4px;"></div>
+</div>
+<div style="padding:8px 10px;"><div style="color:#0f172a;font-size:9px;font-weight:600;margin-bottom:3px;line-height:1.3;">${p.n}</div>
+<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:${c.accent};font-size:11px;font-weight:800;">${p.p}</span>${p.w?`<span style="color:#94a3b8;font-size:9px;text-decoration:line-through;">${p.w}</span>`:''}</div>
+<div style="color:#f59e0b;font-size:8px;">★★★★★ <span style="color:#94a3b8;">(${p.rv})</span></div></div></div>`).join('');
+  return `<div style="background:#ffffff;width:780px;height:500px;font-family:system-ui,sans-serif;overflow:hidden;">
+<div style="background:white;padding:9px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+<div style="font-size:15px;font-weight:900;color:${c.accent};letter-spacing:-0.5px;">${c.biz}</div>
+<div style="display:flex;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;gap:6px;flex:1;max-width:300px;margin:0 16px;"><span style="color:#94a3b8;font-size:10px;">Search products...</span></div>
+<div style="display:flex;gap:14px;align-items:center;"><span style="color:#64748b;font-size:10px;">New In</span><span style="color:#64748b;font-size:10px;">Sale</span><span style="color:#64748b;font-size:10px;">Brands</span><div style="position:relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><div style="position:absolute;top:-5px;right:-5px;width:14px;height:14px;background:${c.accent};color:white;font-size:7px;font-weight:700;border-radius:50%;display:flex;align-items:center;justify-content:center;">3</div></div></div>
+</div>
+<div style="background:${c.bg};padding:20px 28px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;">
+<div style="position:absolute;top:-30px;right:10%;width:160px;height:160px;background:rgba(255,255,255,0.08);border-radius:50%;"></div>
+<div><div style="display:inline-block;background:rgba(255,255,255,0.15);color:white;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:10px;">${c.tag}</div>
+<div style="color:white;font-size:26px;font-weight:900;line-height:1.1;margin-bottom:10px;">${c.hl.replace(/\n/g,'<br/>')}</div>
+<div style="display:flex;gap:10px;"><div style="background:white;color:${c.accent};font-size:11px;font-weight:800;padding:9px 20px;border-radius:6px;">${c.cta1}</div><div style="background:rgba(255,255,255,0.15);color:white;font-size:11px;padding:9px 20px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);">${c.cta2}</div></div>
+</div>
+<div style="display:flex;gap:8px;flex-shrink:0;">${['#e2e8f0','#cbd5e1','#94a3b8'].map((col,i)=>`<div style="background:${col};width:${i===0?70:54}px;height:${i===0?86:70}px;border-radius:8px;border:2px solid rgba(255,255,255,0.3);margin-top:${i===1?8:i===2?16:0}px;"></div>`).join('')}</div>
+</div>
+<div style="background:#fafafa;padding:12px 28px;display:flex;gap:10px;overflow:hidden;">${prods}</div>
+</div>`;
+}
+
+function tmplCreative(c) {
+  const grid = c.swatches.map((col,i)=>`<div style="background:${col};border-radius:${i%3===0?'8px 8px 0 0':i%3===2?'0 0 8px 8px':'0'};flex:${i<4?1.2:0.8};min-height:${i<4?100:70}px;"></div>`).join('');
+  return `<div style="background:${c.bg};width:780px;height:500px;font-family:system-ui,sans-serif;overflow:hidden;">
+<div style="background:rgba(255,255,255,0.04);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);">
+<div><div style="color:${c.accent};font-size:13px;font-weight:300;letter-spacing:4px;text-transform:uppercase;">${c.biz}</div><div style="color:rgba(255,255,255,0.3);font-size:8px;letter-spacing:2px;text-transform:uppercase;">${c.sub2}</div></div>
+<div style="display:flex;gap:20px;align-items:center;"><span style="color:rgba(255,255,255,0.45);font-size:10px;">Portfolio</span><span style="color:rgba(255,255,255,0.45);font-size:10px;">Services</span><span style="color:rgba(255,255,255,0.45);font-size:10px;">About</span><div style="border:1px solid ${c.accent};color:${c.accent};font-size:10px;font-weight:600;padding:7px 16px;border-radius:4px;">${c.cta2}</div></div>
+</div>
+<div style="display:flex;height:320px;">
+<div style="flex:1;padding:32px;display:flex;flex-direction:column;justify-content:center;">
+<div style="color:${c.accent};font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;">${c.tagline2}</div>
+<div style="color:#ffffff;font-size:26px;font-weight:300;line-height:1.3;margin-bottom:14px;font-style:italic;">${c.hl.replace(/\n/g,'<br/>')}</div>
+<div style="color:rgba(255,255,255,0.45);font-size:11px;line-height:1.7;margin-bottom:22px;max-width:280px;">${c.body}</div>
+<div style="display:flex;gap:10px;">
+<div style="background:${c.accent};color:${c.bg};font-size:11px;font-weight:700;padding:10px 20px;border-radius:4px;">${c.cta1}</div>
+<div style="color:rgba(255,255,255,0.5);font-size:11px;padding:10px 20px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);">${c.cta2}</div>
+</div>
+</div>
+<div style="width:320px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:6px;padding:16px 16px 16px 0;flex-shrink:0;">
+${c.swatches.slice(0,4).map((col,i)=>`<div style="background:${col};border-radius:6px;"></div>`).join('')}
+</div>
+</div>
+<div style="background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06);padding:10px 28px;display:flex;gap:10px;align-items:center;overflow:hidden;">
+${c.swatches.slice(4).map((col,i)=>`<div style="background:${col};width:48px;height:32px;border-radius:4px;flex-shrink:0;"></div>`).join('')}
+<span style="color:rgba(255,255,255,0.2);font-size:9px;margin-left:8px;">${c.biz} — ${c.sub2}</span>
+</div>
+</div>`;
+}
+
+function tmplWellness(c) {
+  const classes = c.classes.map(cl=>`<div style="background:white;border:1px solid ${c.border};border-radius:8px;padding:10px 12px;flex:1;">
+<div style="color:${c.dark};font-size:10px;font-weight:700;margin-bottom:3px;">${cl.name}</div>
+<div style="color:${c.accent};font-size:10px;font-weight:600;margin-bottom:2px;">${cl.time}</div>
+<div style="color:${c.muted};font-size:9px;">${cl.open >= 0 ? (cl.open <= 4 ? `${cl.open} spots left` : `${cl.open} spots`) : cl.level}</div>
+${cl.open > 0 && cl.open <= 4 ? `<div style="width:100%;background:${c.aBorder};border-radius:2px;height:3px;margin-top:6px;"><div style="width:${Math.round((1-cl.open/15)*100)}%;background:${c.accent};height:3px;border-radius:2px;"></div></div>` : ''}
+</div>`).join('');
+  return `<div style="background:${c.bg};width:780px;height:500px;font-family:system-ui,sans-serif;overflow:hidden;">
+<div style="background:white;padding:11px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${c.border};box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+<div><div style="color:${c.dark};font-size:13px;font-weight:700;line-height:1.2;">${c.biz}</div><div style="color:${c.accent};font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${c.sub2}</div></div>
+<div style="display:flex;gap:20px;align-items:center;"><span style="color:${c.muted};font-size:10px;">Schedule</span><span style="color:${c.muted};font-size:10px;">Instructors</span><span style="color:${c.muted};font-size:10px;">Pricing</span><div style="background:${c.accent};color:white;font-size:10px;font-weight:700;padding:7px 16px;border-radius:5px;">${c.cta1}</div></div>
+</div>
+<div style="background:linear-gradient(160deg,${c.aLight} 0%,${c.bg} 100%);padding:28px 32px 20px;position:relative;overflow:hidden;">
+<div style="position:absolute;right:-10px;top:-10px;width:180px;height:180px;background:radial-gradient(circle,${c.aBorder} 0%,transparent 70%);pointer-events:none;"></div>
+<div style="display:inline-flex;align-items:center;gap:6px;background:${c.badgeColor};color:${c.badgeText};font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-bottom:14px;">${c.badge}</div>
+<div style="color:${c.dark};font-size:30px;font-weight:800;line-height:1.1;margin-bottom:10px;">${c.hl.replace(/\n/g,'<br/>')}</div>
+<div style="color:${c.muted};font-size:11px;max-width:360px;line-height:1.7;margin-bottom:18px;">${c.body}</div>
+<div style="display:flex;gap:10px;">
+<div style="background:${c.accent};color:white;font-size:11px;font-weight:700;padding:10px 22px;border-radius:6px;">${c.cta1}</div>
+<div style="color:${c.accent};font-size:11px;padding:10px 22px;border-radius:6px;border:1px solid ${c.aBorder};background:white;">${c.cta2}</div>
+</div>
+</div>
+<div style="background:${c.aLight};border-top:1px solid ${c.border};padding:12px 32px;display:flex;gap:10px;overflow:hidden;">${classes}</div>
+</div>`;
+}
+
+const TMPLS = { dark: tmplDark, luxury: tmplLuxury, professional: tmplProfessional, shop: tmplShop, creative: tmplCreative, wellness: tmplWellness };
+
+// ─── RENDER CARD ─────────────────────────────────────────────────────────────
+function renderCard(ind) {
+  const c = ind.cfg;
+  const isDark = ['dark','luxury','creative'].includes(ind.template);
+  const previewBg = c.bg && !c.bg.includes('gradient') ? c.bg : (isDark ? '#0d1117' : '#f8fafc');
+  const accentColor = c.accent;
+  const textColor = isDark ? '#ffffff' : (c.dark || '#0f172a');
+  const mutedColor = isDark ? 'rgba(255,255,255,0.45)' : '#64748b';
+  const bizName = c.biz || ind.label.toUpperCase();
+
+  return `<div class="ind-card group cursor-pointer rounded-xl overflow-hidden border border-[#e2e8f0] hover:border-[${accentColor}] hover:shadow-lg transition-all duration-200" data-id="${ind.id}" data-category="${ind.category}" data-label="${ind.label.toLowerCase()}">
+  <div style="background:${previewBg};height:140px;padding:14px 16px;position:relative;overflow:hidden;">
+    <div style="position:absolute;bottom:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,${accentColor} 0%,transparent 70%);opacity:0.25;pointer-events:none;"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:${accentColor};opacity:0.7;"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:5px;overflow:hidden;">
+        <div style="width:14px;height:14px;background:${accentColor};border-radius:3px;flex-shrink:0;"></div>
+        <span style="color:${textColor};font-size:8px;font-weight:800;letter-spacing:0.5px;opacity:0.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;">${bizName}</span>
+      </div>
+      <div style="background:${accentColor};color:white;font-size:7px;font-weight:700;padding:3px 8px;border-radius:3px;flex-shrink:0;">View</div>
+    </div>
+    <div style="color:${textColor};font-size:14px;font-weight:900;line-height:1.2;margin-bottom:5px;">${(c.hl||ind.label).split('\\n')[0]}</div>
+    <div style="color:${mutedColor};font-size:9px;line-height:1.4;">${ind.tagline}</div>
+  </div>
+  <div style="padding:11px 14px;background:white;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-weight:700;font-size:13px;color:#0f172a;">${ind.label}</div>
+      <div style="font-size:10px;color:#64748b;margin-top:1px;">${CAT_LABELS[ind.category]||''}</div>
+    </div>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </div>
+</div>`;
+}
+
+// ─── RENDER PANEL ────────────────────────────────────────────────────────────
+function renderPanel(ind) {
+  const copy = `
+    <p style="font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">${CAT_LABELS[ind.category]}</p>
+    <h2 style="font-size:26px;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:12px;">${ind.label} Websites That Convert</h2>
+    <p style="color:#64748b;font-size:15px;line-height:1.7;margin-bottom:24px;">${ind.desc}</p>
+    <ul style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+      ${ind.features.map(f=>`<li style="display:flex;align-items:flex-start;gap:10px;"><div style="width:18px;height:18px;border-radius:50%;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:14px;color:#0f172a;">${f}</span></li>`).join('')}
+    </ul>
+    <a href="/contact" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#2563eb;color:white;border-radius:8px;font-weight:600;font-size:14px;text-decoration:none;">${ind.cta} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>`;
+
+  const mockupHtml = TMPLS[ind.template]?.(ind.cfg) || '';
+  const mockup = `
+    <div style="border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.15);border:1px solid #e2e8f0;">
+      <div style="background:#f1f3f4;border-bottom:1px solid #e2e8f0;padding:10px 16px;display:flex;align-items:center;gap:8px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:#f87171;display:inline-block;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#fbbf24;display:inline-block;"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:#4ade80;display:inline-block;"></span>
+        <div style="flex:1;background:white;border-radius:4px;padding:4px 10px;font-size:10px;color:#94a3b8;margin-left:4px;display:flex;align-items:center;gap:5px;">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ${ind.cfg.domain || ind.id + '.com'}
+        </div>
+      </div>
+      <div class="mockup-wrap" style="overflow:hidden;"><div class="mockup-inner" style="width:780px;transform-origin:top left;">${mockupHtml}</div></div>
+    </div>`;
+
+  return { copy, mockup };
+}
+
+// ─── FILTER & RENDER GRID ─────────────────────────────────────────────────────
+let activeCat = 'all';
+let searchQuery = '';
+let activeId = null;
+
+function getFiltered() {
+  return INDUSTRIES.filter(ind => {
+    const catOk = activeCat === 'all' || ind.category === activeCat;
+    const searchOk = !searchQuery || ind.label.toLowerCase().includes(searchQuery) || ind.category.toLowerCase().includes(searchQuery) || (CAT_LABELS[ind.category]||'').toLowerCase().includes(searchQuery);
+    return catOk && searchOk;
+  });
+}
+
+function renderGrid() {
+  const filtered = getFiltered();
+  const grid = document.getElementById('industry-grid');
+  const noResults = document.getElementById('no-results');
+  const count = document.getElementById('ind-count');
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    noResults.classList.remove('hidden');
+    noResults.classList.add('flex');
+    count.textContent = '0 industries';
+    closePanel();
+    return;
+  }
+
+  noResults.classList.add('hidden');
+  noResults.classList.remove('flex');
+  count.textContent = `${filtered.length} ${filtered.length === 1 ? 'industry' : 'industries'}`;
+  grid.innerHTML = filtered.map(renderCard).join('');
+
+  grid.querySelectorAll('.ind-card').forEach(card => {
+    card.addEventListener('click', () => openPanel(card.dataset.id));
+  });
+
+  // If active panel industry is no longer in filtered, close it
+  if (activeId && !filtered.find(i => i.id === activeId)) closePanel();
+}
+
+function openPanel(id) {
+  const ind = INDUSTRIES.find(i => i.id === id);
+  if (!ind) return;
+  activeId = id;
+
+  // Highlight active card
+  document.querySelectorAll('.ind-card').forEach(c => {
+    c.style.outline = c.dataset.id === id ? '2px solid #2563eb' : '';
+    c.style.outlineOffset = c.dataset.id === id ? '2px' : '';
+  });
+
+  const panel = document.getElementById('industry-panel');
+  const copyEl = document.getElementById('panel-copy');
+  const mockupEl = document.getElementById('panel-mockup');
+  const { copy, mockup } = renderPanel(ind);
+
+  copyEl.innerHTML = copy;
+  mockupEl.innerHTML = mockup;
+  panel.classList.remove('hidden');
+  panel.style.opacity = '0';
+  panel.style.transition = 'opacity 0.25s ease';
+  requestAnimationFrame(() => { panel.style.opacity = '1'; });
+
+  // Scale mockup
+  requestAnimationFrame(() => scaleMockup(panel));
+
+  // Scroll panel into view
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+function closePanel() {
+  activeId = null;
+  const panel = document.getElementById('industry-panel');
+  panel.classList.add('hidden');
+  document.querySelectorAll('.ind-card').forEach(c => { c.style.outline = ''; c.style.outlineOffset = ''; });
+}
+
+function scaleMockup(container) {
+  const wrap = container.querySelector('.mockup-wrap');
+  const inner = container.querySelector('.mockup-inner');
+  if (!wrap || !inner) return;
+  const scale = wrap.offsetWidth / 780;
+  inner.style.transform = `scale(${scale})`;
+  wrap.style.height = Math.round(500 * scale) + 'px';
+}
+
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderGrid();
+
+  // Category filter
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCat = btn.dataset.cat;
+      document.querySelectorAll('.cat-btn').forEach(b => {
+        b.classList.toggle('bg-primary', b.dataset.cat === activeCat);
+        b.classList.toggle('text-white', b.dataset.cat === activeCat);
+        b.classList.toggle('bg-light', b.dataset.cat !== activeCat);
+        b.classList.toggle('text-muted', b.dataset.cat !== activeCat);
+      });
+      closePanel();
+      renderGrid();
+    });
+  });
+
+  // Search
+  document.getElementById('industry-search').addEventListener('input', e => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    closePanel();
+    renderGrid();
+  });
+
+  // Clear search
+  document.getElementById('clear-search')?.addEventListener('click', () => {
+    searchQuery = '';
+    document.getElementById('industry-search').value = '';
+    closePanel();
+    renderGrid();
+  });
+
+  // Back button
+  document.getElementById('panel-back').addEventListener('click', () => {
+    closePanel();
+    document.getElementById('showcase-bar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Resize observer for mockup scaling
+  const ro = new ResizeObserver(() => {
+    const panel = document.getElementById('industry-panel');
+    if (!panel.classList.contains('hidden')) scaleMockup(panel);
+  });
+  const wrap = document.querySelector('.mockup-wrap');
+  if (wrap) ro.observe(wrap);
+  else ro.observe(document.getElementById('industry-panel'));
+});
+</script>

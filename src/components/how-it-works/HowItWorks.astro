@@ -8,12 +8,23 @@ const steps = [
 ];
 ---
 
-<section class="py-24" id="how-it-works">
+<section class="py-28 bg-white" id="how-it-works">
   <div class="max-w-[1140px] mx-auto px-6">
-    <h2 class="text-3xl lg:text-4xl font-bold text-dark text-center mb-3 tracking-tight">How It Works</h2>
-    <p class="text-center text-muted text-lg max-w-[600px] mx-auto mb-14">Three simple steps to your new website.</p>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+    <!-- Section header -->
+    <div class="text-center mb-16">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Simple Process</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-3">How It Works</h2>
+      <p class="text-muted text-lg max-w-[480px] mx-auto">Three simple steps to your new website.</p>
+    </div>
+
+    <!-- Steps grid with connector line -->
+    <div class="relative grid grid-cols-1 md:grid-cols-3 gap-10">
+      <!-- Connector line (desktop only) -->
+      <div class="absolute hidden md:block top-7 h-px" style="left: calc(100% / 6 + 28px); right: calc(100% / 6 + 28px); background: linear-gradient(90deg, transparent, #e5e7eb 20%, #e5e7eb 80%, transparent);"></div>
+
       {steps.map(step => <Step {...step} />)}
     </div>
+
   </div>
 </section>

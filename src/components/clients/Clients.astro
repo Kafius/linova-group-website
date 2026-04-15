@@ -7,12 +7,20 @@ const clients = [
 ];
 ---
 
-<section class="py-16 bg-light" id="clients">
+<section class="py-14 bg-white border-b border-border" id="clients">
   <div class="max-w-[1140px] mx-auto px-6">
-    <p class="text-center text-sm font-semibold uppercase tracking-widest text-muted mb-10">Our Clients</p>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center justify-items-center">
+    <p class="text-center text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted/50 mb-10">Trusted by growing businesses</p>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 items-center justify-items-center">
       {clients.map((client) => (
-        <a href={client.url} target="_blank" rel="noopener noreferrer" class:list={["flex items-center justify-center w-full px-4 hover:opacity-75 transition-opacity duration-300", client.height]}>
+        <a
+          href={client.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class:list={[
+            "flex items-center justify-center w-full px-6 grayscale opacity-40 hover:grayscale-0 hover:opacity-80 transition-all duration-400 cursor-pointer",
+            client.height
+          ]}
+        >
           <img src={client.logo} alt={client.name} class="max-h-full max-w-full object-contain mix-blend-multiply" />
         </a>
       ))}

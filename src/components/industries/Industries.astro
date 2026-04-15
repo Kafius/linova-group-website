@@ -65,12 +65,19 @@ const cards = [
 ];
 ---
 
-<section class="py-24 bg-light" id="industries">
+<section class="py-28 bg-light" id="industries">
   <div class="max-w-[1140px] mx-auto px-6">
-    <h2 class="text-3xl lg:text-4xl font-bold text-dark text-center mb-3 tracking-tight">Industries We Serve</h2>
-    <p class="text-center text-muted text-lg max-w-[600px] mx-auto mb-14">From local shops to professional services — we build websites that convert.</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+    <!-- Section header -->
+    <div class="text-center mb-16">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">Industry Expertise</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-3">Industries We Serve</h2>
+      <p class="text-muted text-lg max-w-[560px] mx-auto">From local shops to professional services — we build websites that convert.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cards.map(card => <PortfolioCard {...card} />)}
     </div>
+
   </div>
 </section>

@@ -11,26 +11,27 @@ import Footer from '../components/footer/Footer.astro';
   <Navbar />
 
   <!-- Hero -->
-  <section class="relative pt-40 pb-20 bg-gradient-to-br from-dark to-[#1e293b] text-white text-center overflow-hidden">
-    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 28px 28px;"></div>
-    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-20 blur-3xl pointer-events-none" style="background: radial-gradient(ellipse, #3b82f6 0%, transparent 70%);"></div>
+  <section class="relative pt-36 pb-20 overflow-hidden text-white" style="background: linear-gradient(135deg, #16172f 0%, #26275E 50%, #1e1f4a 100%);">
+    <div class="absolute inset-0 opacity-[0.045]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute top-0 right-1/4 w-[520px] h-[320px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(96,165,250,0.07) 0%, transparent 70%); filter: blur(70px);"></div>
+    <div class="absolute bottom-0 left-1/4 w-[400px] h-[280px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(79,70,229,0.1) 0%, transparent 70%); filter: blur(60px);"></div>
 
-    <div class="relative max-w-[1140px] mx-auto px-6">
-      <span class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/80 font-semibold text-xs tracking-widest uppercase px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
-        <span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+    <div class="relative max-w-[1140px] mx-auto px-6 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/75 text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-8 backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block"></span>
         Get In Touch
-      </span>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-[3.75rem] font-extrabold tracking-tight leading-[1.07] mb-5">
         Let's Build Something<br class="hidden sm:block" /> Great Together
       </h1>
-      <p class="text-white/65 text-lg max-w-[520px] mx-auto leading-relaxed">
+      <p class="text-white/55 text-lg max-w-[520px] mx-auto leading-relaxed font-medium">
         Tell us about your project and we'll get back to you within 24 hours with a free, no-obligation quote.
       </p>
     </div>
   </section>
 
   <!-- Contact form + info -->
-  <section class="py-24 bg-white" id="contact">
+  <section class="py-28 bg-white" id="contact">
     <div class="max-w-[1140px] mx-auto px-6">
       <div class="grid lg:grid-cols-5 gap-16 items-start">
 
