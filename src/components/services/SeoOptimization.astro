@@ -1,0 +1,129 @@
+---
+const bullets = [
+  { title: 'On-page SEO from day one', desc: 'Every page we build is structured with proper headings, meta tags, and semantic HTML out of the box.' },
+  { title: 'Core Web Vitals optimised', desc: 'Fast load times, stable layouts, and quick interactivity — the exact signals Google rewards with higher rankings.' },
+  { title: 'Keyword-targeted content structure', desc: 'We map your pages to the search terms your B2B buyers are actually using.' },
+  { title: 'Schema & structured data', desc: 'Rich results markup helps your business stand out in search with star ratings, FAQs, and more.' },
+];
+---
+
+<section class="py-24 bg-white overflow-hidden">
+  <div class="max-w-[1140px] mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Left: mockup -->
+      <div class="relative order-2 lg:order-1">
+        <!-- Glow -->
+        <div class="absolute -inset-4 rounded-3xl pointer-events-none" style="background: radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.08) 0%, transparent 70%); filter: blur(24px);"></div>
+
+        <!-- Browser chrome -->
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-border">
+
+          <!-- Chrome bar -->
+          <div class="bg-[#f1f3f4] border-b border-border px-4 py-2.5 flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+            <div class="flex-1 bg-white rounded px-3 py-1 text-[0.65rem] text-muted ml-1">google.com/search?q=b2b+web+design+agency</div>
+          </div>
+
+          <!-- Google SERP mockup -->
+          <div class="bg-white p-5">
+
+            <!-- Search bar -->
+            <div class="flex items-center gap-3 mb-5">
+              <svg width="22" height="22" viewBox="0 0 272 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M114.6 47.3c0 12.7-9.9 22-22.1 22s-22.1-9.4-22.1-22 9.9-22 22.1-22 22.1 9.3 22.1 22z" fill="#EA4335"/>
+                <path d="M176.8 47.3c0 12.7-9.9 22-22.1 22s-22.1-9.4-22.1-22 9.9-22 22.1-22 22.1 9.3 22.1 22z" fill="#FBBC05"/>
+                <path d="M238.6 47.3c0 12.3-9.1 22-21.6 22-12.5 0-21.6-9.7-21.6-22s9.1-22 21.6-22c12.5 0 21.6 9.7 21.6 22z" fill="#34A853"/>
+                <path d="M57.1 69.3c-12.2 0-22.1-9.3-22.1-22s9.9-22 22.1-22c6.1 0 10.5 2.4 13.8 5.5l-3.9 3.9c-2.4-2.2-5.6-3.9-9.9-3.9-8.1 0-14.4 6.5-14.4 16.5s6.3 16.5 14.4 16.5c5.2 0 8.2-2.1 10.1-4 1.6-1.6 2.6-3.9 3-7H57.1v-5.3h22.6c.2 1.2.4 2.6.4 4.1 0 5-1.4 11.2-5.8 15.6-4.3 4.5-9.8 6.1-15.2 6.1z" fill="#4285F4"/>
+              </svg>
+              <div class="flex-1 flex items-center gap-2 border border-border rounded-full px-4 py-1.5 text-xs text-dark">
+                b2b web design agency
+                <svg class="ml-auto" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              </div>
+            </div>
+
+            <!-- Result count -->
+            <div class="text-[9px] text-muted mb-3">About 142,000,000 results (0.48 seconds)</div>
+
+            <!-- Top result — YOUR CLIENT (highlighted) -->
+            <div class="border-l-2 border-blue-500 pl-3 mb-4 bg-blue-50/50 rounded-r-lg py-2 pr-2">
+              <div class="text-[9px] text-muted mb-0.5">yourclient.com › services</div>
+              <div class="text-sm font-semibold text-blue-700 mb-1 leading-tight">B2B Web Design Agency | High-Converting Websites — Your Client</div>
+              <div class="text-[10px] text-muted leading-relaxed">We design and build high-converting websites for B2B businesses. Trusted by 50+ companies. Get a free quote today.</div>
+              <!-- Sitelinks -->
+              <div class="flex gap-2 mt-1.5 flex-wrap">
+                {['Services', 'Case Studies', 'Get a Quote', 'About Us'].map(link => (
+                  <span class="text-[8.5px] text-blue-600 border border-blue-200 rounded px-1.5 py-0.5">{link}</span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Competitor result 2 -->
+            <div class="mb-3 py-1">
+              <div class="text-[9px] text-muted mb-0.5">competitor-agency.com</div>
+              <div class="text-sm font-medium text-blue-700 mb-1 leading-tight">Web Design Services | Generic Agency Co.</div>
+              <div class="text-[10px] text-muted leading-relaxed">Web design for all types of businesses. Contact us to learn more about our services and pricing options.</div>
+            </div>
+
+            <!-- Competitor result 3 -->
+            <div class="mb-3 py-1 opacity-70">
+              <div class="text-[9px] text-muted mb-0.5">anothersite.com › web-design</div>
+              <div class="text-sm font-medium text-blue-700 mb-1 leading-tight">Affordable Web Design — AnotherSite</div>
+              <div class="text-[10px] text-muted leading-relaxed">Looking for a web designer? We offer affordable packages for small businesses starting from $299.</div>
+            </div>
+
+            <!-- Ranking indicator -->
+            <div class="mt-4 flex items-center gap-2 p-2.5 rounded-xl border border-green-200 bg-green-50">
+              <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="text-[9px] font-bold text-green-800">#1 Ranking — 3 target keywords</div>
+                <div class="text-[8px] text-green-700">Organic traffic up 84% since launch</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="absolute -bottom-4 -left-4 bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+          Rank #1
+        </div>
+      </div>
+
+      <!-- Right: copy -->
+      <div class="order-1 lg:order-2">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-blue-500/80 mb-3">SEO Optimization</span>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-5 leading-tight">
+          Get Found by the<br />Clients You Want
+        </h2>
+        <p class="text-muted text-lg leading-relaxed mb-8">
+          A beautiful website means nothing if nobody finds it. Every site we build is engineered to rank — with clean code, fast load times, and a content structure that search engines understand.
+        </p>
+
+        <ul class="flex flex-col gap-4 mb-10">
+          {bullets.map(({ title, desc }) => (
+            <li class="flex gap-3">
+              <div class="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="text-dark font-semibold text-sm">{title}</div>
+                <div class="text-muted text-sm mt-0.5">{desc}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <a href="/contact" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(59,130,246,0.3)] transition-all duration-200 cursor-pointer">
+          Improve My Rankings
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>

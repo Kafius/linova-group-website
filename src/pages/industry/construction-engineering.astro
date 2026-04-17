@@ -1,0 +1,374 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/navbar/Navbar.astro';
+import Footer from '../../components/footer/Footer.astro';
+---
+
+<Layout title="Construction & Engineering — Linova Group" description="Web design for commercial builders, architects & facilities management companies.">
+  <Navbar />
+
+  <!-- Hero -->
+  <section class="relative pt-36 pb-20 overflow-hidden text-white" style="background: radial-gradient(ellipse at 50% 50%, #7c2d12 0%, #431407 45%, #140a04 100%);">
+    <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(234,88,12,0.2) 0%, transparent 70%); filter: blur(80px);"></div>
+    <div class="relative max-w-[1140px] mx-auto px-6 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/75 text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-8 backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block"></span>
+        Construction & Engineering
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight leading-[1.07] mb-5">
+        Websites Built as Strong<br class="hidden sm:block" />
+        <span class="text-transparent bg-clip-text" style="background-image: linear-gradient(90deg, #fb923c, #fbbf24);">as Your Projects</span>
+      </h1>
+      <p class="text-white/55 text-lg max-w-[540px] mx-auto leading-relaxed font-medium">
+        Commercial builders, architects, and contractors win jobs on reputation. We build the digital presence that showcases your work and earns the trust of developers and project managers.
+      </p>
+    </div>
+  </section>
+
+  <!-- Interactive Showcase -->
+  <section class="py-20 bg-[#07080f]">
+    <div class="max-w-[1200px] mx-auto px-6">
+      <div class="text-center mb-10">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-orange-400/60 mb-2">Live Example</p>
+        <h2 class="text-white text-2xl sm:text-3xl font-bold mb-3">See What We'd Build for a Builder</h2>
+        <p class="text-white/40 text-sm">Switch pages, hover elements, and explore the full design.</p>
+      </div>
+
+      <div class="rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
+        <div class="flex items-center gap-3 px-5 py-3" style="background:#1a1208; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <span class="w-3 h-3 rounded-full bg-red-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-green-400/80"></span>
+          <div class="flex-1 flex items-center gap-2 rounded-full px-4 py-1.5 ml-2 text-xs" style="background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.4); max-width:300px;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            apexbuilt.com.au
+          </div>
+          <div class="flex items-center gap-1 ml-auto" id="const-tabs">
+            {['Home','Projects','Services','Contact'].map((tab, i) => (
+              <button class="const-tab px-3 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 cursor-pointer" data-tab={i}
+                style={i===0?'background:rgba(234,88,12,0.25);color:rgba(255,255,255,0.9);':'background:transparent;color:rgba(255,255,255,0.35);'}>
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style="height:620px;overflow-y:auto;overflow-x:hidden;" id="const-viewport">
+
+          <!-- PAGE 0: HOME -->
+          <div class="const-page" data-page="0">
+            <nav style="background:#0f0a06;border-bottom:1px solid rgba(234,88,12,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#ea580c,#b45309);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <span style="color:#fef3e2;font-size:15px;font-weight:800;letter-spacing:-0.01em;">APEX BUILT</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {['Projects','Services','About','Careers'].map(item=>(
+                  <span style="color:rgba(254,243,226,0.45);font-size:13px;cursor:pointer;" class="const-nav">{item}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#ea580c,#b45309);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Request a Quote</button>
+              </div>
+            </nav>
+
+            <!-- Hero -->
+            <div style="background:linear-gradient(160deg,#0a0703 0%,#120c05 50%,#0f0a06 100%);padding:96px 48px 80px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#ea580c,transparent);"></div>
+              <div style="position:absolute;inset:0;opacity:0.03;background-image:linear-gradient(rgba(234,88,12,0.3) 1px,transparent 1px),linear-gradient(90deg,rgba(234,88,12,0.3) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;"></div>
+              <div style="position:absolute;top:-80px;right:-60px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(234,88,12,0.08) 0%,transparent 70%);filter:blur(40px);pointer-events:none;"></div>
+
+              <div style="max-width:680px;position:relative;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(234,88,12,0.1);border:1px solid rgba(234,88,12,0.25);padding:6px 14px;border-radius:20px;margin-bottom:28px;">
+                  <span style="width:6px;height:6px;background:#ea580c;border-radius:50%;"></span>
+                  <span style="color:#fb923c;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">Commercial Construction · Victoria</span>
+                </div>
+                <h1 style="font-size:52px;font-weight:900;color:#fef3e2;line-height:1.05;margin:0 0 20px;letter-spacing:-0.02em;">
+                  Built to Last.<br/>
+                  <span style="color:#ea580c;">Built to Impress.</span>
+                </h1>
+                <p style="color:rgba(254,243,226,0.5);font-size:17px;line-height:1.7;max-width:540px;margin:0 0 36px;">
+                  Apex Built delivers commercial construction projects on time, on budget, and to the highest standard. From design-and-construct to fitouts — we build what others can't.
+                </p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                  <button style="background:linear-gradient(135deg,#ea580c,#b45309);color:white;font-size:14px;font-weight:700;padding:13px 26px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                    View Our Projects
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                  <button style="background:transparent;border:1px solid rgba(254,243,226,0.15);color:rgba(254,243,226,0.65);font-size:14px;font-weight:600;padding:13px 26px;border-radius:8px;cursor:pointer;">Request a Quote</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div style="background:#120c05;border-top:1px solid rgba(234,88,12,0.15);border-bottom:1px solid rgba(234,88,12,0.15);padding:28px 48px;">
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:860px;margin:0 auto;text-align:center;">
+                {[
+                  {val:'$2.4B+',label:'Projects Delivered'},
+                  {val:'22 yrs',label:'Industry Experience'},
+                  {val:'180+',label:'Projects Completed'},
+                  {val:'100%',label:'On-Time Delivery Rate'},
+                ].map(s=>(
+                  <div>
+                    <div style="font-size:26px;font-weight:900;color:#ea580c;line-height:1;">{s.val}</div>
+                    <div style="color:rgba(254,243,226,0.35);font-size:11px;margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Featured project -->
+            <div style="background:#0a0703;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:48px;">
+                <p style="color:#ea580c;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Featured Work</p>
+                <h2 style="font-size:30px;color:#fef3e2;font-weight:900;margin:0;">Recent Projects</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto;">
+                {[
+                  {title:'Docklands Commercial Tower',loc:'Melbourne CBD',type:'Design & Construct',val:'$48M',tag:'Completed 2024'},
+                  {title:'Richmond Warehouse Conversion',loc:'Richmond, VIC',type:'Industrial Fitout',val:'$12M',tag:'Completed 2023'},
+                  {title:'Southbank Office Campus',loc:'Southbank, VIC',type:'Commercial Construction',val:'$94M',tag:'In Progress'},
+                ].map(p=>(
+                  <div style="background:#120c05;border:1px solid rgba(234,88,12,0.12);border-radius:12px;overflow:hidden;cursor:pointer;" class="const-card">
+                    <div style="height:140px;background:linear-gradient(135deg,#1a0e06,#2a1a0a);display:flex;align-items:center;justify-content:center;position:relative;">
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(234,88,12,0.3)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                      <div style="position:absolute;top:10px;right:10px;background:rgba(234,88,12,0.15);border:1px solid rgba(234,88,12,0.25);color:#fb923c;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;">{p.tag}</div>
+                    </div>
+                    <div style="padding:18px;">
+                      <h3 style="font-size:14px;color:#fef3e2;font-weight:800;margin:0 0 6px;">{p.title}</h3>
+                      <p style="color:rgba(254,243,226,0.4);font-size:12px;margin:0 0 10px;">{p.loc} · {p.type}</p>
+                      <div style="font-size:18px;font-weight:900;color:#ea580c;">{p.val}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 1: PROJECTS -->
+          <div class="const-page hidden" data-page="1">
+            <nav style="background:#0f0a06;border-bottom:1px solid rgba(234,88,12,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#ea580c,#b45309);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <span style="color:#fef3e2;font-size:15px;font-weight:800;">APEX BUILT</span>
+              </div>
+              <button style="background:linear-gradient(135deg,#ea580c,#b45309);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Request a Quote</button>
+            </nav>
+            <div style="background:#0a0703;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:52px;">
+                <p style="color:#ea580c;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Portfolio</p>
+                <h2 style="font-size:38px;color:#fef3e2;font-weight:900;margin:0 0 14px;">Our Projects</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:960px;margin:0 auto;">
+                {[
+                  {title:'Docklands Commercial Tower',loc:'Melbourne CBD',type:'Design & Construct',val:'$48M',year:'2024'},
+                  {title:'Richmond Warehouse Conversion',loc:'Richmond, VIC',type:'Industrial Fitout',val:'$12M',year:'2023'},
+                  {title:'Southbank Office Campus',loc:'Southbank, VIC',type:'Commercial Construction',val:'$94M',year:'In Progress'},
+                  {title:'Geelong Distribution Centre',loc:'Geelong, VIC',type:'Industrial Construction',val:'$31M',year:'2022'},
+                  {title:'Collins Street Fitout',loc:'Melbourne CBD',type:'Commercial Fitout',val:'$8.5M',year:'2024'},
+                  {title:'Dandenong Manufacturing Hub',loc:'Dandenong, VIC',type:'Industrial Build',val:'$62M',year:'2023'},
+                ].map(p=>(
+                  <div style="background:#120c05;border:1px solid rgba(234,88,12,0.12);border-radius:14px;overflow:hidden;cursor:pointer;display:flex;gap:0;" class="const-card">
+                    <div style="width:100px;min-width:100px;background:linear-gradient(160deg,#1a0e06,#2a1a0a);display:flex;align-items:center;justify-content:center;">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(234,88,12,0.25)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <div style="padding:18px;flex:1;">
+                      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                        <h3 style="font-size:14px;color:#fef3e2;font-weight:800;margin:0;">{p.title}</h3>
+                        <span style="color:#ea580c;font-size:14px;font-weight:900;">{p.val}</span>
+                      </div>
+                      <p style="color:rgba(254,243,226,0.4);font-size:12px;margin:0 0 8px;">{p.type} · {p.loc}</p>
+                      <span style="background:rgba(234,88,12,0.1);border:1px solid rgba(234,88,12,0.2);color:#fb923c;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;">{p.year}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 2: SERVICES -->
+          <div class="const-page hidden" data-page="2">
+            <nav style="background:#0f0a06;border-bottom:1px solid rgba(234,88,12,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#ea580c,#b45309);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <span style="color:#fef3e2;font-size:15px;font-weight:800;">APEX BUILT</span>
+              </div>
+              <button style="background:linear-gradient(135deg,#ea580c,#b45309);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Request a Quote</button>
+            </nav>
+            <div style="background:#0a0703;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:52px;">
+                <p style="color:#ea580c;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Capabilities</p>
+                <h2 style="font-size:38px;color:#fef3e2;font-weight:900;margin:0 0 14px;">What We Build</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:960px;margin:0 auto;">
+                {[
+                  {title:'Design & Construct',desc:'End-to-end project delivery from concept and planning through to handover. One team, one contract, zero gaps.'},
+                  {title:'Commercial Construction',desc:'Office towers, retail developments, mixed-use buildings — high-complexity projects delivered with precision.'},
+                  {title:'Industrial & Warehousing',desc:'Distribution centres, manufacturing facilities, and cold storage built to exact specification.'},
+                  {title:'Commercial Fitouts',desc:'Interior fitout for offices, hospitality, retail, and healthcare environments. Disruption-minimised delivery.'},
+                  {title:'Structural Engineering',desc:'In-house engineering capability for complex structural challenges, enabling faster approvals and cleaner solutions.'},
+                  {title:'Facilities Management',desc:'Post-handover maintenance, planned preventative maintenance programs, and building compliance management.'},
+                ].map(s=>(
+                  <div style="background:#120c05;border:1px solid rgba(234,88,12,0.12);border-radius:12px;padding:24px;cursor:pointer;" class="const-card">
+                    <h3 style="font-size:15px;color:#fef3e2;font-weight:800;margin:0 0 8px;display:flex;align-items:center;gap:8px;">
+                      <span style="width:6px;height:6px;background:#ea580c;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+                      {s.title}
+                    </h3>
+                    <p style="color:rgba(254,243,226,0.4);font-size:13px;line-height:1.6;margin:0;">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 3: CONTACT -->
+          <div class="const-page hidden" data-page="3">
+            <nav style="background:#0f0a06;border-bottom:1px solid rgba(234,88,12,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#ea580c,#b45309);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <span style="color:#fef3e2;font-size:15px;font-weight:800;">APEX BUILT</span>
+              </div>
+              <button style="background:linear-gradient(135deg,#ea580c,#b45309);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Request a Quote</button>
+            </nav>
+            <div style="background:#0a0703;padding:72px 48px;">
+              <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start;">
+                <div>
+                  <p style="color:#ea580c;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Contact</p>
+                  <h2 style="font-size:34px;color:#fef3e2;font-weight:900;margin:0 0 14px;line-height:1.2;">Request a Quote</h2>
+                  <p style="color:rgba(254,243,226,0.45);font-size:15px;line-height:1.7;margin:0 0 36px;">Tell us about your project and a senior project manager will be in touch within one business day.</p>
+                  <div style="display:flex;flex-direction:column;gap:16px;">
+                    {[
+                      {label:'Head Office',val:'12 Lorimer Street, Port Melbourne VIC 3207',icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'},
+                      {label:'Phone',val:'+61 3 9600 2200',icon:'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.18 2 2 0 0 1 3.07 1h3a2 2 0 0 1 2 1.72 19.9 19.9 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 19.9 19.9 0 0 0 2.81.7A2 2 0 0 1 21 16z'},
+                      {label:'Email',val:'projects@apexbuilt.com.au',icon:'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'},
+                    ].map(item=>(
+                      <div style="display:flex;gap:14px;align-items:flex-start;">
+                        <div style="width:36px;height:36px;min-width:36px;background:rgba(234,88,12,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={item.icon}/></svg>
+                        </div>
+                        <div>
+                          <div style="color:rgba(254,243,226,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">{item.label}</div>
+                          <div style="color:#fef3e2;font-size:13px;">{item.val}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div style="background:#120c05;border:1px solid rgba(234,88,12,0.15);border-radius:16px;padding:32px;">
+                  <h3 style="font-size:18px;color:#fef3e2;font-weight:800;margin:0 0 20px;">Project Enquiry</h3>
+                  <div style="display:flex;flex-direction:column;gap:13px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="display:block;color:rgba(254,243,226,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">First Name</label>
+                        <input type="text" placeholder="Michael" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:10px 14px;color:#fef3e2;font-size:13px;box-sizing:border-box;outline:none;" />
+                      </div>
+                      <div>
+                        <label style="display:block;color:rgba(254,243,226,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Last Name</label>
+                        <input type="text" placeholder="Turner" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:10px 14px;color:#fef3e2;font-size:13px;box-sizing:border-box;outline:none;" />
+                      </div>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(254,243,226,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Project Type</label>
+                      <select style="width:100%;background:#120c05;border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:10px 14px;color:rgba(254,243,226,0.6);font-size:13px;box-sizing:border-box;outline:none;">
+                        <option>Select project type...</option>
+                        <option>Design & Construct</option>
+                        <option>Commercial Construction</option>
+                        <option>Industrial & Warehousing</option>
+                        <option>Commercial Fitout</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(254,243,226,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Estimated Project Value</label>
+                      <select style="width:100%;background:#120c05;border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:10px 14px;color:rgba(254,243,226,0.6);font-size:13px;box-sizing:border-box;outline:none;">
+                        <option>Under $1M</option>
+                        <option>$1M – $10M</option>
+                        <option>$10M – $50M</option>
+                        <option>$50M+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(254,243,226,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Project Overview</label>
+                      <textarea placeholder="Tell us about your project..." rows="3" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(234,88,12,0.15);border-radius:8px;padding:10px 14px;color:#fef3e2;font-size:13px;box-sizing:border-box;outline:none;resize:none;"></textarea>
+                    </div>
+                    <button style="width:100%;background:linear-gradient(135deg,#ea580c,#b45309);color:white;font-size:13px;font-weight:700;padding:13px;border-radius:8px;border:none;cursor:pointer;">Submit Enquiry</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <p class="text-center text-white/25 text-xs mt-5">Design concept by Linova Group — not a real company.</p>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <section class="py-20 bg-white">
+    <div class="max-w-[1140px] mx-auto px-6">
+      <div class="text-center mb-14">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">What You Get</span>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-4">Built for Construction & Engineering Firms</h2>
+        <p class="text-muted text-lg max-w-[500px] mx-auto">Win more tenders and attract bigger developers with a site that shows the scale of your capability.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {[
+          {title:'Project Portfolio Pages',desc:'Individual project showcases with photos, scope, value, and timeline — the digital equivalent of a capability statement.',icon:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'},
+          {title:'Capability Statement Ready',desc:'A print-ready page that doubles as your digital capability statement — shareable as PDF from the site.',icon:'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'},
+          {title:'Accreditation & Compliance',desc:'ISO certifications, OH&S frameworks, and industry memberships displayed prominently to satisfy tender requirements.',icon:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'},
+          {title:'Sector-Specific Pages',desc:'Dedicated pages for commercial, industrial, and fitout — so clients in each sector find exactly what they need.',icon:'M4 6h16M4 10h16M4 14h16M4 18h16'},
+          {title:'Tender & Quote Forms',desc:'Structured enquiry forms that capture project scope, value, and timeline — qualifying leads before they hit your inbox.',icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z'},
+          {title:'Contractor & Subcontractor Pages',desc:'Dedicated subcontractor registration and pre-qualification pages for larger firms managing supply chains.',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'},
+        ].map(item=>(
+          <div class="group bg-white border border-border rounded-2xl p-7 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(38,39,94,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background:linear-gradient(90deg,#ea580c,#fbbf24);"></div>
+            <div class="w-11 h-11 bg-light text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={item.icon}/></svg>
+            </div>
+            <h3 class="text-dark font-bold text-base mb-2">{item.title}</h3>
+            <p class="text-muted text-sm leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 text-white text-center" style="background:linear-gradient(135deg,#140a04 0%,#7c2d12 60%,#431407 100%);">
+    <div class="max-w-[600px] mx-auto px-6">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-orange-300/70 mb-4">Construction & Engineering</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight mb-4">Your Work Deserves a Site That Shows It Off</h2>
+      <p class="text-white/55 text-lg mb-8 leading-relaxed">Let's build a digital presence as solid as the projects you deliver.</p>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold bg-white text-primary hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] transition-all duration-200">
+        Get a Free Quote
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  const tabs = document.querySelectorAll('.const-tab');
+  const pages = document.querySelectorAll('.const-page');
+  const viewport = document.getElementById('const-viewport');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.tab);
+      tabs.forEach((t,i) => { t.style.background=i===idx?'rgba(234,88,12,0.25)':'transparent'; t.style.color=i===idx?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.35)'; });
+      pages.forEach((p,i) => p.classList.toggle('hidden', i!==idx));
+      if(viewport) viewport.scrollTop=0;
+    });
+  });
+  document.querySelectorAll('.const-card').forEach(c => {
+    c.addEventListener('mouseenter',()=>{ c.style.borderColor='rgba(234,88,12,0.35)'; c.style.background='#1a0f07'; });
+    c.addEventListener('mouseleave',()=>{ c.style.borderColor='rgba(234,88,12,0.12)'; c.style.background='#120c05'; });
+  });
+</script>

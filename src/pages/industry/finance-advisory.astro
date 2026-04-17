@@ -1,0 +1,394 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/navbar/Navbar.astro';
+import Footer from '../../components/footer/Footer.astro';
+---
+
+<Layout title="Finance & Advisory — Linova Group" description="Web design for business lenders, wealth managers & commercial insurance brokers.">
+  <Navbar />
+
+  <!-- Hero -->
+  <section class="relative pt-36 pb-20 overflow-hidden text-white" style="background: radial-gradient(ellipse at 50% 50%, #164e63 0%, #0c2e3d 45%, #04101a 100%);">
+    <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(8,145,178,0.22) 0%, transparent 70%); filter: blur(80px);"></div>
+    <div class="relative max-w-[1140px] mx-auto px-6 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/75 text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-8 backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block"></span>
+        Finance & Advisory
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight leading-[1.07] mb-5">
+        Websites That Inspire<br class="hidden sm:block" />
+        <span class="text-transparent bg-clip-text" style="background-image: linear-gradient(90deg, #67e8f9, #a5f3fc);">Financial Confidence</span>
+      </h1>
+      <p class="text-white/55 text-lg max-w-[540px] mx-auto leading-relaxed font-medium">
+        Business lenders, wealth managers, and commercial brokers win clients on trust and track record. We build the digital presence that earns both — before a single meeting.
+      </p>
+    </div>
+  </section>
+
+  <!-- Interactive Showcase -->
+  <section class="py-20 bg-[#07080f]">
+    <div class="max-w-[1200px] mx-auto px-6">
+      <div class="text-center mb-10">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-cyan-400/60 mb-2">Live Example</p>
+        <h2 class="text-white text-2xl sm:text-3xl font-bold mb-3">See What We'd Build for a Wealth Manager</h2>
+        <p class="text-white/40 text-sm">Switch pages, hover elements, and explore the full design.</p>
+      </div>
+
+      <div class="rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
+        <div class="flex items-center gap-3 px-5 py-3" style="background:#060f14; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <span class="w-3 h-3 rounded-full bg-red-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-green-400/80"></span>
+          <div class="flex-1 flex items-center gap-2 rounded-full px-4 py-1.5 ml-2 text-xs" style="background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.4); max-width:300px;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            pinnacleadvisory.com.au
+          </div>
+          <div class="flex items-center gap-1 ml-auto" id="fin-tabs">
+            {['Home','Services','Our Team','Contact'].map((tab,i)=>(
+              <button class="fin-tab px-3 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 cursor-pointer" data-tab={i}
+                style={i===0?'background:rgba(8,145,178,0.25);color:rgba(255,255,255,0.9);':'background:transparent;color:rgba(255,255,255,0.35);'}>
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style="height:620px;overflow-y:auto;overflow-x:hidden;" id="fin-viewport">
+
+          <!-- PAGE 0: HOME -->
+          <div class="fin-page" data-page="0">
+            <nav style="background:#040c12;border-bottom:1px solid rgba(8,145,178,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#0891b2,#0e7490);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <span style="color:#e0f7fa;font-size:15px;font-weight:700;letter-spacing:-0.01em;">Pinnacle Advisory</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {['Services','Our Team','Insights','About'].map(item=>(
+                  <span style="color:rgba(224,247,250,0.45);font-size:13px;cursor:pointer;" class="fin-nav">{item}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#0891b2,#0e7490);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;">Book a Consultation</button>
+              </div>
+            </nav>
+
+            <!-- Hero -->
+            <div style="background:linear-gradient(160deg,#030a10 0%,#050f18 50%,#040c14 100%);padding:96px 48px 80px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#0891b2,transparent);"></div>
+              <div style="position:absolute;inset:0;opacity:0.025;background-image:linear-gradient(rgba(8,145,178,0.4) 1px,transparent 1px);background-size:100% 48px;pointer-events:none;"></div>
+              <div style="position:absolute;top:-60px;right:-60px;width:500px;height:400px;background:radial-gradient(ellipse,rgba(8,145,178,0.1) 0%,transparent 70%);filter:blur(40px);pointer-events:none;"></div>
+
+              <div style="max-width:680px;position:relative;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(8,145,178,0.1);border:1px solid rgba(8,145,178,0.25);padding:6px 14px;border-radius:20px;margin-bottom:28px;">
+                  <span style="width:6px;height:6px;background:#06b6d4;border-radius:50%;"></span>
+                  <span style="color:#67e8f9;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">Wealth Management · Melbourne</span>
+                </div>
+                <h1 style="font-size:52px;font-weight:800;color:#e0f7fa;line-height:1.07;margin:0 0 20px;letter-spacing:-0.02em;">
+                  Grow.<br/>
+                  <span style="background:linear-gradient(90deg,#67e8f9,#a5f3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Protect.</span><br/>
+                  Prosper.
+                </h1>
+                <p style="color:rgba(224,247,250,0.5);font-size:17px;line-height:1.7;max-width:540px;margin:0 0 36px;">
+                  Pinnacle Advisory has managed over $2.1 billion in client wealth since 2006. We provide independent, fee-only financial advice for business owners and high-net-worth individuals.
+                </p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                  <button style="background:linear-gradient(135deg,#0891b2,#0e7490);color:white;font-size:14px;font-weight:700;padding:13px 26px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                    Book a Free Consultation
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                  <button style="background:transparent;border:1px solid rgba(224,247,250,0.15);color:rgba(224,247,250,0.65);font-size:14px;font-weight:600;padding:13px 26px;border-radius:8px;cursor:pointer;">Our Approach</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div style="background:#050f18;border-top:1px solid rgba(8,145,178,0.15);border-bottom:1px solid rgba(8,145,178,0.15);padding:28px 48px;">
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:860px;margin:0 auto;text-align:center;">
+                {[
+                  {val:'$2.1B',label:'Assets Under Advice'},
+                  {val:'18 yrs',label:'In Practice'},
+                  {val:'420+',label:'Client Families'},
+                  {val:'100%',label:'Fee-Only, Independent'},
+                ].map(s=>(
+                  <div>
+                    <div style="font-size:26px;font-weight:800;color:#06b6d4;line-height:1;">{s.val}</div>
+                    <div style="color:rgba(224,247,250,0.35);font-size:11px;margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Services preview -->
+            <div style="background:#030a10;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:48px;">
+                <p style="color:#0891b2;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">What We Do</p>
+                <h2 style="font-size:30px;color:#e0f7fa;font-weight:800;margin:0;">Our Services</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:960px;margin:0 auto;">
+                {[
+                  {title:'Wealth Management',desc:'Personalised investment portfolios, tax strategies, and estate planning for long-term financial security.',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'},
+                  {title:'Business Advisory',desc:'M&A advisory, business structuring, and exit planning for owners planning their next chapter.',icon:'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'},
+                  {title:'SMSF & Retirement',desc:'Self-managed superannuation fund strategy, compliance, and pension phase planning.',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'},
+                ].map(s=>(
+                  <div style="background:#050f18;border:1px solid rgba(8,145,178,0.12);border-radius:12px;padding:24px;cursor:pointer;" class="fin-card">
+                    <div style="width:40px;height:40px;background:rgba(8,145,178,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}/></svg>
+                    </div>
+                    <h3 style="font-size:15px;color:#e0f7fa;font-weight:700;margin:0 0 8px;">{s.title}</h3>
+                    <p style="color:rgba(224,247,250,0.4);font-size:13px;line-height:1.6;margin:0;">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Testimonial -->
+            <div style="background:#040c12;border-top:1px solid rgba(8,145,178,0.1);padding:64px 48px;text-align:center;">
+              <div style="max-width:640px;margin:0 auto;">
+                <div style="color:#0891b2;font-size:48px;line-height:1;margin-bottom:16px;">"</div>
+                <p style="font-size:19px;color:#e0f7fa;line-height:1.7;margin:0 0 28px;font-style:italic;">
+                  Pinnacle gave us the confidence to sell our business at the right time, for the right price. Their advice over the preceding three years was worth every dollar — and then some.
+                </p>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                  <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#0c2a3a,#164e63);display:flex;align-items:center;justify-content:center;">
+                    <span style="color:#67e8f9;font-size:14px;font-weight:700;">GL</span>
+                  </div>
+                  <div style="text-align:left;">
+                    <div style="color:#e0f7fa;font-size:14px;font-weight:600;">Gina Lau</div>
+                    <div style="color:rgba(224,247,250,0.4);font-size:12px;">Former Director, Lau Logistics</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 1: SERVICES -->
+          <div class="fin-page hidden" data-page="1">
+            <nav style="background:#040c12;border-bottom:1px solid rgba(8,145,178,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#0891b2,#0e7490);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <span style="color:#e0f7fa;font-size:15px;font-weight:700;">Pinnacle Advisory</span>
+              </div>
+              <button style="background:linear-gradient(135deg,#0891b2,#0e7490);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;">Book a Consultation</button>
+            </nav>
+            <div style="background:#030a10;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:52px;">
+                <p style="color:#06b6d4;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">What We Offer</p>
+                <h2 style="font-size:38px;color:#e0f7fa;font-weight:800;margin:0 0 14px;">Our Services</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:960px;margin:0 auto;">
+                {[
+                  {title:'Wealth Management',desc:'Tailored investment portfolios built around your goals, risk tolerance, and time horizon — reviewed quarterly with you.',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'},
+                  {title:'Business Advisory',desc:'Strategic advice for business owners — from structuring and growth through to succession planning and exit strategy.',icon:'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'},
+                  {title:'SMSF & Retirement Planning',desc:'Comprehensive self-managed super fund strategy, trustee compliance, and pension phase transition planning.',icon:'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'},
+                  {title:'Estate Planning',desc:'Structures that ensure your wealth transfers to the right people in the right way — with minimal tax and no surprises.',icon:'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 0-1 1h-3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h4'},
+                  {title:'Commercial Insurance',desc:'Broker-independent review of your business insurance to ensure you are covered where it matters — and not over-paying.',icon:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'},
+                  {title:'Mortgage & Lending',desc:'Commercial property finance, business loans, and debt restructuring from a network of 35+ lenders.',icon:'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'},
+                ].map(s=>(
+                  <div style="background:#050f18;border:1px solid rgba(8,145,178,0.12);border-radius:12px;padding:24px;display:flex;gap:16px;cursor:pointer;" class="fin-card">
+                    <div style="width:44px;height:44px;min-width:44px;background:rgba(8,145,178,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}/></svg>
+                    </div>
+                    <div>
+                      <h3 style="font-size:15px;color:#e0f7fa;font-weight:700;margin:0 0 7px;">{s.title}</h3>
+                      <p style="color:rgba(224,247,250,0.4);font-size:13px;line-height:1.6;margin:0;">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 2: TEAM -->
+          <div class="fin-page hidden" data-page="2">
+            <nav style="background:#040c12;border-bottom:1px solid rgba(8,145,178,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#0891b2,#0e7490);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <span style="color:#e0f7fa;font-size:15px;font-weight:700;">Pinnacle Advisory</span>
+              </div>
+              <button style="background:linear-gradient(135deg,#0891b2,#0e7490);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;">Book a Consultation</button>
+            </nav>
+            <div style="background:#030a10;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:52px;">
+                <p style="color:#06b6d4;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Our Advisers</p>
+                <h2 style="font-size:38px;color:#e0f7fa;font-weight:800;margin:0 0 14px;">The Team</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;">
+                {[
+                  {name:'William Chen',title:'Principal Adviser',spec:'Wealth Management & Business Advisory',quals:'CFP®, CPA, B.Comm (Finance)',exp:'21 yrs',initials:'WC'},
+                  {name:'Rebecca Santos',title:'Senior Adviser',spec:'Retirement & SMSF Planning',quals:'CFP®, SMSF Specialist Adviser',exp:'14 yrs',initials:'RS'},
+                  {name:'James O\'Brien',title:'Senior Adviser',spec:'Estate Planning & Insurance',quals:'CFP®, Dip Financial Planning',exp:'12 yrs',initials:'JO'},
+                  {name:'Natalie Tran',title:'Associate Adviser',spec:'Investment Strategy',quals:'B.Comm (Economics), DFP',exp:'7 yrs',initials:'NT'},
+                  {name:'Samuel Park',title:'Associate Adviser',spec:'Business Lending & Mortgages',quals:'Cert IV Finance, Dip Finance',exp:'6 yrs',initials:'SP'},
+                  {name:'Emma Liu',title:'Client Services',spec:'Client Experience & Onboarding',quals:'B.Business Administration',exp:'4 yrs',initials:'EL'},
+                ].map(p=>(
+                  <div style="background:#050f18;border:1px solid rgba(8,145,178,0.12);border-radius:12px;padding:22px;cursor:pointer;" class="fin-card">
+                    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#0c2a3a,#164e63);border:2px solid rgba(8,145,178,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                      <span style="color:#67e8f9;font-size:14px;font-weight:700;">{p.initials}</span>
+                    </div>
+                    <h3 style="font-size:14px;color:#e0f7fa;font-weight:700;margin:0 0 2px;">{p.name}</h3>
+                    <p style="color:#06b6d4;font-size:11px;font-weight:600;margin:0 0 5px;">{p.title}</p>
+                    <p style="color:rgba(224,247,250,0.4);font-size:12px;margin:0 0 10px;line-height:1.5;">{p.spec}</p>
+                    <div style="border-top:1px solid rgba(8,145,178,0.1);padding-top:8px;display:flex;justify-content:space-between;">
+                      <span style="color:rgba(224,247,250,0.25);font-size:10px;">{p.quals}</span>
+                      <span style="color:#06b6d4;font-size:11px;font-weight:600;">{p.exp}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 3: CONTACT -->
+          <div class="fin-page hidden" data-page="3">
+            <nav style="background:#040c12;border-bottom:1px solid rgba(8,145,178,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#0891b2,#0e7490);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <span style="color:#e0f7fa;font-size:15px;font-weight:700;">Pinnacle Advisory</span>
+              </div>
+              <button style="background:linear-gradient(135deg,#0891b2,#0e7490);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;">Book a Consultation</button>
+            </nav>
+            <div style="background:#030a10;padding:72px 48px;">
+              <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start;">
+                <div>
+                  <p style="color:#06b6d4;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Get in Touch</p>
+                  <h2 style="font-size:34px;color:#e0f7fa;font-weight:800;margin:0 0 14px;line-height:1.2;">Book a Confidential Consultation</h2>
+                  <p style="color:rgba(224,247,250,0.45);font-size:15px;line-height:1.7;margin:0 0 36px;">Initial consultations are complimentary and obligation-free. A senior adviser will respond within one business day.</p>
+                  <div style="display:flex;flex-direction:column;gap:16px;">
+                    {[
+                      {label:'Office',val:'Level 14, 120 Collins Street, Melbourne VIC 3000',icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'},
+                      {label:'Phone',val:'+61 3 9642 8800',icon:'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.18 2 2 0 0 1 3.07 1h3a2 2 0 0 1 2 1.72 19.9 19.9 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 19.9 19.9 0 0 0 2.81.7A2 2 0 0 1 21 16z'},
+                      {label:'Email',val:'advice@pinnacleadvisory.com.au',icon:'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'},
+                    ].map(item=>(
+                      <div style="display:flex;gap:14px;align-items:flex-start;">
+                        <div style="width:36px;height:36px;min-width:36px;background:rgba(8,145,178,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={item.icon}/></svg>
+                        </div>
+                        <div>
+                          <div style="color:rgba(224,247,250,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">{item.label}</div>
+                          <div style="color:#e0f7fa;font-size:13px;">{item.val}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div style="background:#050f18;border:1px solid rgba(8,145,178,0.15);border-radius:16px;padding:32px;">
+                  <h3 style="font-size:18px;color:#e0f7fa;font-weight:700;margin:0 0 20px;">Request a Consultation</h3>
+                  <div style="display:flex;flex-direction:column;gap:13px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="display:block;color:rgba(224,247,250,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">First Name</label>
+                        <input type="text" placeholder="William" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(8,145,178,0.2);border-radius:8px;padding:10px 14px;color:#e0f7fa;font-size:13px;box-sizing:border-box;outline:none;" />
+                      </div>
+                      <div>
+                        <label style="display:block;color:rgba(224,247,250,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Last Name</label>
+                        <input type="text" placeholder="Chen" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(8,145,178,0.2);border-radius:8px;padding:10px 14px;color:#e0f7fa;font-size:13px;box-sizing:border-box;outline:none;" />
+                      </div>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(224,247,250,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Area of Interest</label>
+                      <select style="width:100%;background:#050f18;border:1px solid rgba(8,145,178,0.2);border-radius:8px;padding:10px 14px;color:rgba(224,247,250,0.6);font-size:13px;box-sizing:border-box;outline:none;">
+                        <option>Select an area...</option>
+                        <option>Wealth Management</option>
+                        <option>Business Advisory</option>
+                        <option>SMSF & Retirement</option>
+                        <option>Estate Planning</option>
+                        <option>Commercial Insurance</option>
+                        <option>Mortgage & Lending</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(224,247,250,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Approximate Assets / Income</label>
+                      <select style="width:100%;background:#050f18;border:1px solid rgba(8,145,178,0.2);border-radius:8px;padding:10px 14px;color:rgba(224,247,250,0.6);font-size:13px;box-sizing:border-box;outline:none;">
+                        <option>Prefer not to say</option>
+                        <option>Under $500K</option>
+                        <option>$500K – $2M</option>
+                        <option>$2M – $10M</option>
+                        <option>$10M+</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(224,247,250,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">What Are You Looking to Achieve?</label>
+                      <textarea placeholder="Tell us about your goals..." rows="3" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(8,145,178,0.2);border-radius:8px;padding:10px 14px;color:#e0f7fa;font-size:13px;box-sizing:border-box;outline:none;resize:none;"></textarea>
+                    </div>
+                    <button style="width:100%;background:linear-gradient(135deg,#0891b2,#0e7490);color:white;font-size:13px;font-weight:700;padding:12px;border-radius:8px;border:none;cursor:pointer;">Request Consultation</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <p class="text-center text-white/25 text-xs mt-5">Design concept by Linova Group — not a real company.</p>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <section class="py-20 bg-white">
+    <div class="max-w-[1140px] mx-auto px-6">
+      <div class="text-center mb-14">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">What You Get</span>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-4">Built for Finance & Advisory Firms</h2>
+        <p class="text-muted text-lg max-w-[500px] mx-auto">Convert high-net-worth prospects and business owners with a site built on trust, clarity, and credibility.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {[
+          {title:'Compliance-Aware Design',desc:'FSG, disclaimer, and AFSL number placement built into the design — so nothing gets buried in a footer no one reads.',icon:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'},
+          {title:'Adviser Profile Pages',desc:'Individual adviser bios with qualifications, specialisations, and philosophy — the credibility layer that converts serious enquiries.',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'},
+          {title:'Performance & Track Record',desc:'Structured sections to present long-term performance, risk frameworks, and client outcome stories without misleading.',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'},
+          {title:'Discovery Form Flow',desc:'Pre-qualification forms that capture net worth, goals, and timeline — so advisers arrive to meetings already prepared.',icon:'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'},
+          {title:'Insights & Content Hub',desc:'Blog or article hub for market commentary and thought leadership — the single biggest SEO lever for advisory firms.',icon:'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'},
+          {title:'SEO for High-Intent Search',desc:'Optimised for "financial adviser Melbourne" and "SMSF specialist" — searches made by people who are already ready to talk.',icon:'M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z'},
+        ].map(item=>(
+          <div class="group bg-white border border-border rounded-2xl p-7 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(38,39,94,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background:linear-gradient(90deg,#0891b2,#06b6d4);"></div>
+            <div class="w-11 h-11 bg-light text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={item.icon}/></svg>
+            </div>
+            <h3 class="text-dark font-bold text-base mb-2">{item.title}</h3>
+            <p class="text-muted text-sm leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 text-white text-center" style="background:linear-gradient(135deg,#04101a 0%,#164e63 60%,#0c2e3d 100%);">
+    <div class="max-w-[600px] mx-auto px-6">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-cyan-300/70 mb-4">Finance & Advisory</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight mb-4">Your Clients Trust You With Their Future. Your Site Should Reflect That.</h2>
+      <p class="text-white/55 text-lg mb-8 leading-relaxed">Let's build a digital presence that earns trust before the first meeting.</p>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold bg-white text-primary hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] transition-all duration-200">
+        Get a Free Quote
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  const tabs = document.querySelectorAll('.fin-tab');
+  const pages = document.querySelectorAll('.fin-page');
+  const viewport = document.getElementById('fin-viewport');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.tab);
+      tabs.forEach((t,i) => { t.style.background=i===idx?'rgba(8,145,178,0.25)':'transparent'; t.style.color=i===idx?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.35)'; });
+      pages.forEach((p,i) => p.classList.toggle('hidden', i!==idx));
+      if(viewport) viewport.scrollTop=0;
+    });
+  });
+  document.querySelectorAll('.fin-card').forEach(c => {
+    c.addEventListener('mouseenter',()=>{ c.style.borderColor='rgba(8,145,178,0.35)'; c.style.background='#071420'; });
+    c.addEventListener('mouseleave',()=>{ c.style.borderColor='rgba(8,145,178,0.12)'; c.style.background='#050f18'; });
+  });
+</script>

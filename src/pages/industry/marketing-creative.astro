@@ -1,0 +1,371 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/navbar/Navbar.astro';
+import Footer from '../../components/footer/Footer.astro';
+---
+
+<Layout title="Marketing & Creative — Linova Group" description="Web design for digital agencies, branding studios & video production companies.">
+  <Navbar />
+
+  <!-- Hero -->
+  <section class="relative pt-36 pb-20 overflow-hidden text-white" style="background: radial-gradient(ellipse at 50% 50%, #064e3b 0%, #052e22 45%, #071410 100%);">
+    <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(5,150,105,0.25) 0%, transparent 70%); filter: blur(80px);"></div>
+    <div class="relative max-w-[1140px] mx-auto px-6 text-center">
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/75 text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-8 backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+        Marketing & Creative
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight leading-[1.07] mb-5">
+        Agencies That Do Great Work<br class="hidden sm:block" />
+        <span class="text-transparent bg-clip-text" style="background-image: linear-gradient(90deg, #34d399, #6ee7b7);">Deserve a Great Website</span>
+      </h1>
+      <p class="text-white/55 text-lg max-w-[540px] mx-auto leading-relaxed font-medium">
+        Digital agencies, branding studios, and creative production houses need a site that's as impressive as their best work. We build it.
+      </p>
+    </div>
+  </section>
+
+  <!-- Interactive Showcase -->
+  <section class="py-20 bg-[#07080f]">
+    <div class="max-w-[1200px] mx-auto px-6">
+      <div class="text-center mb-10">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400/60 mb-2">Live Example</p>
+        <h2 class="text-white text-2xl sm:text-3xl font-bold mb-3">See What We'd Build for a Creative Agency</h2>
+        <p class="text-white/40 text-sm">Switch pages, hover elements, and explore the full design.</p>
+      </div>
+
+      <div class="rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
+        <div class="flex items-center gap-3 px-5 py-3" style="background:#0b1410; border-bottom:1px solid rgba(255,255,255,0.08);">
+          <span class="w-3 h-3 rounded-full bg-red-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
+          <span class="w-3 h-3 rounded-full bg-green-400/80"></span>
+          <div class="flex-1 flex items-center gap-2 rounded-full px-4 py-1.5 ml-2 text-xs" style="background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.4); max-width:300px;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            orbitagency.com.au
+          </div>
+          <div class="flex items-center gap-1 ml-auto" id="mktg-tabs">
+            {['Home','Our Work','Services','Contact'].map((tab,i)=>(
+              <button class="mktg-tab px-3 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 cursor-pointer" data-tab={i}
+                style={i===0?'background:rgba(5,150,105,0.25);color:rgba(255,255,255,0.9);':'background:transparent;color:rgba(255,255,255,0.35);'}>
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style="height:620px;overflow-y:auto;overflow-x:hidden;" id="mktg-viewport">
+
+          <!-- PAGE 0: HOME -->
+          <div class="mktg-page" data-page="0">
+            <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
+                </div>
+                <span style="color:#d1fae5;font-size:15px;font-weight:800;letter-spacing:-0.01em;">Orbit<span style="color:#10b981;">Agency</span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {['Work','Services','Process','About'].map(item=>(
+                  <span style="color:rgba(209,250,229,0.45);font-size:13px;cursor:pointer;" class="mktg-nav">{item}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+              </div>
+            </nav>
+
+            <!-- Hero -->
+            <div style="background:linear-gradient(160deg,#040a07 0%,#060e0a 50%,#040906 100%);padding:96px 48px 80px;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#059669,transparent);"></div>
+              <div style="position:absolute;top:-60px;left:-60px;width:400px;height:400px;background:radial-gradient(ellipse,rgba(5,150,105,0.15) 0%,transparent 70%);filter:blur(40px);pointer-events:none;"></div>
+              <div style="position:absolute;bottom:-40px;right:-40px;width:360px;height:360px;background:radial-gradient(ellipse,rgba(16,185,129,0.1) 0%,transparent 70%);filter:blur(35px);pointer-events:none;"></div>
+
+              <div style="max-width:700px;position:relative;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.1);border:1px solid rgba(5,150,105,0.25);padding:6px 14px;border-radius:20px;margin-bottom:28px;">
+                  <span style="width:6px;height:6px;background:#10b981;border-radius:50%;"></span>
+                  <span style="color:#34d399;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">Creative Agency · Melbourne</span>
+                </div>
+                <h1 style="font-size:52px;font-weight:800;color:#d1fae5;line-height:1.05;margin:0 0 20px;letter-spacing:-0.02em;">
+                  Ideas That<br/>
+                  <span style="background:linear-gradient(90deg,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Move People.</span>
+                </h1>
+                <p style="color:rgba(209,250,229,0.5);font-size:17px;line-height:1.7;max-width:540px;margin:0 0 36px;">
+                  Orbit is a full-service creative agency for bold brands. Brand strategy, digital campaigns, and video production — all under one roof.
+                </p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                  <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:14px;font-weight:700;padding:13px 26px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                    View Our Work
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                  <button style="background:transparent;border:1px solid rgba(209,250,229,0.15);color:rgba(209,250,229,0.65);font-size:14px;font-weight:600;padding:13px 26px;border-radius:20px;cursor:pointer;">Start a Project</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div style="background:#060e0a;border-top:1px solid rgba(5,150,105,0.15);border-bottom:1px solid rgba(5,150,105,0.15);padding:28px 48px;">
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:860px;margin:0 auto;text-align:center;">
+                {[
+                  {val:'9 yrs',label:'Building Brands'},
+                  {val:'220+',label:'Projects Delivered'},
+                  {val:'40+',label:'Awards Won'},
+                  {val:'92%',label:'Client Retention'},
+                ].map(s=>(
+                  <div>
+                    <div style="font-size:26px;font-weight:800;color:#10b981;line-height:1;">{s.val}</div>
+                    <div style="color:rgba(209,250,229,0.35);font-size:11px;margin-top:4px;letter-spacing:0.06em;text-transform:uppercase;">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Work preview -->
+            <div style="background:#040a07;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:48px;">
+                <p style="color:#059669;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Selected Work</p>
+                <h2 style="font-size:30px;color:#d1fae5;font-weight:800;margin:0;">Recent Projects</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto;">
+                {[
+                  {client:'Ember Coffee Co.',scope:'Brand Identity + Web',tag:'FMCG',color:'#f59e0b'},
+                  {client:'Nova Finance',scope:'Campaign + Performance',tag:'Fintech',color:'#60a5fa'},
+                  {client:'Kite Athletic',scope:'Video + Social Content',tag:'Sport',color:'#f472b6'},
+                ].map(p=>(
+                  <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.12);border-radius:14px;overflow:hidden;cursor:pointer;" class="mktg-card">
+                    <div style={`height:140px;background:linear-gradient(135deg,${p.color}18,${p.color}08);display:flex;align-items:center;justify-content:center;position:relative;`}>
+                      <div style={`width:48px;height:48px;border-radius:50%;background:${p.color}20;border:1px solid ${p.color}30;display:flex;align-items:center;justify-content:center;`}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={p.color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l4-4 4 4M12 8v8"/></svg>
+                      </div>
+                      <div style={`position:absolute;top:10px;right:10px;background:${p.color}20;border:1px solid ${p.color}30;color:${p.color};font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;`}>{p.tag}</div>
+                    </div>
+                    <div style="padding:16px;">
+                      <h3 style="font-size:14px;color:#d1fae5;font-weight:700;margin:0 0 4px;">{p.client}</h3>
+                      <p style="color:rgba(209,250,229,0.4);font-size:12px;margin:0;">{p.scope}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 1: OUR WORK -->
+          <div class="mktg-page hidden" data-page="1">
+            <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
+                </div>
+                <span style="color:#d1fae5;font-size:15px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
+              </div>
+              <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+            </nav>
+            <div style="background:#040a07;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:52px;">
+                <p style="color:#10b981;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Portfolio</p>
+                <h2 style="font-size:38px;color:#d1fae5;font-weight:800;margin:0 0 14px;">Our Work</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:960px;margin:0 auto;">
+                {[
+                  {client:'Ember Coffee Co.',scope:'Brand Identity, Packaging & Web',tag:'FMCG',year:'2024',color:'#f59e0b'},
+                  {client:'Nova Finance',scope:'Performance Campaign & Landing Pages',tag:'Fintech',year:'2024',color:'#60a5fa'},
+                  {client:'Kite Athletic',scope:'Video Production & Social Content Strategy',tag:'Sport & Lifestyle',year:'2023',color:'#f472b6'},
+                  {client:'Harbour Legal',scope:'Brand Refresh & Website Redesign',tag:'Professional Services',year:'2023',color:'#a78bfa'},
+                  {client:'Slate Magazine',scope:'Editorial Design & Digital Experience',tag:'Media',year:'2022',color:'#34d399'},
+                  {client:'Peak Realty Group',scope:'Brand Strategy, Web & Digital Ads',tag:'Real Estate',year:'2024',color:'#fb923c'},
+                ].map(p=>(
+                  <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.12);border-radius:14px;overflow:hidden;display:flex;cursor:pointer;" class="mktg-card">
+                    <div style={`width:90px;min-width:90px;background:linear-gradient(160deg,${p.color}14,${p.color}06);display:flex;align-items:center;justify-content:center;`}>
+                      <div style={`width:36px;height:36px;border-radius:50%;background:${p.color}18;display:flex;align-items:center;justify-content:center;`}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={p.color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l4-4 4 4"/></svg>
+                      </div>
+                    </div>
+                    <div style="padding:16px;flex:1;">
+                      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                        <h3 style="font-size:14px;color:#d1fae5;font-weight:700;margin:0;">{p.client}</h3>
+                        <span style="color:rgba(209,250,229,0.3);font-size:11px;">{p.year}</span>
+                      </div>
+                      <p style="color:rgba(209,250,229,0.4);font-size:12px;margin:0 0 8px;">{p.scope}</p>
+                      <span style={`background:${p.color}15;border:1px solid ${p.color}25;color:${p.color};font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;`}>{p.tag}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 2: SERVICES -->
+          <div class="mktg-page hidden" data-page="2">
+            <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
+                </div>
+                <span style="color:#d1fae5;font-size:15px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
+              </div>
+              <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+            </nav>
+            <div style="background:#040a07;padding:72px 48px;">
+              <div style="text-align:center;margin-bottom:52px;">
+                <p style="color:#10b981;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">What We Do</p>
+                <h2 style="font-size:38px;color:#d1fae5;font-weight:800;margin:0 0 14px;">Services</h2>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:960px;margin:0 auto;">
+                {[
+                  {title:'Brand Strategy & Identity',desc:'Positioning, naming, visual identity systems, and brand guidelines — everything a brand needs to stand for something.',icon:'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z'},
+                  {title:'Digital Campaigns',desc:'Paid social, Google, and programmatic campaigns built around data and designed to convert, not just impress.',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'},
+                  {title:'Web Design & Development',desc:'Campaign microsites, brand websites, and landing pages that reflect your brand perfectly and perform under pressure.',icon:'M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18'},
+                  {title:'Video Production',desc:'From concept to post-production — brand films, social content, product demos, and event coverage.',icon:'M15 10l4.553-2.276A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z'},
+                  {title:'Content & Social',desc:'Organic social strategy, content calendars, copywriting, and community management across all major platforms.',icon:'M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 1 1 0-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316'},
+                  {title:'SEO & Performance',desc:'Technical SEO, content strategy, and conversion rate optimisation that turns organic traffic into qualified leads.',icon:'M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z'},
+                ].map(s=>(
+                  <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.12);border-radius:12px;padding:24px;display:flex;gap:16px;cursor:pointer;" class="mktg-card">
+                    <div style="width:44px;height:44px;min-width:44px;background:rgba(5,150,105,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={s.icon}/></svg>
+                    </div>
+                    <div>
+                      <h3 style="font-size:15px;color:#d1fae5;font-weight:700;margin:0 0 7px;">{s.title}</h3>
+                      <p style="color:rgba(209,250,229,0.4);font-size:13px;line-height:1.6;margin:0;">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- PAGE 3: CONTACT -->
+          <div class="mktg-page hidden" data-page="3">
+            <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
+                </div>
+                <span style="color:#d1fae5;font-size:15px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
+              </div>
+              <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+            </nav>
+            <div style="background:#040a07;padding:72px 48px;">
+              <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start;">
+                <div>
+                  <p style="color:#10b981;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:10px;">Let's Work Together</p>
+                  <h2 style="font-size:34px;color:#d1fae5;font-weight:800;margin:0 0 14px;line-height:1.2;">Start a Project</h2>
+                  <p style="color:rgba(209,250,229,0.45);font-size:15px;line-height:1.7;margin:0 0 36px;">Tell us about your brand and what you're trying to achieve. We'll come back with a thinking piece, not just a quote.</p>
+                  <div style="display:flex;flex-direction:column;gap:16px;">
+                    {[
+                      {label:'Studio',val:'Level 3, 50 Queen Street, Melbourne VIC 3000',icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'},
+                      {label:'New Business',val:'hello@orbitagency.com.au',icon:'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6'},
+                      {label:'Instagram',val:'@orbitagency',icon:'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zM17.5 6.5h.01'},
+                    ].map(item=>(
+                      <div style="display:flex;gap:14px;align-items:center;">
+                        <div style="width:36px;height:36px;min-width:36px;background:rgba(5,150,105,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={item.icon}/></svg>
+                        </div>
+                        <div>
+                          <div style="color:rgba(209,250,229,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">{item.label}</div>
+                          <div style="color:#d1fae5;font-size:13px;">{item.val}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.15);border-radius:16px;padding:32px;">
+                  <h3 style="font-size:18px;color:#d1fae5;font-weight:700;margin:0 0 20px;">Tell Us About Your Project</h3>
+                  <div style="display:flex;flex-direction:column;gap:13px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                      <div>
+                        <label style="display:block;color:rgba(209,250,229,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Name</label>
+                        <input type="text" placeholder="Alex" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(5,150,105,0.2);border-radius:8px;padding:10px 14px;color:#d1fae5;font-size:13px;box-sizing:border-box;outline:none;" />
+                      </div>
+                      <div>
+                        <label style="display:block;color:rgba(209,250,229,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Company</label>
+                        <input type="text" placeholder="Brand Co." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(5,150,105,0.2);border-radius:8px;padding:10px 14px;color:#d1fae5;font-size:13px;box-sizing:border-box;outline:none;" />
+                      </div>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(209,250,229,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Service Needed</label>
+                      <select style="width:100%;background:#060e0a;border:1px solid rgba(5,150,105,0.2);border-radius:8px;padding:10px 14px;color:rgba(209,250,229,0.6);font-size:13px;box-sizing:border-box;outline:none;">
+                        <option>Select a service...</option>
+                        <option>Brand Strategy & Identity</option>
+                        <option>Digital Campaigns</option>
+                        <option>Web Design & Development</option>
+                        <option>Video Production</option>
+                        <option>Content & Social</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style="display:block;color:rgba(209,250,229,0.35);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Tell Us About Your Brand</label>
+                      <textarea placeholder="What are you trying to achieve?" rows="4" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(5,150,105,0.2);border-radius:8px;padding:10px 14px;color:#d1fae5;font-size:13px;box-sizing:border-box;outline:none;resize:none;"></textarea>
+                    </div>
+                    <button style="width:100%;background:linear-gradient(135deg,#059669,#047857);color:white;font-size:13px;font-weight:700;padding:12px;border-radius:20px;border:none;cursor:pointer;">Send Brief</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <p class="text-center text-white/25 text-xs mt-5">Design concept by Linova Group — not a real company.</p>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <section class="py-20 bg-white">
+    <div class="max-w-[1140px] mx-auto px-6">
+      <div class="text-center mb-14">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">What You Get</span>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-4">Built for Creative Agencies & Studios</h2>
+        <p class="text-muted text-lg max-w-[500px] mx-auto">A site that sells your creative capability as loudly as your portfolio does.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {[
+          {title:'Portfolio-First Architecture',desc:'Work showcase pages designed for impact — full-screen imagery, case study breakdowns, and measurable results.',icon:'M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z'},
+          {title:'Cinematic Hero Sections',desc:'Motion-driven hero sections with video backgrounds and animated text — setting the tone the moment someone lands.',icon:'M15 10l4.553-2.276A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z'},
+          {title:'Award & Press Badges',desc:'Structured sections for industry awards, press mentions, and accreditations that signal credibility at a glance.',icon:'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69z'},
+          {title:'Team & Culture Pages',desc:'Founder stories, team profiles, and studio culture sections that attract both clients and top creative talent.',icon:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'},
+          {title:'Project Brief Forms',desc:'Structured intake forms that help prospects brief you properly — saving discovery time and qualifying leads upfront.',icon:'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'},
+          {title:'SEO for Agency Search',desc:'Optimised for searches like "branding agency Melbourne" and "video production company Sydney" — terms clients use when shortlisting.',icon:'M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z'},
+        ].map(item=>(
+          <div class="group bg-white border border-border rounded-2xl p-7 hover:border-primary/20 hover:shadow-[0_8px_32px_rgba(38,39,94,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background:linear-gradient(90deg,#059669,#10b981);"></div>
+            <div class="w-11 h-11 bg-light text-primary rounded-xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={item.icon}/></svg>
+            </div>
+            <h3 class="text-dark font-bold text-base mb-2">{item.title}</h3>
+            <p class="text-muted text-sm leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 text-white text-center" style="background:linear-gradient(135deg,#071410 0%,#064e3b 60%,#052e22 100%);">
+    <div class="max-w-[600px] mx-auto px-6">
+      <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-emerald-300/70 mb-4">Marketing & Creative</span>
+      <h2 class="text-3xl lg:text-4xl font-extrabold tracking-tight mb-4">Your Agency Does Incredible Work. Does Your Site Show It?</h2>
+      <p class="text-white/55 text-lg mb-8 leading-relaxed">Let's build a digital presence that attracts the clients you actually want.</p>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold bg-white text-primary hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] transition-all duration-200">
+        Get a Free Quote
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script is:inline>
+  const tabs = document.querySelectorAll('.mktg-tab');
+  const pages = document.querySelectorAll('.mktg-page');
+  const viewport = document.getElementById('mktg-viewport');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.tab);
+      tabs.forEach((t,i) => { t.style.background=i===idx?'rgba(5,150,105,0.25)':'transparent'; t.style.color=i===idx?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.35)'; });
+      pages.forEach((p,i) => p.classList.toggle('hidden', i!==idx));
+      if(viewport) viewport.scrollTop=0;
+    });
+  });
+  document.querySelectorAll('.mktg-card').forEach(c => {
+    c.addEventListener('mouseenter',()=>{ c.style.borderColor='rgba(5,150,105,0.35)'; c.style.background='#081209'; });
+    c.addEventListener('mouseleave',()=>{ c.style.borderColor='rgba(5,150,105,0.12)'; c.style.background='#060e0a'; });
+  });
+</script>
