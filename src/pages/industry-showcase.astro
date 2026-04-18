@@ -10,7 +10,7 @@ const cards = [
     tagline: 'Law firms, consultancies & accounting practices that win clients on credibility.',
     gradient: 'linear-gradient(160deg, #0a1020 0%, #1e3a8a 55%, #2563eb 100%)',
     accent: '#3b82f6',
-    video: '',
+    video: '/videos/professional-services.mp4',
   },
   {
     id: 'technology-it',
@@ -18,7 +18,7 @@ const cards = [
     tagline: 'SaaS platforms, managed service providers & cybersecurity firms.',
     gradient: 'linear-gradient(160deg, #10071e 0%, #4c1d95 55%, #7c3aed 100%)',
     accent: '#8b5cf6',
-    video: '',
+    video: '/videos/technology-it.mp4',
   },
   {
     id: 'construction-engineering',
@@ -26,7 +26,7 @@ const cards = [
     tagline: 'Commercial builders, architects & facilities management companies.',
     gradient: 'linear-gradient(160deg, #140a04 0%, #7c2d12 55%, #ea580c 100%)',
     accent: '#f97316',
-    video: '',
+    video: '/videos/construction-engineering.mp4',
   },
   {
     id: 'marketing-creative',
@@ -34,7 +34,7 @@ const cards = [
     tagline: 'Digital agencies, branding studios & video production companies.',
     gradient: 'linear-gradient(160deg, #071410 0%, #064e3b 55%, #059669 100%)',
     accent: '#10b981',
-    video: '',
+    video: '/videos/marketing-creative.mp4',
   },
   {
     id: 'finance-advisory',
@@ -42,7 +42,7 @@ const cards = [
     tagline: 'Business lenders, wealth managers & commercial insurance brokers.',
     gradient: 'linear-gradient(160deg, #04101a 0%, #164e63 55%, #0891b2 100%)',
     accent: '#06b6d4',
-    video: '',
+    video: '/videos/finance-advisory.mp4',
   },
 ];
 ---
@@ -84,16 +84,16 @@ const cards = [
           <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-400/60 mb-1">B2B Industries</p>
           <h2 class="text-white text-2xl font-bold">Browse by Sector</h2>
         </div>
-        <p class="text-white/30 text-sm hidden sm:block">Hover to explore</p>
+        <p class="text-white/30 text-sm"><span class="hidden md:inline">Hover</span><span class="md:hidden">Tap</span> to explore</p>
       </div>
 
-      <!-- Cards row -->
-      <div class="flex gap-3 h-[560px] sm:h-[600px]" id="cards-row">
+      <!-- Cards row — vertical stack on mobile, horizontal accordion on desktop -->
+      <div class="flex flex-col md:flex-row gap-3 md:h-[600px]" id="cards-row">
         {cards.map((card, idx) => (
           <a
             href={`/industry/${card.id}`}
-            class="showcase-card relative rounded-2xl overflow-hidden cursor-pointer block"
-            style={`flex: 1; min-width: 0; transition: flex 0.5s cubic-bezier(0.4,0,0.2,1);`}
+            class="showcase-card relative rounded-2xl overflow-hidden cursor-pointer block h-[140px] md:h-auto md:flex-1 md:min-w-0"
+            style={`transition: flex 0.5s cubic-bezier(0.4,0,0.2,1);`}
             data-accent={card.accent}
           >
             <!-- Gradient bg (visible as poster when no video) -->
@@ -102,13 +102,14 @@ const cards = [
             <!-- Noise texture overlay -->
             <div class="absolute inset-0 opacity-[0.035]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox%3D%220 0 200 200%22 xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cfilter id%3D%22n%22%3E%3CfeTurbulence type%3D%22fractalNoise%22 baseFrequency%3D%220.9%22 numOctaves%3D%224%22 stitchTiles%3D%22stitch%22%2F%3E%3C%2Ffilter%3E%3Crect width%3D%22100%25%22 height%3D%22100%25%22 filter%3D%22url(%23n)%22%2F%3E%3C%2Fsvg%3E'); background-size: 180px 180px;"></div>
 
-            <!-- Video element — set src when ready, plays on hover -->
+            <!-- Video element — shows first frame as thumbnail, plays on hover -->
             <video
-              class="card-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500"
+              class="card-video absolute inset-0 w-full h-full object-cover opacity-40 transition-opacity duration-500"
               muted
               playsinline
               loop
-              preload="none"
+              preload="metadata"
+              src={card.video}
               data-src={card.video}
             ></video>
 
@@ -121,45 +122,52 @@ const cards = [
               style={`background: radial-gradient(ellipse at 50% 120%, ${card.accent}55 0%, transparent 65%);`}
             ></div>
 
-            <!-- Accent top edge line -->
+            <!-- Accent left edge line (mobile only) -->
             <div
-              class="absolute top-0 left-0 right-0 h-[2px] opacity-0 card-edge transition-opacity duration-300"
+              class="absolute top-0 left-0 w-[2px] h-full md:hidden"
+              style={`background: ${card.accent};`}
+            ></div>
+            <!-- Accent top edge line (desktop only, revealed on hover) -->
+            <div
+              class="absolute top-0 left-0 right-0 h-[2px] opacity-0 card-edge transition-opacity duration-300 hidden md:block"
               style={`background: ${card.accent};`}
             ></div>
 
             <!-- Large index number (background) -->
-            <div class="absolute top-4 left-5 select-none pointer-events-none">
-              <span class="font-black text-[72px] leading-none" style="color: rgba(255,255,255,0.06);">
+            <div class="absolute top-3 md:top-4 left-4 md:left-5 select-none pointer-events-none">
+              <span class="font-black text-[48px] md:text-[72px] leading-none" style="color: rgba(255,255,255,0.06);">
                 {String(idx + 1).padStart(2, '0')}
               </span>
             </div>
 
-            <!-- Content -->
-            <div class="absolute inset-0 flex flex-col justify-end p-5 sm:p-6">
-              <!-- Badge -->
-              <div class="mb-3">
-                <span
-                  class="inline-block text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full"
-                  style={`background: ${card.accent}20; color: ${card.accent}; border: 1px solid ${card.accent}35;`}
-                >
-                  B2B
-                </span>
+            <!-- Content — horizontal layout on mobile, vertical on desktop -->
+            <div class="absolute inset-0 flex flex-row md:flex-col items-end md:items-start justify-between md:justify-end p-4 md:p-6">
+              <div class="flex flex-col justify-center md:justify-end flex-1 md:flex-none">
+                <!-- Badge -->
+                <div class="mb-1.5 md:mb-3">
+                  <span
+                    class="inline-block text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full"
+                    style={`background: ${card.accent}20; color: ${card.accent}; border: 1px solid ${card.accent}35;`}
+                  >
+                    B2B
+                  </span>
+                </div>
+
+                <!-- Label -->
+                <h3 class="text-white font-bold text-base md:text-xl leading-snug mb-0 md:mb-1.5">{card.label}</h3>
+
+                <!-- Tagline — always visible on mobile, hover-revealed on desktop -->
+                <p class="card-tagline text-white/50 text-xs md:text-sm leading-relaxed mt-1 md:mt-0 md:opacity-0 md:translate-y-2 transition-all duration-300"
+                   style="max-height: 60px; overflow: hidden;">
+                  {card.tagline}
+                </p>
               </div>
 
-              <!-- Label -->
-              <h3 class="text-white font-bold text-lg sm:text-xl leading-snug mb-1.5">{card.label}</h3>
-
-              <!-- Tagline — revealed on hover -->
-              <p class="card-tagline text-white/50 text-sm leading-relaxed opacity-0 translate-y-2 transition-all duration-300"
-                 style="max-height: 0; overflow: hidden;">
-                {card.tagline}
-              </p>
-
-              <!-- CTA arrow — revealed on hover -->
-              <div class="card-cta mt-0 opacity-0 translate-y-2 transition-all duration-300 delay-75"
-                   style="max-height: 0; overflow: hidden;">
+              <!-- CTA arrow — always visible on mobile, hover-revealed on desktop -->
+              <div class="card-cta flex items-center md:mt-0 md:opacity-0 md:translate-y-2 transition-all duration-300 delay-75"
+                   style="overflow: hidden;">
                 <span class="inline-flex items-center gap-1.5 text-sm font-semibold" style={`color: ${card.accent};`}>
-                  Learn more
+                  <span class="hidden md:inline">Learn more</span>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </span>
               </div>
@@ -191,6 +199,7 @@ const cards = [
 document.addEventListener('DOMContentLoaded', () => {
   const row = document.getElementById('cards-row');
   const cards = Array.from(row.querySelectorAll('.showcase-card'));
+  const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
 
   cards.forEach(card => {
     const video = card.querySelector('.card-video');
@@ -199,11 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagline = card.querySelector('.card-tagline');
     const cta = card.querySelector('.card-cta');
 
-    // Lazy-load video src when ready
     const src = video.dataset.src;
-    if (src) video.src = src;
 
     card.addEventListener('mouseenter', () => {
+      if (!isDesktop()) return;
+
       // Accordion: expand this card, compress others
       cards.forEach(c => {
         c.style.flex = c === card ? '2.5' : '0.65';
@@ -231,13 +240,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     card.addEventListener('mouseleave', () => {
-      // Reset all cards to equal flex
-      cards.forEach(c => { c.style.flex = '1'; });
+      if (!isDesktop()) return;
 
-      // Hide video
+      // Reset all cards to equal flex
+      cards.forEach(c => { c.style.flex = ''; });
+
+      // Return video to thumbnail state
       if (src) {
         video.pause();
-        video.style.opacity = '0';
+        video.style.opacity = '0.4';
       }
 
       glow.style.opacity = '0';

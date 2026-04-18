@@ -19,3 +19,39 @@ html {
 body {
   -webkit-font-smoothing: antialiased;
 }
+
+/* Accessible focus rings — visible only for keyboard users.
+   Light surfaces get the primary ring; dark surfaces opt-in via .focus-ring-dark. */
+:where(a, button, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.focus-ring-dark:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Industry mockup switcher — swaps desktop-browser / mobile-phone previews. */
+.mockup-switcher .mockup-desktop { display: none; }
+.mockup-switcher .mockup-mobile { display: flex; justify-content: center; }
+
+@media (min-width: 768px) {
+  .mockup-switcher[data-view="desktop"] .mockup-desktop { display: block; }
+  .mockup-switcher[data-view="desktop"] .mockup-mobile { display: none; }
+  .mockup-switcher[data-view="mobile"] .mockup-desktop { display: none; }
+  .mockup-switcher[data-view="mobile"] .mockup-mobile { display: flex; justify-content: center; }
+}
+
+.mockup-toggle-btn {
+  color: rgba(255, 255, 255, 0.5);
+}
+.mockup-toggle-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+.mockup-toggle-btn-active,
+.mockup-toggle-btn-active:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/navbar/Navbar.astro';
 import Footer from '../../components/footer/Footer.astro';
+import MockupViewToggle from '../../components/industry/MockupViewToggle.astro';
 ---
 
 <Layout title="Marketing & Creative — Linova Group" description="Web design for digital agencies, branding studios & video production companies.">
@@ -35,7 +36,11 @@ import Footer from '../../components/footer/Footer.astro';
         <p class="text-white/40 text-sm">Switch pages, hover elements, and explore the full design.</p>
       </div>
 
-      <div class="rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
+      <MockupViewToggle />
+
+      <div class="mockup-switcher" data-view="desktop">
+      <!-- Desktop browser mockup -->
+      <div class="mockup-desktop rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
         <div class="flex items-center gap-3 px-5 py-3" style="background:#0b1410; border-bottom:1px solid rgba(255,255,255,0.08);">
           <span class="w-3 h-3 rounded-full bg-red-400/80"></span>
           <span class="w-3 h-3 rounded-full bg-amber-400/80"></span>
@@ -44,14 +49,6 @@ import Footer from '../../components/footer/Footer.astro';
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             orbitagency.com.au
           </div>
-          <div class="flex items-center gap-1 ml-auto" id="mktg-tabs">
-            {['Home','Our Work','Services','Contact'].map((tab,i)=>(
-              <button class="mktg-tab px-3 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 cursor-pointer" data-tab={i}
-                style={i===0?'background:rgba(5,150,105,0.25);color:rgba(255,255,255,0.9);':'background:transparent;color:rgba(255,255,255,0.35);'}>
-                {tab}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div style="height:620px;overflow-y:auto;overflow-x:hidden;" id="mktg-viewport">
@@ -59,44 +56,47 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- PAGE 0: HOME -->
           <div class="mktg-page" data-page="0">
             <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="mktg-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
                 </div>
                 <span style="color:#d1fae5;font-size:15px;font-weight:800;letter-spacing:-0.01em;">Orbit<span style="color:#10b981;">Agency</span></span>
               </div>
               <div style="display:flex;align-items:center;gap:24px;">
-                {['Work','Services','Process','About'].map(item=>(
-                  <span style="color:rgba(209,250,229,0.45);font-size:13px;cursor:pointer;" class="mktg-nav">{item}</span>
+                {[{n:'Work',g:'1'},{n:'Services',g:'2'}].map(item=>(
+                  <span style="color:rgba(209,250,229,0.45);font-size:13px;cursor:pointer;" class="mktg-nav" data-goto={item.g}>{item.n}</span>
                 ))}
-                <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+                <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;" class="mktg-nav" data-goto="3">Start a Project</button>
               </div>
             </nav>
 
-            <!-- Hero -->
-            <div style="background:linear-gradient(160deg,#040a07 0%,#060e0a 50%,#040906 100%);padding:96px 48px 80px;position:relative;overflow:hidden;">
+            <!-- Hero (Video-First) -->
+            <div style="position:relative;overflow:hidden;min-height:420px;display:flex;align-items:center;">
+              <!-- Background video -->
+              <video autoplay muted loop playsinline src="/videos/marketing-creative.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;"></video>
+              <!-- Dark overlay for text readability -->
+              <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(4,10,7,0.93) 0%,rgba(6,14,10,0.78) 45%,rgba(4,9,6,0.5) 100%);pointer-events:none;"></div>
+              <!-- Accent top line -->
               <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#059669,transparent);"></div>
-              <div style="position:absolute;top:-60px;left:-60px;width:400px;height:400px;background:radial-gradient(ellipse,rgba(5,150,105,0.15) 0%,transparent 70%);filter:blur(40px);pointer-events:none;"></div>
-              <div style="position:absolute;bottom:-40px;right:-40px;width:360px;height:360px;background:radial-gradient(ellipse,rgba(16,185,129,0.1) 0%,transparent 70%);filter:blur(35px);pointer-events:none;"></div>
 
-              <div style="max-width:700px;position:relative;">
-                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.1);border:1px solid rgba(5,150,105,0.25);padding:6px 14px;border-radius:20px;margin-bottom:28px;">
+              <div style="position:relative;padding:96px 48px 80px;max-width:700px;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.3);padding:6px 14px;border-radius:20px;margin-bottom:28px;backdrop-filter:blur(8px);">
                   <span style="width:6px;height:6px;background:#10b981;border-radius:50%;"></span>
                   <span style="color:#34d399;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">Creative Agency · Melbourne</span>
                 </div>
-                <h1 style="font-size:52px;font-weight:800;color:#d1fae5;line-height:1.05;margin:0 0 20px;letter-spacing:-0.02em;">
+                <h1 style="font-size:52px;font-weight:800;color:#ffffff;line-height:1.05;margin:0 0 20px;letter-spacing:-0.02em;text-shadow:0 2px 20px rgba(0,0,0,0.4);">
                   Ideas That<br/>
                   <span style="background:linear-gradient(90deg,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Move People.</span>
                 </h1>
-                <p style="color:rgba(209,250,229,0.5);font-size:17px;line-height:1.7;max-width:540px;margin:0 0 36px;">
+                <p style="color:rgba(255,255,255,0.7);font-size:17px;line-height:1.7;max-width:540px;margin:0 0 36px;">
                   Orbit is a full-service creative agency for bold brands. Brand strategy, digital campaigns, and video production — all under one roof.
                 </p>
                 <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                  <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:14px;font-weight:700;padding:13px 26px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                  <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:14px;font-weight:700;padding:13px 26px;border-radius:20px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(5,150,105,0.3);">
                     View Our Work
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>
-                  <button style="background:transparent;border:1px solid rgba(209,250,229,0.15);color:rgba(209,250,229,0.65);font-size:14px;font-weight:600;padding:13px 26px;border-radius:20px;cursor:pointer;">Start a Project</button>
+                  <button style="background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;padding:13px 26px;border-radius:20px;cursor:pointer;">Start a Project</button>
                 </div>
               </div>
             </div>
@@ -150,13 +150,18 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- PAGE 1: OUR WORK -->
           <div class="mktg-page hidden" data-page="1">
             <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="mktg-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
                 </div>
                 <span style="color:#d1fae5;font-size:15px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
               </div>
-              <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {[{n:'Work',g:'1'},{n:'Services',g:'2'}].map(item=>(
+                  <span style="color:rgba(209,250,229,0.45);font-size:13px;cursor:pointer;" class="mktg-nav" data-goto={item.g}>{item.n}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;" class="mktg-nav" data-goto="3">Start a Project</button>
+              </div>
             </nav>
             <div style="background:#040a07;padding:72px 48px;">
               <div style="text-align:center;margin-bottom:52px;">
@@ -195,13 +200,18 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- PAGE 2: SERVICES -->
           <div class="mktg-page hidden" data-page="2">
             <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="mktg-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
                 </div>
                 <span style="color:#d1fae5;font-size:15px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
               </div>
-              <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {[{n:'Work',g:'1'},{n:'Services',g:'2'}].map(item=>(
+                  <span style="color:rgba(209,250,229,0.45);font-size:13px;cursor:pointer;" class="mktg-nav" data-goto={item.g}>{item.n}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;" class="mktg-nav" data-goto="3">Start a Project</button>
+              </div>
             </nav>
             <div style="background:#040a07;padding:72px 48px;">
               <div style="text-align:center;margin-bottom:52px;">
@@ -234,13 +244,18 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- PAGE 3: CONTACT -->
           <div class="mktg-page hidden" data-page="3">
             <nav style="background:#060e0a;border-bottom:1px solid rgba(5,150,105,0.2);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="mktg-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
                 </div>
                 <span style="color:#d1fae5;font-size:15px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
               </div>
-              <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;">Start a Project</button>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {[{n:'Work',g:'1'},{n:'Services',g:'2'}].map(item=>(
+                  <span style="color:rgba(209,250,229,0.45);font-size:13px;cursor:pointer;" class="mktg-nav" data-goto={item.g}>{item.n}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:none;cursor:pointer;" class="mktg-nav" data-goto="3">Start a Project</button>
+              </div>
             </nav>
             <div style="background:#040a07;padding:72px 48px;">
               <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start;">
@@ -303,6 +318,97 @@ import Footer from '../../components/footer/Footer.astro';
 
         </div>
       </div>
+      <!-- Mobile phone mockup -->
+      <div class="mockup-mobile">
+        <div style="width:280px;border-radius:40px;border:3px solid rgba(255,255,255,0.12);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.6);background:#000;position:relative;">
+          <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:72px;height:20px;background:#000;border-radius:20px;z-index:60;"></div>
+          <div style="border-radius:37px;overflow:hidden;">
+            <div style="height:48px;background:#060e0a;padding:0 20px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:6px;">
+              <span style="color:white;font-size:11px;font-weight:600;">9:41</span>
+              <div style="display:flex;gap:3px;align-items:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><rect x="1" y="14" width="4" height="8" rx="1"/><rect x="7" y="10" width="4" height="12" rx="1"/><rect x="13" y="6" width="4" height="16" rx="1"/><rect x="19" y="2" width="4" height="20" rx="1"/></svg>
+              </div>
+            </div>
+            <div style="height:500px;overflow-y:auto;overflow-x:hidden;background:#040a07;">
+              <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(5,150,105,0.2);background:#060e0a;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:24px;height:24px;background:linear-gradient(135deg,#059669,#047857);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8l4 4-4 4M8 12h8"/></svg>
+                  </div>
+                  <span style="color:#d1fae5;font-size:11px;font-weight:800;">Orbit<span style="color:#10b981;">Agency</span></span>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(209,250,229,0.5)" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              </div>
+              <div style="padding:32px 16px 24px;position:relative;overflow:hidden;">
+                <video autoplay muted loop playsinline src="/videos/marketing-creative.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;"></video>
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,10,7,0.9) 0%,rgba(4,9,6,0.78) 100%);pointer-events:none;"></div>
+                <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#059669,transparent);"></div>
+                <div style="position:relative;">
+                  <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.3);padding:4px 10px;border-radius:14px;margin-bottom:16px;backdrop-filter:blur(8px);">
+                    <span style="width:4px;height:4px;background:#10b981;border-radius:50%;"></span>
+                    <span style="color:#34d399;font-size:8px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">Creative Agency · Melbourne</span>
+                  </div>
+                  <h1 style="font-size:28px;font-weight:800;color:#ffffff;line-height:1.1;margin:0 0 12px;text-shadow:0 2px 12px rgba(0,0,0,0.4);">Ideas That<br/><span style="background:linear-gradient(90deg,#34d399,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Move People.</span></h1>
+                  <p style="color:rgba(255,255,255,0.7);font-size:12px;line-height:1.6;margin:0 0 20px;">Full-service creative agency for bold brands. Strategy, campaigns, and video production — all under one roof.</p>
+                  <button style="background:linear-gradient(135deg,#059669,#047857);color:white;font-size:11px;font-weight:700;padding:10px 20px;border-radius:20px;border:none;display:flex;align-items:center;gap:6px;width:100%;justify-content:center;box-shadow:0 4px 16px rgba(5,150,105,0.3);">
+                  View Our Work
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                </div>
+              </div>
+              <div style="padding:16px;border-top:1px solid rgba(5,150,105,0.15);border-bottom:1px solid rgba(5,150,105,0.15);background:#060e0a;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center;">
+                  <div><div style="font-size:18px;font-weight:800;color:#10b981;">9 yrs</div><div style="color:rgba(209,250,229,0.35);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Building Brands</div></div>
+                  <div><div style="font-size:18px;font-weight:800;color:#10b981;">220+</div><div style="color:rgba(209,250,229,0.35);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Projects Delivered</div></div>
+                  <div><div style="font-size:18px;font-weight:800;color:#10b981;">40+</div><div style="color:rgba(209,250,229,0.35);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Awards Won</div></div>
+                  <div><div style="font-size:18px;font-weight:800;color:#10b981;">92%</div><div style="color:rgba(209,250,229,0.35);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Client Retention</div></div>
+                </div>
+              </div>
+              <div style="padding:24px 16px;">
+                <p style="color:#059669;font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;text-align:center;">Selected Work</p>
+                <h2 style="font-size:18px;color:#d1fae5;font-weight:800;margin:0 0 14px;text-align:center;">Recent Projects</h2>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.12);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);display:flex;align-items:center;justify-content:center;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l4-4 4 4"/></svg>
+                    </div>
+                    <div>
+                      <h3 style="font-size:12px;color:#d1fae5;font-weight:700;margin:0 0 2px;">Ember Coffee Co.</h3>
+                      <p style="color:rgba(209,250,229,0.4);font-size:10px;margin:0;">Brand Identity + Web</p>
+                    </div>
+                  </div>
+                  <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.12);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.25);display:flex;align-items:center;justify-content:center;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l4-4 4 4"/></svg>
+                    </div>
+                    <div>
+                      <h3 style="font-size:12px;color:#d1fae5;font-weight:700;margin:0 0 2px;">Nova Finance</h3>
+                      <p style="color:rgba(209,250,229,0.4);font-size:10px;margin:0;">Campaign + Performance</p>
+                    </div>
+                  </div>
+                  <div style="background:#060e0a;border:1px solid rgba(5,150,105,0.12);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:center;">
+                    <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:rgba(244,114,182,0.12);border:1px solid rgba(244,114,182,0.25);display:flex;align-items:center;justify-content:center;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l4-4 4 4"/></svg>
+                    </div>
+                    <div>
+                      <h3 style="font-size:12px;color:#d1fae5;font-weight:700;margin:0 0 2px;">Kite Athletic</h3>
+                      <p style="color:rgba(209,250,229,0.4);font-size:10px;margin:0;">Video + Social Content</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:16px;border-top:1px solid rgba(5,150,105,0.1);">
+                <button style="background:transparent;border:1px solid rgba(209,250,229,0.15);color:rgba(209,250,229,0.65);font-size:11px;font-weight:600;padding:10px 20px;border-radius:20px;width:100%;">Start a Project</button>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:rgba(255,255,255,0.25);border-radius:2px;z-index:60;"></div>
+        </div>
+      </div>
+
+      </div>
+      <!-- /mockup-switcher -->
+
       <p class="text-center text-white/25 text-xs mt-5">Design concept by Linova Group — not a real company.</p>
     </div>
   </section>
@@ -353,16 +459,17 @@ import Footer from '../../components/footer/Footer.astro';
 </Layout>
 
 <script is:inline>
-  const tabs = document.querySelectorAll('.mktg-tab');
   const pages = document.querySelectorAll('.mktg-page');
   const viewport = document.getElementById('mktg-viewport');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const idx = parseInt(tab.dataset.tab);
-      tabs.forEach((t,i) => { t.style.background=i===idx?'rgba(5,150,105,0.25)':'transparent'; t.style.color=i===idx?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.35)'; });
-      pages.forEach((p,i) => p.classList.toggle('hidden', i!==idx));
-      if(viewport) viewport.scrollTop=0;
-    });
+  function goToPage(idx) {
+    pages.forEach((p,i) => p.classList.toggle('hidden', i!==idx));
+    if(viewport) viewport.scrollTop=0;
+  }
+  document.querySelectorAll('.mktg-nav[data-goto]').forEach(link => {
+    link.addEventListener('click', () => goToPage(parseInt(link.dataset.goto)));
+  });
+  document.querySelectorAll('.mktg-logo').forEach(logo => {
+    logo.addEventListener('click', () => goToPage(0));
   });
   document.querySelectorAll('.mktg-card').forEach(c => {
     c.addEventListener('mouseenter',()=>{ c.style.borderColor='rgba(5,150,105,0.35)'; c.style.background='#081209'; });

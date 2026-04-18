@@ -68,7 +68,7 @@ const requests = [
           <div class="bg-white flex" style="min-height: 380px;">
 
             <!-- Sidebar -->
-            <div class="w-[140px] flex-shrink-0 border-r border-border flex flex-col" style="background:#fafafa;">
+            <div class="hidden sm:flex w-[140px] flex-shrink-0 border-r border-border flex-col" style="background:#fafafa;">
               <!-- Logo -->
               <div class="px-4 py-3.5 border-b border-border flex items-center gap-2">
                 <div class="w-5 h-5 rounded-md flex-shrink-0" style="background:linear-gradient(135deg,#0891b2,#26275E);"></div>
@@ -122,7 +122,7 @@ const requests = [
                 {requests.map(req => (
                   <div class="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-cyan-200 hover:bg-cyan-50/40 transition-colors cursor-pointer">
                     <!-- ID -->
-                    <div class="text-[8.5px] font-mono text-muted flex-shrink-0 w-9">{req.id}</div>
+                    <div class="hidden sm:block text-[8.5px] font-mono text-muted flex-shrink-0 w-9">{req.id}</div>
                     <!-- Title + type -->
                     <div class="flex-1 min-w-0">
                       <div class="text-[9.5px] font-semibold text-dark truncate">{req.title}</div>
@@ -137,7 +137,7 @@ const requests = [
                       {req.status}
                     </div>
                     <!-- Date -->
-                    <div class="text-[8px] text-muted flex-shrink-0">{req.date}</div>
+                    <div class="hidden sm:block text-[8px] text-muted flex-shrink-0">{req.date}</div>
                   </div>
                 ))}
               </div>

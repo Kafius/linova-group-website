@@ -1,85 +1,96 @@
 ---
+const services = [
+  { href: '/services#website-redesign', label: 'Website Redesign', dot: '#6366f1' },
+  { href: '/services#cinematic-heroes', label: 'Cinematic Heroes', dot: '#ec4899' },
+  { href: '/services#built-in-analytics', label: 'Built-in Analytics', dot: '#f59e0b' },
+  { href: '/services#content-management', label: 'Content Management', dot: '#10b981' },
+  { href: '/services#seo-optimization', label: 'SEO Optimization', dot: '#3b82f6' },
+  { href: '/services#maintenance-support', label: 'Maintenance & Support', dot: '#06b6d4' },
+];
+
+const industries = [
+  { href: '/industry/professional-services', label: 'Professional Services', dot: '#3b82f6' },
+  { href: '/industry/technology-it', label: 'Technology & IT', dot: '#8b5cf6' },
+  { href: '/industry/construction-engineering', label: 'Construction & Engineering', dot: '#f97316' },
+  { href: '/industry/marketing-creative', label: 'Marketing & Creative', dot: '#10b981' },
+  { href: '/industry/finance-advisory', label: 'Finance & Advisory', dot: '#06b6d4' },
+];
 ---
 
 <div class="fixed top-4 inset-x-0 z-[1000] px-4 sm:px-6" id="navbarWrapper">
-  <nav class="max-w-[1140px] mx-auto bg-white/95 backdrop-blur-md rounded-2xl border border-border shadow-[0_4px_24px_rgba(0,0,0,0.07)] px-5 flex items-center justify-between h-[64px] transition-shadow duration-300" id="navbar">
+  <nav class="max-w-[1140px] mx-auto bg-white/95 backdrop-blur-md rounded-2xl border border-border px-5 flex items-center justify-between h-[64px] transition-all duration-300" id="navbar" style="box-shadow: 0 4px 24px rgba(0,0,0,0.07);" aria-label="Primary">
     <a href="/" class="flex items-center cursor-pointer">
-      <img src="/linova-logo-horizontal.png" alt="Linova Group" class="h-11" />
+      <img src="/linova-logo-horizontal.png" alt="Linova Group" width="176" height="44" class="h-11 w-auto" />
     </a>
 
-    <button class="flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-2 md:hidden" id="navToggle" aria-label="Toggle navigation">
+    <button
+      type="button"
+      class="flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-2 md:hidden"
+      id="navToggle"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+      aria-controls="mobileMenu"
+    >
       <span class="block w-5 h-0.5 bg-dark rounded-sm transition-all duration-300 origin-center"></span>
       <span class="block w-5 h-0.5 bg-dark rounded-sm transition-all duration-300 origin-center"></span>
       <span class="block w-5 h-0.5 bg-dark rounded-sm transition-all duration-300 origin-center"></span>
     </button>
 
     <ul class="hidden md:flex items-center gap-7" id="navLinks">
-      <li class="relative group" id="servicesDropdown">
-        <a href="/services" class="flex items-center gap-1 text-muted font-medium text-sm hover:text-dark transition-colors duration-200 cursor-pointer">
+      <li class="relative group" data-dropdown>
+        <a
+          href="/services"
+          class="flex items-center gap-1 text-muted font-medium text-sm hover:text-dark transition-colors duration-200 cursor-pointer"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          data-dropdown-trigger
+        >
           Services
-          <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </a>
-        <!-- Dropdown panel -->
-        <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200" style="min-width: 230px;">
+        <div
+          class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-opacity duration-200"
+          style="min-width: 230px;"
+          role="menu"
+        >
           <div class="bg-white rounded-2xl border border-border shadow-[0_8px_32px_rgba(0,0,0,0.1)] p-2 flex flex-col gap-0.5">
-            <a href="/services#website-redesign" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#6366f1;"></span>
-              Website Redesign
-            </a>
-            <a href="/services#cinematic-heroes" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#ec4899;"></span>
-              Cinematic Heroes
-            </a>
-            <a href="/services#built-in-analytics" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#f59e0b;"></span>
-              Built-in Analytics
-            </a>
-            <a href="/services#content-management" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#10b981;"></span>
-              Content Management
-            </a>
-            <a href="/services#seo-optimization" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#3b82f6;"></span>
-              SEO Optimization
-            </a>
-            <a href="/services#maintenance-support" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#06b6d4;"></span>
-              Maintenance & Support
-            </a>
+            {services.map(s => (
+              <a href={s.href} role="menuitem" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light focus-visible:text-dark focus-visible:bg-light transition-colors duration-150">
+                <span class="w-2 h-2 rounded-full flex-shrink-0" style={`background:${s.dot};`}></span>
+                {s.label}
+              </a>
+            ))}
           </div>
         </div>
       </li>
-      <li class="relative group" id="industriesDropdown">
-        <a href="/industry-showcase" class="flex items-center gap-1 text-muted font-medium text-sm hover:text-dark transition-colors duration-200 cursor-pointer">
+
+      <li class="relative group" data-dropdown>
+        <a
+          href="/industry-showcase"
+          class="flex items-center gap-1 text-muted font-medium text-sm hover:text-dark transition-colors duration-200 cursor-pointer"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          data-dropdown-trigger
+        >
           Industries
-          <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </a>
-        <!-- Dropdown panel -->
-        <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200" style="min-width: 230px;">
+        <div
+          class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto transition-opacity duration-200"
+          style="min-width: 230px;"
+          role="menu"
+        >
           <div class="bg-white rounded-2xl border border-border shadow-[0_8px_32px_rgba(0,0,0,0.1)] p-2 flex flex-col gap-0.5">
-            <a href="/industry/professional-services" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#3b82f6;"></span>
-              Professional Services
-            </a>
-            <a href="/industry/technology-it" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#8b5cf6;"></span>
-              Technology & IT
-            </a>
-            <a href="/industry/construction-engineering" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#f97316;"></span>
-              Construction & Engineering
-            </a>
-            <a href="/industry/marketing-creative" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#10b981;"></span>
-              Marketing & Creative
-            </a>
-            <a href="/industry/finance-advisory" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
-              <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:#06b6d4;"></span>
-              Finance & Advisory
-            </a>
+            {industries.map(i => (
+              <a href={i.href} role="menuitem" class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted hover:text-dark hover:bg-light focus-visible:text-dark focus-visible:bg-light transition-colors duration-150">
+                <span class="w-2 h-2 rounded-full flex-shrink-0" style={`background:${i.dot};`}></span>
+                {i.label}
+              </a>
+            ))}
           </div>
         </div>
       </li>
+
       <li>
         <a href="/contact" class="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold bg-primary text-white rounded-xl hover:bg-primary-hover hover:shadow-[0_4px_14px_rgba(38,39,94,0.3)] transition-all duration-200 cursor-pointer">
           Get Started
@@ -92,32 +103,63 @@
   <div class="md:hidden overflow-hidden transition-all duration-300 max-h-0 mt-2" id="mobileMenu">
     <div class="bg-white rounded-2xl border border-border shadow-[0_8px_32px_rgba(0,0,0,0.1)] p-3">
       <ul class="flex flex-col gap-1">
+
+        <!-- Services accordion -->
         <li>
-          <a href="/services" data-nav-link class="block py-3 px-4 text-center text-muted font-medium text-sm hover:text-dark hover:bg-light rounded-xl transition-all duration-200 cursor-pointer">Services</a>
-          <div class="flex flex-col gap-0.5 pb-1">
-            <a href="/services#website-redesign" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Website Redesign</a>
-            <a href="/services#cinematic-heroes" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Cinematic Heroes</a>
-            <a href="/services#built-in-analytics" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Built-in Analytics</a>
-            <a href="/services#content-management" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Content Management</a>
-            <a href="/services#seo-optimization" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">SEO Optimization</a>
-            <a href="/services#maintenance-support" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Maintenance & Support</a>
+          <div class="flex items-stretch rounded-xl overflow-hidden" data-m-accordion>
+            <a href="/services" data-nav-link class="flex-1 py-3 px-4 text-muted font-medium text-sm hover:text-dark hover:bg-light transition-colors duration-200 cursor-pointer">Services</a>
+            <button
+              type="button"
+              class="px-4 text-muted hover:text-dark hover:bg-light transition-colors duration-200"
+              aria-label="Toggle services submenu"
+              aria-expanded="false"
+              data-m-toggle
+            >
+              <svg class="w-4 h-4 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="overflow-hidden transition-all duration-300 max-h-0" data-m-panel>
+            <ul class="flex flex-col gap-0.5 pt-1 pb-2 pl-3">
+              {services.map(s => (
+                <li>
+                  <a href={s.href} data-nav-link class="flex items-center gap-2.5 py-2.5 px-4 rounded-lg text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={`background:${s.dot};`}></span>
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </li>
+
+        <!-- Industries accordion -->
         <li>
-          <a href="/industry-showcase" data-nav-link class="w-full flex items-center justify-center gap-1 py-3 px-4 text-center text-muted font-medium text-sm hover:text-dark hover:bg-light rounded-xl transition-all duration-200 cursor-pointer" id="mobileIndustriesBtn">
-            Industries
-            <svg class="w-3.5 h-3.5 transition-transform duration-200" id="mobileIndustriesChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          </a>
-          <div class="overflow-hidden transition-all duration-300 max-h-0" id="mobileIndustriesMenu">
-            <div class="flex flex-col gap-0.5 pt-1 pb-1">
-              <a href="/industry/professional-services" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Professional Services</a>
-              <a href="/industry/technology-it" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Technology & IT</a>
-              <a href="/industry/construction-engineering" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Construction & Engineering</a>
-              <a href="/industry/marketing-creative" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Marketing & Creative</a>
-              <a href="/industry/finance-advisory" data-nav-link class="block py-2 px-6 text-center text-xs text-muted hover:text-dark hover:bg-light rounded-xl transition-all duration-200">Finance & Advisory</a>
-            </div>
+          <div class="flex items-stretch rounded-xl overflow-hidden" data-m-accordion>
+            <a href="/industry-showcase" data-nav-link class="flex-1 py-3 px-4 text-muted font-medium text-sm hover:text-dark hover:bg-light transition-colors duration-200 cursor-pointer">Industries</a>
+            <button
+              type="button"
+              class="px-4 text-muted hover:text-dark hover:bg-light transition-colors duration-200"
+              aria-label="Toggle industries submenu"
+              aria-expanded="false"
+              data-m-toggle
+            >
+              <svg class="w-4 h-4 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="overflow-hidden transition-all duration-300 max-h-0" data-m-panel>
+            <ul class="flex flex-col gap-0.5 pt-1 pb-2 pl-3">
+              {industries.map(i => (
+                <li>
+                  <a href={i.href} data-nav-link class="flex items-center gap-2.5 py-2.5 px-4 rounded-lg text-sm text-muted hover:text-dark hover:bg-light transition-colors duration-150">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={`background:${i.dot};`}></span>
+                    {i.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </li>
+
         <li class="mt-1">
           <a href="/contact" class="block py-3 px-4 text-center text-sm font-semibold bg-primary text-white rounded-xl hover:bg-primary-hover transition-colors duration-200 cursor-pointer" data-nav-link>
             Get Started
@@ -129,39 +171,119 @@
 </div>
 
 <script>
-  const navToggle = document.getElementById('navToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
+  // ─── Mobile toggle ───
+  const navToggle = document.getElementById('navToggle') as HTMLButtonElement | null;
+  const mobileMenu = document.getElementById('mobileMenu') as HTMLElement | null;
   const spans = navToggle?.querySelectorAll('span');
 
   let isOpen = false;
 
+  function setHamburger(open: boolean) {
+    if (!spans) return;
+    if (open) {
+      (spans[0] as HTMLElement).style.transform = 'translateY(7px) rotate(45deg)';
+      (spans[1] as HTMLElement).style.opacity = '0';
+      (spans[2] as HTMLElement).style.transform = 'translateY(-7px) rotate(-45deg)';
+    } else {
+      (spans[0] as HTMLElement).style.transform = '';
+      (spans[1] as HTMLElement).style.opacity = '';
+      (spans[2] as HTMLElement).style.transform = '';
+    }
+  }
+
   navToggle?.addEventListener('click', () => {
     isOpen = !isOpen;
     if (mobileMenu) {
-      mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + 200 + 'px' : '0';
+      mobileMenu.style.maxHeight = isOpen ? mobileMenu.scrollHeight + 400 + 'px' : '0';
     }
-    if (spans) {
-      if (isOpen) {
-        spans[0].style.transform = 'translateY(7px) rotate(45deg)';
-        spans[1].style.opacity = '0';
-        spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
-      } else {
-        spans[0].style.transform = '';
-        spans[1].style.opacity = '';
-        spans[2].style.transform = '';
-      }
-    }
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+    setHamburger(isOpen);
   });
 
   document.querySelectorAll('[data-nav-link]').forEach(link => {
     link.addEventListener('click', () => {
       isOpen = false;
       if (mobileMenu) mobileMenu.style.maxHeight = '0';
-      if (spans) {
-        spans[0].style.transform = '';
-        spans[1].style.opacity = '';
-        spans[2].style.transform = '';
+      navToggle?.setAttribute('aria-expanded', 'false');
+      setHamburger(false);
+    });
+  });
+
+  // ─── Mobile accordions (Services / Industries sub-menus) ───
+  document.querySelectorAll<HTMLElement>('[data-m-accordion]').forEach(accordion => {
+    const toggle = accordion.querySelector<HTMLButtonElement>('[data-m-toggle]');
+    const panel = accordion.parentElement?.querySelector<HTMLElement>('[data-m-panel]');
+    const caret = toggle?.querySelector('svg');
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      const next = !expanded;
+      toggle.setAttribute('aria-expanded', String(next));
+      panel.style.maxHeight = next ? panel.scrollHeight + 'px' : '0';
+      if (caret) (caret as HTMLElement).style.transform = next ? 'rotate(180deg)' : '';
+      // Grow the mobile menu's max-height to accommodate expanded panel
+      if (mobileMenu && isOpen) {
+        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 400 + 'px';
       }
     });
   });
+
+  // ─── Desktop dropdown keyboard support ───
+  document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach(dropdown => {
+    const trigger = dropdown.querySelector<HTMLAnchorElement>('[data-dropdown-trigger]');
+    const menu = dropdown.querySelector<HTMLElement>('[role="menu"]');
+    if (!trigger || !menu) return;
+
+    const items = Array.from(menu.querySelectorAll<HTMLAnchorElement>('[role="menuitem"]'));
+
+    // Keep aria-expanded in sync with visible state (focus-within / hover)
+    const sync = () => {
+      const visible = dropdown.matches(':hover, :focus-within');
+      trigger.setAttribute('aria-expanded', String(visible));
+    };
+    dropdown.addEventListener('mouseenter', sync);
+    dropdown.addEventListener('mouseleave', sync);
+    dropdown.addEventListener('focusin', sync);
+    dropdown.addEventListener('focusout', () => setTimeout(sync, 0));
+
+    // Arrow-down from trigger focuses first menu item; Esc closes.
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        items[0]?.focus();
+      } else if (e.key === 'Escape') {
+        (document.activeElement as HTMLElement)?.blur();
+      }
+    });
+    menu.addEventListener('keydown', (e) => {
+      const idx = items.indexOf(document.activeElement as HTMLAnchorElement);
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        items[Math.min(idx + 1, items.length - 1)]?.focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (idx <= 0) trigger.focus();
+        else items[idx - 1]?.focus();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        trigger.focus();
+      }
+    });
+  });
+
+  // ─── Scroll-state shadow ───
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    const baseShadow = '0 4px 24px rgba(0,0,0,0.07)';
+    const scrolledShadow = '0 10px 32px rgba(0,0,0,0.12)';
+    const update = () => {
+      const scrolled = window.scrollY > 20;
+      navbar.style.boxShadow = scrolled ? scrolledShadow : baseShadow;
+      navbar.style.background = scrolled ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.95)';
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
 </script>

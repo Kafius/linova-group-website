@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/navbar/Navbar.astro';
 import Footer from '../../components/footer/Footer.astro';
+import MockupViewToggle from '../../components/industry/MockupViewToggle.astro';
 ---
 
 <Layout title="Professional Services — Linova Group" description="Web design for law firms, consultancies & accounting practices that win clients on credibility.">
@@ -37,8 +38,12 @@ import Footer from '../../components/footer/Footer.astro';
         <p class="text-white/40 text-sm">Interact with the site below — switch pages, hover elements, explore the full design.</p>
       </div>
 
+      <MockupViewToggle />
+
+      <div class="mockup-switcher" data-view="desktop">
       <!-- Browser frame -->
-      <div class="rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
+      <!-- Desktop browser mockup -->
+      <div class="mockup-desktop rounded-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.6)] border border-white/10">
 
         <!-- Chrome bar -->
         <div class="flex items-center gap-3 px-5 py-3" style="background:#1a1b2e; border-bottom:1px solid rgba(255,255,255,0.08);">
@@ -49,18 +54,7 @@ import Footer from '../../components/footer/Footer.astro';
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
             mercer-partners.com.au
           </div>
-          <!-- Page tabs -->
-          <div class="flex items-center gap-1 ml-auto" id="browser-tabs">
-            {['Home', 'Practice Areas', 'Our Team', 'Contact'].map((tab, i) => (
-              <button
-                class="browser-tab px-3 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 cursor-pointer"
-                data-tab={i}
-                style={i === 0 ? 'background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);' : 'background:transparent;color:rgba(255,255,255,0.35);'}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+          
         </div>
 
         <!-- Website viewport -->
@@ -70,48 +64,48 @@ import Footer from '../../components/footer/Footer.astro';
           <div class="law-page" data-page="0">
             <!-- Nav -->
             <nav style="background:#0a0e1a; border-bottom:1px solid rgba(201,168,76,0.15); padding:0 48px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50;">
-              <div style="display:flex; align-items:center; gap:10px;">
+              <div style="display:flex; align-items:center; gap:10px;cursor:pointer;" class="law-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#c9a84c,#8a6f2e);border-radius:6px;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M8 6h8"/><path d="M7 3h10"/></svg>
                 </div>
                 <span style="color:#f0e6c8;font-family:Georgia,serif;font-size:16px;font-weight:700;letter-spacing:0.02em;">Mercer & Partners</span>
               </div>
               <div style="display:flex;align-items:center;gap:28px;">
-                {['Practice Areas','Our Team','Results','Contact'].map(item => (
-                  <span style="color:rgba(240,230,200,0.55);font-size:13px;cursor:pointer;transition:color 0.2s;" class="law-nav-link">{item}</span>
+                {[{n:'Practice Areas',g:'1'},{n:'Our Team',g:'2'}].map(item => (
+                  <span style="color:rgba(240,230,200,0.55);font-size:13px;cursor:pointer;transition:color 0.2s;" class="law-nav-link" data-goto={item.g}>{item.n}</span>
                 ))}
-                <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;letter-spacing:0.04em;">Book a Consultation</button>
+                <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;letter-spacing:0.04em;" class="law-nav-link" data-goto="3">Book a Consultation</button>
               </div>
             </nav>
 
-            <!-- Hero -->
-            <div style="background:linear-gradient(160deg,#060a14 0%,#0d1525 50%,#0a1020 100%);padding:96px 48px 80px;position:relative;overflow:hidden;">
+            <!-- Hero (Video-First) -->
+            <div style="position:relative;overflow:hidden;min-height:420px;display:flex;align-items:center;">
+              <!-- Background video -->
+              <video autoplay muted loop playsinline src="/videos/professional-services.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;"></video>
+              <!-- Dark overlay for text readability -->
+              <div style="position:absolute;inset:0;background:linear-gradient(100deg,rgba(6,10,20,0.93) 0%,rgba(10,16,32,0.78) 45%,rgba(10,16,32,0.5) 100%);pointer-events:none;"></div>
               <!-- Gold accent line -->
               <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>
-              <!-- Subtle texture -->
-              <div style="position:absolute;inset:0;opacity:0.03;background-image:radial-gradient(circle,#c9a84c 1px,transparent 1px);background-size:28px 28px;pointer-events:none;"></div>
-              <!-- Glow -->
-              <div style="position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,0.06) 0%,transparent 70%);pointer-events:none;"></div>
 
-              <div style="max-width:680px;position:relative;">
-                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;margin-bottom:28px;">
+              <div style="position:relative;padding:96px 48px 80px;max-width:680px;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);padding:6px 14px;border-radius:20px;margin-bottom:28px;backdrop-filter:blur(8px);">
                   <span style="width:6px;height:6px;background:#c9a84c;border-radius:50%;display:inline-block;"></span>
                   <span style="color:#c9a84c;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;">Commercial Law · Melbourne CBD</span>
                 </div>
-                <h1 style="font-family:Georgia,serif;font-size:52px;font-weight:700;color:#f0e6c8;line-height:1.1;margin:0 0 20px;letter-spacing:-0.01em;">
+                <h1 style="font-family:Georgia,serif;font-size:52px;font-weight:700;color:#ffffff;line-height:1.1;margin:0 0 20px;letter-spacing:-0.01em;text-shadow:0 2px 20px rgba(0,0,0,0.4);">
                   Justice.<br />
                   <span style="color:#c9a84c;">Strategy.</span><br />
                   Results.
                 </h1>
-                <p style="color:rgba(240,230,200,0.5);font-size:17px;line-height:1.7;max-width:520px;margin:0 0 36px;">
+                <p style="color:rgba(255,255,255,0.7);font-size:17px;line-height:1.7;max-width:520px;margin:0 0 36px;">
                   Mercer & Partners has represented Australia's most demanding commercial clients for over three decades. We don't just advise — we advocate.
                 </p>
                 <div style="display:flex;gap:14px;flex-wrap:wrap;">
-                  <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                  <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(201,168,76,0.3);">
                     Book a Free Consultation
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>
-                  <button style="background:transparent;border:1px solid rgba(240,230,200,0.2);color:rgba(240,230,200,0.7);font-size:14px;font-weight:600;padding:14px 28px;border-radius:8px;cursor:pointer;">
+                  <button style="background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:14px;font-weight:600;padding:14px 28px;border-radius:8px;cursor:pointer;">
                     View Our Results
                   </button>
                 </div>
@@ -181,13 +175,18 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- ═══════════════════════════════ PAGE 1: PRACTICE AREAS ═══════════════════════════════ -->
           <div class="law-page hidden" data-page="1">
             <nav style="background:#0a0e1a;border-bottom:1px solid rgba(201,168,76,0.15);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="law-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#c9a84c,#8a6f2e);border-radius:6px;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M8 6h8M7 3h10"/></svg>
                 </div>
                 <span style="color:#f0e6c8;font-family:Georgia,serif;font-size:16px;font-weight:700;">Mercer & Partners</span>
               </div>
-              <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Book a Consultation</button>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {[{n:'Practice Areas',g:'1'},{n:'Our Team',g:'2'}].map(item=>(
+                  <span style="color:rgba(240,230,200,0.55);font-size:13px;cursor:pointer;" class="law-nav-link" data-goto={item.g}>{item.n}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;letter-spacing:0.04em;" class="law-nav-link" data-goto="3">Book a Consultation</button>
+              </div>
             </nav>
             <div style="background:#080c18;padding:72px 48px;">
               <div style="text-align:center;margin-bottom:56px;">
@@ -221,13 +220,18 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- ═══════════════════════════════ PAGE 2: OUR TEAM ═══════════════════════════════ -->
           <div class="law-page hidden" data-page="2">
             <nav style="background:#0a0e1a;border-bottom:1px solid rgba(201,168,76,0.15);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="law-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#c9a84c,#8a6f2e);border-radius:6px;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M8 6h8M7 3h10"/></svg>
                 </div>
                 <span style="color:#f0e6c8;font-family:Georgia,serif;font-size:16px;font-weight:700;">Mercer & Partners</span>
               </div>
-              <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Book a Consultation</button>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {[{n:'Practice Areas',g:'1'},{n:'Our Team',g:'2'}].map(item=>(
+                  <span style="color:rgba(240,230,200,0.55);font-size:13px;cursor:pointer;" class="law-nav-link" data-goto={item.g}>{item.n}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;letter-spacing:0.04em;" class="law-nav-link" data-goto="3">Book a Consultation</button>
+              </div>
             </nav>
             <div style="background:#080c18;padding:72px 48px;">
               <div style="text-align:center;margin-bottom:56px;">
@@ -264,13 +268,18 @@ import Footer from '../../components/footer/Footer.astro';
           <!-- ═══════════════════════════════ PAGE 3: CONTACT ═══════════════════════════════ -->
           <div class="law-page hidden" data-page="3">
             <nav style="background:#0a0e1a;border-bottom:1px solid rgba(201,168,76,0.15);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" class="law-logo">
                 <div style="width:32px;height:32px;background:linear-gradient(135deg,#c9a84c,#8a6f2e);border-radius:6px;display:flex;align-items:center;justify-content:center;">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M8 6h8M7 3h10"/></svg>
                 </div>
                 <span style="color:#f0e6c8;font-family:Georgia,serif;font-size:16px;font-weight:700;">Mercer & Partners</span>
               </div>
-              <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;">Book a Consultation</button>
+              <div style="display:flex;align-items:center;gap:24px;">
+                {[{n:'Practice Areas',g:'1'},{n:'Our Team',g:'2'}].map(item=>(
+                  <span style="color:rgba(240,230,200,0.55);font-size:13px;cursor:pointer;" class="law-nav-link" data-goto={item.g}>{item.n}</span>
+                ))}
+                <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:12px;font-weight:700;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;letter-spacing:0.04em;" class="law-nav-link" data-goto="3">Book a Consultation</button>
+              </div>
             </nav>
             <div style="background:#080c18;padding:72px 48px;">
               <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start;">
@@ -346,6 +355,82 @@ import Footer from '../../components/footer/Footer.astro';
       <!-- /browser frame -->
 
       <!-- Caption -->
+      <!-- Mobile phone mockup -->
+      <div class="mockup-mobile">
+        <div style="width:280px;border-radius:40px;border:3px solid rgba(255,255,255,0.12);overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.6);background:#000;position:relative;">
+          <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:72px;height:20px;background:#000;border-radius:20px;z-index:60;"></div>
+          <div style="border-radius:37px;overflow:hidden;">
+            <div style="height:48px;background:#0a0e1a;padding:0 20px;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:6px;">
+              <span style="color:white;font-size:11px;font-weight:600;">9:41</span>
+              <div style="display:flex;gap:3px;align-items:center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><rect x="1" y="14" width="4" height="8" rx="1"/><rect x="7" y="10" width="4" height="12" rx="1"/><rect x="13" y="6" width="4" height="16" rx="1"/><rect x="19" y="2" width="4" height="20" rx="1"/></svg>
+              </div>
+            </div>
+            <div style="height:500px;overflow-y:auto;overflow-x:hidden;background:#080c18;">
+              <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.15);background:#0a0e1a;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <div style="width:24px;height:24px;background:linear-gradient(135deg,#c9a84c,#8a6f2e);border-radius:5px;display:flex;align-items:center;justify-content:center;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M8 6h8M7 3h10"/></svg>
+                  </div>
+                  <span style="color:#f0e6c8;font-family:Georgia,serif;font-size:11px;font-weight:700;">Mercer & Partners</span>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(240,230,200,0.5)" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+              </div>
+              <div style="padding:32px 16px 24px;position:relative;overflow:hidden;">
+                <video autoplay muted loop playsinline src="/videos/professional-services.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;"></video>
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,10,20,0.9) 0%,rgba(10,16,32,0.78) 100%);pointer-events:none;"></div>
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);"></div>
+                <div style="position:relative;">
+                  <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);padding:4px 10px;border-radius:14px;margin-bottom:16px;backdrop-filter:blur(8px);">
+                    <span style="width:4px;height:4px;background:#c9a84c;border-radius:50%;"></span>
+                    <span style="color:#c9a84c;font-size:8px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">Commercial Law · Melbourne</span>
+                  </div>
+                  <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#ffffff;line-height:1.1;margin:0 0 12px;text-shadow:0 2px 12px rgba(0,0,0,0.4);">Justice.<br/><span style="color:#c9a84c;">Strategy.</span><br/>Results.</h1>
+                  <p style="color:rgba(255,255,255,0.7);font-size:12px;line-height:1.6;margin:0 0 20px;">Mercer & Partners has represented Australia's most demanding commercial clients for over three decades.</p>
+                  <button style="background:linear-gradient(135deg,#c9a84c,#a8872e);color:#0a0e1a;font-size:11px;font-weight:700;padding:10px 20px;border-radius:6px;border:none;display:flex;align-items:center;gap:6px;width:100%;justify-content:center;box-shadow:0 4px 16px rgba(201,168,76,0.3);">
+                  Book a Free Consultation
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                </div>
+              </div>
+              <div style="padding:16px;border-top:1px solid rgba(201,168,76,0.12);border-bottom:1px solid rgba(201,168,76,0.12);background:#0d1525;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center;">
+                  <div><div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#c9a84c;">38+</div><div style="color:rgba(240,230,200,0.4);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Years in Practice</div></div>
+                  <div><div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#c9a84c;">1,400+</div><div style="color:rgba(240,230,200,0.4);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Cases Won</div></div>
+                  <div><div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#c9a84c;">$3.2B</div><div style="color:rgba(240,230,200,0.4);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Recovered</div></div>
+                  <div><div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#c9a84c;">97%</div><div style="color:rgba(240,230,200,0.4);font-size:8px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;">Client Satisfaction</div></div>
+                </div>
+              </div>
+              <div style="padding:24px 16px;">
+                <p style="color:#c9a84c;font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;text-align:center;">Our Expertise</p>
+                <h2 style="font-family:Georgia,serif;font-size:18px;color:#f0e6c8;font-weight:700;margin:0 0 14px;text-align:center;">Practice Areas</h2>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="background:#0d1525;border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:12px;">
+                    <h3 style="font-family:Georgia,serif;font-size:12px;color:#f0e6c8;font-weight:700;margin:0 0 4px;">Commercial Litigation</h3>
+                    <p style="color:rgba(240,230,200,0.45);font-size:10px;line-height:1.5;margin:0;">Resolving high-stakes business disputes through strategic advocacy.</p>
+                  </div>
+                  <div style="background:#0d1525;border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:12px;">
+                    <h3 style="font-family:Georgia,serif;font-size:12px;color:#f0e6c8;font-weight:700;margin:0 0 4px;">Mergers & Acquisitions</h3>
+                    <p style="color:rgba(240,230,200,0.45);font-size:10px;line-height:1.5;margin:0;">End-to-end legal guidance on corporate transactions and deal structuring.</p>
+                  </div>
+                  <div style="background:#0d1525;border:1px solid rgba(201,168,76,0.1);border-radius:8px;padding:12px;">
+                    <h3 style="font-family:Georgia,serif;font-size:12px;color:#f0e6c8;font-weight:700;margin:0 0 4px;">Employment Law</h3>
+                    <p style="color:rgba(240,230,200,0.45);font-size:10px;line-height:1.5;margin:0;">Protecting businesses across workplace disputes, contracts, and compliance.</p>
+                  </div>
+                </div>
+              </div>
+              <div style="padding:16px;border-top:1px solid rgba(201,168,76,0.1);">
+                <button style="background:transparent;border:1px solid rgba(240,230,200,0.2);color:rgba(240,230,200,0.7);font-size:11px;font-weight:600;padding:10px 20px;border-radius:6px;width:100%;">View Our Results</button>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:rgba(255,255,255,0.25);border-radius:2px;z-index:60;"></div>
+        </div>
+      </div>
+
+      </div>
+      <!-- /mockup-switcher -->
+
       <p class="text-center text-white/25 text-xs mt-5">This is a design concept built by Linova Group — not a real law firm.</p>
     </div>
   </section>
@@ -399,32 +484,18 @@ import Footer from '../../components/footer/Footer.astro';
 </Layout>
 
 <script is:inline>
-  // Tab switching
-  const tabs = document.querySelectorAll('.browser-tab');
   const pages = document.querySelectorAll('.law-page');
   const viewport = document.getElementById('law-viewport');
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const idx = parseInt(tab.dataset.tab);
-
-      // Update tab styles
-      tabs.forEach((t, i) => {
-        t.style.background = i === idx ? 'rgba(255,255,255,0.12)' : 'transparent';
-        t.style.color = i === idx ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.35)';
-      });
-
-      // Show correct page
-      pages.forEach((p, i) => {
-        p.classList.toggle('hidden', i !== idx);
-      });
-
-      // Reset scroll
-      if (viewport) viewport.scrollTop = 0;
-    });
+  function goToPage(idx) {
+    pages.forEach((p,i) => p.classList.toggle('hidden', i!==idx));
+    if(viewport) viewport.scrollTop=0;
+  }
+  document.querySelectorAll('.law-nav-link[data-goto]').forEach(link => {
+    link.addEventListener('click', () => goToPage(parseInt(link.dataset.goto)));
   });
-
-  // Card hover effects
+  document.querySelectorAll('.law-logo').forEach(logo => {
+    logo.addEventListener('click', () => goToPage(0));
+  });
   document.querySelectorAll('.law-card').forEach(card => {
     card.addEventListener('mouseenter', () => {
       card.style.borderColor = 'rgba(201,168,76,0.35)';

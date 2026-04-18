@@ -1,0 +1,47 @@
+---
+// Desktop-only pill that flips its sibling .mockup-switcher between the
+// desktop-browser and mobile-phone previews on md+ viewports.
+---
+
+<div class="hidden md:flex justify-center mb-6">
+  <div class="mockup-toggle inline-flex items-center gap-1 p-1 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-sm" role="group" aria-label="Preview device">
+    <button
+      type="button"
+      data-view-btn="desktop"
+      aria-pressed="true"
+      class="mockup-toggle-btn mockup-toggle-btn-active focus-ring-dark inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] px-3.5 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+    >
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Desktop
+    </button>
+    <button
+      type="button"
+      data-view-btn="mobile"
+      aria-pressed="false"
+      class="mockup-toggle-btn focus-ring-dark inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] px-3.5 py-1.5 rounded-full transition-colors duration-200 cursor-pointer"
+    >
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+      Mobile
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.mockup-toggle').forEach(toggle => {
+    const switcher = toggle.closest('section')?.querySelector<HTMLElement>('.mockup-switcher');
+    if (!switcher) return;
+    const buttons = toggle.querySelectorAll<HTMLButtonElement>('[data-view-btn]');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.viewBtn;
+        if (!view) return;
+        switcher.setAttribute('data-view', view);
+        buttons.forEach(b => {
+          const isActive = b === btn;
+          b.classList.toggle('mockup-toggle-btn-active', isActive);
+          b.setAttribute('aria-pressed', String(isActive));
+        });
+      });
+    });
+  });
+</script>

@@ -55,6 +55,11 @@
     </div>
   </div>
 
+  <!-- Skip button -->
+  <button type="button" id="trf-skip" class="trf-skip" aria-label="Skip intro animation">
+    Skip intro
+  </button>
+
 </div>
 
 <style>
@@ -425,6 +430,35 @@
   .trf-hamburger { display: flex; }
 }
 
+/* ── Skip button ──────────────────────────────────────────────── */
+.trf-skip {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.trf-skip:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.trf-skip:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 /* ── Reduced motion ───────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .trf-before { transition: opacity 0.3s ease; }
@@ -443,12 +477,22 @@
 
 <script>
 (function () {
-  const overlay = document.getElementById('trf-overlay');
+  const overlayEl = document.getElementById('trf-overlay');
   const tNav    = document.getElementById('trf-nav');
-  if (!overlay || !tNav) return;
+  if (!overlayEl || !tNav) return;
+  const overlay: HTMLElement = overlayEl;
 
   // No transition on mobile — remove overlay immediately and bail
   if (document.documentElement.clientWidth < 768) {
+    overlay.remove();
+    return;
+  }
+
+  // Only play the intro on a visitor's first view. Subsequent visits skip it.
+  const SEEN_KEY = 'linova-intro-seen';
+  let hasSeen = false;
+  try { hasSeen = localStorage.getItem(SEEN_KEY) === '1'; } catch {}
+  if (hasSeen) {
     overlay.remove();
     return;
   }
@@ -516,10 +560,40 @@
   measureHeroDelta('trf-el-sub',  'real-hero-sub');
   measureHeroDelta('trf-el-ctas', 'real-hero-ctas');
 
+  // ─── Skip button — reveals the real page immediately ───
+  let finished = false;
+  function finishNow() {
+    if (finished) return;
+    finished = true;
+    try { localStorage.setItem(SEEN_KEY, '1'); } catch {}
+    overlay.classList.add('trf-done');
+    if (!reduced) {
+      if (heroBadge) revealEl(heroBadge, 0);
+      if (heroStats) setTimeout(() => { heroStats.style.opacity = '1'; }, 60);
+      heroStatItems.forEach((el, i) => revealEl(el, 120 + i * 100));
+    } else {
+      if (heroBadge) { heroBadge.style.opacity = '1'; heroBadge.style.transform = ''; }
+      if (heroStats) heroStats.style.opacity = '1';
+      heroStatItems.forEach(el => { el.style.opacity = '1'; el.style.transform = ''; });
+    }
+    setTimeout(() => overlay.remove(), FADE_OUT + 50);
+  }
+
+  const skipBtn = document.getElementById('trf-skip');
+  skipBtn?.addEventListener('click', finishNow);
+  // Esc to skip, too
+  document.addEventListener('keydown', function onKey(e) {
+    if (e.key === 'Escape') {
+      document.removeEventListener('keydown', onKey);
+      finishNow();
+    }
+  });
+
   setTimeout(() => {
     overlay.classList.add('trf-transforming');
 
     setTimeout(() => {
+      try { localStorage.setItem(SEEN_KEY, '1'); } catch {}
       overlay.classList.add('trf-done');
 
       // ── Staggered reveal of badge + stats as overlay fades out ──
