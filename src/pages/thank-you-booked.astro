@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="You're Booked — Linova Group"
+  description="Your discovery call is confirmed. Here's what to expect next."
+>
+
+  <!-- PASTE LINKEDIN CONVERSION SNIPPET HERE -->
+  <!-- PASTE GOOGLE ADS CONVERSION SNIPPET HERE -->
+
+  <!-- Minimal header: logo only -->
+  <header class="fixed top-4 inset-x-0 z-[1000] px-4 sm:px-6 pointer-events-none">
+    <div
+      class="max-w-[1140px] mx-auto bg-white/95 backdrop-blur-md rounded-2xl border border-border px-5 flex items-center h-[64px] pointer-events-auto"
+      style="box-shadow: 0 4px 24px rgba(0,0,0,0.07);"
+    >
+      <a href="/" class="flex items-center cursor-pointer">
+        <img src="/linova-logo-horizontal.png" alt="Linova Group" width="176" height="44" class="h-11 w-auto" />
+      </a>
+    </div>
+  </header>
+
+  <!-- Confirmation -->
+  <main
+    class="relative min-h-[100svh] flex items-center justify-center pt-28 pb-24 overflow-hidden text-white"
+    style="background: radial-gradient(ellipse at 50% 50%, #2a2b6e 0%, #1a1b4b 45%, #16172f 100%);"
+  >
+    <!-- Dot grid -->
+    <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <!-- Aurora -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(109,40,217,0.22) 0%, transparent 70%); filter: blur(80px);"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[700px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, transparent 30%, rgba(20,184,166,0.12) 55%, transparent 75%); filter: blur(60px);"></div>
+
+    <div class="relative max-w-[600px] mx-auto px-6 text-center">
+
+      <!-- Checkmark icon -->
+      <div class="w-20 h-20 rounded-full bg-teal-400/20 border border-teal-400/30 flex items-center justify-center mx-auto mb-8">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+
+      <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/75 text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 inline-block"></span>
+        Call Confirmed
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.1] mb-5">
+        You're booked.<br />
+        <span class="text-transparent bg-clip-text" style="background-image: linear-gradient(90deg, #93c5fd, #a5b4fc);">We'll see you soon.</span>
+      </h1>
+
+      <p class="text-white/60 text-lg leading-relaxed mb-12">
+        Check your inbox — a calendar invite is on its way. Here's what happens between now and your call:
+      </p>
+
+      <!-- What happens next -->
+      <ol class="text-left flex flex-col gap-4 mb-14">
+        {[
+          ["Calendar invite", "You'll receive a confirmation email with the meeting link and add-to-calendar options."],
+          ["Pre-call prep", "No homework required — just come with your goals and any questions about your current site."],
+          ["30-minute call", "We'll review your business, identify the biggest opportunities, and walk you through exactly how we can help."],
+          ["Same-day follow-up", "We'll send a short summary and a clear proposal within 24 hours of the call."],
+        ].map(([title, detail], i) => (
+          <li class="flex gap-4 items-start bg-white/[0.07] border border-white/10 rounded-xl p-5">
+            <span class="w-7 h-7 min-w-[1.75rem] rounded-full bg-primary/60 border border-white/20 text-white text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-white text-sm mb-0.5">{title}</p>
+              <p class="text-white/55 text-sm leading-relaxed">{detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm border border-white/20 text-white/70 hover:border-white/40 hover:text-white hover:bg-white/10 transition-all duration-200"
+      >
+        ← Back to Linova Group
+      </a>
+
+    </div>
+  </main>
+
+  <!-- Minimal footer -->
+  <footer class="py-8 border-t border-white/10" style="background: #16172f;">
+    <div class="max-w-[1140px] mx-auto px-6 text-center">
+      <p class="text-white/30 text-sm">© {new Date().getFullYear()} Linova Group. All rights reserved.</p>
+    </div>
+  </footer>
+
+</Layout>
