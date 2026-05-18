@@ -1,0 +1,18 @@
+{
+  "rewrites": [
+    {
+      "source": "/cherry-grove-group/:path*",
+      "missing": [
+        { "type": "host", "value": "preview.thelinovagroup.com" }
+      ],
+      "destination": "/404"
+    },
+    {
+      "source": "/cherry-grove-group",
+      "missing": [
+        { "type": "host", "value": "preview.thelinovagroup.com" }
+      ],
+      "destination": "/404"
+    }
+  ]
+}
