@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0A0A0A;
+  --color-ink-soft: #141414;
+  --color-mute: #BCBCBC;
+  --color-line: #2A2A2A;
+  --color-paper: #FFFFFF;
+  --color-soft: #F6F7F5;
+  --color-soft-deep: #ECEDEA;
+
+  --color-accent: #AE0024;
+  --color-accent-deep: #7A0019;
+
+  --color-placeholder: #DCDDD9;
+  --color-placeholder-text: #5A5A5A;
+
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-body: "Barlow", sans-serif;
+
+  --container-max: 1320px;
+
+  --animate-fade-up: fadeUp 0.9s forwards;
+  --animate-marquee: marqueeScroll 40s linear infinite;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .container-x {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .container-x {
+      padding-inline: 20px;
+    }
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--color-accent);
+  }
+  .eyebrow-center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-paper);
+    border-color: var(--color-accent);
+  }
+  .btn-primary:hover {
+    background: var(--color-accent-deep);
+    border-color: var(--color-accent-deep);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-paper);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  .btn-dark {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+  .btn-dark:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}

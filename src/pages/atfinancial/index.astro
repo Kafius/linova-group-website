@@ -1,0 +1,586 @@
+---
+import ATFinancialPitchLayout from '../../layouts/ATFinancialPitchLayout.astro';
+
+const capabilities = [
+  {
+    title: 'Life Insurance',
+    desc: 'Term, whole life, and universal life policies tailored to estate, family, and business continuity goals.',
+    icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 11.5c0-1 .9-1.5 1.5-1.5.6 0 1.5.5 1.5 1.5 0-1 .9-1.5 1.5-1.5.6 0 1.5.5 1.5 1.5 0 1.6-3 4-3 4s-3-2.4-3-4z"/>',
+  },
+  {
+    title: 'Corporation Insurance',
+    desc: 'IFA, shared-ownership critical illness, and key-person coverage built for medical and dental corporations.',
+    icon: '<path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M3 21h18M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/>',
+  },
+  {
+    title: 'Critical Illness',
+    desc: 'Lump-sum coverage paid on diagnosis — independent of recovery time, hospitalization, or income loss.',
+    icon: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7z"/><path d="M3.22 12H9.5l.5-1 2 4 .5-2 2 1h6.78"/>',
+  },
+  {
+    title: 'Insurance for Dentists',
+    desc: 'Practice-specific protection for students, associates, and owners — from licensing to retirement transition.',
+    icon: '<path d="M12 5.5c-1-1.5-3-2.5-5-2.5C4 3 3 5 3 7c0 4 2 6 2.5 9 .5 3 1.5 5 2.5 5s1-2 2-5c.5-1.5 1-1.5 2-1.5s1.5 0 2 1.5c1 3 1 5 2 5s2-2 2.5-5C19 13 21 11 21 7c0-2-1-4-4-4-2 0-4 1-5 2.5z"/>',
+  },
+  {
+    title: 'Disability Insurance',
+    desc: 'Own-occupation income replacement built around the realities of clinical practice and long careers.',
+    icon: '<path d="M22 12a10 10 0 0 0-20 0Z"/><path d="M12 12v8a2 2 0 0 0 4 0"/><path d="M12 2v1.5"/>',
+  },
+  {
+    title: 'Group Insurance',
+    desc: 'Employee benefits and team plans for clinics, corporations, and practices of every size.',
+    icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  },
+  {
+    title: 'Wealth Creation',
+    desc: 'RRSP, TFSA, RESP, RDSP, RRIF, and insured annuities — strategies for long-term growth and tax-efficient withdrawal.',
+    icon: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+  },
+  {
+    title: 'Travel Insurance',
+    desc: "Travel medical, trip cancellation, and visitor-to-Canada plans through Canada's top carriers.",
+    icon: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  },
+];
+
+const testimonials = [
+  {
+    quote: 'Exceptional service and hard working staff. Amy and her team go well beyond their means to help her clients. One of the best insurance brokerage who puts in honesty and client service on a very high regard. Definitely first people to contact in case you are looking for insurance services.',
+    name: 'Shreyank Patel',
+  },
+  {
+    quote: 'An insurance broker needs to be knowledgeable, genuine, compassionate, and accessible. I am proud and delighted to say that I am a client of Ms. Amy Tong who is above and beyond these qualities.',
+    name: 'Dr. Somayeh Nourian',
+  },
+  {
+    quote: 'Amy is indeed a smart, knowledgeable and accomplished person, who has a genuine interest in pursuing her career. But the qualities that made me admire her are related to her nature of being personable, accessible and ready to take the "extra step" in serving her clients. Amy is a pleasant individual who is well-spoken and polite. Through her abilities, she made me understand the "secrets" of insurance pathway, with logical explanations; she has the great ability to teach others from what she knows.',
+    name: 'Dr. D. Bololoi',
+  },
+];
+
+const partners = [
+  { name: 'Desjardins',             src: '/atfinancial/partners/desjardins.jpg' },
+  { name: 'Empire Life',            src: '/atfinancial/partners/empire-life.png' },
+  { name: 'Equitable Life',         src: '/atfinancial/partners/equitable-life.png' },
+  { name: 'Foresters',              src: '/atfinancial/partners/foresters.png' },
+  { name: 'Canada Life',            src: '/atfinancial/partners/canada-life.png' },
+  { name: 'BMO',                    src: '/atfinancial/partners/bmo.png' },
+  { name: 'SSQ Financial',          src: '/atfinancial/partners/ssq-financial.png' },
+  { name: 'tugo',                   src: '/atfinancial/partners/travel-underwriters.png' },
+  { name: 'Travelance',             src: '/atfinancial/partners/travelance.png' },
+  { name: 'Allianz',                src: '/atfinancial/partners/allianz.jpg' },
+  { name: 'Assumption Life',        src: '/atfinancial/partners/assumption-life.png' },
+  { name: 'Canada Protection Plan', src: '/atfinancial/partners/canada-protection-plan.png' },
+];
+const partnerLoop = [...partners, ...partners];
+
+const navLinks = [
+  { href: '#about', label: 'About Us' },
+  { href: '#physicians', label: 'Physicians' },
+  {
+    href: '#dentists', label: 'Dentists',
+    children: [
+      { href: '#dentists-students', label: 'Students' },
+      { href: '#dentists-associates', label: 'Associates' },
+      { href: '#dentists-owners', label: 'Practice Owners' },
+      { href: '#dentists-retirement', label: 'Retirement' },
+      { href: '#dentists-dec', label: 'DEC' },
+    ],
+  },
+  {
+    href: '#insurance', label: 'Insurance',
+    children: [
+      { href: '#insurance-life', label: 'Life' },
+      { href: '#insurance-ci', label: 'Critical Illness' },
+      { href: '#insurance-disability', label: 'Disability' },
+      { href: '#insurance-carhome', label: 'Car / Home' },
+      { href: '#insurance-travel', label: 'Travel' },
+    ],
+  },
+  {
+    href: '#wealth', label: 'Wealth Creation',
+    children: [
+      { href: '#wealth-resp', label: 'RESP' },
+      { href: '#wealth-rdsp', label: 'RDSP' },
+      { href: '#wealth-tfsa', label: 'TFSA' },
+      { href: '#wealth-rrsp', label: 'RRSP' },
+      { href: '#wealth-rrif', label: 'RRIF' },
+      { href: '#wealth-annuity', label: 'Insured Annuity' },
+    ],
+  },
+  { href: '#corporations', label: 'Corporations' },
+  { href: '#agent', label: 'Become an Agent' },
+  { href: '#resources', label: 'Resources' },
+  { href: '#contact', label: 'Contact Us' },
+];
+
+const footerGroups = [
+  { heading: 'Dentists', items: ['Students', 'Associates', 'Practice Owners', 'Retirement', 'DEC'] },
+  { heading: 'Insurance', items: ['Life', 'Critical Illness', 'Disability', 'Car / Home', 'Travel'] },
+  { heading: 'Wealth Creation', items: ['Insured Annuity', 'RESP', 'RDSP', 'TFSA', 'RRSP', 'RRIF'] },
+  { heading: 'Corporations', items: ['Medical Benefits', 'Group Benefits', 'Retirement Plans', 'Pension Plans', 'Shared Critical Illness', 'IFA'] },
+  { heading: 'Become an Agent', items: ['Submit Application', 'Events', 'Get Licenced'] },
+  { heading: 'Quick Links', items: ['Testimonials', 'Learning Center', 'Newsletter', 'FAQ', 'Our Branches', 'Book an Appointment'] },
+];
+---
+
+<ATFinancialPitchLayout
+  title="A.T. Financial Group — Preview"
+  description="Specialized insurance and wealth advisory for physicians, dentists, and the corporations they build."
+  fontsHref="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap"
+>
+  <style is:global>
+    /* Cap card */
+    .at-cap {
+      position: relative; padding: 28px 32px;
+      border-right: 1px solid var(--color-soft-deep); border-bottom: 1px solid var(--color-soft-deep);
+      background: var(--color-paper); border-top: 3px solid transparent;
+      transition: border-top-color 0.25s, background 0.25s; min-height: 220px; overflow: hidden;
+    }
+    .at-cap:hover { border-top-color: var(--color-accent); background: var(--color-soft); }
+
+    /* Market card */
+    .at-market-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.4) 50%, rgba(10,10,10,0.1) 100%);
+      transition: background 0.3s;
+    }
+    .at-market:hover .at-market-overlay {
+      background: linear-gradient(to top, rgba(174,0,36,0.92) 0%, rgba(174,0,36,0.3) 50%, rgba(10,10,10,0.1) 100%);
+    }
+
+    /* Hero animations */
+    .at-anim { opacity: 0; animation: fadeUp 0.9s forwards; }
+    .at-anim-1 { animation-delay: 0.1s; }
+    .at-anim-2 { animation-delay: 0.25s; }
+    .at-anim-3 { animation-delay: 0.4s; }
+    .at-anim-4 { animation-delay: 0.55s; }
+
+    /* Portrait accent block */
+    .at-portrait::after {
+      content: ''; position: absolute; bottom: -20px; right: -20px;
+      width: 120px; height: 120px; background: var(--color-accent); z-index: -1;
+    }
+
+    /* Marquee ticker */
+    .at-ticker-track {
+      display: flex; gap: 56px; width: max-content;
+      animation: marqueeScroll 40s linear infinite;
+    }
+    .at-ticker-item {
+      display: inline-flex; align-items: center; gap: 56px;
+      font-family: var(--font-display); font-weight: 600;
+      font-size: 22px; letter-spacing: 4px; text-transform: uppercase; white-space: nowrap;
+    }
+    @media (max-width: 768px) {
+      .at-ticker-track { gap: 36px; }
+      .at-ticker-item { gap: 36px; font-size: 1rem; letter-spacing: 2px; }
+      .at-ticker-item::after { margin-left: 36px; }
+    }
+    .at-ticker-item::after { content: '◆'; color: var(--color-accent); font-size: 14px; }
+
+    /* Partners marquee */
+    .at-pscroll-track {
+      display: flex; align-items: center; list-style: none; margin: 0; padding: 0;
+      width: max-content; animation: marqueeScroll 10s linear infinite;
+    }
+    .at-partners-wrap {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0, black 80px, black calc(100% - 80px), transparent 100%);
+    }
+
+    @media (prefers-reduced-motion: reduce) { .at-ticker-track, .at-pscroll-track { animation: none; } }
+
+    /* CTA watermark */
+    .at-watermark {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(220px, 30vw, 460px); letter-spacing: -8px;
+      color: rgba(255,255,255,0.07); pointer-events: none; user-select: none;
+      line-height: 1; white-space: nowrap;
+    }
+
+    /* Hamburger */
+    .at-ham span { display: block; width: 26px; height: 2px; background: var(--color-ink); transition: all 0.3s; }
+    .at-ham.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .at-ham.active span:nth-child(2) { opacity: 0; }
+    .at-ham.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .at-mob-menu { transform: translateX(100%); transition: transform 400ms cubic-bezier(0.7,0,0.3,1); }
+    .at-mob-menu.active { transform: translateX(0); }
+    .at-mob-overlay { opacity: 0; pointer-events: none; transition: opacity 300ms; }
+    .at-mob-overlay.active { opacity: 1; pointer-events: auto; }
+
+    details > summary::-webkit-details-marker { display: none; }
+  </style>
+
+  <!-- TOP BAR -->
+  <div class="bg-[#0A0A0A] text-[#BCBCBC] text-[13px] tracking-[0.3px] py-[10px] border-b border-[#2A2A2A] max-md:hidden">
+    <div class="container-x flex items-center justify-between gap-7 flex-wrap">
+      <div class="flex items-center gap-7 flex-wrap">
+        <a href="tel:9057071087" class="inline-flex items-center gap-1.5 transition-colors hover:text-[#AE0024]" aria-label="Call">
+          <svg class="w-[13px] h-[13px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          905-707-1087
+        </a>
+        <a href="mailto:clientservices@atfg.ca" class="inline-flex items-center gap-1.5 transition-colors hover:text-[#AE0024]" aria-label="Email">
+          <svg class="w-[13px] h-[13px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          clientservices@atfg.ca
+        </a>
+        <span class="text-[#5A5A5A]">Richmond Hill, ON</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener" class="transition-colors hover:text-[#AE0024]" aria-label="LinkedIn">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+          </svg>
+        </a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener" class="transition-colors hover:text-[#AE0024]" aria-label="Facebook">
+          <svg class="w-[14px] h-[14px]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-[100] bg-[#FFFFFF] border-b border-[#ECEDEA] shadow-sm">
+    <div class="container-x flex items-center justify-between py-[18px]">
+      <a href="/" class="flex items-center" aria-label="A.T. Financial Group Home">
+        <img src="/atfinancial/at-financial-logo.svg" alt="A.T. Financial Group" class="h-12 max-md:h-10 w-auto" />
+      </a>
+
+      <ul class="hidden lg:flex items-center gap-6 list-none m-0 p-0">
+        {navLinks.map((link) => (
+          <li class={link.children ? 'relative group' : ''}>
+            <a
+              href={link.href}
+              class="inline-flex items-center gap-1 text-[#0A0A0A] font-display font-medium uppercase text-[13px] tracking-[1px] transition-colors hover:text-[#AE0024] py-2"
+            >
+              {link.label}
+              {link.children && (
+                <svg class="w-3 h-3 transition-transform group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              )}
+            </a>
+            {link.children && (
+              <div class="absolute top-full left-0 min-w-[200px] bg-white border border-[#ECEDEA] shadow-lg opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 pt-2 pb-2 z-10">
+                {link.children.map((child) => (
+                  <a
+                    href={child.href}
+                    class="block px-5 py-2.5 text-[#0A0A0A] text-sm hover:bg-[#F6F7F5] hover:text-[#AE0024] transition-colors"
+                  >
+                    {child.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <button class="at-ham lg:hidden flex flex-col gap-[5px] p-1.5" id="at-ham" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE OVERLAY -->
+  <div id="at-mob-overlay" class="at-mob-overlay fixed inset-0 bg-black/60 z-[150]"></div>
+
+  <!-- MOBILE MENU -->
+  <div id="at-mob-menu" class="at-mob-menu fixed top-0 right-0 w-[85%] max-w-[380px] h-screen bg-white z-[200] pt-[80px] px-6 pb-8 overflow-y-auto">
+    <ul class="list-none m-0 p-0">
+      {navLinks.map((link) => (
+        <li class="border-b border-[#ECEDEA]">
+          {link.children ? (
+            <details class="group">
+              <summary class="flex items-center justify-between py-[16px] font-display font-medium text-base uppercase tracking-[1.5px] text-[#0A0A0A] cursor-pointer list-none hover:text-[#AE0024]">
+                <span>{link.label}</span>
+                <svg class="w-4 h-4 transition-transform group-open:rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </summary>
+              <div class="pb-3 pl-2">
+                {link.children.map((child) => (
+                  <a href={child.href} class="block py-2 text-sm text-[#5A5A5A] hover:text-[#AE0024]">{child.label}</a>
+                ))}
+              </div>
+            </details>
+          ) : (
+            <a href={link.href} class="block py-[16px] font-display font-medium text-base uppercase tracking-[1.5px] text-[#0A0A0A] hover:text-[#AE0024]">
+              {link.label}
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+    <div class="mt-8 space-y-3 text-sm text-[#5A5A5A]">
+      <a href="tel:9057071087" class="block hover:text-[#AE0024]">905-707-1087</a>
+      <a href="mailto:clientservices@atfg.ca" class="block hover:text-[#AE0024]">clientservices@atfg.ca</a>
+      <div class="flex items-center gap-4 pt-2">
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener" class="hover:text-[#AE0024]" aria-label="LinkedIn">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+          </svg>
+        </a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener" class="hover:text-[#AE0024]" aria-label="Facebook">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="top">
+    <!-- Desktop: video only -->
+    <div class="hidden md:block relative w-full bg-[#0A0A0A] overflow-hidden">
+      <video class="block w-full h-auto" src="/atfinancial/silentVideo-Web.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+    </div>
+
+    <!-- Mobile: text hero -->
+    <div class="md:hidden relative py-[72px] pt-[44px] overflow-hidden text-white" style="background: linear-gradient(to bottom, rgba(10,10,10,0.6), rgba(10,10,10,0.95)), #DCDDD9;">
+      <div class="container-x relative z-10">
+        <div class="at-anim at-anim-1 font-display font-medium text-sm tracking-[3px] uppercase text-[#BCBCBC] mb-5 flex items-center gap-3.5">
+          <span class="block w-[60px] h-0.5 bg-[#AE0024]"></span>
+          Established 2005 · Richmond Hill, ON
+        </div>
+        <h1 class="at-anim at-anim-2 relative font-display font-bold text-[clamp(48px,7.5vw,112px)] leading-[0.95] tracking-[-1px] uppercase max-w-[1100px] pl-4 border-l-[3px] border-[#AE0024]">
+          Invest in Your <span class="text-[#AE0024]">Success.</span>
+        </h1>
+        <p class="at-anim at-anim-3 mt-6 max-w-[580px] text-lg leading-[1.6] text-[#BCBCBC]">
+          Specialized insurance and wealth advisory for physicians, dentists, and the corporations they build. Decades of expertise, an independent broker model, and a commitment to outcomes that protect what you've worked for.
+        </p>
+        <div class="at-anim at-anim-4 mt-7 flex gap-4 flex-wrap">
+          <a href="#contact" class="btn btn-primary">Book a Consultation →</a>
+          <a href="#services" class="btn btn-ghost">Explore Services</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="py-[80px] max-md:py-14 bg-white">
+    <div class="container-x">
+      <div class="mb-12 max-md:mb-9 max-w-[900px]">
+        <div class="eyebrow">Unparalleled Services</div>
+        <h2 class="font-display font-bold text-[clamp(36px,5vw,64px)] leading-none tracking-[-0.5px] uppercase">
+          Putting Our <span class="text-[#AE0024]">Clients</span> First.
+        </h2>
+        <p class="mt-5 text-[17px] leading-[1.7] text-[#444] max-w-[680px]">
+          Independent advisors with access to Canada's leading carriers. We design coverage and investment strategies around your practice, your corporation, and your life — not the other way around.
+        </p>
+      </div>
+      <div class="grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 border-t border-l border-[#ECEDEA]">
+        {capabilities.map((cap) => (
+          <div class="at-cap">
+            <svg
+              class="relative w-12 h-12 mb-5 text-[#AE0024]"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={cap.icon}
+            />
+            <h3 class="relative font-display font-bold text-[22px] leading-[1.15] uppercase tracking-[0.3px] mb-2.5">{cap.title}</h3>
+            <p class="relative text-[14.5px] leading-[1.6] text-[#555]">{cap.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="bg-[#F6F7F5] py-[80px] max-md:py-14">
+    <div class="container-x grid grid-cols-2 max-lg:grid-cols-1 gap-12 max-lg:gap-10 items-stretch">
+      <div class="at-portrait relative h-full max-lg:h-auto max-lg:aspect-[4/5] overflow-hidden">
+        <img
+          src="/atfinancial/amy-tong.jpg"
+          alt="Amy Tong, President of A.T. Financial Group"
+          class="absolute inset-0 w-full h-full object-cover object-top"
+          loading="lazy"
+        />
+      </div>
+      <div class="relative">
+        <div class="eyebrow">About the Firm</div>
+        <h2 class="font-display font-bold text-[clamp(36px,5vw,64px)] leading-none tracking-[-0.5px] uppercase mb-5">
+          Led by an <span class="text-[#AE0024]">Industry</span> Hall of Famer.
+        </h2>
+        <p class="mb-4 text-base leading-[1.75] text-[#444]">
+          A.T. Financial Group was founded by Amy Tong, a financial strategist and Hall of Fame laureate whose career has been defined by one principle: healthcare professionals deserve advisors who understand their world.
+        </p>
+        <p class="mb-4 text-base leading-[1.75] text-[#444]">
+          For two decades, our team has built insurance and wealth strategies around the realities of practice — incorporation, billing structures, disability definitions that account for hands-on work, and retirement plans for professionals who don't have a workplace pension.
+        </p>
+        <a href="#" class="btn btn-dark mt-3">Learn More About Us →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" class="bg-white py-[80px] max-md:py-14">
+    <div class="container-x">
+      <div class="mb-12 max-md:mb-9 max-w-[900px]">
+        <div class="eyebrow">In Their Words</div>
+        <h2 class="font-display font-bold text-[clamp(36px,5vw,64px)] leading-none tracking-[-0.5px] uppercase">
+          Trusted by the <span class="text-[#AE0024]">Professionals</span> We Serve.
+        </h2>
+      </div>
+      <div class="grid grid-cols-3 max-lg:grid-cols-1 gap-6 max-lg:gap-5">
+        {testimonials.map((t) => (
+          <figure class="relative bg-[#F6F7F5] border-t-[3px] border-[#AE0024] p-7 max-md:p-6 flex flex-col">
+            <svg class="absolute top-5 right-5 w-10 h-10 text-[#AE0024]/15" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true">
+              <path d="M14 10c-5.5 0-10 4.5-10 10v18h14V20H10c0-2.2 1.8-4 4-4V10zm20 0c-5.5 0-10 4.5-10 10v18h14V20H30c0-2.2 1.8-4 4-4V10z"/>
+            </svg>
+            <blockquote class="relative text-[16px] leading-[1.7] text-[#333] flex-1">"{t.quote}"</blockquote>
+            <figcaption class="relative mt-5 pt-5 border-t border-[#ECEDEA]">
+              <div class="font-display font-bold text-[18px] uppercase tracking-[0.5px] text-[#0A0A0A] leading-tight">{t.name}</div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section id="partners" class="bg-white py-[80px] max-md:py-14">
+    <div class="container-x">
+      <div class="mb-10 max-md:mb-8 text-center max-w-[820px] mx-auto">
+        <div class="eyebrow eyebrow-center">Our Strategic Partners</div>
+        <h2 class="font-display font-bold text-[clamp(36px,5vw,60px)] leading-[1.05] tracking-[-0.5px] uppercase">
+          Trusted by Canada's <span class="text-[#AE0024]">Industry Leaders.</span>
+        </h2>
+        <p class="mt-5 text-[17px] leading-[1.7] text-[#555]">
+          A.T. Financial Group is proud to collaborate with top-tier carriers and wealth institutions, ensuring our clients have access to the best protection and growth strategies available.
+        </p>
+      </div>
+    </div>
+    <div class="at-partners-wrap">
+      <ul class="at-pscroll-track">
+        {partnerLoop.map((p, i) => (
+          <li
+            class="flex items-center justify-center px-10 max-md:px-7 min-w-[200px] max-md:min-w-[150px] h-[88px] shrink-0"
+            aria-hidden={i >= partners.length ? 'true' : 'false'}
+          >
+            <img src={p.src} alt={p.name} class="max-h-[56px] max-w-full object-contain" loading="lazy" />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section id="contact" class="bg-[#AE0024] text-white relative overflow-hidden py-[72px] max-md:py-14">
+    <div class="at-watermark">ATFG</div>
+    <div class="container-x relative grid grid-cols-[2fr_1fr] max-lg:grid-cols-1 gap-10 max-lg:gap-8 items-center z-[2]">
+      <div>
+        <h2 class="font-display font-bold text-[clamp(36px,5vw,64px)] leading-none uppercase tracking-[-0.5px]">
+          Protect Your <br />Wealth Today.
+        </h2>
+        <p class="mt-4 text-[17px] leading-[1.6] text-white/90 max-w-[540px]">
+          Book a no-obligation consultation. We'll review your current coverage, identify gaps, and outline strategies that match your stage of practice.
+        </p>
+      </div>
+      <div class="text-right max-lg:text-left">
+        <div class="font-display font-medium text-[13px] tracking-[3px] uppercase text-white/70 mb-2">Call Direct</div>
+        <a href="tel:9057071087" class="block font-display font-bold text-[40px] max-md:text-[32px] leading-none text-white mb-5">905-707-1087</a>
+        <a href="#" class="btn btn-dark">Book an Appointment →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#0A0A0A] text-[#BCBCBC] border-t-[3px] border-[#AE0024] pt-14 max-md:pt-12">
+    <div class="container-x">
+      <div class="grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 gap-8 max-lg:gap-7 pb-10">
+        {footerGroups.map((group) => (
+          <div>
+            <h4 class="font-display font-semibold text-[13px] tracking-[2px] uppercase text-white mb-4 pb-3 border-b border-[#2A2A2A]">{group.heading}</h4>
+            <ul class="list-none m-0 p-0">
+              {group.items.map((item) => (
+                <li class="mb-2">
+                  <a href="#" class="text-[13px] text-[#BCBCBC] transition-colors hover:text-[#AE0024]">{item}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <!-- Contact -->
+        <div>
+          <h4 class="font-display font-semibold text-[13px] tracking-[2px] uppercase text-white mb-4 pb-3 border-b border-[#2A2A2A]">Contact</h4>
+          <div class="flex gap-3 items-start mb-3 text-[13px] leading-[1.5]">
+            <svg class="w-4 h-4 text-[#AE0024] shrink-0 mt-[3px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>Unit 206 - 208, 9140 Leslie St<br />Richmond Hill, ON L4B 0A9</span>
+          </div>
+          <div class="flex gap-3 items-start mb-3 text-[13px] leading-[1.5]">
+            <svg class="w-4 h-4 text-[#AE0024] shrink-0 mt-[3px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <a href="tel:9057071087" class="hover:text-[#AE0024] transition-colors">905-707-1087</a>
+          </div>
+          <div class="flex gap-3 items-start mb-3 text-[13px] leading-[1.5]">
+            <svg class="w-4 h-4 text-[#AE0024] shrink-0 mt-[3px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <a href="mailto:clientservices@atfg.ca" class="hover:text-[#AE0024] transition-colors">clientservices@atfg.ca</a>
+          </div>
+          <div class="mt-4 flex items-center gap-4">
+            <a href="https://www.linkedin.com/" target="_blank" rel="noopener" class="text-[#BCBCBC] hover:text-[#AE0024] transition-colors" aria-label="LinkedIn">
+              <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener" class="text-[#BCBCBC] hover:text-[#AE0024] transition-colors" aria-label="Facebook">
+              <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.1 24 18.1 24 12.07z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-[#2A2A2A] py-6 flex justify-between items-center flex-wrap gap-4 text-xs tracking-[1px] uppercase text-[#5A5A5A]">
+        <div>© {new Date().getFullYear()} A.T. Financial Group Inc. All Rights Reserved.</div>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-[#AE0024] transition-colors">Privacy</a>
+          <a href="#" class="hover:text-[#AE0024] transition-colors">Legal</a>
+          <a href="#" class="hover:text-[#AE0024] transition-colors">Branches</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script is:inline>
+    const ham = document.getElementById('at-ham');
+    const menu = document.getElementById('at-mob-menu');
+    const overlay = document.getElementById('at-mob-overlay');
+    function openMenu() {
+      ham.classList.add('active');
+      menu.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      ham.classList.remove('active');
+      menu.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    ham.addEventListener('click', () => menu.classList.contains('active') ? closeMenu() : openMenu());
+    overlay.addEventListener('click', closeMenu);
+    document.querySelectorAll('#at-mob-menu a').forEach(a => a.addEventListener('click', closeMenu));
+  </script>
+
+</ATFinancialPitchLayout>
