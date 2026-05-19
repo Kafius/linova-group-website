@@ -1,0 +1,142 @@
+---
+import VltLayout from '../../../layouts/VltLayout.astro';
+
+const options = [
+  {
+    id: '01', tag: 'DIY Assembly', name: 'Cut & Notched', sub: 'Unassembled · Shipped Flat', dark: false,
+    dots: [0,2,4,6,8],
+    desc: 'Ideal for businesses or professionals who prefer to handle the final assembly themselves. Each bar is carefully cut and notched according to your specifications and then shipped flat.',
+    benefits: [
+      'Easier storage and shipping',
+      'Offers flexibility for final assembly on-site',
+      'Cost-effective for larger projects where assembly labor is readily available',
+    ],
+  },
+  {
+    id: '02', tag: 'Quick Installation', name: 'Assembled Cut & Notched', sub: 'Fully Assembled · Ready to Install', dark: true,
+    dots: [1,3,5,7,8],
+    desc: "If you prefer a product that's ready to be installed, the Cut and Notched bars are fully assembled before shipping. These units are crafted to fit seamlessly into your window or door system, requiring minimal effort for installation.",
+    benefits: [
+      'Saves time on-site, allowing for faster project completion',
+      'Minimizes the risk of incorrect assembly',
+      'Convenient and efficient for projects that require quick turnaround',
+    ],
+  },
+  {
+    id: '03', tag: 'Precision Fitting', name: 'Coped', sub: 'Unassembled · Shipped Flat', dark: false,
+    dots: [0,2,4,6,8],
+    desc: 'Provides bars that have been precisely cut and shaped (or "coped") for perfect joint fitting, but are not pre-assembled. Shipped flat, allowing the customer to assemble the SDL bars at their convenience.',
+    benefits: [
+      'Perfect for custom projects where precision fitting is important',
+      'Flexible storage and transport',
+      'Provides a custom solution while keeping costs lower than pre-assembled options',
+    ],
+  },
+  {
+    id: '04', tag: 'Full Customization', name: 'Lineal Bars', sub: 'Uncut · Unassembled · Shipped Flat', dark: true,
+    dots: [1,3,5,7,8],
+    desc: 'For projects requiring full customization, this option provides uncut and unassembled SDL bars. Shipped flat, allowing you to cut them to specific lengths and assemble them as needed for each project.',
+    benefits: [
+      'Full control over customization for highly specific designs',
+      'Ideal for professional installers or fabricators who require precise control',
+      'Cost-effective for larger projects or companies with their own cutting equipment',
+    ],
+  },
+];
+
+const compareRows = [
+  { option: 'Cut & Notched (Unassembled)',     assembly: 'Not Assembled',     cutting: 'Pre-cut & Notched',     shipping: 'Shipped Flat',      bestFor: 'DIY Assembly' },
+  { option: 'Assembled Cut & Notched',         assembly: 'Fully Assembled',   cutting: 'Pre-cut & Notched',     shipping: 'Shipped Assembled', bestFor: 'Quick Installation' },
+  { option: 'Coped (Unassembled)',             assembly: 'Not Assembled',     cutting: 'Pre-coped for fitting', shipping: 'Shipped Flat',      bestFor: 'Precision Fitting' },
+  { option: 'Lineal Bars (Uncut, Unassembled)',assembly: 'Not Assembled',     cutting: 'Requires Cutting',      shipping: 'Shipped Flat',      bestFor: 'Full Customization' },
+];
+---
+
+<VltLayout
+  title="Simulated Divided Lites — Vinyl Lite Technology Inc."
+  description="Explore our full range of SDL assembly options: Cut & Notched, Assembled, Coped, and Lineal Bars — designed to meet every window and door project requirement."
+>
+
+
+
+<!-- PAGE HERO -->
+<div class="vlt-page-hero" data-bg="SDL">
+  <div class="vlt-hero-grid"></div>
+  <div class="vlt-inner">
+    <div class="vlt-breadcrumb">
+      <a href="/vinyllitetech">Home</a>
+      <span>/</span>
+      <a href="/vinyllitetech/products/fabrication-equipment">Products</a>
+      <span>/</span>
+      Simulated Divided Lites
+    </div>
+    <h1 class="vlt-page-title">Simulated<br /><span class="accent">Divided</span><br />Lites</h1>
+    <p class="vlt-page-sub">
+      We offer a variety of SDL assembly options designed to meet the specific needs of window and
+      door projects. From fully assembled to flexible, uncut bars — you have complete control over
+      your order.
+    </p>
+    <div class="vlt-page-actions">
+      <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-white">Request a Quote</a>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION SECTIONS -->
+{options.map((opt, idx) => (
+  <section class={idx % 2 === 0 ? 'sdl-section' : 'sdl-section-alt'}>
+    <div class="vlt-inner">
+      <div class="vlt-label">Option {opt.id}</div>
+      <div class={`sdl-option${opt.dark ? ' reverse' : ''}`}>
+
+        <div class={`sdl-visual${opt.dark ? ' dark' : ''}`}>
+          <div class="sdl-vis-id">{opt.id}</div>
+          <div class="sdl-vis-tag">{opt.tag}</div>
+          <div class="sdl-vis-dots">
+            {Array.from({ length: 9 }, (_, i) => (
+              <div class={`sdl-vis-dot${opt.dots.includes(i) ? ' active' : ''}`}></div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <span class="sdl-option-tag">Option {opt.id} · {opt.tag}</span>
+          <div class="sdl-option-name">{opt.name}</div>
+          <div class="sdl-option-sub">{opt.sub}</div>
+          <p class="sdl-option-desc">{opt.desc}</p>
+          <ul class="sdl-option-specs">
+            {opt.benefits.map((b) => <li class="sdl-option-spec"><span>{b}</span></li>)}
+          </ul>
+          <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-primary">Get a Quote →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+))}
+
+<!-- COMPARISON TABLE -->
+<section class="sdl-section-alt">
+  <div class="vlt-inner">
+    <div class="vlt-label">Side by Side</div>
+    <h2 class="vlt-section-title">Option<br />Comparison</h2>
+
+    <div class="sdl-compare">
+      <div class="sdl-th sdl-th-dark">Option</div>
+      <div class="sdl-th">Assembly</div>
+      <div class="sdl-th">Cutting</div>
+      <div class="sdl-th">Shipping</div>
+      <div class="sdl-th sdl-th-featured">Best For</div>
+
+      {compareRows.map((r) => (<>
+        <div class="sdl-td sdl-td-label">{r.option}</div>
+        <div class="sdl-td">{r.assembly}</div>
+        <div class="sdl-td">{r.cutting}</div>
+        <div class="sdl-td">{r.shipping}</div>
+        <div class="sdl-td sdl-td-best">{r.bestFor}</div>
+      </>))}
+    </div>
+  </div>
+</section>
+
+</VltLayout>

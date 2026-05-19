@@ -1,0 +1,136 @@
+---
+import VltLayout from '../../../layouts/VltLayout.astro';
+
+const categories = [
+  {
+    id: 'one-eighth',
+    faceHeight: '1/8"',
+    dark: false,
+    desc: 'An ultra-low profile for applications that require a barely-there SDL effect — nearly flush with the glass surface.',
+    profiles: [
+      { shape: 'Flat',    width: '1-1/8"', image: '1-8x1-1-8-flat.png' },
+    ],
+  },
+  {
+    id: 'three-sixteenths',
+    faceHeight: '3/16"',
+    dark: true,
+    desc: 'A slim step-up from flat — the 3/16" adds a subtle raised channel that reads clearly without projecting far from the glass.',
+    profiles: [
+      { shape: 'Stepped', width: '1-1/8"', image: '3-16x1-1-8-stepped.png' },
+      { shape: 'Stepped', width: '7/8"',   image: '3-16x7-8-stepped.png' },
+    ],
+  },
+  {
+    id: 'one-quarter',
+    faceHeight: '1/4"',
+    dark: false,
+    desc: 'Our most varied range — the 1/4" height is available in six distinct profiles, from the simple bevel to the ornate colonial.',
+    profiles: [
+      { shape: 'Raised',   width: '1-1/4"', image: '1-4x1-1-4-raised.png' },
+      { shape: 'Rounded',  width: '1"',     image: '1-4x1-rounded.png' },
+      { shape: 'Dome',     width: '7/8"',   image: '1-4x7-8-dome.png' },
+      { shape: 'Bevel',    width: '1"',     image: '1-4x1-bevel.png' },
+      { shape: 'Georgian', width: '2"',     image: '1-4x2-georgian.png' },
+      { shape: 'Colonial', width: '1-1/8"', image: '1-4x1-1-8-colonial.png' },
+    ],
+  },
+  {
+    id: 'three-eighths',
+    faceHeight: '3/8"',
+    dark: true,
+    desc: 'The boldest face height we carry — the 3/8" profile makes a strong visual statement and suits colonial, craftsman, and architectural window styles.',
+    profiles: [
+      { shape: 'Contour',  width: '7/8"', image: '3-8x7-8-contour.png' },
+      { shape: 'Colonial', width: '7/8"', image: '3-8x7-8-colonial.png' },
+      { shape: 'Bevel',    width: '7/8"', image: '3-8x7-8-bevel.png' },
+    ],
+  },
+];
+---
+
+<VltLayout
+  title="SDL Bar Profiles — Vinyl Lite Technology Inc."
+  description="Browse all 12 Simulated Divided Lite bar profiles organized by face height — 1/8&quot;, 3/16&quot;, 1/4&quot;, and 3/8&quot; — in a range of widths and shapes."
+>
+
+
+
+<!-- PAGE HERO -->
+<div class="vlt-page-hero" data-bg="SDL">
+  <div class="vlt-hero-grid"></div>
+  <div class="vlt-inner">
+    <div class="vlt-breadcrumb">
+      <a href="/vinyllitetech">Home</a>
+      <span>/</span>
+      <a href="/vinyllitetech/products/sdl">Simulated Divided Lites</a>
+      <span>/</span>
+      Bar Profiles
+    </div>
+    <h1 class="vlt-page-title">SDL Bar<br /><span class="accent">Profiles</span><br />by Size</h1>
+    <p class="vlt-page-sub">
+      12 profiles across four face heights — from a barely-there 1/8" flat to a bold
+      3/8" colonial. Every profile is available in our full range of assembly options.
+    </p>
+    <div class="vlt-page-actions">
+      <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-white">Request a Quote</a>
+    </div>
+  </div>
+</div>
+
+<!-- FACE HEIGHT QUICK NAV -->
+<div class="size-nav">
+  <div class="vlt-inner size-nav-inner">
+    <span class="size-nav-label">Face height:</span>
+    {categories.map((c) => (
+      <a href={`#${c.id}`} class="size-nav-chip">{c.faceHeight}</a>
+    ))}
+  </div>
+</div>
+
+<!-- CATEGORY SECTIONS -->
+{categories.map((cat, idx) => (
+  <section id={cat.id} class={idx % 2 === 0 ? 'cat-section' : 'cat-section-alt'}>
+    <div class="vlt-inner">
+      <div class="cat-header">
+        <div>
+          <div class="vlt-label">Face Height</div>
+          <div class="cat-height">{cat.faceHeight}</div>
+        </div>
+        <p class="cat-desc">{cat.desc}</p>
+      </div>
+
+      <div class={`profile-grid profile-grid-${cat.profiles.length > 3 ? '3' : cat.profiles.length}`}>
+        {cat.profiles.map((p) => (
+          <div class="profile-card">
+            <div class="profile-img-wrap">
+              <img
+                src={`/vinyllitetech/${p.image}`}
+                alt={`${cat.faceHeight} × ${p.width} ${p.shape} SDL bar cross-section`}
+                class="profile-img"
+                loading="lazy"
+              />
+            </div>
+            <div class="profile-body">
+              <div class="profile-shape">{p.shape}</div>
+              <div class="profile-dims">
+                <div class="dim-item">
+                  <span class="dim-key">Height</span>
+                  <span class="dim-val">{cat.faceHeight}</span>
+                </div>
+                <span class="dim-sep">×</span>
+                <div class="dim-item">
+                  <span class="dim-key">Width</span>
+                  <span class="dim-val">{p.width}</span>
+                </div>
+              </div>
+              <a href="/vinyllitetech/contact" class="profile-cta">Get a Quote →</a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+))}
+
+</VltLayout>

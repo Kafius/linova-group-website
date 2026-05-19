@@ -1,0 +1,129 @@
+---
+import VltLayout from '../../layouts/VltLayout.astro';
+
+const values = [
+  { num: '01', title: 'Quality',     body: 'A commitment to delivering durable, high-performance products that meet the unique needs of each client in the window and door industry.' },
+  { num: '02', title: 'Innovation',  body: 'Continuously developing solutions that push the boundaries of what custom plastic products can achieve for manufacturers.' },
+  { num: '03', title: 'Precision',   body: 'Tight tolerances and consistent output across every product category — from SDL fabrication equipment to window accessories.' },
+  { num: '04', title: 'Partnership', body: 'We work alongside our clients as a long-term partner, helping them enhance their product line and set their business apart.' },
+];
+
+const offerings = [
+  { title: 'Simulated Divided Lites',  body: 'Purpose-built SDL systems and components that deliver clean, professional aesthetics for vinyl and wood window manufacturers.' },
+  { title: 'Window Accessories',       body: 'A comprehensive range of accessory products engineered to enhance the functionality and finish of window and door assemblies.' },
+  { title: 'Single-Use Alternatives',  body: 'Cost-effective, high-quality single-use product solutions designed for efficiency without compromising on performance.' },
+  { title: 'Fabrication Equipment',    body: 'Industry-specific fabrication tools — including The Bullet, Derringer Punch, and Magnum Punch — built for precision SDL production.' },
+];
+
+const stats = [
+  { num: '400+', label: 'Projects Completed' },
+  { num: '25',   label: 'Years of Experience' },
+  { num: '100%', label: 'Satisfaction Guaranteed' },
+];
+---
+
+<VltLayout
+  title="About — Vinyl Lite Technology Inc."
+  description="Vinyl Lite Technology Inc. is a competitive provider of custom plastic products for the window and door industry — delivering quality, innovation, and precision."
+  activeSection="about"
+>
+
+
+
+<!-- PAGE HERO -->
+<div class="vlt-page-hero" data-bg="VLT">
+  <div class="vlt-hero-grid"></div>
+  <div class="vlt-inner">
+    <div class="vlt-breadcrumb">
+      <a href="/vinyllitetech">Home</a>
+      <span>/</span>
+      About
+    </div>
+    <h1 class="vlt-page-title">Custom Plastic<br /><span class="accent">Products</span><br />Done Right</h1>
+    <p class="vlt-page-sub">
+      A competitive provider of custom plastic products designed specifically for the window and
+      door industry — built on quality, innovation, and precision.
+    </p>
+  </div>
+</div>
+
+<!-- WHO WE ARE -->
+<section class="about-section">
+  <div class="vlt-inner">
+    <div class="vlt-label">Who We Are</div>
+    <div class="story-grid">
+      <div class="story-body">
+        <p>
+          Vinyl Lite Technology Inc. is a competitive provider of custom plastic products designed
+          specifically for the window and door industry. With a commitment to quality, innovation,
+          and precision, we deliver solutions that meet the unique needs of our clients, helping
+          them achieve superior results for their products.
+        </p>
+        <p>
+          We offer a comprehensive range of products including Simulated Divided Lites, Window
+          Accessories, Single-Use Alternatives, and Fabrication Equipment. Our focus is on
+          providing durable, high-performance products that enhance the functionality and
+          aesthetics of our clients' products.
+        </p>
+        <p>
+          Partner with us to enhance your product line, and let our expert team deliver solutions
+          that will set your business apart.
+        </p>
+      </div>
+      <div class="story-aside">
+        {stats.map((s) => (
+          <div class="story-stat">
+            <span class="story-stat-num">{s.num}</span>
+            <span class="story-stat-label">{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE OFFER -->
+<section class="about-dark">
+  <div class="vlt-inner">
+    <div class="vlt-label">What We Offer</div>
+    <h2 class="vlt-section-title">Our Product<br />Categories</h2>
+    <div class="offerings-grid">
+      {offerings.map((o, i) => (
+        <div class="offering-card">
+          <div class="offering-num">{String(i + 1).padStart(2, '0')}</div>
+          <div class="offering-title">{o.title}</div>
+          <div class="offering-body">{o.body}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- CORE VALUES -->
+<section class="about-section">
+  <div class="vlt-inner">
+    <div class="vlt-label">What We Stand For</div>
+    <h2 class="vlt-section-title">Our Core<br />Values</h2>
+    <div class="values-rows">
+      {values.map((v) => (
+        <div class="value-row">
+          <span class="value-num">{v.num}</span>
+          <div class="value-title">{v.title}</div>
+          <div class="value-body">{v.body}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  var stats = document.querySelectorAll('.story-stat');
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.2 });
+  stats.forEach(function(el, i) { el.style.transitionDelay = (i * 100) + 'ms'; obs.observe(el); });
+</script>
+
+</VltLayout>

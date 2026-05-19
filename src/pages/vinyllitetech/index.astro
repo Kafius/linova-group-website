@@ -1,0 +1,592 @@
+---
+import PitchLayout from '../../layouts/PitchLayout.astro';
+import '../../styles/vlt-global.css';
+
+const litIndices = new Set([0, 2, 5, 7, 8, 10, 13, 15, 16, 19]);
+const heroCells = Array.from({ length: 20 }, (_, i) => litIndices.has(i));
+
+const marqueeItems = [
+  'Simulated Divided Lites',
+  'SDL Manufacturing Systems',
+  'Vinyl & Wood Window Solutions',
+  'Custom Vinyl Extrusions',
+  'Precision Fabrication Tools',
+  'Production Training',
+];
+const marqueeLoop = [...marqueeItems, ...marqueeItems];
+
+const aboutPillars = [
+  {
+    num: '01',
+    kicker: "We're",
+    title: 'Fast',
+    body: 'We stock the material — so you get what you need, when you need it. No waiting, no delays.',
+    icon: `<path d="M3 8h7M7 4l4 4-4 4" stroke="#0A82EF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 4v8" stroke="#0A82EF" stroke-width="1.4" stroke-linecap="round"/>`,
+  },
+  {
+    num: '02',
+    kicker: "We're",
+    title: 'Experts',
+    body: '20+ years of SDL knowledge. We\'ve seen every challenge — and built the solutions.',
+    icon: `<circle cx="8" cy="5" r="3" stroke="#0A82EF" stroke-width="1.4"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#0A82EF" stroke-width="1.4" stroke-linecap="round"/><path d="M6 5l1.5 1.5L10 3.5" stroke="#0A82EF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  },
+  {
+    num: '03',
+    kicker: "We're",
+    title: 'Specialized',
+    body: 'Custom colors, custom profiles — any spec you need, built exactly to your requirements.',
+    icon: `<path d="M2 12l4-4 3 3 5-7" stroke="#0A82EF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="3" r="2" stroke="#0A82EF" stroke-width="1.4"/>`,
+  },
+  {
+    num: '04',
+    kicker: "We're",
+    title: 'Efficient',
+    body: 'We engineered the machine that does the work — cutting production time and maximizing output.',
+    icon: `<rect x="2" y="7" width="12" height="7" rx="1" stroke="#0A82EF" stroke-width="1.4"/><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="#0A82EF" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="10.5" r="1.5" fill="#0A82EF"/>`,
+  },
+];
+
+const products = [
+  {
+    id: '01',
+    tag: 'Entry-Level',
+    name: 'The Bullet',
+    abbr: 'BLT',
+    desc: 'Compact and portable SDL fabrication tool for small-scale operations, field service, and manufacturers new to SDL production.',
+    specs: [
+      'Lightweight for easy transport and fieldwork',
+      'Simple setup and minimal maintenance required',
+      'Cost-effective for small-scale or niche projects',
+      'Suitable for field service and mobile operations',
+    ],
+    featured: false,
+    dots: [0,2,4,7,9,11],
+  },
+  {
+    id: '02',
+    tag: 'Mid-Range',
+    name: 'Derringer',
+    abbr: 'DER',
+    desc: 'Performs precise lap joints on SDL bars for seamless assembly. A versatile complement to the Magnum for small-to-medium production environments.',
+    specs: [
+      'Creates perfect lap joints for stronger connections',
+      'Compatible with various SDL production setups',
+      'Enhances workflow efficiency without compromising quality',
+      'Lightweight and durable construction for long-lasting use',
+    ],
+    featured: false,
+    dots: [1,3,5,6,8,10],
+  },
+  {
+    id: '03',
+    tag: 'High-Volume',
+    name: 'Magnum Punch',
+    abbr: 'MAG',
+    desc: 'The most advanced SDL fabrication machine — engineered for high-volume production environments with unmatched speed, precision, and productivity.',
+    specs: [
+      'Ideal for high-volume production, improving output rates',
+      'Engineered for precision, reducing material waste',
+      'Durable and robust construction ensures long-term reliability',
+      'Reduces the time and labor required for SDL production',
+    ],
+    featured: true,
+    dots: [0,2,3,5,7,9],
+  },
+];
+
+const industries = [
+  {
+    num: '01',
+    title: 'Vinyl Window Manufacturers',
+    body: 'SDL systems that integrate directly into existing vinyl window production lines, boosting throughput without disrupting your floor layout.',
+  },
+  {
+    num: '02',
+    title: 'Wood Window Manufacturers',
+    body: 'SDL production for wood window companies looking to expand their product offering without a major capital investment.',
+  },
+  {
+    num: '03',
+    title: 'Window & Door Dealers',
+    body: 'Bring SDL fabrication in-house with the Derringer — low footprint, no software required, immediate ROI.',
+  },
+];
+
+const offerings = [
+  { title: 'Simulated Divided Lites', body: 'Purpose-built SDL systems and components that deliver clean, professional aesthetics for vinyl and wood window manufacturers.' },
+  { title: 'Window Accessories', body: 'A comprehensive range of accessory products engineered to enhance the functionality and finish of window and door assemblies.' },
+  { title: 'Single-Use Alternatives', body: 'Cost-effective, high-quality single-use product solutions designed for efficiency without compromising on performance.' },
+  { title: 'Fabrication Equipment', body: 'Industry-specific fabrication tools — including The Bullet, Derringer Punch, and Magnum Punch — built for precision SDL production.' },
+];
+
+const compareRows = [
+  { label: 'Best For',         bullet: 'Field / Small-Scale', derringer: 'Small–Medium Ops',  magnum: 'High-Volume Mfg' },
+  { label: 'Portability',      bullet: 'Highly Portable',     derringer: 'Portable',           magnum: 'Fixed Station' },
+  { label: 'Lap Joint Punch',  bullet: false,                 derringer: true,                 magnum: true },
+  { label: 'Production Speed', bullet: 'Entry',               derringer: 'Mid',                magnum: 'Maximum' },
+  { label: 'Maintenance',      bullet: 'Minimal',             derringer: 'Low',                magnum: 'Standard' },
+  { label: 'Training Included',bullet: true,                  derringer: true,                 magnum: true },
+];
+---
+
+<PitchLayout
+  title="Vinyl Lite Technology Inc. — Precision SDL Manufacturing"
+  description="Vinyl Lite Technology Inc. delivers precision SDL manufacturing systems — Magnum, Derringer & The Bullet — for vinyl and wood window manufacturers. Fort Worth, TX."
+  fontsHref="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap"
+>
+
+
+
+<div class="vlt-body">
+
+  <!-- NAV -->
+  <header class="vlt-nav">
+    <div class="vlt-nav-inner">
+      <a href="/vinyllitetech" class="vlt-nav-logo" aria-label="Vinyl Lite Technology — home">
+        <img src="/vinyllitetech-logo.png" alt="Vinyl Lite Technology" />
+      </a>
+
+      <div class="vlt-nav-links" role="navigation" aria-label="Primary navigation">
+        <a href="/vinyllitetech" class="vlt-nav-link">Home</a>
+        <a href="/vinyllitetech/about" class="vlt-nav-link">About</a>
+        <div class="vlt-drop" id="vltDrop">
+          <button class="vlt-drop-btn" aria-expanded="false" aria-haspopup="true" id="vltDropBtn">
+            Products
+            <svg class="vlt-drop-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="vlt-dropdown" role="menu">
+            <li role="none"><a href="/vinyllitetech/products/fabrication-equipment" class="vlt-dropdown-item" role="menuitem">Fabrication Equipment</a></li>
+            <li role="none"><a href="/vinyllitetech/products/sdl-bar-profiles" class="vlt-dropdown-item" role="menuitem">SDL Bar Profiles</a></li>
+            <li role="none"><a href="/vinyllitetech/products/sdl" class="vlt-dropdown-item" role="menuitem">Simulated Divided Lites</a></li>
+          </ul>
+        </div>
+        <a href="#industries" class="vlt-nav-link">Industries</a>
+      </div>
+
+      <a href="/vinyllitetech/contact" class="vlt-nav-cta">Get a Quote</a>
+
+      <button class="vlt-burger" id="vltBurger" aria-label="Toggle menu" aria-expanded="false" aria-controls="vltMobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="vlt-mobile-menu" id="vltMobileMenu" aria-hidden="true">
+      <a href="/vinyllitetech" class="vlt-mobile-link">Home</a>
+      <a href="/vinyllitetech/about" class="vlt-mobile-link">About</a>
+      <div style="border-bottom: 1px solid var(--vlt-border);">
+        <button class="vlt-mobile-link" id="vltMobileDropBtn" aria-expanded="false" style="width:100%;">
+          Products
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true" id="vltMobileChevron">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="vlt-mobile-sub" id="vltMobileSub">
+          <a href="/vinyllitetech/products/fabrication-equipment" class="vlt-mobile-sub-link">Fabrication Equipment</a>
+          <a href="/vinyllitetech/products/sdl-bar-profiles" class="vlt-mobile-sub-link">SDL Bar Profiles</a>
+          <a href="/vinyllitetech/products/sdl" class="vlt-mobile-sub-link">Simulated Divided Lites</a>
+        </div>
+      </div>
+      <a href="#industries" class="vlt-mobile-link">Industries</a>
+      <a href="/vinyllitetech/contact" class="vlt-mobile-cta">Get a Quote</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" class="vlt-hero">
+    <div class="vlt-hero-grid"></div>
+
+    <div class="vlt-hero-panel" aria-hidden="true">
+      <div class="vlt-hero-visual">
+        {heroCells.map((lit) => (
+          <div class={`vlt-hero-cell${lit ? ' lit' : ''}`}></div>
+        ))}
+      </div>
+      <div class="vlt-hero-panel-fade"></div>
+      <span class="vlt-hero-panel-label">SDL Pattern Simulation</span>
+    </div>
+
+    <div class="vlt-inner">
+      <div class="vlt-hero-content">
+        <div class="vlt-hero-tag">SDL Manufacturing · Fort Worth, TX</div>
+        <h1 class="vlt-hero-title">
+          Precision<br />
+          <span class="accent">SDL</span> Systems
+        </h1>
+        <p class="vlt-hero-sub">
+          Delivering top-grade Simulated Divided Lite solutions to window and door manufacturers.
+          Engineered for productivity. Built for precision.
+        </p>
+        <div class="vlt-hero-actions">
+          <a href="/vinyllitetech/products/fabrication-equipment" class="vlt-btn vlt-btn-primary">Explore Products</a>
+          <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-ghost">Request a Quote →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="vlt-marquee-wrap" aria-hidden="true">
+    <div class="vlt-marquee-track">
+      {marqueeLoop.map((item) => (
+        <>
+          <span class="vlt-marquee-item">{item}</span>
+          <span class="vlt-marquee-item vlt-marquee-sep">·</span>
+        </>
+      ))}
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about" class="vlt-about">
+    <div class="vlt-inner">
+      <div class="vlt-about-header">
+        <div>
+          <div class="vlt-label">About Us</div>
+          <h2 class="vlt-section-title">Built by<br />Industry Experts</h2>
+        </div>
+        <p class="vlt-about-intro">
+          Vinyl Lite Technology was founded to solve a real problem: manufacturers were forced to
+          improvise with basic tools or buy pre-made kits that didn't fit their workflow. We changed
+          that — with 20+ years of SDL expertise and purpose-built fabrication systems engineered
+          from the ground up.
+        </p>
+      </div>
+
+      <div class="vlt-pillars">
+        {aboutPillars.map((c) => (
+          <div class="vlt-pillar" data-num={c.num}>
+            <div class="vlt-pillar-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" set:html={c.icon} />
+            </div>
+            <div class="vlt-pillar-kicker">{c.kicker}</div>
+            <div class="vlt-pillar-title">{c.title}</div>
+            <div class="vlt-pillar-body">{c.body}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" class="vlt-products">
+    <div class="vlt-inner">
+      <div class="vlt-products-header">
+        <div>
+          <div class="vlt-label">Our Systems</div>
+          <h2 class="vlt-section-title">Fabrication<br />Equipment</h2>
+        </div>
+        <p class="vlt-products-intro">
+          Three purpose-built SDL fabrication tools — from portable field units to high-volume
+          production punches — engineered for every scale of window manufacturing operation.
+        </p>
+      </div>
+
+      <div class="vlt-prod-grid">
+        {products.map((p) => (
+          <article class={`vlt-prod-card${p.featured ? ' vlt-prod-card--featured' : ''}`}>
+            <div>
+              <span class="vlt-prod-tag">System {p.id} · {p.tag}</span>
+              <div class="vlt-prod-name">{p.name}</div>
+              <div class="vlt-prod-visual">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <div class={`vlt-prod-dot${p.dots.includes(i) ? ' active' : ''}`}></div>
+                ))}
+              </div>
+              <p class="vlt-prod-desc">{p.desc}</p>
+            </div>
+            <ul class="vlt-prod-specs">
+              {p.specs.map((s) => <li>{s}</li>)}
+            </ul>
+            <div class="vlt-prod-abbr" aria-hidden="true">{p.abbr}</div>
+          </article>
+        ))}
+      </div>
+
+      <div class="vlt-products-cta">
+        <a href="/vinyllitetech/products/fabrication-equipment" class="vlt-btn vlt-btn-primary">Compare All Systems →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INDUSTRIES -->
+  <section id="industries" class="vlt-industries">
+    <div class="vlt-inner">
+      <div class="vlt-ind-header">
+        <div>
+          <div class="vlt-label" style="color: var(--vlt-mid);">Who We Serve</div>
+          <h2 class="vlt-section-title" style="color: #fff;">Built for<br />Manufacturers</h2>
+        </div>
+        <p class="vlt-ind-intro">
+          Every system we build is designed around the real constraints of window and door
+          manufacturing — floor space, lead times, labor, and precision.
+        </p>
+      </div>
+
+      <div class="vlt-ind-grid">
+        {industries.map((i) => (
+          <div class="vlt-ind-item">
+            <div class="vlt-ind-num">{i.num}</div>
+            <div>
+              <div class="vlt-ind-title">{i.title}</div>
+              <div class="vlt-ind-body" style="margin-top: 14px;">{i.body}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT CATEGORIES -->
+  <section id="offerings" class="vlt-offerings">
+    <div class="vlt-inner">
+      <div class="vlt-label">What We Offer</div>
+      <h2 class="vlt-section-title">Our Product<br />Categories</h2>
+
+      <div class="vlt-offerings-grid">
+        {offerings.map((o, i) => (
+          <div class="vlt-offering-card">
+            <div class="vlt-offering-num">{String(i + 1).padStart(2, '0')}</div>
+            <div class="vlt-offering-title">{o.title}</div>
+            <div class="vlt-offering-body">{o.body}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section id="compare" class="vlt-compare">
+    <div class="vlt-inner">
+      <div class="vlt-label">Side by Side</div>
+      <h2 class="vlt-section-title">System<br />Comparison</h2>
+
+      <div class="vlt-compare-table">
+        <!-- Header row -->
+        <div class="vlt-compare-head vlt-compare-head--label">
+          <span class="vlt-compare-head-tag">Feature</span>
+          <div class="vlt-compare-head-name">Spec</div>
+        </div>
+        <div class="vlt-compare-head">
+          <span class="vlt-compare-head-tag">System 01</span>
+          <div class="vlt-compare-head-name">The Bullet</div>
+        </div>
+        <div class="vlt-compare-head">
+          <span class="vlt-compare-head-tag">System 02</span>
+          <div class="vlt-compare-head-name">Derringer</div>
+        </div>
+        <div class="vlt-compare-head vlt-compare-head--featured">
+          <span class="vlt-compare-head-tag">System 03</span>
+          <div class="vlt-compare-head-name">Magnum</div>
+        </div>
+
+        <!-- Data rows -->
+        {compareRows.map((r) => (<>
+          <div class="vlt-compare-cell vlt-compare-cell--label">{r.label}</div>
+          <div class={`vlt-compare-cell${typeof r.bullet    === 'boolean' ? (r.bullet    ? ' vlt-compare-cell--check' : ' vlt-compare-cell--cross') : ' vlt-compare-cell--yes'}`}>
+            {typeof r.bullet    === 'string' ? r.bullet    : ''}
+          </div>
+          <div class={`vlt-compare-cell${typeof r.derringer === 'boolean' ? (r.derringer ? ' vlt-compare-cell--check' : ' vlt-compare-cell--cross') : ' vlt-compare-cell--yes'}`}>
+            {typeof r.derringer === 'string' ? r.derringer : ''}
+          </div>
+          <div class={`vlt-compare-cell${typeof r.magnum    === 'boolean' ? (r.magnum    ? ' vlt-compare-cell--check' : ' vlt-compare-cell--cross') : ' vlt-compare-cell--yes'}`}>
+            {typeof r.magnum    === 'string' ? r.magnum    : ''}
+          </div>
+        </>))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="vlt-contact">
+    <div class="vlt-inner">
+      <div class="vlt-contact-grid">
+        <!-- Left: info -->
+        <div>
+          <div class="vlt-label">Get in Touch</div>
+          <h2 class="vlt-section-title" style="margin-bottom: 48px;">Let's Talk<br /><span style="color: var(--vlt-bright);">Production</span></h2>
+
+          <div class="vlt-contact-info">
+            <div class="vlt-contact-info-item">
+              <span class="vlt-contact-info-label">Location</span>
+              <span class="vlt-contact-info-value">13027 Harmon Road</span>
+              <span class="vlt-contact-info-sub">Fort Worth, Texas 76177</span>
+            </div>
+            <div class="vlt-contact-info-item">
+              <span class="vlt-contact-info-label">Phone</span>
+              <span class="vlt-contact-info-value"><a href="tel:+18002592937">(800) 259-2937</a></span>
+              <span class="vlt-contact-info-sub">Mon–Fri, 8am–5pm CST</span>
+            </div>
+            <div class="vlt-contact-info-item">
+              <span class="vlt-contact-info-label">Email</span>
+              <span class="vlt-contact-info-value"><a href="mailto:info@vinyllitetech.com">info@vinyllitetech.com</a></span>
+              <span class="vlt-contact-info-sub">We respond within 1 business day</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: form -->
+        <form class="vlt-form" id="vlt-contact-form">
+          <div class="vlt-form-row">
+            <div>
+              <label class="vlt-form-label" for="vlt-first">First Name</label>
+              <input id="vlt-first" name="firstName" class="vlt-form-input" type="text" placeholder="First name" required />
+            </div>
+            <div>
+              <label class="vlt-form-label" for="vlt-last">Last Name</label>
+              <input id="vlt-last" name="lastName" class="vlt-form-input" type="text" placeholder="Last name" required />
+            </div>
+          </div>
+          <div>
+            <label class="vlt-form-label" for="vlt-email">Email</label>
+            <input id="vlt-email" name="email" class="vlt-form-input" type="email" placeholder="you@company.com" required />
+          </div>
+          <div>
+            <label class="vlt-form-label" for="vlt-phone">Phone (Optional)</label>
+            <input id="vlt-phone" name="phone" class="vlt-form-input" type="tel" placeholder="(555) 000-0000" />
+          </div>
+          <div>
+            <label class="vlt-form-label" for="vlt-interest">Interested In</label>
+            <select id="vlt-interest" name="interest" class="vlt-form-select" required>
+              <option value="" disabled selected>Select an inquiry…</option>
+              <option>The Bullet — Entry-Level SDL System</option>
+              <option>Derringer Punch — Mid-Range SDL System</option>
+              <option>Magnum Punch — High-Volume SDL System</option>
+              <option>SDL Bar Profiles</option>
+              <option>Custom Vinyl Extrusions</option>
+              <option>General Inquiry</option>
+            </select>
+          </div>
+          <div>
+            <label class="vlt-form-label" for="vlt-message">Message</label>
+            <textarea id="vlt-message" name="message" class="vlt-form-textarea" placeholder="Tell us about your production needs, volume, and any questions…" required></textarea>
+          </div>
+          <button type="submit" class="vlt-btn vlt-btn-primary" style="align-self: flex-start;">Send Inquiry →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <div class="vlt-cta">
+    <div class="vlt-inner">
+      <div class="vlt-cta-inner">
+        <div>
+          <h2 class="vlt-cta-title">Ready to Start Your SDL Program?</h2>
+          <p class="vlt-cta-sub">
+            Whether you're scaling up or just starting out, we'll help you find the right system and
+            get it running fast.
+          </p>
+        </div>
+        <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-white">Talk to an Expert</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="vlt-footer">
+    <div class="vlt-inner">
+      <div class="vlt-footer-top">
+        <div>
+          <a href="/vinyllitetech" class="vlt-footer-logo" aria-label="Vinyl Lite Technology — home">
+            <img src="/vinyllitetech-logo.png" alt="Vinyl Lite Technology" />
+          </a>
+          <p class="vlt-footer-tagline">Precision SDL Manufacturing Systems — Fort Worth, TX<br />Serving vinyl and wood window manufacturers across North America.</p>
+        </div>
+
+        <div class="vlt-footer-cols">
+          <div>
+            <div class="vlt-footer-col-head">Company</div>
+            <ul class="vlt-footer-col-links">
+              <li><a href="/vinyllitetech/about">About</a></li>
+              <li><a href="#industries">Industries</a></li>
+              <li><a href="/vinyllitetech/contact">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="vlt-footer-col-head">Products</div>
+            <ul class="vlt-footer-col-links">
+              <li><a href="/vinyllitetech/products/fabrication-equipment">Fabrication Equipment</a></li>
+              <li><a href="/vinyllitetech/products/sdl-bar-profiles">SDL Bar Profiles</a></li>
+              <li><a href="/vinyllitetech/products/sdl">Simulated Divided Lites</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="vlt-footer-bottom">
+        <span class="vlt-footer-copy">© {new Date().getFullYear()} Vinyl Lite Technology Inc. · All Rights Reserved · Fort Worth, TX</span>
+        <span class="vlt-footer-copy">Precision SDL Systems</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PITCH RIBBON -->
+  <aside class="vlt-ribbon">
+    <strong style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.5px;text-transform:uppercase;">Preview by Linova Group</strong>
+    <p style="margin-top:6px;opacity:.8;font-size:12px;">A redesign concept built for Vinyl Lite Technology. Like what you see? <a href="https://thelinovagroup.com">thelinovagroup.com</a></p>
+  </aside>
+
+</div>
+
+<script is:inline>
+  // ── Desktop Products dropdown ──
+  var vltDrop    = document.getElementById('vltDrop');
+  var vltDropBtn = document.getElementById('vltDropBtn');
+
+  function vltOpenDrop()  { vltDrop && vltDrop.setAttribute('data-open', ''); vltDropBtn && vltDropBtn.setAttribute('aria-expanded', 'true'); }
+  function vltCloseDrop() { vltDrop && vltDrop.removeAttribute('data-open');  vltDropBtn && vltDropBtn.setAttribute('aria-expanded', 'false'); }
+
+  vltDropBtn && vltDropBtn.addEventListener('click', function() {
+    vltDrop && vltDrop.hasAttribute('data-open') ? vltCloseDrop() : vltOpenDrop();
+  });
+  document.addEventListener('click', function(e) {
+    if (vltDrop && !vltDrop.contains(e.target)) vltCloseDrop();
+  });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') vltCloseDrop(); });
+
+  // Close dropdown items
+  var vltDropItems = document.querySelectorAll('.vlt-dropdown-item');
+  vltDropItems.forEach(function(item) {
+    item.addEventListener('click', function() { vltCloseDrop(); });
+  });
+
+  // ── Mobile hamburger ──
+  var vltBurger     = document.getElementById('vltBurger');
+  var vltMobileMenu = document.getElementById('vltMobileMenu');
+
+  vltBurger && vltBurger.addEventListener('click', function() {
+    var isOpen = vltMobileMenu && vltMobileMenu.classList.toggle('open');
+    vltBurger.setAttribute('aria-expanded', String(isOpen));
+    vltMobileMenu && vltMobileMenu.setAttribute('aria-hidden', String(!isOpen));
+  });
+
+  vltMobileMenu && vltMobileMenu.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      vltMobileMenu.classList.remove('open');
+      vltBurger && vltBurger.setAttribute('aria-expanded', 'false');
+      vltMobileMenu.setAttribute('aria-hidden', 'true');
+    });
+  });
+
+  // ── Mobile Products accordion ──
+  var vltMobileDropBtn = document.getElementById('vltMobileDropBtn');
+  var vltMobileSub     = document.getElementById('vltMobileSub');
+  var vltMobileChevron = document.getElementById('vltMobileChevron');
+
+  vltMobileDropBtn && vltMobileDropBtn.addEventListener('click', function() {
+    var isOpen = vltMobileSub && vltMobileSub.classList.toggle('open');
+    vltMobileDropBtn.setAttribute('aria-expanded', String(isOpen));
+    if (vltMobileChevron) vltMobileChevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+  });
+
+  // ── Contact form ──
+  var vltForm = document.getElementById('vlt-contact-form');
+  vltForm && vltForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert("Thanks — we'll be in touch within one business day.");
+  });
+</script>
+
+</PitchLayout>

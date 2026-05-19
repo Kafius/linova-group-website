@@ -1,0 +1,157 @@
+---
+import VltLayout from '../../../layouts/VltLayout.astro';
+
+const products = [
+  {
+    id: '01', tag: 'Entry-Level', name: 'The Bullet', abbr: 'BLT',
+    label: 'Portable · Field-Ready', dark: false,
+    dots: [0,2,4,7,9,11],
+    desc: 'Designed for small-scale operations or companies new to Simulated Divided Lite production. Its compact, portable design makes it especially useful for contractors or manufacturers working in the field — providing consistent, high-quality performance without a steep learning curve.',
+    specs: [
+      'Lightweight for easy transport and fieldwork',
+      'Simple setup and minimal maintenance required',
+      'Cost-effective for small-scale or niche projects',
+      'Suitable for field service and mobile operations',
+      'User-friendly design promotes quick adoption by new users',
+    ],
+  },
+  {
+    id: '02', tag: 'Mid-Range', name: 'Derringer Punch', abbr: 'DER',
+    label: 'Lap Joint · Versatile', dark: true,
+    dots: [1,3,5,6,8,10],
+    desc: 'A versatile and efficient tool that makes SDL fabrication more streamlined. Acts as a complementary piece to the Magnum Punch — offering a simplified way to perform precise lap joints on SDL bars so components piece together seamlessly, resulting in clean and professional finishes.',
+    specs: [
+      'Creates perfect lap joints for stronger connections',
+      'Compatible with various SDL production setups',
+      'Enhances workflow efficiency without compromising quality',
+      'Lightweight and durable construction for long-lasting use',
+      'Ideal for operations requiring flexibility and adaptability in SDL production',
+    ],
+  },
+  {
+    id: '03', tag: 'High-Volume', name: 'Magnum Punch', abbr: 'MAG',
+    label: 'High-Volume · Precision', dark: false,
+    dots: [0,2,3,5,7,9],
+    desc: 'The most advanced SDL fabrication machine, engineered for high-volume production environments. Offers unmatched speed, precision, and productivity for manufacturers looking to scale — user-friendly enough that operators achieve optimal results with minimal training or effort.',
+    specs: [
+      'Ideal for high-volume production, improving output rates',
+      'Engineered for precision, reducing material waste',
+      'Durable and robust construction ensures long-term reliability',
+      'Reduces the time and labor required for SDL production',
+      'Smart investment for manufacturers looking to expand and optimize operations',
+    ],
+  },
+];
+
+const compareRows = [
+  { label: 'Best For',         bullet: 'Field / Small-Scale', derringer: 'Small–Medium Ops',  magnum: 'High-Volume Mfg' },
+  { label: 'Portability',      bullet: 'Highly Portable',     derringer: 'Portable',           magnum: 'Fixed Station' },
+  { label: 'Lap Joint Punch',  bullet: false,                 derringer: true,                 magnum: true },
+  { label: 'Production Speed', bullet: 'Entry',               derringer: 'Mid',                magnum: 'Maximum' },
+  { label: 'Maintenance',      bullet: 'Minimal',             derringer: 'Low',                magnum: 'Standard' },
+  { label: 'Learning Curve',   bullet: 'Very Low',            derringer: 'Low',                magnum: 'Low' },
+  { label: 'Material Waste',   bullet: 'Standard',            derringer: 'Low',                magnum: 'Minimal' },
+  { label: 'Training Included',bullet: true,                  derringer: true,                 magnum: true },
+];
+---
+
+<VltLayout
+  title="Fabrication Equipment — Vinyl Lite Technology Inc."
+  description="Explore all three Vinyl Lite SDL fabrication systems: The Bullet, Derringer Punch, and Magnum Punch — purpose-built for every scale of window and door manufacturing."
+>
+
+
+
+<!-- PAGE HERO -->
+<div class="vlt-page-hero" data-bg="SDL">
+  <div class="vlt-hero-grid"></div>
+  <div class="vlt-inner">
+    <div class="vlt-breadcrumb">
+      <a href="/vinyllitetech">Home</a>
+      <span>/</span>
+      Products
+    </div>
+    <h1 class="vlt-page-title">SDL<br /><span class="accent">Fabrication</span><br />Systems</h1>
+    <p class="vlt-page-sub">
+      Three purpose-built SDL fabrication tools — from portable field units to high-volume
+      production punches — engineered for every scale of window manufacturing operation.
+    </p>
+    <div class="vlt-page-actions">
+      <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-white">Request a Quote</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT SECTIONS -->
+{products.map((p, idx) => (
+  <section class={idx % 2 === 0 ? 'prod-section' : 'prod-section-alt'}>
+    <div class="vlt-inner">
+      <div class="vlt-label">System {p.id} · {p.tag}</div>
+      <div class={`prod-detail${p.dark ? ' reverse' : ''}`}>
+
+        <div class={`prod-visual${p.dark ? ' dark' : ''}`}>
+          <div class="prod-vis-name">{p.abbr}</div>
+          <div class="prod-vis-dots">
+            {Array.from({ length: 12 }, (_, i) => (
+              <div class={`prod-vis-dot${p.dots.includes(i) ? ' active' : ''}`}></div>
+            ))}
+          </div>
+          <span class="prod-vis-label">{p.label}</span>
+        </div>
+
+        <div>
+          <span class="prod-tag">System {p.id} · {p.tag}</span>
+          <div class="prod-name">{p.name}</div>
+          <p class="prod-desc">{p.desc}</p>
+          <ul class="prod-specs">
+            {p.specs.map((s) => <li class="prod-spec"><span>{s}</span></li>)}
+          </ul>
+          <a href="/vinyllitetech/contact" class="vlt-btn vlt-btn-primary">Get a Quote →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+))}
+
+<!-- COMPARISON TABLE -->
+<section class="compare-section">
+  <div class="vlt-inner">
+    <div class="vlt-label">Side by Side</div>
+    <h2 class="vlt-section-title">System<br />Comparison</h2>
+
+    <div class="compare-table">
+      <div class="compare-head compare-head-label">
+        <span class="compare-head-tag">Feature</span>
+        <div class="compare-head-name">Spec</div>
+      </div>
+      <div class="compare-head">
+        <span class="compare-head-tag">System 01</span>
+        <div class="compare-head-name">The Bullet</div>
+      </div>
+      <div class="compare-head">
+        <span class="compare-head-tag">System 02</span>
+        <div class="compare-head-name">Derringer</div>
+      </div>
+      <div class="compare-head compare-head-featured">
+        <span class="compare-head-tag">System 03</span>
+        <div class="compare-head-name">Magnum</div>
+      </div>
+
+      {compareRows.map((r) => (<>
+        <div class="compare-cell compare-cell-label">{r.label}</div>
+        <div class={`compare-cell${typeof r.bullet    === 'boolean' ? (r.bullet    ? ' compare-cell-check' : ' compare-cell-cross') : ' compare-cell-yes'}`}>
+          {typeof r.bullet    === 'string' ? r.bullet    : ''}
+        </div>
+        <div class={`compare-cell${typeof r.derringer === 'boolean' ? (r.derringer ? ' compare-cell-check' : ' compare-cell-cross') : ' compare-cell-yes'}`}>
+          {typeof r.derringer === 'string' ? r.derringer : ''}
+        </div>
+        <div class={`compare-cell${typeof r.magnum    === 'boolean' ? (r.magnum    ? ' compare-cell-check' : ' compare-cell-cross') : ' compare-cell-yes'}`}>
+          {typeof r.magnum    === 'string' ? r.magnum    : ''}
+        </div>
+      </>))}
+    </div>
+  </div>
+</section>
+
+</VltLayout>
