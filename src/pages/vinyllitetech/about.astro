@@ -15,11 +15,6 @@ const offerings = [
   { title: 'Fabrication Equipment',    body: 'Industry-specific fabrication tools — including The Bullet, Derringer Punch, and Magnum Punch — built for precision SDL production.' },
 ];
 
-const stats = [
-  { num: '400+', label: 'Projects Completed' },
-  { num: '25',   label: 'Years of Experience' },
-  { num: '100%', label: 'Satisfaction Guaranteed' },
-];
 ---
 
 <VltLayout
@@ -70,13 +65,13 @@ const stats = [
           that will set your business apart.
         </p>
       </div>
-      <div class="story-aside">
-        {stats.map((s) => (
-          <div class="story-stat">
-            <span class="story-stat-num">{s.num}</span>
-            <span class="story-stat-label">{s.label}</span>
-          </div>
-        ))}
+      <div class="story-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Photo coming soon</span>
       </div>
     </div>
   </div>
@@ -116,14 +111,5 @@ const stats = [
   </div>
 </section>
 
-<script is:inline>
-  var stats = document.querySelectorAll('.story-stat');
-  var obs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); }
-    });
-  }, { threshold: 0.2 });
-  stats.forEach(function(el, i) { el.style.transitionDelay = (i * 100) + 'ms'; obs.observe(el); });
-</script>
 
 </VltLayout>

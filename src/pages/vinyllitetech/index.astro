@@ -119,14 +119,6 @@ const offerings = [
   { title: 'Fabrication Equipment', body: 'Industry-specific fabrication tools — including The Bullet, Derringer Punch, and Magnum Punch — built for precision SDL production.' },
 ];
 
-const compareRows = [
-  { label: 'Best For',         bullet: 'Field / Small-Scale', derringer: 'Small–Medium Ops',  magnum: 'High-Volume Mfg' },
-  { label: 'Portability',      bullet: 'Highly Portable',     derringer: 'Portable',           magnum: 'Fixed Station' },
-  { label: 'Lap Joint Punch',  bullet: false,                 derringer: true,                 magnum: true },
-  { label: 'Production Speed', bullet: 'Entry',               derringer: 'Mid',                magnum: 'Maximum' },
-  { label: 'Maintenance',      bullet: 'Minimal',             derringer: 'Low',                magnum: 'Standard' },
-  { label: 'Training Included',bullet: true,                  derringer: true,                 magnum: true },
-];
 ---
 
 <PitchLayout
@@ -356,118 +348,6 @@ const compareRows = [
     </div>
   </section>
 
-  <!-- COMPARISON TABLE -->
-  <section id="compare" class="vlt-compare">
-    <div class="vlt-inner">
-      <div class="vlt-label">Side by Side</div>
-      <h2 class="vlt-section-title">System<br />Comparison</h2>
-
-      <div class="vlt-compare-table">
-        <!-- Header row -->
-        <div class="vlt-compare-head vlt-compare-head--label">
-          <span class="vlt-compare-head-tag">Feature</span>
-          <div class="vlt-compare-head-name">Spec</div>
-        </div>
-        <div class="vlt-compare-head">
-          <span class="vlt-compare-head-tag">System 01</span>
-          <div class="vlt-compare-head-name">The Bullet</div>
-        </div>
-        <div class="vlt-compare-head">
-          <span class="vlt-compare-head-tag">System 02</span>
-          <div class="vlt-compare-head-name">Derringer</div>
-        </div>
-        <div class="vlt-compare-head vlt-compare-head--featured">
-          <span class="vlt-compare-head-tag">System 03</span>
-          <div class="vlt-compare-head-name">Magnum</div>
-        </div>
-
-        <!-- Data rows -->
-        {compareRows.map((r) => (<>
-          <div class="vlt-compare-cell vlt-compare-cell--label">{r.label}</div>
-          <div class={`vlt-compare-cell${typeof r.bullet    === 'boolean' ? (r.bullet    ? ' vlt-compare-cell--check' : ' vlt-compare-cell--cross') : ' vlt-compare-cell--yes'}`}>
-            {typeof r.bullet    === 'string' ? r.bullet    : ''}
-          </div>
-          <div class={`vlt-compare-cell${typeof r.derringer === 'boolean' ? (r.derringer ? ' vlt-compare-cell--check' : ' vlt-compare-cell--cross') : ' vlt-compare-cell--yes'}`}>
-            {typeof r.derringer === 'string' ? r.derringer : ''}
-          </div>
-          <div class={`vlt-compare-cell${typeof r.magnum    === 'boolean' ? (r.magnum    ? ' vlt-compare-cell--check' : ' vlt-compare-cell--cross') : ' vlt-compare-cell--yes'}`}>
-            {typeof r.magnum    === 'string' ? r.magnum    : ''}
-          </div>
-        </>))}
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="vlt-contact">
-    <div class="vlt-inner">
-      <div class="vlt-contact-grid">
-        <!-- Left: info -->
-        <div>
-          <div class="vlt-label">Get in Touch</div>
-          <h2 class="vlt-section-title" style="margin-bottom: 48px;">Let's Talk<br /><span style="color: var(--vlt-bright);">Production</span></h2>
-
-          <div class="vlt-contact-info">
-            <div class="vlt-contact-info-item">
-              <span class="vlt-contact-info-label">Location</span>
-              <span class="vlt-contact-info-value">13027 Harmon Road</span>
-              <span class="vlt-contact-info-sub">Fort Worth, Texas 76177</span>
-            </div>
-            <div class="vlt-contact-info-item">
-              <span class="vlt-contact-info-label">Phone</span>
-              <span class="vlt-contact-info-value"><a href="tel:+18002592937">(800) 259-2937</a></span>
-              <span class="vlt-contact-info-sub">Mon–Fri, 8am–5pm CST</span>
-            </div>
-            <div class="vlt-contact-info-item">
-              <span class="vlt-contact-info-label">Email</span>
-              <span class="vlt-contact-info-value"><a href="mailto:info@vinyllitetech.com">info@vinyllitetech.com</a></span>
-              <span class="vlt-contact-info-sub">We respond within 1 business day</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: form -->
-        <form class="vlt-form" id="vlt-contact-form">
-          <div class="vlt-form-row">
-            <div>
-              <label class="vlt-form-label" for="vlt-first">First Name</label>
-              <input id="vlt-first" name="firstName" class="vlt-form-input" type="text" placeholder="First name" required />
-            </div>
-            <div>
-              <label class="vlt-form-label" for="vlt-last">Last Name</label>
-              <input id="vlt-last" name="lastName" class="vlt-form-input" type="text" placeholder="Last name" required />
-            </div>
-          </div>
-          <div>
-            <label class="vlt-form-label" for="vlt-email">Email</label>
-            <input id="vlt-email" name="email" class="vlt-form-input" type="email" placeholder="you@company.com" required />
-          </div>
-          <div>
-            <label class="vlt-form-label" for="vlt-phone">Phone (Optional)</label>
-            <input id="vlt-phone" name="phone" class="vlt-form-input" type="tel" placeholder="(555) 000-0000" />
-          </div>
-          <div>
-            <label class="vlt-form-label" for="vlt-interest">Interested In</label>
-            <select id="vlt-interest" name="interest" class="vlt-form-select" required>
-              <option value="" disabled selected>Select an inquiry…</option>
-              <option>The Bullet — Entry-Level SDL System</option>
-              <option>Derringer Punch — Mid-Range SDL System</option>
-              <option>Magnum Punch — High-Volume SDL System</option>
-              <option>SDL Bar Profiles</option>
-              <option>Custom Vinyl Extrusions</option>
-              <option>General Inquiry</option>
-            </select>
-          </div>
-          <div>
-            <label class="vlt-form-label" for="vlt-message">Message</label>
-            <textarea id="vlt-message" name="message" class="vlt-form-textarea" placeholder="Tell us about your production needs, volume, and any questions…" required></textarea>
-          </div>
-          <button type="submit" class="vlt-btn vlt-btn-primary" style="align-self: flex-start;">Send Inquiry →</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
   <!-- CTA BANNER -->
   <div class="vlt-cta">
     <div class="vlt-inner">
@@ -579,13 +459,6 @@ const compareRows = [
     var isOpen = vltMobileSub && vltMobileSub.classList.toggle('open');
     vltMobileDropBtn.setAttribute('aria-expanded', String(isOpen));
     if (vltMobileChevron) vltMobileChevron.style.transform = isOpen ? 'rotate(180deg)' : '';
-  });
-
-  // ── Contact form ──
-  var vltForm = document.getElementById('vlt-contact-form');
-  vltForm && vltForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert("Thanks — we'll be in touch within one business day.");
   });
 </script>
 

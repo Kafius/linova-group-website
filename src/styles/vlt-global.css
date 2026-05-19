@@ -898,7 +898,7 @@ footer {
     position: relative; overflow: hidden;
     background: linear-gradient(135deg, var(--vlt-heading) 0%, #1a2d5a 60%, #1e3e85 100%);
     padding: 180px 0 100px;
-    min-height: 100svh; display: flex; align-items: center;
+    min-height: 100svh;
   }
   .vlt-hero-grid {
     position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
@@ -1658,21 +1658,16 @@ footer {
   .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 56px; }
   .story-body { font-size: 16px; color: var(--vlt-body); line-height: 1.8; }
   .story-body p + p { margin-top: 20px; }
-  .story-aside { display: flex; flex-direction: column; gap: 20px; }
-  .story-stat {
-    border-left: 3px solid var(--vlt-bright); padding: 20px 28px;
-    background: var(--vlt-off);
-    opacity: 0; transform: translateX(24px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+  .story-img-placeholder {
+    aspect-ratio: 4/3; background: var(--vlt-off);
+    border: 2px dashed var(--vlt-border);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; color: var(--vlt-muted);
   }
-  .story-stat.in-view { opacity: 1; transform: translateX(0); }
-  .story-stat-num {
-    display: block; font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
-    font-size: 52px; color: var(--vlt-bright); line-height: 1;
-  }
-  .story-stat-label {
-    display: block; font-family: 'Share Tech Mono', monospace; font-size: 10px;
-    letter-spacing: 2px; color: var(--vlt-dim); text-transform: uppercase; margin-top: 4px;
+  .story-img-placeholder svg { width: 40px; height: 40px; opacity: 0.5; }
+  .story-img-placeholder span {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase;
   }
 
   /* Offerings grid */
