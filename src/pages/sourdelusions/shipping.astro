@@ -1,0 +1,194 @@
+---
+import Layout from '../../layouts/SourDelusionsLayout.astro';
+import Navbar from '../../components/sourdelusions/Navbar.astro';
+import Footer from '../../components/sourdelusions/Footer.astro';
+import CartSidebar from '../../components/sourdelusions/CartSidebar.astro';
+---
+
+<Layout title="Shipping Policy | Sour Delusions">
+  <Navbar />
+  <CartSidebar />
+
+  <section class="pt-32 pb-20 min-h-screen">
+    <div class="max-w-180 mx-auto px-6">
+      <a href="/sourdelusions/" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-brand-pink transition-colors mb-8">
+        <svg class="w-4 h-4 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Shop
+      </a>
+
+      <span class="inline-block text-[0.8rem] font-semibold uppercase tracking-widest text-brand-pink mb-4">Support</span>
+      <h1 class="font-heading text-[clamp(2rem,4vw,3rem)] font-extrabold tracking-tight text-brand-dark mb-4">Shipping Policy</h1>
+      <p class="text-text-muted text-lg mb-12">Everything you need to know about how we get sour candy to your door.</p>
+
+      <!-- Shipping Zones -->
+      <div class="space-y-10">
+        <div class="bg-bg-card border border-border-subtle rounded-2xl p-8">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-11 h-11 rounded-xl bg-brand-green/10 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 stroke-[#0EBB08] fill-none" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-heading text-xl font-bold text-brand-dark mb-1">Domestic Shipping (Canada)</h2>
+              <p class="text-text-muted text-sm">We ship to all provinces and territories across Canada.</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-border-subtle">
+                  <th class="text-left py-3 pr-4 text-xs font-semibold text-text-muted uppercase tracking-wide">Method</th>
+                  <th class="text-left py-3 pr-4 text-xs font-semibold text-text-muted uppercase tracking-wide">Estimated Delivery</th>
+                  <th class="text-left py-3 text-xs font-semibold text-text-muted uppercase tracking-wide">Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-border-subtle">
+                  <td class="py-3 pr-4 font-medium text-brand-dark">Standard Shipping</td>
+                  <td class="py-3 pr-4 text-text-muted">5&ndash;8 business days</td>
+                  <td class="py-3 text-brand-dark font-semibold">$5.99</td>
+                </tr>
+                <tr class="border-b border-border-subtle">
+                  <td class="py-3 pr-4 font-medium text-brand-dark">Expedited Shipping</td>
+                  <td class="py-3 pr-4 text-text-muted">2&ndash;4 business days</td>
+                  <td class="py-3 text-brand-dark font-semibold">$12.99</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4 font-medium text-brand-dark">Free Shipping</td>
+                  <td class="py-3 pr-4 text-text-muted">5&ndash;8 business days</td>
+                  <td class="py-3">
+                    <span class="inline-flex items-center gap-1.5 text-[#0EBB08] font-semibold">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#0EBB08]"></span>
+                      Free on orders over $40
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Processing Time -->
+        <div class="bg-bg-card border border-border-subtle rounded-2xl p-8">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-11 h-11 rounded-xl bg-brand-pink/[0.08] flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 stroke-brand-pink fill-none" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-heading text-xl font-bold text-brand-dark mb-1">Processing Time</h2>
+              <p class="text-text-muted text-sm">All orders are processed within 1&ndash;2 business days after payment confirmation.</p>
+            </div>
+          </div>
+          <ul class="space-y-3 text-sm text-text-muted">
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-pink shrink-0 mt-1.5"></span>
+              Orders placed before <strong class="text-brand-dark">2:00 PM EST</strong> on business days are typically shipped the same day.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-pink shrink-0 mt-1.5"></span>
+              Orders placed on weekends or holidays will be processed the next business day.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-pink shrink-0 mt-1.5"></span>
+              During high-demand periods (product launches, holidays), processing may take up to 3 business days.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tracking -->
+        <div class="bg-bg-card border border-border-subtle rounded-2xl p-8">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-11 h-11 rounded-xl bg-brand-yellow/15 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 stroke-[#B8A500] fill-none" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-heading text-xl font-bold text-brand-dark mb-1">Order Tracking</h2>
+              <p class="text-text-muted text-sm">Stay updated on your order every step of the way.</p>
+            </div>
+          </div>
+          <ul class="space-y-3 text-sm text-text-muted">
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow shrink-0 mt-1.5"></span>
+              A confirmation email with your tracking number will be sent once your order has shipped.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow shrink-0 mt-1.5"></span>
+              You can track your package using the tracking link provided in your shipping confirmation email.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow shrink-0 mt-1.5"></span>
+              If your tracking information hasn't updated in 5+ business days, please contact us.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Delivery Issues -->
+        <div class="bg-bg-card border border-border-subtle rounded-2xl p-8">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-11 h-11 rounded-xl bg-brand-green/10 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5 stroke-[#0EBB08] fill-none" viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="font-heading text-xl font-bold text-brand-dark mb-1">Delivery Issues</h2>
+              <p class="text-text-muted text-sm">We've got you covered if something goes wrong.</p>
+            </div>
+          </div>
+          <ul class="space-y-3 text-sm text-text-muted">
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              <strong class="text-brand-dark">Damaged packages:</strong>&nbsp;If your order arrives damaged, contact us within 48 hours with photos and we'll send a replacement or issue a full refund.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              <strong class="text-brand-dark">Lost packages:</strong>&nbsp;If your order hasn't arrived within 15 business days of the ship date, reach out and we'll investigate with the carrier and reship or refund your order.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              <strong class="text-brand-dark">Wrong address:</strong>&nbsp;Please double-check your shipping address at checkout. We're unable to redirect packages once they've shipped. If a package is returned to us due to an incorrect address, we'll reship it at the customer's expense.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="bg-brand-dark rounded-2xl p-8 relative overflow-hidden">
+          <div class="absolute -top-25 right-0 w-60 h-60 bg-[radial-gradient(ellipse,rgba(22,240,13,0.08),transparent_70%)] pointer-events-none"></div>
+          <h2 class="font-heading text-xl font-bold text-white mb-4 relative z-1">Good to Know</h2>
+          <ul class="space-y-3 text-sm text-[#999] relative z-1">
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              Delivery times are estimates and not guaranteed. Delays may occur due to weather, carrier issues, or other factors outside our control.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              We currently ship within Canada only. International shipping is coming soon.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              P.O. Box delivery is available for standard shipping only.
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-brand-green shrink-0 mt-1.5"></span>
+              Sour Delusions is not responsible for any customs fees or import duties for future international orders.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="text-center py-8">
+          <p class="text-text-muted text-sm mb-2">Have a question about your shipment?</p>
+          <p class="text-brand-dark font-semibold">Email us at <a href="mailto:hello@sourdelusions.ca" class="text-brand-pink hover:underline">hello@sourdelusions.ca</a></p>
+          <p class="text-xs text-[#aaa] mt-1">We typically respond within 24 hours on business days.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

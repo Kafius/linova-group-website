@@ -1,0 +1,112 @@
+---
+import '../styles/liveroofontario.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+
+    <!-- External link interstitial -->
+    <div id="ext-modal" role="dialog" aria-modal="true" aria-labelledby="ext-modal-title" style="display:none">
+      <div id="ext-modal-backdrop"></div>
+      <div id="ext-modal-box">
+        <div id="ext-modal-icon">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </div>
+        <h2 id="ext-modal-title">You are leaving LiveRoof Ontario</h2>
+        <p id="ext-modal-body">
+          You are now leaving <strong>liveroofontario.ca</strong> and entering an external site.
+        </p>
+        <div id="ext-modal-actions">
+          <button id="ext-modal-cancel">Stay on this site</button>
+          <a id="ext-modal-continue" href="#" target="_blank" rel="noopener noreferrer">Continue</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const modal = document.getElementById('ext-modal') as HTMLElement;
+        const backdrop = document.getElementById('ext-modal-backdrop') as HTMLElement;
+        const cancelBtn = document.getElementById('ext-modal-cancel') as HTMLElement;
+        const continueLink = document.getElementById('ext-modal-continue') as HTMLAnchorElement;
+        const body = document.getElementById('ext-modal-body') as HTMLElement;
+
+        const partners: Record<string, { domain: string; copy: string }> = {
+          'liveroof.com': {
+            domain: 'liveroof.com',
+            copy: 'the LiveRoof Global website, where additional product information, technical resources, and specifications are hosted.',
+          },
+          'hydropavers.ca': {
+            domain: 'hydropavers.ca',
+            copy: 'the official hydroPAVERS® site, our partner for permeable paving and stormwater management products.',
+          },
+        };
+
+        function matchPartner(href: string) {
+          for (const key of Object.keys(partners)) {
+            if (href.includes(key) && !href.includes('liveroofontario')) return partners[key];
+          }
+          return null;
+        }
+
+        function openModal(href: string, partner: { domain: string; copy: string }) {
+          continueLink.href = href;
+          continueLink.textContent = 'Continue to ' + partner.domain;
+          body.innerHTML =
+            'You are now leaving <strong>liveroofontario.ca</strong> and entering <strong>' +
+            partner.domain + '</strong> — ' + partner.copy;
+          modal.style.display = 'flex';
+          cancelBtn.focus();
+        }
+
+        function closeModal() {
+          modal.style.display = 'none';
+          continueLink.href = '#';
+        }
+
+        document.addEventListener('click', function (e) {
+          const anchor = (e.target as Element)?.closest('a');
+          if (!anchor || anchor.id === 'ext-modal-continue') return;
+          const href = (anchor as HTMLAnchorElement).href || '';
+          const partner = matchPartner(href);
+          if (partner) {
+            e.preventDefault();
+            openModal(href, partner);
+          }
+        });
+
+        cancelBtn.addEventListener('click', closeModal);
+        continueLink.addEventListener('click', function () {
+          modal.style.display = 'none';
+        });
+        backdrop.addEventListener('click', closeModal);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') closeModal();
+        });
+      })();
+    </script>
+  </body>
+</html>

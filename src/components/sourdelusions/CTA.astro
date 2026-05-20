@@ -1,0 +1,32 @@
+---
+---
+
+<section class="py-30" id="cta">
+  <div class="max-w-300 mx-auto px-6">
+    <div class="bg-brand-dark rounded-4xl py-20 px-6 md:px-15 text-center relative overflow-hidden reveal">
+      <div class="absolute -top-50 left-1/2 -translate-x-1/2 w-150 h-100 bg-[radial-gradient(ellipse,rgba(255,45,138,0.15),transparent_70%)] pointer-events-none"></div>
+      <div class="absolute -bottom-50 -right-25 w-100 h-100 bg-[radial-gradient(ellipse,rgba(22,240,13,0.1),transparent_70%)] pointer-events-none"></div>
+
+      <h2 class="text-[clamp(2rem,4vw,3rem)] font-extrabold tracking-tight mb-4 relative z-1 text-white">
+        Ready to Get <span class="bg-linear-to-br from-brand-green to-brand-yellow bg-clip-text text-transparent">Delusional</span>?
+      </h2>
+      <p class="text-[#999] text-lg mb-10 max-w-120 mx-auto relative z-1">
+        Join the sour side. Get exclusive drops, new flavours, and deals straight to your inbox.
+      </p>
+      <form class="flex flex-col md:flex-row gap-3 max-w-115 mx-auto relative z-1" id="ctaForm">
+        <input type="email" placeholder="Enter your email" required
+          class="flex-1 px-6 py-4 rounded-full border border-white/10 bg-white/[0.07] text-white font-body text-[0.95rem] outline-none transition-colors duration-300 placeholder:text-[#666] focus:border-brand-pink">
+        <button type="submit" class="inline-flex items-center justify-center gap-2 bg-linear-to-br from-brand-green to-brand-yellow text-brand-dark px-9 py-4 rounded-full font-bold text-base transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(22,240,13,0.2)] cursor-pointer font-body border-none">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('ctaForm')!.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = (e.target as HTMLFormElement).querySelector('input') as HTMLInputElement;
+    input.value = '';
+    alert('You are on the list!');
+  });
+</script>

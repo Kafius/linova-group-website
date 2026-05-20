@@ -1,0 +1,16 @@
+---
+const items = [
+  'Sour Gummy Worms', 'Pucker Belts', 'Acid Drops', 'Sour Keys',
+  'Citrus Blasters', 'Berry Shockers', 'Mega Sour Strips', 'Twisted Tangles',
+];
+---
+
+<div class="py-8 border-t border-b border-border-subtle overflow-hidden">
+  <div class="flex w-max animate-marquee">
+    {[...items, ...items].map(item => (
+      <div class="flex items-center gap-4 px-8 font-heading text-lg font-bold uppercase tracking-wider text-black/10 whitespace-nowrap">
+        <span class="w-1.5 h-1.5 bg-brand-pink rounded-full shrink-0"></span> {item}
+      </div>
+    ))}
+  </div>
+</div>

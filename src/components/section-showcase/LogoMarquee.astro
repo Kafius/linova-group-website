@@ -1,0 +1,403 @@
+---
+const clients = [
+  { name: 'Dataverse',  logo: '/clients/dataverse-logo.jpg', url: 'https://www.dataverse.ph' },
+  { name: 'EasyCare',   logo: '/clients/easycare-logo.png',  url: 'https://www.ecaretransinc.com' },
+  { name: 'GMS',        logo: '/clients/gms-logo.svg',       url: 'https://www.globalmusicsolutions.ca' },
+  { name: 'MTA',        logo: '/clients/mta-logo.jpg',       url: 'https://www.markhamtaekwondo.com' },
+];
+
+// Each track renders the set 4× so the visible width always exceeds the viewport.
+// The animation translates by -25% (one set), giving a perfectly seamless loop.
+const trackA = [...clients, ...clients, ...clients, ...clients];
+const reversed = [...clients].reverse();
+const trackB = [...reversed, ...reversed, ...reversed, ...reversed];
+---
+
+<!-- Editorial fonts: keep the rest of the site in Plus Jakarta Sans, but
+     introduce Instrument Serif (italic) + JetBrains Mono just for showcase exhibits. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<article class="exhibit" aria-labelledby="lm-heading">
+  <!-- Frame header — meta label, like a museum placard -->
+  <header class="exhibit__bar">
+    <span class="exhibit__num">01</span>
+    <span class="exhibit__sep" aria-hidden="true">/</span>
+    <span class="exhibit__kind">Logo Marquee</span>
+    <span class="exhibit__dot" aria-hidden="true"></span>
+    <span class="exhibit__live">Live preview</span>
+  </header>
+
+  <!-- Demo content — this is what we'd actually deploy on a client site -->
+  <div class="demo">
+    <div class="demo__heading">
+      <p class="demo__eyebrow">
+        <span class="demo__eyebrow-dash" aria-hidden="true"></span>
+        Our Satisfied Customers
+      </p>
+      <h3 id="lm-heading" class="demo__title">
+        In good <em>company.</em>
+      </h3>
+      <p class="demo__sub">
+        A handful of the businesses we've built sites for. Hover any row to pause it.
+      </p>
+    </div>
+
+    <!-- Visually hidden, semantic list for assistive tech -->
+    <ul class="sr-only">
+      {clients.map(c => (
+        <li><a href={c.url} target="_blank" rel="noopener noreferrer">{c.name}</a></li>
+      ))}
+    </ul>
+
+    <!-- Marquee — two contra-rotating tracks -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__row">
+        <div class="marquee__track marquee__track--left">
+          {trackA.map((c, i) => (
+            <a class="tile" href={c.url} target="_blank" rel="noopener noreferrer" tabindex={i < clients.length ? 0 : -1} aria-hidden={i >= clients.length ? 'true' : undefined}>
+              <img src={c.logo} alt={i < clients.length ? c.name : ''} loading="lazy" decoding="async" />
+            </a>
+          ))}
+        </div>
+      </div>
+      <div class="marquee__row">
+        <div class="marquee__track marquee__track--right">
+          {trackB.map((c, i) => (
+            <a class="tile" href={c.url} target="_blank" rel="noopener noreferrer" tabindex={i < clients.length ? 0 : -1} aria-hidden={i >= clients.length ? 'true' : undefined}>
+              <img src={c.logo} alt={i < clients.length ? c.name : ''} loading="lazy" decoding="async" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frame footer — call-to-action below the exhibit -->
+  <footer class="exhibit__foot">
+    <span class="exhibit__hint">Want this section on your site?</span>
+    <a class="exhibit__cta" href="/contact">
+      Use this section
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </footer>
+</article>
+
+<style>
+  /* ──────────────────────────────────────────────
+     Frame — the cartouche around every showcase exhibit
+     ────────────────────────────────────────────── */
+  .exhibit {
+    --accent: #f0abfc;
+    --accent-deep: #d946ef;
+    --paper: #f3ede1;
+    --paper-deep: #e9e0cd;
+
+    position: relative;
+    border-radius: 28px;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% -10%, rgba(217,70,239,0.12) 0%, transparent 60%),
+      linear-gradient(180deg, #0c0d15 0%, #090a11 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 30px 80px -20px rgba(0,0,0,0.6);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Soft top inner highlight — like a glass case */
+  .exhibit::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(240,171,252,0.5), transparent);
+    z-index: 1;
+  }
+
+  /* Hairline grid texture inside the frame */
+  .exhibit::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse 70% 50% at 50% 50%, #000 0%, transparent 80%);
+  }
+
+  /* ───── Frame header (placard) ───── */
+  .exhibit__bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.42);
+  }
+  .exhibit__num {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .exhibit__sep { color: rgba(255,255,255,0.25); }
+  .exhibit__kind { color: rgba(255,255,255,0.7); }
+  .exhibit__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-deep);
+    box-shadow: 0 0 10px var(--accent-deep);
+    margin-left: auto;
+    animation: exhibit-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes exhibit-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.15); }
+  }
+  .exhibit__live { color: rgba(255,255,255,0.55); }
+
+  /* ───── Demo content area ───── */
+  .demo {
+    position: relative;
+    z-index: 2;
+    padding: 4.5rem 1.5rem 3rem;
+  }
+
+  .demo__heading {
+    text-align: center;
+    margin: 0 auto 3.5rem;
+    max-width: 640px;
+    padding: 0 1rem;
+  }
+
+  .demo__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1.25rem;
+  }
+  .demo__eyebrow-dash {
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
+  .demo__title {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #fff;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.05;
+    margin: 0 0 1rem;
+  }
+  .demo__title em {
+    font-family: 'Instrument Serif', 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #fbcfe8 0%, #f0abfc 50%, #d946ef 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.05em;
+  }
+
+  .demo__sub {
+    color: rgba(255,255,255,0.45);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ───── Marquee tracks ───── */
+  .marquee {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-block: 0.5rem;
+  }
+  .marquee__row {
+    overflow: hidden;
+    /* edge fade — logos emerge from the void */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  }
+  .marquee__track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    will-change: transform;
+  }
+  .marquee__track--left  { animation: marquee-l 42s linear infinite; }
+  .marquee__track--right { animation: marquee-r 56s linear infinite; }
+
+  /* Pause individual row on hover, not both */
+  .marquee__row:hover .marquee__track { animation-play-state: paused; }
+
+  @keyframes marquee-l {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-25%, 0, 0); }
+  }
+  @keyframes marquee-r {
+    from { transform: translate3d(-25%, 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track--left,
+    .marquee__track--right { animation: none; }
+  }
+
+  /* ───── Logo tiles — warm paper, like framed prints ───── */
+  .tile {
+    flex: 0 0 auto;
+    width: 220px;
+    height: 110px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 12px 24px -12px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+                box-shadow 0.4s ease;
+  }
+  .tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 0 var(--accent-deep);
+    transition: box-shadow 0.4s ease;
+    pointer-events: none;
+  }
+  .tile:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 18px 36px -10px rgba(217,70,239,0.35),
+      0 12px 24px -12px rgba(0,0,0,0.6);
+  }
+  .tile:hover::after {
+    box-shadow: 0 0 0 1px rgba(217,70,239,0.45) inset;
+  }
+  .tile img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    /* mix-blend lets JPGs with white backgrounds melt into the warm paper */
+    mix-blend-mode: multiply;
+    filter: grayscale(0.15) contrast(1.02);
+    transition: filter 0.4s ease;
+  }
+  .tile:hover img {
+    filter: grayscale(0) contrast(1.05);
+  }
+
+  /* ───── Frame footer (CTA strip) ───── */
+  .exhibit__foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.25);
+    flex-wrap: wrap;
+  }
+  .exhibit__hint {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.005em;
+  }
+  .exhibit__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+    padding: 0.65rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(240,171,252,0.25);
+    background: linear-gradient(180deg, rgba(217,70,239,0.18), rgba(217,70,239,0.06));
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+  .exhibit__cta:hover {
+    transform: translateX(2px);
+    border-color: rgba(240,171,252,0.55);
+    background: linear-gradient(180deg, rgba(217,70,239,0.32), rgba(217,70,239,0.12));
+  }
+  .exhibit__cta svg {
+    transition: transform 0.25s ease;
+  }
+  .exhibit__cta:hover svg {
+    transform: translateX(2px);
+  }
+
+  /* sr-only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ───── Responsive tweaks ───── */
+  @media (max-width: 640px) {
+    .exhibit { border-radius: 20px; }
+    .exhibit__bar { padding: 0.85rem 1.1rem; font-size: 10px; }
+    .demo { padding: 3rem 1rem 2.25rem; }
+    .demo__heading { margin-bottom: 2.5rem; }
+    .demo__title { font-size: clamp(1.85rem, 8vw, 2.5rem); }
+    .demo__sub { font-size: 14px; }
+    .tile { width: 160px; height: 88px; padding: 0.9rem 1.1rem; border-radius: 12px; }
+    .marquee { gap: 0.85rem; }
+    .marquee__track { gap: 0.75rem; }
+    .marquee__track--left  { animation-duration: 32s; }
+    .marquee__track--right { animation-duration: 44s; }
+    .exhibit__foot { padding: 1rem 1.1rem; }
+    .exhibit__hint { font-size: 15px; }
+  }
+</style>

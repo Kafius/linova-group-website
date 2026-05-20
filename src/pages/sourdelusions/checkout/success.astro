@@ -1,0 +1,27 @@
+---
+import Layout from '../../../layouts/SourDelusionsLayout.astro';
+import Navbar from '../../../components/sourdelusions/Navbar.astro';
+---
+
+<Layout title="Order Confirmed | Sour Delusions">
+  <Navbar />
+
+  <section class="min-h-screen flex items-center justify-center px-6">
+    <div class="max-w-120 text-center">
+      <div class="w-20 h-20 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-6">
+        <svg class="w-9 h-9 stroke-[#0EBB08] fill-none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h1 class="font-heading text-3xl font-extrabold tracking-tight text-brand-dark mb-3">Order Confirmed!</h1>
+      <p class="text-text-muted text-sm mb-2">Thank you for your purchase. Your sour candy is on its way.</p>
+      <p class="text-text-muted text-xs mb-8">A confirmation email with your order details and tracking info will be sent to your inbox shortly.</p>
+      <a href="/sourdelusions/products" class="inline-flex items-center gap-2 bg-linear-to-br from-brand-green to-brand-yellow text-brand-dark px-8 py-3.5 rounded-full font-bold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(22,240,13,0.2)]">Continue Shopping</a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { clearCart } from '../../../scripts/sourdelusions/cart.js';
+  clearCart();
+</script>

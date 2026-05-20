@@ -1,0 +1,78 @@
+---
+const testimonials = [
+  {
+    name: 'Mika T.',
+    location: 'Toronto, ON',
+    text: 'I thought I could handle sour candy. I was wrong. Sour Delusions literally made my eyes water — and I immediately ordered more.',
+    rating: 5,
+    accent: 'brand-pink',
+  },
+  {
+    name: 'Jordan L.',
+    location: 'Vancouver, BC',
+    text: 'Finally a sour candy that actually delivers. No gimmicks, just pure face-puckering intensity. The mango flavour is unreal.',
+    rating: 5,
+    accent: 'brand-green',
+  },
+  {
+    name: 'Priya S.',
+    location: 'Calgary, AB',
+    text: "My kids are obsessed and I love that it's vegan and made with real fruit flavours. We go through a bag a week — easily.",
+    rating: 5,
+    accent: 'brand-pink',
+  },
+  {
+    name: 'Alex R.',
+    location: 'Montreal, QC',
+    text: 'Bought these on a whim at a market and now I can\'t stop. The sour coating is next level. Best candy I\'ve had in years.',
+    rating: 5,
+    accent: 'brand-green',
+  },
+  {
+    name: 'Sam W.',
+    location: 'Ottawa, ON',
+    text: 'I gave these to my coworkers as a joke. Now they Slack me every Friday asking if I brought more. Send help.',
+    rating: 5,
+    accent: 'brand-pink',
+  },
+  {
+    name: 'Taylor K.',
+    location: 'Edmonton, AB',
+    text: 'The watermelon flavour is dangerously addictive. I appreciate that they use natural ingredients — tastes way better than the artificial stuff.',
+    rating: 5,
+    accent: 'brand-green',
+  },
+];
+---
+
+<section class="py-30 border-t border-border-subtle" id="testimonials">
+  <div class="max-w-300 mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="inline-block text-[0.8rem] font-semibold uppercase tracking-widest text-brand-green mb-4">Real Reviews</span>
+      <h2 class="text-[clamp(2rem,4vw,3.2rem)] font-extrabold tracking-tight text-brand-dark">What People Are Saying</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {testimonials.map((t) => (
+        <div class={`bg-bg-card border border-border-subtle rounded-[20px] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-${t.accent}/15 reveal`}>
+          <div class="flex items-center gap-1 mb-4">
+            {Array.from({ length: t.rating }).map(() => (
+              <svg class={`w-4 h-4 fill-${t.accent} stroke-none`} viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            ))}
+          </div>
+          <p class="text-brand-dark text-[0.95rem] leading-relaxed mb-5">"{t.text}"</p>
+          <div class="flex items-center gap-3">
+            <div class={`w-9 h-9 rounded-full bg-${t.accent}/10 flex items-center justify-center`}>
+              <span class={`text-${t.accent} text-[0.8rem] font-bold`}>{t.name.charAt(0)}</span>
+            </div>
+            <div>
+              <p class="text-[0.85rem] font-semibold text-brand-dark">{t.name}</p>
+              <p class="text-[0.75rem] text-text-muted">{t.location}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,102 @@
+---
+---
+
+<section class="py-30 relative" id="products">
+  <div class="max-w-300 mx-auto px-6">
+    <div class="text-center mb-16 reveal">
+      <span class="inline-block text-[0.8rem] font-semibold uppercase tracking-widest text-brand-pink mb-4">The Lineup</span>
+      <h2 class="text-[clamp(2rem,4vw,3.2rem)] font-extrabold tracking-tight text-brand-dark">Pick Your Poison</h2>
+    </div>
+    <div id="homeProductGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Populated by JS from product database -->
+    </div>
+    <div class="text-center mt-10 reveal">
+      <a href="/sourdelusions/products" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm border border-border-subtle text-text-muted hover:border-brand-pink hover:text-brand-pink transition-all duration-300 hover:-translate-y-0.5">
+        View All Products
+        <svg class="w-4 h-4 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { init, getAll } from '../../scripts/sourdelusions/products-db.js';
+  import { addItem } from '../../scripts/sourdelusions/cart.js';
+
+  await init();
+
+  function getCategoryIcon(category: string) {
+    switch (category) {
+      case 'gummies': return { bg: 'bg-brand-green/10', stroke: '#0EBB08', path: '<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line>' };
+      case 'hard-candy': return { bg: 'bg-brand-pink/[0.08]', stroke: '#FF2D8A', path: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>' };
+      case 'strips': return { bg: 'bg-brand-yellow/15', stroke: '#B8A500', path: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 7V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v3"></path>' };
+      default: return { bg: 'bg-bg-card', stroke: '#666', path: '<circle cx="12" cy="12" r="10"></circle>' };
+    }
+  }
+
+  const grid = document.getElementById('homeProductGrid')!;
+
+  function render() {
+    const featured = getAll().filter((p: any) => p.featured && p.inStock).slice(0, 3);
+
+    grid.innerHTML = featured.map((product: any) => {
+      const icon = getCategoryIcon(product.category);
+      const imageHtml = product.image
+        ? `<div class="w-full aspect-square rounded-2xl mb-5 overflow-hidden bg-bg-card"><img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"></div>`
+        : `<div class="w-full aspect-square rounded-2xl mb-5 overflow-hidden bg-gradient-to-br from-bg-card via-brand-green/[0.03] to-brand-pink/[0.03] border border-dashed border-black/8 flex flex-col items-center justify-center gap-2">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center ${icon.bg}">
+              <svg class="w-5.5 h-5.5 stroke-2 [stroke-linecap:round] [stroke-linejoin:round] fill-none" viewBox="0 0 24 24" stroke="${icon.stroke}">${icon.path}</svg>
+            </div>
+            <span class="text-xs text-text-muted">Product Image</span>
+          </div>`;
+      return `
+        <div class="group bg-bg-card border border-border-subtle rounded-[20px] p-7 pt-8 transition-all duration-400 relative overflow-hidden hover:-translate-y-2 hover:border-brand-pink/20 hover:shadow-[0_20px_60px_rgba(0,0,0,0.06)] reveal">
+          <div class="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-brand-green to-brand-pink scale-x-0 transition-transform duration-400 origin-left group-hover:scale-x-100"></div>
+
+          ${imageHtml}
+
+          <h3 class="font-heading text-[1.4rem] font-bold mb-2 text-brand-dark">${product.name}</h3>
+          <p class="text-text-muted text-sm mb-5 leading-relaxed">${product.description}</p>
+
+          <div class="flex items-center gap-2 mb-5">
+            <span class="text-xs uppercase tracking-wide text-text-muted font-semibold">Sour</span>
+            <div class="flex-1 h-1 bg-black/6 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-linear-to-r from-brand-green to-brand-yellow transition-[width] duration-800" style="width: ${product.sour}%"></div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="font-heading text-xl font-bold text-brand-dark">$${product.price.toFixed(2)}</span>
+            <button
+              class="home-add-btn bg-brand-green/10 border border-brand-green/20 text-[#0EBB08] px-5 py-2.5 rounded-full text-[0.85rem] font-semibold cursor-pointer transition-all duration-300 font-body hover:bg-brand-green/20 hover:scale-105"
+              data-name="${product.name}"
+              data-price="${product.price}"
+            >Add to Cart</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Re-observe for scroll reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    grid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Bind add-to-cart
+    grid.querySelectorAll('.home-add-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const button = btn as HTMLButtonElement;
+        addItem({ name: button.dataset.name!, price: parseFloat(button.dataset.price!) });
+        window.dispatchEvent(new CustomEvent('cart-item-added'));
+        const orig = button.textContent;
+        button.textContent = 'Added!';
+        button.classList.add('!bg-brand-green/25');
+        setTimeout(() => { button.textContent = orig; button.classList.remove('!bg-brand-green/25'); }, 1200);
+      });
+    });
+  }
+
+  window.addEventListener('products-updated', render);
+  render();
+</script>
