@@ -9,73 +9,167 @@ import Footer from '../../components/liveroofontario/Footer.astro';
 const sections = [
   {
     category: 'Productivity & Profitability',
+    img: '/liveroofontario/images/coneflower-meadow-roof.jpeg',
     color: 'green',
     benefits: [
-      { title: 'Better Attendance', text: 'Workplaces that incorporate biophilic design elements such as access to nature have reduced absenteeism, fewer complaints, and improved staff retention.' },
-      { title: 'Improve Focus', text: 'Providing access to nature in the workplace can reduce eyestrain, relieve mental fatigue, and improve focus on tasks.' },
-      { title: 'Increase Output', text: 'Integrating plants into workplaces yields productivity gains and reduced psychological stress.' },
-      { title: 'Expand Usable Space', text: 'Adding vegetated roofs can expand the amount of usable space a facility can offer. Rooftop patios, healing gardens, and other amenity spaces make buildings more attractive to building owners, tenants, and customers alike.' },
-      { title: 'Maximize Occupancy', text: 'Facilities with vegetated roofs reach full occupancy faster than similar buildings in those markets. These buildings also attract new occupants quicker than traditional locations when openings become available.' },
-      { title: 'Reduce Cooling Costs', text: 'Through the process of evapotranspiration, plants create a thermal barrier between the warming rays of the sun and the building. This barrier keeps the cool air inside, reducing the load on the air conditioning system.' },
-      { title: 'Higher Rents', text: 'Vegetated Roofs can be used to improve the view in leased space, translating into more dollars that guests or tenants are willing to spend.' },
+      {
+        title: 'Better Attendance',
+        text: 'Workplaces that incorporate biophilic design elements such as access to nature have reduced absenteeism, fewer complaints, and improved staff retention.',
+      },
+      {
+        title: 'Improve Focus',
+        text: 'Providing access to nature in the workplace can reduce eyestrain, relieve mental fatigue, and improve focus on tasks.',
+      },
+      {
+        title: 'Increase Output',
+        text: 'Integrating plants into workplaces yields productivity gains and reduced psychological stress.',
+      },
+      {
+        title: 'Expand Usable Space',
+        text: 'Adding vegetated roofs can expand the amount of usable space a facility can offer. Rooftop patios, healing gardens, and other amenity spaces make buildings more attractive to building owners, tenants, and customers alike.',
+      },
+      {
+        title: 'Maximize Occupancy',
+        text: 'Facilities with vegetated roofs reach full occupancy faster than similar buildings in those markets. These buildings also attract new occupants quicker than traditional locations when openings become available.',
+      },
+      {
+        title: 'Reduce Cooling Costs',
+        text: 'Through the process of evapotranspiration, plants create a thermal barrier between the warming rays of the sun and the building. This barrier keeps the cool air inside, reducing the load on the air conditioning system.',
+      },
+      {
+        title: 'Higher Rents',
+        text: 'Vegetated Roofs can be used to improve the view in leased space, translating into more dollars that guests or tenants are willing to spend.',
+      },
     ],
   },
   {
     category: 'Health & Wellness',
+    img: '/liveroofontario/images/echinacea-closeup.jpg',
     color: 'blue',
     benefits: [
-      { title: 'Recover Faster', text: 'Patients who physically interact with plants use less medication and experience significantly reduced recovery times after medical procedures.' },
-      { title: 'Enhance Patient Experience', text: 'Using planted roofs to improve views or provide places of respite in healthcare enhances the experience of patients, visitors, and staff, who report greater satisfaction and positive feelings in the presence of nature.' },
+      {
+        title: 'Recover Faster',
+        text: 'Patients who physically interact with plants use less medication and experience significantly reduced recovery times after medical procedures.',
+      },
+      {
+        title: 'Enhance Patient Experience',
+        text: 'Using planted roofs to improve views or provide places of respite in healthcare enhances the experience of patients, visitors, and staff, who report greater satisfaction and positive feelings in the presence of nature.',
+      },
     ],
   },
   {
     category: 'Marketing & Public Relations',
+    img: '/liveroofontario/images/allium-roof.png',
     color: 'green',
     benefits: [
-      { title: 'Demonstrate Stewardship', text: 'A living roof tells customers, residents, employees, or neighbors that you care about your community, your health, and the ecosystem.' },
-      { title: 'Community Health', text: 'Living roofs as part of green communities increase sense of pride and place, levels of trust, and civic participation. These communities see less violence, aggression, vandalism, and littering.' },
-      { title: 'Green Space Compliance', text: 'Vegetated Roofs typically qualify for credits associated with green/open space and onsite stormwater management in many municipal zoning ordinances, often equating to time and money savings in the zoning process, or financial rewards from tax credits and other incentives.' },
+      {
+        title: 'Demonstrate Stewardship',
+        text: 'A living roof tells customers, residents, employees, or neighbors that you care about your community, your health, and the ecosystem.',
+      },
+      {
+        title: 'Community Health',
+        text: 'Living roofs as part of green communities increase sense of pride and place, levels of trust, and civic participation. These communities see less violence, aggression, vandalism, and littering.',
+      },
+      {
+        title: 'Green Space Compliance',
+        text: 'Vegetated Roofs typically qualify for credits associated with green/open space and onsite stormwater management in many municipal zoning ordinances, often equating to time and money savings in the zoning process, or financial rewards from tax credits and other incentives.',
+      },
     ],
   },
   {
     category: 'Air & Water Quality',
+    img: '/liveroofontario/images/roofblue-retain.jpeg',
     color: 'blue',
     benefits: [
-      { title: 'Reduce Stormwater Runoff', text: 'Research has shown that extensive vegetated roof systems can reduce runoff by up to 90%+ annually (varies with climate, soil, and pitch of roof). Living roofs act as a sponge to absorb much of this runoff and keep waterways cleaner.' },
-      { title: 'Clean Water', text: 'Urban environments, with their expanses of impermeable surfaces, allow stormwater to run off directly into municipal sewer systems. Vegetated Roofs reduce stormwater runoff and the likelihood of combined sewage overflows into local waterways.' },
-      { title: 'Prevent Pollution', text: 'Rainwater that runs off impermeable surfaces rinses pollutants into local waterways. Vegetated roofs filter these pollutants from the runoff before it reaches municipal water treatment facilities.' },
-      { title: 'Increase Oxygen', text: 'Plants naturally infuse the air with oxygen and reduce carbon dioxide levels for overall improved air quality. Plant leaves, roots, and soil can remove traces of toxic chemicals such as carbon monoxide and formaldehyde.' },
-      { title: 'Reduce Noise', text: 'Plants, soil, and air trapped in the soil are acoustic insulators. Vegetated Roofs dampen and reduce noise — a great benefit to occupants of buildings affected by airports, industry, trains, and traffic.' },
-      { title: 'Improve Indoor Air Quality', text: 'Vegetated Roofs help improve the quality of air brought into a building through outdoor intake vents, filtering particulates and pollutants before they enter the HVAC system.' },
+      {
+        title: 'Reduce Stormwater Runoff',
+        text: 'Research has shown that extensive vegetated roof systems can reduce runoff by up to 90%+ annually (varies with climate, soil, and pitch of roof). Living roofs act as a sponge to absorb much of this runoff and keep waterways cleaner.',
+      },
+      {
+        title: 'Clean Water',
+        text: 'Urban environments, with their expanses of impermeable surfaces, allow stormwater to run off directly into municipal sewer systems. Vegetated Roofs reduce stormwater runoff and the likelihood of combined sewage overflows into local waterways.',
+      },
+      {
+        title: 'Prevent Pollution',
+        text: 'Rainwater that runs off impermeable surfaces rinses pollutants into local waterways. Vegetated roofs filter these pollutants from the runoff before it reaches municipal water treatment facilities.',
+      },
+      {
+        title: 'Increase Oxygen',
+        text: 'Plants naturally infuse the air with oxygen and reduce carbon dioxide levels for overall improved air quality. Plant leaves, roots, and soil can remove traces of toxic chemicals such as carbon monoxide and formaldehyde.',
+      },
+      {
+        title: 'Reduce Noise',
+        text: 'Plants, soil, and air trapped in the soil are acoustic insulators. Vegetated Roofs dampen and reduce noise — a great benefit to occupants of buildings affected by airports, industry, trains, and traffic.',
+      },
+      {
+        title: 'Improve Indoor Air Quality',
+        text: 'Vegetated Roofs help improve the quality of air brought into a building through outdoor intake vents, filtering particulates and pollutants before they enter the HVAC system.',
+      },
     ],
   },
   {
     category: 'Conservation',
+    img: '/liveroofontario/images/wildflower-cityscape-1.jpg',
     color: 'green',
     benefits: [
-      { title: 'Restore Habitat', text: 'Plants and soil help recreate habitat for pollinators such as bees, butterflies, insects, and songbirds.' },
-      { title: 'Save Energy', text: 'The evapotranspirative effects of vegetated roof plants and the growing medium reduce HVAC costs during hot weather.' },
-      { title: 'Protect Building Envelope', text: 'Plants and soil protect membranes from UV radiation, temperature fluctuations, and high winds.' },
-      { title: 'Fire Prevention', text: 'Succulent vegetated roof plants and inorganic growing media help reduce the risk of fire.' },
-      { title: 'Reduce Heat Islands', text: 'Vegetated Roof vegetation helps cool the air, slow air movement, and acts as a substrate for pollution to settle out and detoxify.' },
-      { title: 'Conserve Municipal Storm Systems', text: 'The soil in vegetated roof systems acts like a sponge and absorbs excess rainwater, reducing the need to expand municipal stormwater systems. It also means reduced overflows as well as reduced pollution and associated costs.' },
+      {
+        title: 'Restore Habitat',
+        text: 'Plants and soil help recreate habitat for pollinators such as bees, butterflies, insects, and songbirds.',
+      },
+      {
+        title: 'Save Energy',
+        text: 'The evapotranspirative effects of vegetated roof plants and the growing medium reduce HVAC costs during hot weather.',
+      },
+      {
+        title: 'Protect Building Envelope',
+        text: 'Plants and soil protect membranes from UV radiation, temperature fluctuations, and high winds.',
+      },
+      {
+        title: 'Fire Prevention',
+        text: 'Succulent vegetated roof plants and inorganic growing media help reduce the risk of fire.',
+      },
+      {
+        title: 'Reduce Heat Islands',
+        text: 'Vegetated Roof vegetation helps cool the air, slow air movement, and acts as a substrate for pollution to settle out and detoxify.',
+      },
+      {
+        title: 'Conserve Municipal Storm Systems',
+        text: 'The soil in vegetated roof systems acts like a sponge and absorbs excess rainwater, reducing the need to expand municipal stormwater systems. It also means reduced overflows as well as reduced pollution and associated costs.',
+      },
     ],
   },
   {
     category: 'Education',
+    img: '/liveroofontario/images/nursery-growing-field.jpeg',
     color: 'blue',
     benefits: [
-      { title: 'Enhance Performance', text: 'Student exposure to nature has been correlated with higher academic performance in Math and English.' },
-      { title: 'Improve Focus', text: 'Studies have demonstrated that exposure to nature eases symptoms of ADHD and improves concentration in students.' },
-      { title: 'Teach Stewardship', text: 'Students who are exposed to the maintenance of vegetated roofs learn about the vital role of plants in air quality, stormwater management, and climate control.' },
+      {
+        title: 'Enhance Performance',
+        text: 'Student exposure to nature has been correlated with higher academic performance in Math and English.',
+      },
+      {
+        title: 'Improve Focus',
+        text: 'Studies have demonstrated that exposure to nature eases symptoms of ADHD and improves concentration in students.',
+      },
+      {
+        title: 'Teach Stewardship',
+        text: 'Students who are exposed to the maintenance of vegetated roofs learn about the vital role of plants in air quality, stormwater management, and climate control.',
+      },
     ],
   },
   {
     category: 'SolaGreen — Solar + LiveRoof',
+    img: '/liveroofontario/images/solargreen-aerial.jpeg',
     color: 'green',
     benefits: [
-      { title: 'Combined Benefits', text: 'All benefits listed above apply to SolaVegetated Roofs — with the added advantage of clean energy generation from an integrated solar array.' },
-      { title: 'Financial Incentives', text: 'A SolaVegetated Roof can generate electricity in a more economical and efficient manner than most other options. Because solar power generation is often incentivized with grants and tax codes, installing a SolaVegetated Roof may provide grant funding and tax incentives for the LiveRoof component as well — lowering its cost as an essential element of the solar array.' },
+      {
+        title: 'Combined Benefits',
+        text: 'All benefits listed above apply to SolaVegetated Roofs — with the added advantage of clean energy generation from an integrated solar array.',
+      },
+      {
+        title: 'Financial Incentives',
+        text: 'A SolaVegetated Roof can generate electricity in a more economical and efficient manner than most other options. Because solar power generation is often incentivized with grants and tax codes, installing a SolaVegetated Roof may provide grant funding and tax incentives for the LiveRoof component as well — lowering its cost as an essential element of the solar array.',
+      },
     ],
   },
 ];
@@ -96,9 +190,11 @@ const sections = [
     ]}
   />
 
+  <!-- Benefits Sections -->
   {sections.map((section, sIdx) => (
     <section class={`py-12 md:py-20 ${sIdx % 2 === 0 ? 'bg-white' : 'bg-mid'}`}>
       <div class="container">
+        <!-- Section Header -->
         <div class="flex items-center gap-4 mb-12">
           <div class={`w-10 h-10 rounded-lg flex items-center justify-center ${section.color === 'green' ? 'bg-green-light' : 'bg-blue-light'}`}>
             <svg width="20" height="20" fill="none" stroke={section.color === 'green' ? '#17b060' : '#0092CF'} stroke-width="2" viewBox="0 0 24 24">
@@ -109,16 +205,13 @@ const sections = [
           <h2 class="font-serif text-[1.8rem] text-dark">{section.category}</h2>
         </div>
 
+        <!-- Category Content -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          <div class="photo-placeholder rounded-xl aspect-[4/3] lg:sticky lg:top-[100px]">
-            <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="3" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="m6 21 5.5-7 3.5 4 2.5-3L21 21" />
-            </svg>
-            <span>{section.category}</span>
+          <div class="rounded-xl overflow-hidden aspect-[4/3] lg:sticky lg:top-[100px]">
+            <img src={section.img} alt={section.category} class="w-full h-full object-cover" />
           </div>
 
+          <!-- Benefit Items -->
           <div class="grid gap-8">
             {section.benefits.map((benefit) => (
               <div>

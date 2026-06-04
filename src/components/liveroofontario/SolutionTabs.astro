@@ -277,6 +277,7 @@ const tabs: Tab[] = [
 ];
 ---
 
+<!-- Tab Bar -->
 <div class="sticky top-[76px] z-50 bg-dark border-b border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.15)]">
   <div class="container">
     <div
@@ -303,6 +304,7 @@ const tabs: Tab[] = [
   </div>
 </div>
 
+<!-- Tab Panels -->
 {tabs.map((tab, i) => (
   <div
     class={`solution-panel ${i !== 0 ? 'hidden' : ''}`}
@@ -311,6 +313,7 @@ const tabs: Tab[] = [
   >
     <div class="container py-14 md:py-20">
 
+      <!-- Panel Header -->
       <div class="relative overflow-hidden rounded-2xl bg-dark mb-12 p-8 md:p-10">
         <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 85% 50%, rgba(0,178,90,0.18) 0%, transparent 60%)"></div>
         <div class="relative z-10">
@@ -401,10 +404,12 @@ const tabs: Tab[] = [
     function activate(tabId: string) {
       allTabs.forEach((t) => {
         const isActive = t.dataset.tab === tabId;
+        // Active state
         t.classList.toggle('bg-green', isActive);
         t.classList.toggle('text-white', isActive);
         t.classList.toggle('border-green', isActive);
         t.classList.toggle('shadow-[0_4px_16px_rgba(0,178,90,0.3)]', isActive);
+        // Inactive state
         t.classList.toggle('bg-transparent', !isActive);
         t.classList.toggle('text-white/60', !isActive);
         t.classList.toggle('border-white/10', !isActive);
@@ -416,11 +421,13 @@ const tabs: Tab[] = [
       });
     }
 
+    // Hash sync on load
     const hash = window.location.hash.replace('#', '');
     if (hash && document.querySelector(`[data-tab="${hash}"]`)) {
       activate(hash);
     }
 
+    // Click handler
     allTabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         const id = tab.dataset.tab!;
@@ -436,6 +443,7 @@ const tabs: Tab[] = [
       });
     });
 
+    // Keyboard nav
     tablist.addEventListener('keydown', (e) => {
       const focused = document.activeElement as HTMLButtonElement;
       if (!focused?.classList.contains('solution-tab')) return;

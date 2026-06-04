@@ -2,32 +2,38 @@
 ---
 
 <section class="hero">
-  <video
-    class="absolute inset-0 w-full h-full object-cover"
-    src="/liveroofontario/videos/bf4b99e087ce64bd6b7ba29dfe77f948_1777011656.mp4"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-  ></video>
+  <div class="hero-video-wrap">
+    <video autoplay muted loop playsinline>
+      <source src="/liveroofontario/images/media1.mp4" type="video/mp4" />
+    </video>
+  </div>
   <div class="hero-overlay"></div>
   <div class="container hero-container">
-  <div class="hero-content">
-    <div class="hero-eyebrow">LiveRoof Vegetated Roof Systems</div>
-    <h1>Nature Above.<br /><em>Proven</em> Below.</h1>
-    <p class="hero-sub">
-      Our patented hybrid vegetated roof design combines the best features of alternate vegetated roof
-      methods — delivering instant maturity, natural beauty, and lasting performance from Day One.
-    </p>
-    <div class="flex gap-3.5 flex-wrap">
-      <a href="/liveroofontario/products" class="btn btn-primary">Explore Products</a>
-      <a href="/liveroofontario/portfolio" class="btn btn-outline">View Portfolio</a>
+    <div class="hero-content">
+      <div class="hero-eyebrow">LiveRoof Vegetated Roof Systems</div>
+      <h1>The Proof is in the Roof</h1>
+      <p class="hero-sub">
+        Natural stormwater management from your local nursery.<br />
+        LiveRoof modular vegetated roof design delivers lasting performance and natural beauty from Day One.
+      </p>
+      <div class="flex gap-3.5 flex-wrap">
+        <a href="/liveroofontario/products" class="btn btn-primary">Explore Products</a>
+        <a href="/liveroofontario/portfolio" class="btn btn-outline">View Portfolio</a>
+      </div>
     </div>
   </div>
-  </div>
-  <div class="hero-badge">
-    <div class="num">25<span style="font-size:1.2rem">+</span></div>
-    <div class="lbl">Years in Business</div>
-  </div>
 </section>
+
+<style>
+  .hero-video-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .hero-video-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+</style>

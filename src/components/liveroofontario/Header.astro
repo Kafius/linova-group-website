@@ -33,10 +33,11 @@ const technicalDropdown = [
   <div class="container">
     <div class="flex items-center justify-between h-[76px]">
       <a href="/liveroofontario/" class="flex items-center">
+        <!-- Place your logo file at public/logo.svg (or .png) and it will appear here -->
         <img
-          src="/liveroofontario/logo.svg"
+          src="/liveroofontario/logo-no-tagline.svg"
           alt="LiveRoof Ontario"
-          class="h-16 w-auto object-contain"
+          class="h-[60px] w-auto object-contain"
           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
         />
         <div class="flex-col hidden" id="logo-fallback">
@@ -100,6 +101,7 @@ const technicalDropdown = [
       <a href="/liveroofontario/about" class="mobile-nav-link">About Us</a>
       <a href="/liveroofontario/why-liveroof" class="mobile-nav-link">Why LiveRoof?</a>
 
+      <!-- Mobile Products Accordion -->
       <div class="mobile-accordion">
         <button class="mobile-nav-link flex items-center justify-between w-full" data-accordion="products">
           <span>Products</span>
@@ -116,6 +118,7 @@ const technicalDropdown = [
       <a href="/liveroofontario/benefits" class="mobile-nav-link">Benefits</a>
       <a href="/liveroofontario/portfolio" class="mobile-nav-link">Portfolio</a>
 
+      <!-- Mobile Technical Accordion -->
       <div class="mobile-accordion">
         <button class="mobile-nav-link flex items-center justify-between w-full" data-accordion="technical">
           <span>Technical</span>
@@ -136,6 +139,7 @@ const technicalDropdown = [
 </header>
 
 <style>
+  /* Desktop Dropdown */
   .dropdown-wrap {
     position: relative;
   }
@@ -174,6 +178,7 @@ const technicalDropdown = [
     color: #0092CF;
   }
 
+  /* Mobile Nav */
   .mobile-nav-link {
     display: block;
     padding: 12px 0;
@@ -201,6 +206,7 @@ const technicalDropdown = [
     transform: rotate(180deg);
   }
 
+  /* Hamburger animation */
   .menu-open .hamburger-line:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
@@ -214,6 +220,7 @@ const technicalDropdown = [
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu toggle
     const btn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');
     if (btn && menu) {
@@ -223,6 +230,7 @@ const technicalDropdown = [
       });
     }
 
+    // Mobile accordion toggles
     document.querySelectorAll('[data-accordion]').forEach((trigger) => {
       trigger.addEventListener('click', () => {
         const id = trigger.getAttribute('data-accordion');

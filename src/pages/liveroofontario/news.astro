@@ -6,32 +6,30 @@ import PageHero from '../../components/liveroofontario/PageHero.astro';
 import CtaBanner from '../../components/liveroofontario/CtaBanner.astro';
 import Footer from '../../components/liveroofontario/Footer.astro';
 
-// Fetch RSS feed from liveroof.com at build time
-let articles: { title: string; link: string; date: string; excerpt: string }[] = [];
+// Fetch posts from WordPress REST API at build time (includes featured images)
+let articles: { title: string; link: string; date: string; excerpt: string; image: string }[] = [];
+
+const FALLBACK_IMG = '/liveroofontario/images/wildflower-roof-cityview.jpg';
 
 try {
-  const res = await fetch('https://liveroof.com/feed/');
-  const xml = await res.text();
+  const res = await fetch(
+    'https://liveroof.com/wp-json/wp/v2/posts?per_page=9&_embed&_fields=title,link,date,excerpt,_links,_embedded'
+  );
+  const posts: any[] = await res.json();
 
-  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
-  let match;
-  while ((match = itemRegex.exec(xml)) !== null) {
-    const item = match[1];
-    const title = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/)?.[1]
-      ?? item.match(/<title>(.*?)<\/title>/)?.[1] ?? '';
-    const link = item.match(/<link>(.*?)<\/link>/)?.[1] ?? '';
-    const pubDate = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? '';
-    const desc = item.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/s)?.[1]
-      ?? item.match(/<description>(.*?)<\/description>/s)?.[1] ?? '';
-
-    const excerpt = desc.replace(/<[^>]*>/g, '').replace(/&#8230;/g, '...').replace(/&amp;/g, '&').trim().slice(0, 200);
-
-    const date = pubDate
-      ? new Date(pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  articles = posts.map((post) => {
+    const title = post.title?.rendered?.replace(/&#\d+;/g, c => String.fromCharCode(Number(c.slice(2,-1)))) ?? '';
+    const link = post.link ?? '';
+    const date = post.date
+      ? new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
       : '';
+    const excerptHtml = post.excerpt?.rendered ?? '';
+    const excerpt = excerptHtml.replace(/<[^>]*>/g, '').replace(/&#8230;/g, '...').replace(/&amp;/g, '&').trim().slice(0, 200);
+    const media = post._embedded?.['wp:featuredmedia'];
+    const image = media?.[0]?.source_url ?? FALLBACK_IMG;
 
-    articles.push({ title, link, date, excerpt: excerpt ? excerpt + '...' : '' });
-  }
+    return { title, link, date, excerpt: excerpt ? excerpt + '...' : '', image };
+  });
 } catch (e) {
   articles = [];
 }
@@ -58,13 +56,8 @@ try {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
           {articles.map((article) => (
             <a href={article.link} target="_blank" rel="noopener noreferrer" class="news-card group block">
-              <div class="h-[200px] photo-placeholder">
-                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <path d="m6 21 5.5-7 3.5 4 2.5-3L21 21" />
-                </svg>
-                <span>Article Photo</span>
+              <div class="h-[200px] overflow-hidden">
+                <img src={article.image} alt={article.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               </div>
               <div class="news-card-body p-6">
                 <div class="news-date">{article.date}</div>

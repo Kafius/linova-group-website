@@ -1,23 +1,23 @@
 ---
 import PhoneReveal from './PhoneReveal.astro';
 const productLinks = [
-  { label: 'Vegetated Roof Modules', href: '/liveroofontario/products' },
-  { label: 'RoofEdge', href: '/liveroofontario/products' },
-  { label: 'RoofStone', href: '/liveroofontario/products' },
-  { label: 'WindDisc', href: '/liveroofontario/products' },
-  { label: 'PipeRunner', href: '/liveroofontario/products' },
-  { label: 'RoofBlue', href: '/liveroofontario/products' },
-  { label: 'Plants', href: '/liveroofontario/products' },
-  { label: 'Soil', href: '/liveroofontario/products' },
+  { label: 'Vegetated Roof Modules', href: '/liveroofontario/products/modules' },
+  { label: 'RoofEdge', href: '/liveroofontario/products/roofedge' },
+  { label: 'RoofStone', href: '/liveroofontario/products/roofstone' },
+  { label: 'WindDisc', href: '/liveroofontario/products/winddisc' },
+  { label: 'PipeRunner', href: '/liveroofontario/products/piperunner' },
+  { label: 'RoofBlue', href: '/liveroofontario/products/roofblue' },
+  { label: 'Plants', href: '/liveroofontario/products/plants' },
+  { label: 'Soil', href: '/liveroofontario/products/soil' },
 ];
 const technicalLinks = [
-  { label: 'Design & Engineering', href: '/liveroofontario/technical' },
-  { label: 'Detail Drawings', href: '/liveroofontario/technical' },
-  { label: 'Installation Guide', href: '/liveroofontario/technical' },
-  { label: 'LEED Resources', href: '/liveroofontario/technical' },
-  { label: 'Spec Writer', href: '/liveroofontario/technical' },
-  { label: 'Continuing Education', href: '/liveroofontario/technical' },
-  { label: 'Maintenance & Ops', href: '/liveroofontario/technical' },
+  { label: 'Design & Engineering', href: '/liveroofontario/technical/design-engineering' },
+  { label: 'Detail Drawings', href: '/liveroofontario/technical/detail-drawings' },
+  { label: 'Installation Guide', href: '/liveroofontario/technical/installation' },
+  { label: 'LEED Resources', href: '/liveroofontario/technical/leed' },
+  { label: 'Spec Writer', href: 'https://liveroof.com/technical/spec-writer' },
+  { label: 'Continuing Education', href: '/liveroofontario/technical/continuing-education' },
+  { label: 'Maintenance & Ops', href: '/liveroofontario/technical/maintenance' },
   { label: 'Videos', href: '/liveroofontario/videos' },
 ];
 const companyLinks = [
@@ -26,8 +26,7 @@ const companyLinks = [
   { label: 'Benefits', href: '/liveroofontario/benefits' },
   { label: 'News', href: '/liveroofontario/news' },
   { label: 'Portfolio', href: '/liveroofontario/portfolio' },
-  { label: 'FAQ\'s', href: '/liveroofontario/faq' },
-  { label: 'Careers', href: '/liveroofontario/careers' },
+  { label: 'FAQ', href: '/liveroofontario/faq' },
   { label: 'Contact', href: '/liveroofontario/contact' },
 ];
 ---
@@ -83,10 +82,8 @@ const companyLinks = [
     <div class="border-t border-white/[0.08] py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
       <span>&copy; 2025 LiveRoof Ontario. All rights reserved.</span>
       <div class="flex gap-5">
-        <a href="#" class="text-white/30 hover:text-green transition-colors">Privacy Policy</a>
-        <a href="#" class="text-white/30 hover:text-green transition-colors">Catalog</a>
-        <a href="#" class="text-white/30 hover:text-green transition-colors">FAQ's</a>
-        <a href="#" class="text-white/30 hover:text-green transition-colors">Sitemap</a>
+        <a href="/liveroofontario/privacy" class="text-white/30 hover:text-green transition-colors">Privacy Policy</a>
+        <a href="/liveroofontario/faq" class="text-white/30 hover:text-green transition-colors">FAQ's</a>
       </div>
     </div>
   </div>
