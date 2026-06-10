@@ -1,0 +1,175 @@
+---
+// Lenny — our in-house staff-scheduling desktop app (Windows).
+// Brand colours: navy #232c63 (primary), gold #cda84f (accent).
+// Layout/spacing/type follow the existing Services sections (see MaintenanceSupport.astro).
+const DOWNLOAD_URL =
+  'https://github.com/Kafius/ma-calender/releases/download/v0.1.1/Lenny-Setup-0.1.1.exe';
+
+const features = [
+  { title: 'Drag & resize shifts', desc: 'Build the week by dragging shifts onto the grid and resizing to the minute.' },
+  { title: 'Smart auto-fill', desc: 'Let Lenny propose a full schedule, then tweak what you want.' },
+  { title: 'Availability & coverage warnings', desc: 'Instant flags when a shift clashes with availability or leaves a gap.' },
+  { title: 'Secure cloud sync', desc: 'Changes sync so the whole team always sees the latest roster.' },
+  { title: 'Team workspaces with invites', desc: 'Spin up a workspace and invite managers and staff by email.' },
+  { title: 'Two-factor sign-in', desc: 'Protect schedules and staff data with 2FA on every account.' },
+];
+
+// Sample roster for the app mockup.
+const staff = ['Ava M.', 'Liam K.', 'Noah R.', 'Mia S.'];
+const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+const shifts = [
+  { row: 0, col: 0, span: 2, label: '9–1', tone: 'navy' },
+  { row: 0, col: 3, span: 2, label: '12–6', tone: 'gold' },
+  { row: 1, col: 1, span: 1, label: '9–3', tone: 'gold' },
+  { row: 1, col: 4, span: 1, label: '2–8', tone: 'navy' },
+  { row: 2, col: 0, span: 1, label: '8–2', tone: 'navy' },
+  { row: 2, col: 2, span: 2, label: '11–5', tone: 'gold' },
+  { row: 3, col: 3, span: 1, label: '1–7', tone: 'navy' },
+];
+---
+
+<section id="lenny" class="py-24 bg-white overflow-hidden">
+  <div class="max-w-[1140px] mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Left: copy + features + download -->
+      <div>
+        <div class="flex items-center gap-3 mb-5">
+          <!-- Lenny app badge: navy rounded square, white stem + gold foot "L" -->
+          <span class="inline-flex flex-shrink-0" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 48 48" role="img" aria-label="Lenny app icon">
+              <rect width="48" height="48" rx="12" fill="#232c63" />
+              <rect x="18" y="11" width="7" height="26" rx="1.5" fill="#ffffff" />
+              <rect x="18" y="30" width="15" height="7" rx="1.5" fill="#cda84f" />
+            </svg>
+          </span>
+          <span class="inline-block text-xs font-bold uppercase tracking-[0.2em]" style="color:#b08d3e;">
+            Free Desktop App
+          </span>
+        </div>
+
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-5 leading-tight">
+          Lenny — Staff Scheduling
+        </h2>
+        <p class="text-muted text-lg leading-relaxed mb-8">
+          A desktop app for building and sharing employee schedules — drag-and-drop shifts,
+          auto-fill, and coverage and availability warnings. Secure cloud sync keeps the whole
+          team collaborating in real time.
+        </p>
+
+        <ul class="grid sm:grid-cols-2 gap-x-6 gap-y-4 mb-10">
+          {features.map(({ title, desc }) => (
+            <li class="flex gap-3">
+              <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(205,168,79,0.15);">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#cda84f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="text-dark font-semibold text-sm">{title}</div>
+                <div class="text-muted text-sm mt-0.5">{desc}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <a
+          href={DOWNLOAD_URL}
+          target="_blank"
+          rel="noopener"
+          download
+          aria-label="Download Lenny for Windows (installer, approximately 83 megabytes)"
+          class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-[0.95rem] text-white hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(35,44,99,0.35)] transition-all duration-200 cursor-pointer"
+          style="background: linear-gradient(135deg, #232c63, #2f3a82);"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download for Windows
+        </a>
+
+        <p class="text-muted text-xs leading-relaxed mt-4 max-w-[440px]">
+          Windows 10/11 · ~83&nbsp;MB. On first launch Windows may show an
+          “unrecognized app” prompt — click <span class="font-semibold text-dark">“More info → Run anyway”</span>.
+        </p>
+      </div>
+
+      <!-- Right: scheduling app mockup -->
+      <div class="relative">
+        <!-- Glow -->
+        <div class="absolute -inset-4 rounded-3xl pointer-events-none" style="background: radial-gradient(ellipse at 50% 50%, rgba(205,168,79,0.12) 0%, transparent 70%); filter: blur(24px);"></div>
+
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-border">
+          <!-- App title bar -->
+          <div class="px-4 py-2.5 flex items-center gap-2.5" style="background:#232c63;">
+            <span class="w-2.5 h-2.5 rounded-full" style="background:rgba(255,255,255,0.35);"></span>
+            <span class="w-2.5 h-2.5 rounded-full" style="background:rgba(255,255,255,0.35);"></span>
+            <span class="w-2.5 h-2.5 rounded-full" style="background:#cda84f;"></span>
+            <div class="flex items-center gap-1.5 ml-1">
+              <svg width="13" height="13" viewBox="0 0 48 48" aria-hidden="true">
+                <rect width="48" height="48" rx="12" fill="#1a224d" />
+                <rect x="18" y="11" width="7" height="26" rx="1.5" fill="#ffffff" />
+                <rect x="18" y="30" width="15" height="7" rx="1.5" fill="#cda84f" />
+              </svg>
+              <span class="text-[0.65rem] font-semibold text-white/90">Lenny — Week of Apr 14</span>
+            </div>
+          </div>
+
+          <!-- Schedule grid -->
+          <div class="bg-white p-4" style="min-height: 380px;">
+            <!-- Toolbar -->
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-[11px] font-bold text-dark">Weekly Roster</div>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-1 rounded-md text-[8.5px] font-bold text-white" style="background:#232c63;">Auto-fill</span>
+                <span class="px-2 py-1 rounded-md text-[8.5px] font-bold" style="background:rgba(205,168,79,0.18);color:#9a7b32;">Publish</span>
+              </div>
+            </div>
+
+            <!-- Grid header -->
+            <div class="grid" style="grid-template-columns: 56px repeat(5, 1fr); gap: 4px;">
+              <div></div>
+              {days.map(d => (
+                <div class="text-center text-[8.5px] font-bold text-muted uppercase tracking-wide py-1">{d}</div>
+              ))}
+
+              {staff.map((name, row) => (
+                <>
+                  <div class="flex items-center text-[9px] font-semibold text-dark pr-1">{name}</div>
+                  {days.map((_, col) => {
+                    const shift = shifts.find(s => s.row === row && s.col === col);
+                    const covered = shifts.some(s => s.row === row && col >= s.col && col < s.col + s.span);
+                    if (shift) {
+                      return (
+                        <div
+                          class="rounded-md py-2 px-1.5 text-[8px] font-bold text-center"
+                          style={`grid-column: span ${shift.span}; ${
+                            shift.tone === 'navy'
+                              ? 'background:rgba(35,44,99,0.12);color:#232c63;'
+                              : 'background:rgba(205,168,79,0.2);color:#8a6d2c;'
+                          }`}
+                        >
+                          {shift.label}
+                        </div>
+                      );
+                    }
+                    if (covered) return null;
+                    return <div class="rounded-md border border-dashed border-border" style="min-height:26px;"></div>;
+                  })}
+                </>
+              ))}
+            </div>
+
+            <!-- Coverage warning chip -->
+            <div class="flex items-center gap-2 mt-3 px-2.5 py-1.5 rounded-lg" style="background:rgba(205,168,79,0.12);">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#cda84f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span class="text-[8.5px] font-medium" style="color:#8a6d2c;">Thursday morning is understaffed — 1 more needed for coverage.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="absolute -bottom-4 -right-4 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg" style="background: linear-gradient(135deg, #232c63, #2f3a82);">
+          Windows app
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
