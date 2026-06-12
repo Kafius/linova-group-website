@@ -1,0 +1,176 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Email Confirmed — Lenny"
+  description="Your email address has been verified. Welcome to Lenny."
+>
+
+  <header class="fixed top-4 inset-x-0 z-[1000] px-4 sm:px-6 pointer-events-none">
+    <div
+      class="max-w-[1140px] mx-auto backdrop-blur-md rounded-2xl border px-5 flex items-center h-[64px] pointer-events-auto"
+      style="background: rgba(35,44,99,0.85); border-color: rgba(205,168,79,0.2); box-shadow: 0 4px 24px rgba(0,0,0,0.25);"
+    >
+      <a href="/" class="flex items-center gap-2.5 cursor-pointer">
+        <svg width="32" height="32" viewBox="0 0 48 48" aria-label="Lenny">
+          <rect width="48" height="48" rx="10" fill="#1a224d" />
+          <rect x="18" y="11" width="7" height="26" rx="1.5" fill="#ffffff" />
+          <rect x="18" y="30" width="15" height="7" rx="1.5" fill="#cda84f" />
+        </svg>
+        <span class="text-white font-bold text-lg tracking-tight">Lenny</span>
+      </a>
+    </div>
+  </header>
+
+  <main
+    class="relative min-h-[100svh] flex items-center justify-center pt-28 pb-24 overflow-hidden text-white"
+    style="background: radial-gradient(ellipse at 50% 40%, #2c3878 0%, #232c63 40%, #161c44 100%);"
+  >
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(ellipse, rgba(205,168,79,0.12) 0%, transparent 65%); filter: blur(80px);"></div>
+
+    <div class="relative max-w-[560px] mx-auto px-6 text-center">
+
+      <!-- Loading state -->
+      <div id="state-loading">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border" style="background: rgba(205,168,79,0.1); border-color: rgba(205,168,79,0.25);">
+          <svg class="animate-spin" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#cda84f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+        </div>
+        <p class="text-lg" style="color: rgba(255,255,255,0.5);">Verifying your email…</p>
+      </div>
+
+      <!-- Success state -->
+      <div id="state-success" style="display:none;">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border" style="background: rgba(205,168,79,0.15); border-color: rgba(205,168,79,0.35);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cda84f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+
+        <div class="inline-flex items-center gap-2 border text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-6 backdrop-blur-sm" style="background: rgba(205,168,79,0.1); border-color: rgba(205,168,79,0.25); color: rgba(205,168,79,0.9);">
+          <span class="w-1.5 h-1.5 rounded-full inline-block" style="background:#cda84f;"></span>
+          Email Verified
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.1] mb-5">
+          You're confirmed.<br />
+          <span class="text-transparent bg-clip-text" style="background-image: linear-gradient(90deg, #cda84f, #e8c97a);">Welcome to Lenny.</span>
+        </h1>
+
+        <p class="text-lg leading-relaxed mb-12" style="color: rgba(255,255,255,0.6);">
+          Your email address has been verified. You're all set — open the app and start building your team's schedule.
+        </p>
+
+        <ol class="text-left flex flex-col gap-4 mb-14">
+          {[
+            ["Sign in", "Launch Lenny on your desktop and sign in with your verified email and password."],
+            ["Create or join a workspace", "Set up a new workspace for your team, or accept an invite from a manager."],
+            ["Build your first schedule", "Drag shifts onto the grid, enable auto-fill, and publish to the team in seconds."],
+          ].map(([title, detail], i) => (
+            <li class="flex gap-4 items-start rounded-xl p-5 border" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08);">
+              <span class="w-7 h-7 min-w-[1.75rem] rounded-full text-xs font-bold flex items-center justify-center mt-0.5 border" style="background: rgba(35,44,99,0.8); border-color: rgba(205,168,79,0.3); color: #cda84f;">{i + 1}</span>
+              <div>
+                <p class="font-semibold text-white text-sm mb-0.5">{title}</p>
+                <p class="text-sm leading-relaxed" style="color: rgba(255,255,255,0.55);">{detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <a
+          href="/#lenny"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm border transition-all duration-200"
+          style="border-color: rgba(205,168,79,0.3); color: rgba(205,168,79,0.8);"
+        >
+          ← Back to Lenny's page
+        </a>
+      </div>
+
+      <!-- Error state -->
+      <div id="state-error" style="display:none;">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 border" style="background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.35);">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </div>
+
+        <div class="inline-flex items-center gap-2 border text-xs font-semibold tracking-[0.15em] uppercase px-4 py-2 rounded-full mb-6" style="background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: rgba(248,113,113,0.9);">
+          <span class="w-1.5 h-1.5 rounded-full inline-block" style="background:#f87171;"></span>
+          Verification Failed
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.1] mb-5">
+          Link expired<br />or already used.
+        </h1>
+
+        <p id="error-message" class="text-lg leading-relaxed mb-10" style="color: rgba(255,255,255,0.6);">
+          This verification link is no longer valid. Please sign up again or request a new confirmation email from the app.
+        </p>
+
+        <a
+          href="/#lenny"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm border transition-all duration-200"
+          style="border-color: rgba(205,168,79,0.3); color: rgba(205,168,79,0.8);"
+        >
+          ← Back to Lenny's page
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="py-8 border-t" style="background: #161c44; border-color: rgba(255,255,255,0.07);">
+    <div class="max-w-[1140px] mx-auto px-6 text-center">
+      <p class="text-sm" style="color: rgba(255,255,255,0.25);">© {new Date().getFullYear()} Linova Group. All rights reserved.</p>
+    </div>
+  </footer>
+
+</Layout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+  );
+
+  function show(id: string) {
+    ['state-loading', 'state-success', 'state-error'].forEach(s => {
+      const el = document.getElementById(s);
+      if (el) el.style.display = s === id ? '' : 'none';
+    });
+  }
+
+  async function verify() {
+    const params = new URLSearchParams(window.location.search);
+    const tokenHash = params.get('token_hash');
+    const type = params.get('type');
+
+    if (tokenHash && type) {
+      // PKCE flow
+      const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type as any });
+      if (error) {
+        const msg = document.getElementById('error-message');
+        if (msg) msg.textContent = error.message;
+        show('state-error');
+      } else {
+        show('state-success');
+      }
+      return;
+    }
+
+    // Implicit flow — Supabase auto-processes the URL hash on getSession()
+    const { data, error } = await supabase.auth.getSession();
+    if (error || !data.session) {
+      show('state-error');
+    } else {
+      show('state-success');
+    }
+  }
+
+  verify();
+</script>
