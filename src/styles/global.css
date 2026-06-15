@@ -9,6 +9,24 @@
   --color-border: #e5e7eb;
 
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* WardKraft sub-site tokens */
+  --color-navy-50: #eef1f7;
+  --color-navy-100: #d5dcea;
+  --color-navy-200: #a8b9d3;
+  --color-navy-300: #7b96bc;
+  --color-navy-400: #4e73a5;
+  --color-navy-500: #2f5591;
+  --color-navy-600: #1e3d78;
+  --color-navy-700: #1D3461;
+  --color-navy-800: #142449;
+  --color-navy-900: #0b1430;
+  --color-navy-950: #060b1e;
+  --color-wkgray: #7B8EA0;
+  --color-wkgray-light: #9AAABB;
+  --color-wkgray-dark: #5C6E80;
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  --font-wk-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 html {

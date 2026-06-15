@@ -1,0 +1,940 @@
+---
+import WardkraftLayout from '../../layouts/WardkraftLayout.astro';
+
+const LOGO_URL =
+  'https://static.wixstatic.com/media/c8c52a_145994d929994a8e8e28bb0ab40216c0~mv2.png';
+
+const navLinks = [
+  { label: 'Products',   href: '#products' },
+  { label: 'Industries', href: '#industries' },
+  { label: 'About',      href: '#about' },
+  { label: 'Contact',    href: '#contact' },
+];
+
+const stats = [
+  { number: '47+',    label: 'Years of Experience' },
+  { number: '3,000+', label: 'Reseller Partners' },
+  { number: '10+',    label: 'Product Lines' },
+  { number: '100%',   label: 'Trade-Only Manufacturer' },
+];
+
+const products = [
+  {
+    name: 'Medical Wristbands',
+    description:
+      'Laminated and non-laminated options. Self-laminating, moisture & alcohol resistant for hospital-grade patient identification.',
+    tag: 'Healthcare',
+    tagColor: 'bg-blue-100 text-blue-700',
+  },
+  {
+    name: '2SS® Shipping Labels',
+    description:
+      'Two-sided all-in-one shipping label and packing slip. Eliminates plastic packing pouches for cleaner, greener fulfillment.',
+    tag: 'E-Commerce',
+    tagColor: 'bg-emerald-100 text-emerald-700',
+  },
+  {
+    name: 'RealCard® Membership Cards',
+    description:
+      'True plastic card printed on your existing laser or inkjet printer. Available in 7 or 10 mil thickness.',
+    tag: 'Retail',
+    tagColor: 'bg-purple-100 text-purple-700',
+  },
+  {
+    name: 'Plastic Mailers',
+    description:
+      '20 or 30 mil postal-legal mailers with high-resolution print and an optional detachable card insert.',
+    tag: 'Marketing',
+    tagColor: 'bg-orange-100 text-orange-700',
+  },
+  {
+    name: 'Durable / UL Labels',
+    description:
+      'Scratch-resistant custom property ID labels with sequential numbering for industrial and asset-tracking needs.',
+    tag: 'Industrial',
+    tagColor: 'bg-yellow-100 text-yellow-700',
+  },
+  {
+    name: 'Pressure Seal',
+    description:
+      'Secure mailing and marketing solution in custom or stock formats, available in jumbo rolls or sheets.',
+    tag: 'Direct Mail',
+    tagColor: 'bg-rose-100 text-rose-700',
+  },
+  {
+    name: 'Plastic Cards',
+    description:
+      'Multiple die configurations, 20 or 30 mil quality layered plastic with quick turnaround times.',
+    tag: 'Cards',
+    tagColor: 'bg-sky-100 text-sky-700',
+  },
+  {
+    name: 'Plastic Badges & Tags',
+    description:
+      'High-quality 30 mil layered plastic badges and tags in a variety of die configurations.',
+    tag: 'ID Solutions',
+    tagColor: 'bg-teal-100 text-teal-700',
+  },
+];
+
+const features = [
+  {
+    title: 'Superior Customer Service',
+    description:
+      'Dedicated support from a team that truly understands the print industry. We help you solve challenges and grow your reseller business.',
+  },
+  {
+    title: 'Quick Turn Times',
+    description:
+      'Rush production available without sacrificing quality. Your customers will never be left waiting.',
+  },
+  {
+    title: 'Continuous Innovation',
+    description:
+      'Regular launches of new proprietary products — like 2SS® and RealCard® — designed to give your business a competitive edge.',
+  },
+  {
+    title: 'Trade-Only Promise',
+    description:
+      'We never sell direct to end users. Your margins, your customers — always protected. Period.',
+  },
+];
+
+const industries = [
+  {
+    name: 'Commercial',
+    description: 'Laser membership cards, plastic mailers, and plastic cards for commercial marketing and promotions.',
+  },
+  {
+    name: 'Direct Mail',
+    description: 'Plastic mailers and pressure seal solutions for high-impact direct mail campaigns.',
+  },
+  {
+    name: 'Distribution',
+    description: '2SS® Two-Sided Shipping Labels and integrated collates that streamline logistics and fulfillment.',
+  },
+  {
+    name: 'Education',
+    description: 'Membership cards, plastic cards, and pressure seal forms for schools and educational institutions.',
+  },
+  {
+    name: 'Financial',
+    description: 'Integrated collates, membership cards, plastic cards, mailers, and pressure seal for banking and finance.',
+  },
+  {
+    name: 'Healthcare',
+    description: 'Wristbands, integrated collates, plastic mailers, and pressure seal for hospitals and medical providers.',
+  },
+  {
+    name: 'Hospitality',
+    description: 'Laser membership cards, integrated collates, and plastic mailers for hotels, resorts, and event venues.',
+  },
+  {
+    name: 'Industrial',
+    description: 'Haz-Chem® Drum Labels and Cold Grip® Export Labels for warehouses and manufacturing facilities.',
+  },
+];
+
+const productImages = [
+  '/wardkraft/products/wristbands.png',
+  '/wardkraft/products/shipping-labels.png',
+  '/wardkraft/products/realcard.jpg',
+  '/wardkraft/products/plastic-mailers.png',
+  '/wardkraft/products/durable-labels.png',
+  '/wardkraft/products/pressure-seal.png',
+  '/wardkraft/products/plastic-cards.png',
+  '/wardkraft/products/badges-tags.png',
+];
+---
+
+<WardkraftLayout>
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <header id="nav" class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="https://www.wardkraft.com" target="_blank" rel="noopener noreferrer" class="flex-shrink-0">
+          <img
+            src={LOGO_URL}
+            alt="The WardKraft Family"
+            width="180"
+            height="66"
+            class="h-12 w-auto object-contain"
+          />
+        </a>
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="text-sm font-medium text-slate-600 hover:text-navy-700 transition-colors duration-200 cursor-pointer"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <!-- CTA -->
+        <div class="flex items-center gap-4">
+          <a
+            href="#contact"
+            class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-navy-700 text-white text-sm font-semibold hover:bg-navy-800 transition-colors duration-200 cursor-pointer"
+          >
+            Become a Reseller
+          </a>
+          <!-- Mobile menu button -->
+          <button
+            id="menu-btn"
+            class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+            aria-label="Open menu"
+          >
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white px-6 py-4 space-y-3">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class="block text-sm font-medium text-slate-700 hover:text-navy-700 py-2 transition-colors cursor-pointer"
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="#contact"
+        class="block w-full text-center px-5 py-3 rounded-lg bg-navy-700 text-white text-sm font-semibold hover:bg-navy-800 transition-colors cursor-pointer mt-2"
+      >
+        Become a Reseller
+      </a>
+    </div>
+  </header>
+
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-navy-900 min-h-[90vh]">
+    <video
+      class="absolute inset-0 w-full h-full object-cover"
+      src="/wardkraft/hero.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+    ></video>
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-navy-950/60 to-transparent"></div>
+  </section>
+
+  <!-- ── VISION ─────────────────────────────────────────────────── -->
+  <section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+
+      <!-- Left: Text -->
+      <div>
+
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy-700 leading-tight tracking-tight mb-6 max-w-3xl">
+        Built for Resellers.<br />
+        <span class="text-wkgray">Trusted for Decades.</span>
+      </h1>
+
+      <p class="text-lg text-slate-600 leading-relaxed mb-5 max-w-2xl">
+        Ward-Kraft is a nationally known leader in the print industry with over
+        <strong class="text-slate-800 font-semibold">47 years of experience</strong>.
+        As a trade-only manufacturer since the early 1970s, we pride ourselves on
+        extending superior customer service to every reseller who relies on our products.
+      </p>
+      <p class="text-lg text-slate-600 leading-relaxed mb-10 max-w-2xl">
+        We continuously challenge every division to launch new products and innovative
+        designs — opening markets in laminated laser wristbands, commercial print, plastic
+        cards, <strong class="text-slate-800 font-semibold">DriTac®</strong> cards, pocket
+        form designs, and <strong class="text-slate-800 font-semibold">RealCard®</strong>.
+        With <strong class="text-slate-800 font-semibold">3,000+ reseller partners</strong>
+        across the United States, we'll connect you with exactly the right one for your needs.
+      </p>
+
+      <div class="flex flex-wrap gap-4 mb-12">
+        <a
+          href="#products"
+          class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-navy-700 text-white font-semibold hover:bg-navy-800 transition-colors duration-200 shadow-lg shadow-navy-700/25 cursor-pointer"
+        >
+          Explore Products
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <a
+          href="https://www.wardkraft.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border-2 border-navy-700 text-navy-700 font-semibold hover:bg-navy-50 transition-colors duration-200 cursor-pointer"
+        >
+          Request Samples
+        </a>
+      </div>
+
+      <!-- Trust badges -->
+      <div class="flex flex-wrap items-center gap-6 pt-8 border-t border-slate-100">
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+          <svg class="w-4 h-4 text-navy-700" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Trade-Only
+        </div>
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+          <svg class="w-4 h-4 text-navy-700" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Quick Turn Times
+        </div>
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+          <svg class="w-4 h-4 text-navy-700" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          Proprietary Products
+        </div>
+      </div>
+      </div>
+
+      <!-- Right: Photo -->
+      <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+        <img src="/wardkraft/vision.avif" alt="Ward-Kraft facility" class="w-full h-full object-cover" />
+      </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRODUCTS ──────────────────────────────────────────────── -->
+  <section id="products" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-semibold tracking-widest uppercase text-navy-700 mb-3 block">Our Product Line</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-navy-700 mb-4">
+          Print Solutions for Every Need
+        </h2>
+        <p class="text-slate-500 text-lg leading-relaxed">
+          From healthcare wristbands to shipping labels — every product engineered for reseller success.
+        </p>
+      </div>
+
+      <!-- Serialised data for client JS -->
+      <script id="products-json" type="application/json" is:inline set:html={JSON.stringify(products)}></script>
+
+      <!-- ── DESKTOP: Fan + Text Boxes ── -->
+      <div class="hidden md:block">
+
+        <!-- Fan stage -->
+        <div id="fan-stage" class="relative flex justify-center" style="height: 400px; overflow: visible;">
+          {products.map((p, i) => (
+            <div
+              class="fan-card absolute cursor-pointer select-none"
+              data-idx={String(i)}
+              style={`bottom: 48px; left: calc(50% - 100px + ${(i - 3.5) * 70}px); width: 200px; height: 300px; transform-origin: center bottom; transform: rotate(${-70 + i * 20}deg); z-index: ${i + 1}; transition: transform 0.3s ease-out;`}
+            >
+              <img
+                src={productImages[i]}
+                alt={p.name}
+                class="w-full h-full object-contain drop-shadow-2xl"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+
+        <!-- Text boxes -->
+        <div class="grid grid-cols-8 gap-2 mt-8">
+          {products.map((p, i) => (
+            <div
+              class="text-box rounded-xl border-2 border-slate-200 bg-white p-3 cursor-pointer transition-colors duration-200"
+              data-idx={String(i)}
+            >
+              <span class={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-2 ${p.tagColor}`}>{p.tag}</span>
+              <p class="font-bold text-navy-700 text-xs leading-tight mb-1">{p.name}</p>
+              <p class="text-slate-400 text-xs leading-relaxed line-clamp-2">{p.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ── MOBILE: Grid selector + info box ── -->
+      <div class="md:hidden">
+        <div class="grid grid-cols-4 gap-3 mb-6">
+          {products.map((p, i) => (
+            <button
+              class="mobile-btn rounded-xl p-2.5 flex flex-col items-center gap-2 border-2 border-transparent bg-white shadow-sm transition-all duration-200 touch-manipulation"
+              data-idx={String(i)}
+              aria-label={p.name}
+            >
+              <div class="w-11 h-11 rounded-xl overflow-hidden bg-white shadow-md flex items-center justify-center p-1 flex-shrink-0">
+                <img
+                  src={productImages[i]}
+                  alt={p.name}
+                  class="w-full h-full object-contain"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-slate-600 text-xs font-medium leading-tight text-center line-clamp-2">{p.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div id="mobile-info" class="rounded-2xl bg-white border-2 border-slate-200 p-6 shadow-sm transition-all duration-200">
+          <span id="mobile-tag" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3"></span>
+          <h3 id="mobile-name" class="font-display font-bold text-navy-700 text-base mb-2"></h3>
+          <p id="mobile-desc" class="text-slate-500 text-sm leading-relaxed"></p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <a
+          href="https://www.wardkraft.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 text-navy-700 font-semibold text-sm hover:text-navy-600 transition-colors cursor-pointer"
+        >
+          View all products on wardkraft.com
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT / WHY WARDKRAFT ─────────────────────────────────── -->
+  <section id="about" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: Text block -->
+        <div>
+          <span class="text-xs font-semibold tracking-widest uppercase text-navy-700 mb-3 block">Why Ward-Kraft</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-navy-700 mb-6">
+            A Manufacturer That<br />Works <em class="not-italic text-wkgray">For</em> Resellers
+          </h2>
+          <p class="text-slate-600 text-lg leading-relaxed mb-6">
+            Operating as a trade-only manufacturer since the early 1970s, Ward-Kraft has built its entire
+            business model around the success of its reseller partners. We don't compete with you — we exist
+            to supply you.
+          </p>
+          <p class="text-slate-600 leading-relaxed mb-8">
+            Our proprietary products like <strong class="text-slate-800">2SS® Two-Sided Shipping Labels</strong> and
+            <strong class="text-slate-800">RealCard® Membership Cards</strong> give resellers exclusive,
+            innovation-driven solutions that end users can't find anywhere else.
+          </p>
+          <div class="flex gap-4">
+            <a
+              href="#contact"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg bg-navy-700 text-white font-semibold hover:bg-navy-800 transition-colors shadow-lg shadow-navy-700/20 cursor-pointer"
+            >
+              Partner With Us
+            </a>
+            <a
+              href="https://www.wardkraft.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border-2 border-slate-200 text-slate-700 font-semibold hover:border-navy-200 hover:text-navy-700 transition-colors cursor-pointer"
+            >
+              Learn More
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Features grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {features.map((f, i) => (
+            <div class={`rounded-2xl p-6 ${i === 0 || i === 3 ? 'bg-navy-700 text-white' : 'bg-white border border-slate-200'}`}>
+              <h3 class={`font-display font-bold text-base mb-3 ${i === 0 || i === 3 ? 'text-white' : 'text-navy-700'}`}>
+                {f.title}
+              </h3>
+              <p class={`text-sm leading-relaxed ${i === 0 || i === 3 ? 'text-navy-200' : 'text-slate-500'}`}>
+                {f.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INDUSTRIES ─────────────────────────────────────────────── -->
+  <section id="industries" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-semibold tracking-widest uppercase text-navy-700 mb-3 block">Industries Served</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-navy-700 mb-4">
+          Trusted Across Every Sector
+        </h2>
+        <p class="text-slate-500 text-lg">
+          Our resellers serve customers in a wide range of industries — we supply the products that make it possible.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {industries.map((ind) => (
+          <div class="flex gap-4 p-6 rounded-2xl border border-slate-200 hover:border-navy-200 hover:bg-navy-50/30 transition-all duration-200 group cursor-pointer">
+            <div class="w-10 h-10 rounded-xl bg-navy-700 flex items-center justify-center flex-shrink-0 group-hover:bg-navy-600 transition-colors">
+              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-navy-700 text-sm mb-1">{ind.name}</h3>
+              <p class="text-slate-500 text-sm leading-relaxed">{ind.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESELLER CTA ───────────────────────────────────────────── -->
+  <section class="relative overflow-hidden bg-navy-700 py-24">
+    <!-- Background decoration -->
+    <div class="pointer-events-none absolute inset-0">
+      <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-navy-600/40 -translate-y-1/2 translate-x-1/4"></div>
+      <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-navy-800/50 translate-y-1/2 -translate-x-1/4"></div>
+      <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    </div>
+
+    <div class="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-semibold tracking-wide uppercase mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-white/80"></span>
+        Reseller Program
+      </span>
+
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
+        Join 3,000+ Resellers<br />Nationwide
+      </h2>
+      <p class="text-navy-200 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
+        Become part of the Ward-Kraft family. Gain access to exclusive proprietary products,
+        competitive pricing, outstanding customer service, and a manufacturer that never undercuts you.
+      </p>
+
+      <!-- Benefits list -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12 text-left">
+        {[
+          { title: 'Exclusive Products', desc: 'Proprietary solutions your competitors can\'t offer' },
+          { title: 'Protected Margins', desc: 'We never sell direct to your end customers' },
+          { title: 'Expert Support', desc: 'Industry-leading customer service on every order' },
+        ].map((b) => (
+          <div class="flex gap-3 items-start">
+            <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-white font-semibold text-sm">{b.title}</p>
+              <p class="text-navy-300 text-xs mt-0.5">{b.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="https://www.wardkraft.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white text-navy-700 font-bold text-sm hover:bg-navy-50 transition-colors shadow-xl cursor-pointer"
+        >
+          Apply to Become a Reseller
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+        <a
+          href="#contact"
+          class="inline-flex items-center gap-2 px-8 py-4 rounded-lg border-2 border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-colors cursor-pointer"
+        >
+          Contact Sales
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ───────────────────────────────────────────────── -->
+  <section id="contact" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+        <!-- Left: Info -->
+        <div>
+          <span class="text-xs font-semibold tracking-widest uppercase text-navy-700 mb-3 block">Get In Touch</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-navy-700 mb-6">
+            Let's Talk About<br />Your Print Needs
+          </h2>
+          <p class="text-slate-600 leading-relaxed mb-10">
+            Whether you're ready to join our reseller program, request product samples, or simply have
+            questions about our capabilities — our team is here to help.
+          </p>
+
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-navy-700 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Phone</p>
+                <a href="tel:8008214021" class="text-navy-700 font-semibold text-lg hover:text-navy-600 transition-colors cursor-pointer">
+                  800.821.4021
+                </a>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-navy-700 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Address</p>
+                <p class="text-slate-700 font-medium leading-snug">2401 Cooper St<br />Fort Scott, KS 66701</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-navy-700 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-0.5">Website</p>
+                <a href="https://www.wardkraft.com" target="_blank" rel="noopener noreferrer" class="text-navy-700 font-medium hover:text-navy-600 transition-colors cursor-pointer">
+                  www.wardkraft.com
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social links -->
+          <div class="mt-10 pt-8 border-t border-slate-200">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-4">Follow Us</p>
+            <div class="flex gap-3">
+              {[
+                {
+                  label: 'Facebook',
+                  href: 'https://facebook.com/wardkraft/',
+                  icon: '<path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>',
+                },
+                {
+                  label: 'Instagram',
+                  href: 'https://instagram.com/wardkraft/',
+                  icon: '<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>',
+                },
+                {
+                  label: 'LinkedIn',
+                  href: 'https://linkedin.com/company/ward-kraft-inc',
+                  icon: '<path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+                },
+              ].map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  class="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:border-navy-300 hover:text-navy-700 hover:bg-navy-50 transition-all duration-200 cursor-pointer"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" set:html={s.icon}></svg>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Contact form -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+          <h3 class="font-display font-bold text-navy-700 text-xl mb-6">Send Us a Message</h3>
+
+          <form class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label for="first-name" class="block text-xs font-semibold text-slate-600 mb-1.5">First Name</label>
+                <input
+                  id="first-name"
+                  type="text"
+                  placeholder="John"
+                  class="w-full px-4 py-3 rounded-lg border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition"
+                />
+              </div>
+              <div>
+                <label for="last-name" class="block text-xs font-semibold text-slate-600 mb-1.5">Last Name</label>
+                <input
+                  id="last-name"
+                  type="text"
+                  placeholder="Smith"
+                  class="w-full px-4 py-3 rounded-lg border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="block text-xs font-semibold text-slate-600 mb-1.5">Business Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="you@company.com"
+                class="w-full px-4 py-3 rounded-lg border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <label for="company" class="block text-xs font-semibold text-slate-600 mb-1.5">Company</label>
+              <input
+                id="company"
+                type="text"
+                placeholder="Your Company Name"
+                class="w-full px-4 py-3 rounded-lg border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <label for="interest" class="block text-xs font-semibold text-slate-600 mb-1.5">I'm Interested In</label>
+              <select
+                id="interest"
+                class="w-full px-4 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition bg-white cursor-pointer"
+              >
+                <option value="">Select an option...</option>
+                <option>Becoming a Reseller</option>
+                <option>Requesting Product Samples</option>
+                <option>Medical Wristbands</option>
+                <option>Shipping Labels (2SS®)</option>
+                <option>Membership / Plastic Cards</option>
+                <option>Other Products</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="message" class="block text-xs font-semibold text-slate-600 mb-1.5">Message</label>
+              <textarea
+                id="message"
+                rows="4"
+                placeholder="Tell us about your needs..."
+                class="w-full px-4 py-3 rounded-lg border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition resize-none"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full px-6 py-3.5 rounded-lg bg-navy-700 text-white font-semibold text-sm hover:bg-navy-800 active:bg-navy-900 transition-colors shadow-lg shadow-navy-700/20 cursor-pointer"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────── -->
+  <footer class="bg-navy-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <img
+            src={LOGO_URL}
+            alt="The WardKraft Family"
+            width="160"
+            height="58"
+            class="h-10 w-auto object-contain mb-6 brightness-0 invert opacity-90"
+          />
+          <p class="text-navy-300 text-sm leading-relaxed max-w-sm">
+            Nationally trusted trade-only print manufacturer. Serving 3,000+ reseller partners
+            with quality, innovation, and integrity for over 47 years.
+          </p>
+          <p class="text-navy-400 text-sm mt-4">
+            2401 Cooper St, Fort Scott, KS 66701<br />
+            <a href="tel:8008214021" class="hover:text-white transition-colors cursor-pointer">800.821.4021</a>
+          </p>
+        </div>
+
+        <!-- Products -->
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Products</h4>
+          <ul class="space-y-3">
+            {['Medical Wristbands', '2SS® Shipping Labels', 'RealCard® Cards', 'Plastic Mailers', 'Durable Labels', 'Pressure Seal'].map((p) => (
+              <li>
+                <a
+                  href="https://www.wardkraft.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-navy-300 text-sm hover:text-white transition-colors cursor-pointer"
+                >
+                  {p}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-5 tracking-wide">Company</h4>
+          <ul class="space-y-3">
+            {['About Us', 'Reseller Program', 'Sales', 'Webinars', 'Blog', 'Careers', 'Contact'].map((item) => (
+              <li>
+                <a
+                  href="https://www.wardkraft.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-navy-300 text-sm hover:text-white transition-colors cursor-pointer"
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="border-t border-navy-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-navy-400 text-sm">
+          &copy; {new Date().getFullYear()} Ward-Kraft, Inc. All rights reserved.
+        </p>
+        <div class="flex items-center gap-4">
+          <a
+            href="https://www.wardkraft.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-navy-400 text-xs hover:text-white transition-colors cursor-pointer"
+          >
+            Terms &amp; Conditions
+          </a>
+          <span class="text-navy-700">·</span>
+          <div class="flex gap-3">
+            {[
+              { label: 'Facebook', href: 'https://facebook.com/wardkraft/', icon: '<path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>' },
+              { label: 'Instagram', href: 'https://instagram.com/wardkraft/', icon: '<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>' },
+              { label: 'LinkedIn', href: 'https://linkedin.com/company/ward-kraft-inc', icon: '<path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>' },
+            ].map((s) => (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                class="text-navy-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" set:html={s.icon}></svg>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn?.addEventListener('click', () => {
+      mobileMenu?.classList.toggle('hidden');
+    });
+
+    // Close mobile menu on link click
+    mobileMenu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // ── Product Fan (desktop) ────────────────────────────────────
+    const fanCards = Array.from(document.querySelectorAll<HTMLElement>('.fan-card'));
+    const textBoxes = Array.from(document.querySelectorAll<HTMLElement>('.text-box'));
+    const baseRotations = fanCards.map((_, i) => -70 + i * 20);
+
+    let leaveTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function activateFan(idx: number) {
+      if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+      fanCards.forEach((card, i) => {
+        const rot = baseRotations[i];
+        if (i === idx) {
+          card.style.transform = `rotate(${rot}deg) translateY(-28px)`;
+          card.style.zIndex = '20';
+        } else {
+          card.style.transform = `rotate(${rot}deg)`;
+          card.style.zIndex = String(i + 1);
+        }
+      });
+      textBoxes.forEach((box, i) => {
+        if (i === idx) {
+          box.classList.add('border-navy-400', 'bg-navy-50', 'shadow-md');
+          box.classList.remove('border-slate-200', 'bg-white');
+        } else {
+          box.classList.remove('border-navy-400', 'bg-navy-50', 'shadow-md');
+          box.classList.add('border-slate-200', 'bg-white');
+        }
+      });
+    }
+
+    function scheduleFanReset() {
+      leaveTimer = setTimeout(() => {
+        fanCards.forEach((card, i) => {
+          card.style.transform = `rotate(${baseRotations[i]}deg)`;
+          card.style.zIndex = String(i + 1);
+        });
+        textBoxes.forEach(box => {
+          box.classList.remove('border-navy-400', 'bg-navy-50', 'shadow-md');
+          box.classList.add('border-slate-200', 'bg-white');
+        });
+      }, 120);
+    }
+
+    fanCards.forEach((card, i) => {
+      card.addEventListener('mouseenter', () => activateFan(i));
+      card.addEventListener('mouseleave', scheduleFanReset);
+    });
+    textBoxes.forEach((box, i) => {
+      box.addEventListener('mouseenter', () => activateFan(i));
+      box.addEventListener('mouseleave', scheduleFanReset);
+    });
+
+    // ── Mobile product selector ──────────────────────────────────
+    const productsData = JSON.parse(
+      document.getElementById('products-json')?.textContent ?? '[]'
+    ) as Array<{ name: string; description: string; tag: string; tagColor: string }>;
+
+    const mobileBtns = Array.from(document.querySelectorAll<HTMLElement>('.mobile-btn'));
+    const mobileTag  = document.getElementById('mobile-tag');
+    const mobileName = document.getElementById('mobile-name');
+    const mobileDesc = document.getElementById('mobile-desc');
+
+    function setMobileProduct(idx: number) {
+      const p = productsData[idx];
+      if (!p || !mobileTag || !mobileName || !mobileDesc) return;
+      mobileTag.textContent  = p.tag;
+      mobileTag.className    = `inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3 ${p.tagColor}`;
+      mobileName.textContent = p.name;
+      mobileDesc.textContent = p.description;
+      mobileBtns.forEach((btn, i) => {
+        if (i === idx) {
+          btn.classList.add('border-navy-400', 'bg-navy-50');
+          btn.classList.remove('border-transparent');
+        } else {
+          btn.classList.remove('border-navy-400', 'bg-navy-50');
+          btn.classList.add('border-transparent');
+        }
+      });
+    }
+
+    mobileBtns.forEach((btn, i) => btn.addEventListener('click', () => setMobileProduct(i)));
+    if (productsData.length) setMobileProduct(0);
+  </script>
+</WardkraftLayout>
