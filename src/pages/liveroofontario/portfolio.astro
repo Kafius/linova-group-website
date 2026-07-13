@@ -1,4 +1,4 @@
----
+﻿---
 import Layout from '../../layouts/LiveRoofOntarioLayout.astro';
 import TopBar from '../../components/liveroofontario/TopBar.astro';
 import Header from '../../components/liveroofontario/Header.astro';
@@ -202,7 +202,7 @@ const hasSolaGreen  = activeProjects.some(p => p.solaGreen);
 
               return (
                 <a
-                  href={`/liveroofontario/portfolio/${project.slug.current}`}
+                  href={`/portfolio/${project.slug.current}`}
                   class="project-card bg-mid rounded-xl overflow-hidden flex flex-col group hover:shadow-lg transition-shadow"
                   data-province={project.province ?? ''}
                   data-showcase={project.showcaseType ?? ''}

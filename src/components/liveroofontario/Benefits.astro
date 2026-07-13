@@ -4,16 +4,19 @@ const benefits = [
     img: '/liveroofontario/images/natural-beauty.jpg',
     title: 'Natural Beauty',
     desc: "LiveRoof offers the natural function and beauty of built-in-place living roofs — without the extensive ongoing costs of maturation.",
+    href: '/liveroofontario/about#inspiration',
   },
   {
     img: '/liveroofontario/images/ease-installation.jpg',
     title: 'Ease of Installation',
     desc: 'Enjoy the speed and convenience of modular delivery — without grid lines or compartmentalization of soil.',
+    href: '/liveroofontario/about#farm-to-rooftop',
   },
   {
-    img: '/liveroofontario/images/building-reselience.jpeg',
+    img: '/liveroofontario/images/Voya_Drone.JPG',
     title: 'Instantly Mature',
     desc: 'Fully vegetated from Day One with a broader plant palette than carpet or mat systems — no establishment phase required.',
+    href: '/liveroofontario/about#who-we-are',
   },
 ];
 ---
@@ -34,7 +37,7 @@ const benefits = [
           <div class="benefit-body p-7">
             <h3>{b.title}</h3>
             <p>{b.desc}</p>
-            <a href="/liveroofontario/why-liveroof" class="benefit-link">Learn More →</a>
+            <a href={b.href} class="benefit-link">Learn More →</a>
           </div>
         </div>
       ))}
