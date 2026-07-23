@@ -1,0 +1,716 @@
+---
+// /industry/real-estate — a bespoke, editorial landing page for the
+// single-property listing-site service. Intentionally NOT the shared industry
+// template: it argues one idea — a home is "more than numbers" — and proves it
+// with a live device frame rendering the real product output (buildSiteHTML).
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/navbar/Navbar.astro';
+import Footer from '../../components/footer/Footer.astro';
+
+// Seed listing for the live demo (rendered client-side into an <iframe srcdoc>).
+const sample = {
+  slug: 'ravine-crest',
+  name: '14 Ravine Crest',
+  neighbourhood: 'Forest Hill',
+  address: '14 Ravine Crest, Forest Hill, Toronto',
+  price: '$4,250,000',
+  beds: 5,
+  baths: 6,
+  sqft: 6200,
+  year_built: 2019,
+  lot_text: '0.42 acres',
+  headline: 'A modern estate above the ravine',
+  description:
+    'Set behind mature maples on one of Forest Hill’s quietest crescents, this residence opens to a wall of glass and a garden that falls away into the ravine. Morning light pours through the double-height hall; evenings settle around the stone hearth. Six years young, engineered for the next fifty.',
+  photos: [
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=70',
+  ],
+  rooms: [
+    { photo: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=72', name: 'Arrival', caption: 'A low stone wall, mature maples, and a facade of glass and limestone.' },
+    { photo: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=72', name: 'The Great Room', caption: 'Double-height glass opens the living space straight onto the ravine.' },
+    { photo: 'https://images.unsplash.com/photo-1600489000022-c2086d79f9d4?auto=format&fit=crop&w=1800&q=72', name: 'The Kitchen', caption: 'Honed marble, integrated appliances, and a ten-foot island for gathering.' },
+    { photo: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=1800&q=72', name: 'Primary Suite', caption: 'Wall-to-wall glazing, a private terrace, and morning light off the trees.' },
+    { photo: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1800&q=72', name: 'The Spa Bath', caption: 'A freestanding stone tub set against the canopy of the ravine.' },
+    { photo: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1800&q=72', name: 'The Ravine Garden', caption: 'The lot falls away into protected green space — privacy that can’t be built again.' },
+  ],
+  pois: [
+    { type: 'grocery', name: 'Forest Hill Market', dist: '4 min walk' },
+    { type: 'school', name: 'Upper Canada College', dist: '6 min walk' },
+    { type: 'transit', name: 'St. Clair West Station', dist: '9 min walk' },
+    { type: 'park', name: 'Cedarvale Ravine', dist: '2 min walk' },
+  ],
+  commute: {
+    downtown: '18 min drive',
+    airport: '24 min drive',
+    hwy401: '6 min drive',
+    hwy404: '9 min drive',
+    hwy400: '14 min drive',
+    hwy407: '16 min drive',
+    hospital: '7 min drive',
+  },
+  agent_name: 'Jordan Ellis',
+  brokerage: 'Meridian Estates',
+  phone: '(416) 555-0142',
+};
+
+// ---- Derived values for the native layout showcase (the demo section) ----
+const sv = (inner: string) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+
+const priceDigits = parseInt(sample.price.replace(/[^0-9]/g, ''), 10);
+const perSqft = sample.sqft ? '$' + Math.round(priceDigits / sample.sqft).toLocaleString() : null;
+
+const amenityIcons: Record<string, string> = {
+  grocery: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  school: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 2 6 2s6-1 6-2v-5"/>',
+  transit: '<rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M8 19l-2 3"/><path d="M16 19l2 3"/>',
+  park: '<path d="M12 22v-6"/><path d="M12 16 6 9h4l-3-4h3L12 2l2 3h3l-3 4h4l-6 7z"/>',
+};
+
+const hwys = ([
+  ['401', sample.commute.hwy401],
+  ['407', sample.commute.hwy407],
+  ['404', sample.commute.hwy404],
+  ['400', sample.commute.hwy400],
+] as [string, string][]).filter((h) => h[1]);
+
+const dests = [
+  { label: 'Downtown Toronto', v: sample.commute.downtown, icon: '<rect x="3" y="8" width="7" height="13" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/><path d="M6 12h1M6 16h1M17 7h1M17 11h1M17 15h1"/>' },
+  { label: 'Toronto Pearson (YYZ)', v: sample.commute.airport, icon: '<path d="M17.8 19.2 16 11l3.5-3.5a2.12 2.12 0 0 0-3-3L13 8 4.8 6.2 3 8l6 3-3 3-3-1-1 2 5 2 2 5 2-1-1-3 3-3 3 6 2-1z"/>' },
+  { label: 'Nearest hospital', v: sample.commute.hospital, icon: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/>' },
+].filter((d) => d.v);
+
+const numbers = [
+  { v: String(sample.beds), l: 'Bedrooms', count: true },
+  { v: String(sample.baths), l: 'Bathrooms', count: true },
+  { v: sample.sqft.toLocaleString(), l: 'Interior Sq Ft', count: true },
+  { v: String(sample.year_built), l: 'Year Built', count: true },
+  { v: sample.lot_text, l: 'Lot', count: false },
+  ...(perSqft ? [{ v: perSqft, l: 'Per Sq Ft', count: false }] : []),
+];
+
+// Real GTA / buyer-behaviour statistics (see source note rendered below).
+const stats = [
+  { count: 97, suffix: '%', label: 'of buyers begin the search online. The listing page is the first showing.', src: 'NAR' },
+  { count: 87, suffix: '%', label: 'say photography drives their first impression of a home.', src: 'NAR' },
+  { count: 29, suffix: ' days', label: 'the average GTA home now spends on market — buyers have choice.', src: 'TRREB · Jun 2026' },
+  { count: 200, suffix: '%', label: 'rise in GTA ultra-luxury ($10M+) sales, H1 2025 vs 2024 — the top end is moving.', src: 'TRREB' },
+];
+
+const pillars = [
+  {
+    n: '01',
+    t: 'The story',
+    d: 'Every home has a reason someone will fall for it. We write it — the light, the street, the way the mornings feel — and lead with that, not a bullet list.',
+  },
+  {
+    n: '02',
+    t: 'The location, proven',
+    d: 'Buyers buy the neighbourhood first. We surface real walk and drive times to the grocery, the schools, transit and the park — the things they actually weigh.',
+  },
+  {
+    n: '03',
+    t: 'The gallery',
+    d: 'Full-bleed, cinematic, and fast. Photography gets the room it deserves instead of a cramped thumbnail strip on a portal you don’t control.',
+  },
+  {
+    n: '04',
+    t: 'The feeling',
+    d: 'Motion, restraint, and craft. A slow hero pan, numbers that count up, type that belongs on a monograph — the site feels like the home is worth it.',
+  },
+];
+---
+
+<Layout
+  title="Real Estate — A home is more than a number | Linova Group"
+  description="We turn a single listing into its own cinematic website — the story, the location, the light. More than a spec sheet: a place buyers can already picture living."
+>
+  <Navbar />
+
+  <!-- Fonts for this page's editorial type -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <div class="re">
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="hero-grain" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <p class="eyebrow reveal">Real Estate · Linova Group</p>
+        <h1 class="hero-title reveal">
+          A home is <em>more</em><br />than a number.
+        </h1>
+        <p class="hero-sub reveal">
+          Four beds, three baths, twenty-four hundred square feet. That’s a spreadsheet, not a home.
+          We turn a single listing into its own cinematic website — the story, the street, the light —
+          so buyers arrive already picturing themselves living there.
+        </p>
+        <div class="hero-cta reveal">
+          <a href="#demo" class="btn btn-solid">See a live listing</a>
+          <a href="/estate-sites/new" class="btn btn-ghost">Build one — free</a>
+        </div>
+      </div>
+      <div class="scroll-cue reveal" aria-hidden="true">
+        <span>Scroll</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
+      </div>
+    </section>
+
+    <!-- ============ THE CONTRAST ============ -->
+    <section class="contrast">
+      <div class="wrap contrast-grid">
+        <div class="contrast-col reveal">
+          <p class="col-label">Everywhere else</p>
+          <div class="spec-card">
+            <div class="spec-price">$4,250,000</div>
+            <ul class="spec-list">
+              <li><span>5</span> beds</li>
+              <li><span>6</span> baths</li>
+              <li><span>6,200</span> sq ft</li>
+              <li><span>2019</span> built</li>
+            </ul>
+            <p class="spec-blurb">Beautiful family home in a sought-after neighbourhood. Must see! Book your showing today.</p>
+            <div class="spec-thumbs"><span></span><span></span><span></span></div>
+          </div>
+          <p class="col-caption">A spec sheet on a portal you don’t control. Every listing looks the same.</p>
+        </div>
+
+        <div class="contrast-versus reveal" aria-hidden="true">
+          <span class="line"></span><span class="v">vs</span><span class="line"></span>
+        </div>
+
+        <div class="contrast-col reveal">
+          <p class="col-label col-label-brass">Your listing, with Linova</p>
+          <div class="story-card">
+            <div class="story-eyebrow">Forest Hill</div>
+            <h3 class="story-title">A modern estate above the ravine</h3>
+            <p class="story-body">
+              Set behind mature maples on one of the quietest crescents, this residence opens to a wall of glass
+              and a garden that falls away into the ravine…
+            </p>
+            <div class="story-meta">
+              <div><em>2 min</em><span>to Cedarvale Ravine</span></div>
+              <div><em>6 min</em><span>to Upper Canada College</span></div>
+            </div>
+          </div>
+          <p class="col-caption">A website of its own — a story, a place, a feeling. The home, made unforgettable.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GTA STATS ============ -->
+    <section class="stats">
+      <div class="wrap">
+        <p class="eyebrow reveal">Why it matters — the GTA today</p>
+        <h2 class="stats-lede reveal">In a market this competitive, the listing page <em>is</em> the first showing.</h2>
+        <div class="stat-grid">
+          {stats.map((s) => (
+            <div class="stat reveal">
+              <div class="stat-num" data-count={s.count} data-suffix={s.suffix}>0{s.suffix}</div>
+              <p class="stat-label">{s.label}</p>
+              <span class="stat-src">{s.src}</span>
+            </div>
+          ))}
+        </div>
+        <p class="stat-note reveal">
+          Sources: <a href="https://trreb.ca/market-data/market-watch/" target="_blank" rel="noopener">TRREB Market Watch</a> (June 2026);
+          U.S. National Association of Realtors buyer surveys, used as North-American benchmarks.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ THE PILLARS ============ -->
+    <section class="pillars">
+      <div class="wrap">
+        <p class="eyebrow reveal">More than numbers</p>
+        <h2 class="section-title reveal">What a listing deserves</h2>
+        <div class="pillar-list">
+          {pillars.map((p) => (
+            <article class="pillar reveal">
+              <div class="pillar-n">{p.n}</div>
+              <div class="pillar-body">
+                <h3>{p.t}</h3>
+                <p>{p.d}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAYOUT SHOWCASE ============ -->
+    <section class="demo" id="demo">
+      <div class="wrap demo-head">
+        <p class="eyebrow reveal">The layout</p>
+        <h2 class="section-title reveal">Three acts, one scroll.</h2>
+        <p class="demo-lede reveal">
+          Every listing we build moves through the same cinematic arc — a walk through the home, the
+          neighbourhood proven in real drive times, then the numbers. Here’s what your buyers experience.
+        </p>
+      </div>
+
+      <div class="wrap">
+        <!-- Act 1 — The Tour -->
+        <div class="act reveal">
+          <div class="act-head">
+            <span class="act-n">01</span>
+            <div>
+              <h3 class="act-t">The tour</h3>
+              <p class="act-d">A cinematic scroll through the home — each room dissolves into the next.</p>
+            </div>
+          </div>
+          <div class="tour-device">
+            <div class="td-bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <div class="device-url">preview.thelinovagroup.com/ravine-crest</div>
+            </div>
+            <div class="td-stage">
+              {sample.rooms.map((r, i) => (
+                <figure class={`td-scene${i === 0 ? ' active' : ''}`} data-i={i}>
+                  <img src={r.photo} alt={r.name} loading="lazy" />
+                  <figcaption class="td-cap">
+                    <span class="td-idx">{String(i + 1).padStart(2, '0')}</span>
+                    <h4>{r.name}</h4>
+                    <p>{r.caption}</p>
+                  </figcaption>
+                </figure>
+              ))}
+              <div class="td-hud" aria-hidden="true">
+                <span class="td-count">01</span><span class="td-sep">/</span><span>{String(sample.rooms.length).padStart(2, '0')}</span>
+                <span class="td-track"><span class="td-bar-fill"></span></span>
+              </div>
+              <div class="td-dots">
+                {sample.rooms.map((_, i) => (
+                  <button type="button" class={`td-dot${i === 0 ? ' on' : ''}`} data-i={i} aria-label={`Go to room ${i + 1}`}></button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Act 2 — The Location -->
+        <div class="act reveal">
+          <div class="act-head">
+            <span class="act-n">02</span>
+            <div>
+              <h3 class="act-t">The location</h3>
+              <p class="act-d">Proven, not promised — nearby amenities plus real GTA drive times.</p>
+            </div>
+          </div>
+          <div class="loc-panel">
+            <div class="loc-chips">
+              {sample.pois.map((p) => (
+                <div class="chip">
+                  <span class="chip-ic" set:html={sv(amenityIcons[p.type] || amenityIcons.park)}></span>
+                  <span class="chip-name">{p.name}</span>
+                  <span class="chip-dist">{p.dist}</span>
+                </div>
+              ))}
+            </div>
+            <div class="loc-access">
+              <div class="access-col">
+                <h5 class="access-h">On the road</h5>
+                <div class="shields">
+                  {hwys.map(([n, v]) => (
+                    <div class="sh"><span class="shield">{n}</span><span class="sh-t">{v}</span></div>
+                  ))}
+                </div>
+              </div>
+              <div class="access-col">
+                <h5 class="access-h">Getting around</h5>
+                <div class="dests">
+                  {dests.map((d) => (
+                    <div class="dest">
+                      <span class="dest-ic" set:html={sv(d.icon)}></span>
+                      <span class="dest-l">{d.label}</span>
+                      <span class="dest-t">{d.v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Act 3 — The Numbers -->
+        <div class="act reveal">
+          <div class="act-head">
+            <span class="act-n">03</span>
+            <div>
+              <h3 class="act-t">The numbers</h3>
+              <p class="act-d">The home in figures — counting up as buyers arrive.</p>
+            </div>
+          </div>
+          <div class="num-panel">
+            <div class="num-grid">
+              {numbers.map((nm) => (
+                <div class="num">
+                  {nm.count ? <span class="num-v" data-count={nm.v}>0</span> : <span class="num-v">{nm.v}</span>}
+                  <span class="num-l">{nm.l}</span>
+                </div>
+              ))}
+            </div>
+            <p class="num-price">{sample.price}</p>
+          </div>
+        </div>
+
+        <div class="demo-actions reveal">
+          <a href="/estate-sites/new" class="btn btn-solid">Build your own — free preview</a>
+          <a href="/estate-sites" class="demo-link">How it works →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="how">
+      <div class="wrap">
+        <p class="eyebrow reveal">Simple</p>
+        <h2 class="section-title reveal">Live in minutes. Pay only to publish.</h2>
+        <div class="how-steps">
+          {[
+            { n: '01', t: 'Build', d: 'Fill one form — photos, the story, the numbers, the nearby points that matter.' },
+            { n: '02', t: 'Preview, free', d: 'A watermarked site goes live at a private link. Share it, show the seller, feel the quality.' },
+            { n: '03', t: 'Publish', d: 'Pay once to strip the watermark and point a custom domain. The listing is live.' },
+          ].map((s) => (
+            <div class="how-step reveal">
+              <span class="how-n">{s.n}</span>
+              <h3>{s.t}</h3>
+              <p>{s.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CLOSING CTA ============ -->
+    <section class="closer">
+      <div class="wrap closer-inner">
+        <h2 class="reveal">Give your next listing<br />a site worth remembering.</h2>
+        <div class="closer-cta reveal">
+          <a href="/estate-sites/new" class="btn btn-invert">Start a free preview</a>
+          <a href="/contact" class="btn btn-outline-light">Talk to us</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Footer />
+</Layout>
+
+<style>
+  .re {
+    --ink: #1a1815; --stone: #e8e2d6; --paper: #f4f0e8;
+    --brass: #a8843f; --brass-light: #c9a961; --slate: #6b6559;
+    --display: 'Fraunces', Georgia, serif; --body: 'Archivo', system-ui, sans-serif;
+    font-family: var(--body);
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .re .wrap { max-width: 1140px; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 3rem); }
+  .re .eyebrow { font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--brass); font-weight: 600; margin-bottom: 1rem; }
+  .re .section-title { font-family: var(--display); font-weight: 400; font-size: clamp(1.9rem, 4.5vw, 3.2rem); line-height: 1.05; letter-spacing: -0.015em; margin-bottom: 3rem; }
+
+  .re .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.95rem 1.8rem; border-radius: 3px; font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; text-decoration: none; transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s; }
+  .re .btn-solid { background: var(--ink); color: var(--paper); }
+  .re .btn-solid:hover { background: #322c24; transform: translateY(-2px); }
+  .re .btn-ghost { border: 1px solid rgba(26,24,21,0.25); color: var(--ink); }
+  .re .btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
+  .re .btn-invert { background: var(--paper); color: var(--ink); }
+  .re .btn-invert:hover { background: #fff; transform: translateY(-2px); }
+  .re .btn-outline-light { border: 1px solid rgba(244,240,232,0.4); color: var(--paper); }
+  .re .btn-outline-light:hover { border-color: var(--paper); }
+
+  /* Hero */
+  .re .hero { position: relative; min-height: 92vh; min-height: 92svh; display: flex; align-items: center; background: radial-gradient(ellipse at 70% 0%, #efe8da 0%, var(--paper) 55%); overflow: hidden; }
+  .re .hero-grain { position: absolute; inset: 0; opacity: 0.5; pointer-events: none; background-image: radial-gradient(rgba(26,24,21,0.05) 1px, transparent 1px); background-size: 22px 22px; -webkit-mask-image: radial-gradient(ellipse at 65% 30%, #000 0%, transparent 70%); mask-image: radial-gradient(ellipse at 65% 30%, #000 0%, transparent 70%); }
+  .re .hero-inner { position: relative; padding: 8rem 0 6rem; }
+  .re .hero-title { font-family: var(--display); font-weight: 400; font-size: clamp(2.8rem, 9vw, 6.2rem); line-height: 0.98; letter-spacing: -0.025em; margin-bottom: 1.75rem; }
+  .re .hero-title em { font-style: italic; color: var(--brass); }
+  .re .hero-sub { max-width: 40rem; font-size: clamp(1rem, 1.6vw, 1.2rem); color: var(--slate); line-height: 1.7; margin-bottom: 2.5rem; }
+  .re .hero-cta { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+  .re .scroll-cue { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--slate); font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; }
+  .re .scroll-cue svg { width: 16px; height: 16px; animation: nudge 1.8s ease-in-out infinite; }
+  @keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+  /* Contrast */
+  .re .contrast { padding: clamp(4rem, 9vw, 8rem) 0; background: var(--stone); }
+  .re .contrast-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .re .col-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--slate); margin-bottom: 1rem; font-weight: 600; }
+  .re .col-label-brass { color: var(--brass); }
+  .re .contrast-versus { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; color: var(--slate); }
+  .re .contrast-versus .line { width: 1px; height: 44px; background: rgba(26,24,21,0.2); }
+  .re .contrast-versus .v { font-family: var(--display); font-style: italic; font-size: 1rem; }
+  .re .spec-card { background: #fff; border: 1px solid rgba(26,24,21,0.1); border-radius: 4px; padding: 1.75rem; }
+  .re .spec-price { font-family: var(--body); font-weight: 700; font-size: 1.6rem; letter-spacing: -0.01em; margin-bottom: 1rem; }
+  .re .spec-list { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
+  .re .spec-list li { font-size: 0.85rem; color: var(--slate); border-bottom: 1px solid rgba(26,24,21,0.08); padding-bottom: 0.45rem; }
+  .re .spec-list li span { color: var(--ink); font-weight: 700; }
+  .re .spec-blurb { font-size: 0.82rem; color: #9a9488; line-height: 1.6; margin: 0 0 1.25rem; }
+  .re .spec-thumbs { display: flex; gap: 0.4rem; }
+  .re .spec-thumbs span { width: 42px; height: 30px; background: repeating-linear-gradient(45deg, #ded7c8 0 6px, #d5cdbc 6px 12px); border-radius: 2px; }
+  .re .col-caption { margin-top: 1.1rem; font-size: 0.85rem; color: var(--slate); line-height: 1.6; }
+  .re .story-card { position: relative; background: var(--ink); color: var(--paper); border-radius: 4px; padding: 2rem; overflow: hidden; }
+  .re .story-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--brass), transparent); }
+  .re .story-eyebrow { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--brass-light); margin-bottom: 0.75rem; }
+  .re .story-title { font-family: var(--display); font-weight: 400; font-size: 1.55rem; line-height: 1.1; margin-bottom: 0.9rem; }
+  .re .story-body { font-size: 0.9rem; color: rgba(244,240,232,0.72); line-height: 1.7; margin-bottom: 1.5rem; }
+  .re .story-meta { display: flex; gap: 1.5rem; border-top: 1px solid rgba(244,240,232,0.12); padding-top: 1.1rem; }
+  .re .story-meta div { display: flex; flex-direction: column; }
+  .re .story-meta em { font-family: var(--display); font-style: normal; font-size: 1.35rem; color: var(--brass-light); }
+  .re .story-meta span { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.5); margin-top: 0.2rem; }
+
+  /* GTA stats */
+  .re .stats { padding: clamp(4rem, 9vw, 7rem) 0; background: var(--ink); color: var(--paper); }
+  .re .stats .eyebrow { color: var(--brass-light); }
+  .re .stats-lede { font-family: var(--display); font-weight: 400; font-size: clamp(1.5rem, 3.4vw, 2.4rem); line-height: 1.15; letter-spacing: -0.01em; max-width: 30ch; margin-bottom: 3.25rem; }
+  .re .stats-lede em { font-style: italic; color: var(--brass-light); }
+  .re .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1.5rem, 3vw, 2.5rem); }
+  .re .stat { border-top: 1px solid rgba(244,240,232,0.15); padding-top: 1.4rem; }
+  .re .stat-num { font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 4.5vw, 3.4rem); line-height: 1; color: var(--brass-light); letter-spacing: -0.02em; }
+  .re .stat-label { margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.55; color: rgba(244,240,232,0.72); }
+  .re .stat-src { display: inline-block; margin-top: 0.85rem; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(244,240,232,0.4); }
+  .re .stat-note { margin-top: 3rem; font-size: 0.75rem; line-height: 1.6; color: rgba(244,240,232,0.4); }
+  .re .stat-note a { color: rgba(244,240,232,0.6); text-decoration: underline; text-underline-offset: 2px; }
+  .re .stat-note a:hover { color: var(--brass-light); }
+
+  /* Pillars */
+  .re .pillars { padding: clamp(4rem, 9vw, 8rem) 0; }
+  .re .pillar-list { display: grid; gap: 0; }
+  .re .pillar { display: grid; grid-template-columns: 6rem 1fr; gap: clamp(1rem, 4vw, 3rem); padding: 2.25rem 0; border-top: 1px solid rgba(26,24,21,0.12); align-items: baseline; }
+  .re .pillar:last-child { border-bottom: 1px solid rgba(26,24,21,0.12); }
+  .re .pillar-n { font-family: var(--display); font-size: clamp(1.6rem, 3vw, 2.4rem); color: var(--brass); line-height: 1; }
+  .re .pillar-body h3 { font-family: var(--display); font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 1.9rem); margin-bottom: 0.6rem; }
+  .re .pillar-body p { color: var(--slate); font-size: 1rem; line-height: 1.7; max-width: 44rem; }
+
+  /* Demo */
+  .re .demo { padding: clamp(4rem, 9vw, 8rem) 0; background: var(--ink); color: var(--paper); }
+  .re .demo .eyebrow { color: var(--brass-light); }
+  .re .demo .section-title { color: var(--paper); }
+  .re .demo-head { text-align: center; }
+  .re .demo-head .section-title { margin-bottom: 1.25rem; }
+  .re .demo-lede { max-width: 42rem; margin: 0 auto 3.5rem; color: rgba(244,240,232,0.65); line-height: 1.7; }
+  /* Layout showcase — three acts */
+  .re .act { max-width: 940px; margin: 0 auto; padding-top: clamp(3rem, 7vw, 5rem); }
+  .re .act:first-of-type { padding-top: 0; }
+  .re .act-head { display: flex; gap: 1.1rem; align-items: baseline; margin-bottom: 1.5rem; }
+  .re .act-n { font-family: var(--display); font-size: clamp(1.3rem, 3vw, 1.8rem); color: var(--brass); line-height: 1; }
+  .re .act-t { font-family: var(--display); font-weight: 400; font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.05; }
+  .re .act-d { color: rgba(244,240,232,0.6); font-size: 0.95rem; margin-top: 0.35rem; max-width: 44ch; }
+
+  /* Act 1 — auto-play tour device */
+  .re .tour-device { border-radius: 10px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.5); border: 1px solid rgba(244,240,232,0.12); background: #100e0c; }
+  .re .td-bar { display: flex; align-items: center; gap: 8px; padding: 0.7rem 1rem; background: #14110d; border-bottom: 1px solid rgba(244,240,232,0.08); }
+  .re .td-bar .dot { width: 11px; height: 11px; border-radius: 999px; background: rgba(244,240,232,0.18); }
+  .re .device-url { margin-left: 0.75rem; font-size: 0.72rem; color: rgba(244,240,232,0.4); background: rgba(244,240,232,0.06); padding: 0.3rem 0.85rem; border-radius: 999px; }
+  .re .td-stage { position: relative; aspect-ratio: 16 / 10; background: #0d0b08; overflow: hidden; }
+  .re .td-scene { position: absolute; inset: 0; opacity: 0; transition: opacity 1.1s ease; }
+  .re .td-scene.active { opacity: 1; }
+  .re .td-scene img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transition: transform 6s ease; }
+  .re .td-scene.active img { transform: scale(1.12); }
+  .re .td-scene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(13,11,8,0.1) 0%, transparent 42%, rgba(13,11,8,0.82) 100%); }
+  .re .td-cap { position: absolute; left: clamp(1.1rem, 3vw, 2.25rem); bottom: clamp(1.6rem, 3vw, 2.5rem); z-index: 3; color: #fff; max-width: 32ch; text-shadow: 0 2px 20px rgba(0,0,0,0.5); }
+  .re .td-idx { font-family: var(--display); font-size: 0.8rem; color: var(--brass-light); display: block; margin-bottom: 0.4rem; letter-spacing: 0.1em; }
+  .re .td-cap h4 { font-family: var(--display); font-weight: 400; font-size: clamp(1.3rem, 3.4vw, 2.1rem); line-height: 1.05; margin-bottom: 0.3rem; }
+  .re .td-cap p { font-size: clamp(0.82rem, 1.5vw, 1rem); color: rgba(255,255,255,0.82); }
+  .re .td-hud { position: absolute; top: 1rem; right: 1.1rem; z-index: 4; display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.8); font-family: var(--display); font-size: 0.78rem; }
+  .re .td-sep { opacity: 0.5; }
+  .re .td-track { width: 60px; height: 2px; background: rgba(255,255,255,0.25); border-radius: 2px; overflow: hidden; margin-left: 0.4rem; }
+  .re .td-bar-fill { display: block; height: 100%; width: 0; background: var(--brass-light); }
+  .re .td-dots { position: absolute; left: 50%; bottom: 0.9rem; transform: translateX(-50%); z-index: 4; display: flex; gap: 0.4rem; }
+  .re .td-dot { width: 7px; height: 7px; border-radius: 999px; border: none; padding: 0; background: rgba(255,255,255,0.35); cursor: pointer; transition: background 0.25s, width 0.25s; }
+  .re .td-dot.on { background: var(--brass-light); width: 18px; border-radius: 4px; }
+
+  /* Act 2 — location */
+  .re .loc-panel { background: rgba(244,240,232,0.03); border: 1px solid rgba(244,240,232,0.1); border-radius: 10px; padding: clamp(1.5rem, 3vw, 2.25rem); }
+  .re .loc-chips { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.75rem; }
+  .re .chip { display: inline-flex; align-items: center; gap: 0.55rem; background: rgba(244,240,232,0.06); border: 1px solid rgba(244,240,232,0.1); border-radius: 999px; padding: 0.5rem 0.95rem; }
+  .re .chip-ic { width: 16px; height: 16px; color: var(--brass-light); flex-shrink: 0; }
+  .re .chip-ic svg { width: 100%; height: 100%; }
+  .re .chip-name { font-size: 0.85rem; color: var(--paper); }
+  .re .chip-dist { font-size: 0.72rem; color: rgba(244,240,232,0.5); letter-spacing: 0.04em; }
+  .re .loc-access { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); }
+  .re .access-h { font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--brass-light); font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.55rem; border-bottom: 1px solid rgba(244,240,232,0.12); }
+  .re .shields { display: flex; flex-wrap: wrap; gap: 0.85rem; }
+  .re .sh { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+  .re .shield { display: flex; align-items: center; justify-content: center; width: 50px; height: 44px; background: #0d0b08; color: #fff; border-radius: 6px; font-family: var(--display); font-size: 1rem; box-shadow: inset 0 0 0 2px var(--brass-light), inset 0 0 0 4px #0d0b08; }
+  .re .sh-t { font-size: 0.68rem; color: rgba(244,240,232,0.55); text-transform: uppercase; letter-spacing: 0.05em; }
+  .re .dests { display: flex; flex-direction: column; }
+  .re .dest { display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(244,240,232,0.1); }
+  .re .dest:last-child { border-bottom: none; }
+  .re .dest-ic { width: 20px; height: 20px; color: var(--brass-light); flex-shrink: 0; }
+  .re .dest-ic svg { width: 100%; height: 100%; }
+  .re .dest-l { flex: 1; font-size: 0.92rem; color: var(--paper); }
+  .re .dest-t { font-family: var(--display); font-size: 1rem; color: var(--brass-light); }
+
+  /* Act 3 — numbers */
+  .re .num-panel { text-align: center; }
+  .re .num-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); }
+  .re .num { display: flex; flex-direction: column; gap: 0.5rem; }
+  .re .num-v { font-family: var(--display); font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1; color: var(--brass-light); }
+  .re .num-l { font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(244,240,232,0.55); }
+  .re .num-price { font-family: var(--display); font-size: clamp(1.5rem, 4vw, 2.2rem); color: var(--paper); margin: 2rem auto 0; padding-top: 1.75rem; border-top: 1px solid rgba(244,240,232,0.14); max-width: 14ch; }
+
+  .re .demo-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.25rem; margin-top: clamp(3rem, 7vw, 5rem); }
+  .re .demo-link { color: var(--brass-light); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .re .demo-link:hover { color: var(--paper); }
+
+  /* How */
+  .re .how { padding: clamp(4rem, 9vw, 8rem) 0; }
+  .re .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 3rem); }
+  .re .how-n { font-family: var(--display); font-size: 1.1rem; color: var(--brass); display: inline-block; margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--brass); }
+  .re .how-step h3 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; margin-bottom: 0.6rem; }
+  .re .how-step p { color: var(--slate); font-size: 0.95rem; line-height: 1.7; }
+
+  /* Closer */
+  .re .closer { padding: clamp(4.5rem, 10vw, 9rem) 0; background: linear-gradient(135deg, #12100c 0%, #6b5320 62%, var(--brass) 100%); color: var(--paper); }
+  .re .closer-inner { text-align: center; }
+  .re .closer h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.05; letter-spacing: -0.015em; margin-bottom: 2.25rem; }
+  .re .closer-cta { display: flex; flex-wrap: wrap; gap: 0.9rem; justify-content: center; }
+
+  /* Reveal */
+  .re .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.9s cubic-bezier(0.2,0.7,0.2,1), transform 0.9s cubic-bezier(0.2,0.7,0.2,1); }
+  .re .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 860px) {
+    .re .contrast-grid { grid-template-columns: 1fr; }
+    .re .contrast-versus { flex-direction: row; margin: 0.5rem 0; }
+    .re .contrast-versus .line { width: 44px; height: 1px; }
+    .re .how-steps { grid-template-columns: 1fr; gap: 2.5rem; }
+    .re .pillar { grid-template-columns: 1fr; gap: 0.5rem; }
+    .re .stat-grid { grid-template-columns: 1fr 1fr; }
+    .re .loc-access { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .re .stat-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .re .reveal { opacity: 1; transform: none; transition: none; }
+    .re .scroll-cue svg { animation: none; }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Scroll reveal.
+  const els = document.querySelectorAll('.re .reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    els.forEach((el) => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    els.forEach((el) => io.observe(el));
+  }
+
+  // Count-up — GTA stats and house numbers (handles commas + suffixes).
+  function countUp(el: HTMLElement) {
+    const raw = el.dataset.count || '';
+    const target = parseFloat(raw.replace(/[^0-9.]/g, ''));
+    const suffix = el.dataset.suffix || raw.replace(/[0-9.,]/g, '');
+    const hasComma = raw.indexOf(',') > -1;
+    if (!isFinite(target)) return;
+    if (reduce || !('IntersectionObserver' in window)) {
+      el.textContent = (hasComma ? target.toLocaleString() : String(target)) + suffix;
+      return;
+    }
+    let done = false;
+    const so = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting || done) return;
+          done = true;
+          const dur = 1500;
+          let start: number | null = null;
+          const step = (ts: number) => {
+            if (start === null) start = ts;
+            const p = Math.min((ts - start) / dur, 1);
+            const val = Math.round((0.5 - Math.cos(p * Math.PI) / 2) * target);
+            el.textContent = (hasComma ? val.toLocaleString() : String(val)) + suffix;
+            if (p < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+          so.unobserve(e.target);
+        });
+      },
+      { threshold: 0.5 }
+    );
+    so.observe(el);
+  }
+  document
+    .querySelectorAll<HTMLElement>('.re .stat-num[data-count], .re .num-v[data-count]')
+    .forEach(countUp);
+
+  // Act 1 — auto-playing house tour (cross-fade through rooms).
+  const device = document.querySelector('.re .tour-device');
+  if (device) {
+    const scenes = Array.from(device.querySelectorAll<HTMLElement>('.td-scene'));
+    const dots = Array.from(device.querySelectorAll<HTMLElement>('.td-dot'));
+    const countEl = device.querySelector<HTMLElement>('.td-count');
+    const fill = device.querySelector<HTMLElement>('.td-bar-fill');
+    const DWELL = 3800;
+    let idx = 0;
+    let timer = 0;
+    let paused = false;
+
+    function fillReset() {
+      if (!fill) return;
+      fill.style.transition = 'none';
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        if (!paused && !reduce) {
+          fill.style.transition = `width ${DWELL}ms linear`;
+          fill.style.width = '100%';
+        }
+      });
+    }
+    function show(i: number) {
+      idx = (i + scenes.length) % scenes.length;
+      scenes.forEach((s, j) => s.classList.toggle('active', j === idx));
+      dots.forEach((d, j) => d.classList.toggle('on', j === idx));
+      if (countEl) countEl.textContent = ('0' + (idx + 1)).slice(-2);
+      fillReset();
+    }
+    function start() {
+      if (reduce) return;
+      stop();
+      timer = window.setInterval(() => {
+        if (!paused) show(idx + 1);
+      }, DWELL);
+    }
+    function stop() {
+      if (timer) window.clearInterval(timer);
+    }
+
+    dots.forEach((d) =>
+      d.addEventListener('click', () => {
+        show(Number(d.dataset.i));
+        start();
+      })
+    );
+    device.addEventListener('mouseenter', () => {
+      paused = true;
+      if (fill) fill.style.transition = 'none';
+    });
+    device.addEventListener('mouseleave', () => {
+      paused = false;
+      fillReset();
+    });
+
+    show(0);
+    start();
+  }
+</script>

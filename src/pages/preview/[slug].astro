@@ -1,0 +1,93 @@
+---
+// preview.thelinovagroup.com/[slug] — the generated single-property site.
+//
+// Server-rendered per request (prerender=false → a Vercel function). Reads the
+// listing from Supabase and returns the full self-contained document built by
+// buildSiteHTML. When locked, the template adds the watermark + noindex.
+//
+// The `preview.` subdomain maps to this route via a host rewrite in vercel.json.
+
+export const prerender = false;
+
+import { getAdminClient } from '../../lib/estate/supabase-admin';
+import { buildSiteHTML } from '../../lib/estate/template';
+import type { Listing } from '../../lib/estate/types';
+
+const { slug } = Astro.params;
+
+let listing: Listing | null = null;
+let errorMsg: string | null = null;
+
+if (slug) {
+  try {
+    const supabase = getAdminClient();
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+    if (error) errorMsg = error.message;
+    else listing = data as Listing | null;
+  } catch (e) {
+    errorMsg = (e as Error).message;
+  }
+}
+
+// Found → return the full generated document and short-circuit rendering.
+if (listing) {
+  const locked = listing.locked ?? true;
+  const html = buildSiteHTML(listing, { locked });
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': locked ? 'private, no-store' : 'public, max-age=300',
+      ...(locked ? { 'x-robots-tag': 'noindex, nofollow' } : {}),
+    },
+  });
+}
+
+// Not found / error — render the minimal page below with the right status.
+const status = errorMsg ? 500 : 404;
+Astro.response.status = status;
+Astro.response.headers.set('x-robots-tag', 'noindex, nofollow');
+
+const heading = status === 500 ? 'Something went wrong' : 'Listing not found';
+const message =
+  status === 500
+    ? 'We could not load this preview right now.'
+    : 'This preview link is not available.';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{heading}</title>
+    <style is:inline>
+      body {
+        font-family: 'Archivo', system-ui, sans-serif;
+        background: #f4f0e8;
+        color: #1a1815;
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 0;
+      }
+      .box { max-width: 30rem; padding: 2rem; }
+      h1 { font-family: Georgia, serif; font-weight: 400; font-size: 2rem; margin: 0 0 0.5rem; }
+      p { color: #6b6559; }
+      a { color: #a8843f; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>{heading}</h1>
+      <p>{message}</p>
+      <p><a href="https://thelinovagroup.com/estate-sites">Build your own &rarr;</a></p>
+    </div>
+  </body>
+</html>

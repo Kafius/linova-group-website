@@ -1,0 +1,591 @@
+---
+// /estate-sites/new — the builder, as a 3-step wizard:
+//   1. Basics       — address, price, agent + auto-extract (neighbourhood,
+//                     hero title, amenity/commute suggestions, AI story).
+//   2. Review       — confirm/edit everything extracted, add more.
+//   3. The Tour     — floor plan (optional, AI-sectioned) → a section per room
+//                     with capture guidance, a shot checklist, and uploads.
+// A live preview updates on the right. Static page; all logic is client-side.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Build a listing — Linova Estate Sites</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #1a1815; --stone: #e8e2d6; --paper: #f4f0e8;
+        --brass: #a8843f; --brass-light: #c9a961; --slate: #6b6559;
+        --display: 'Fraunces', Georgia, serif; --body: 'Archivo', system-ui, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: var(--body); color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+      .app { display: grid; grid-template-columns: minmax(380px, 500px) 1fr; min-height: 100vh; }
+      .panel { background: #fff; border-right: 1px solid rgba(26,24,21,.1); overflow-y: auto; max-height: 100vh; }
+      .panel-inner { padding: clamp(1.25rem, 3vw, 2.25rem); max-width: 500px; }
+      .brandbar { display: flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
+      .brandbar .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--brass); }
+      .brandbar span { font-size: .72rem; letter-spacing: .28em; text-transform: uppercase; color: var(--slate); }
+      .authbar { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: .78rem; color: var(--slate); margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(26,24,21,.08); }
+      .authbar:empty { display: none; }
+      .authbar input { max-width: 210px; padding: .4rem .55rem; font-size: .82rem; }
+      .authbar .link { background: none; border: none; color: var(--brass); cursor: pointer; font-size: .78rem; padding: 0; text-decoration: underline; }
+      .authbar .ok { color: #2f7d52; }
+      /* stepper */
+      .stepper { display: flex; gap: .4rem; margin-bottom: 1.75rem; }
+      .step-pill { flex: 1; display: flex; flex-direction: column; gap: .4rem; }
+      .step-pill .bar { height: 3px; border-radius: 3px; background: rgba(26,24,21,.12); }
+      .step-pill.active .bar, .step-pill.done .bar { background: var(--brass); }
+      .step-pill .lbl { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--slate); }
+      .step-pill.active .lbl { color: var(--ink); font-weight: 600; }
+      h1.title { font-family: var(--display); font-weight: 400; font-size: 1.7rem; line-height: 1.1; margin-bottom: .35rem; }
+      .lede { color: var(--slate); font-size: .88rem; margin-bottom: 1.5rem; }
+      fieldset { border: none; border-top: 1px solid rgba(26,24,21,.1); padding: 1.25rem 0 .4rem; }
+      legend { font-size: .66rem; letter-spacing: .22em; text-transform: uppercase; color: var(--brass); font-weight: 600; padding-right: .6rem; }
+      label { display: block; font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; color: var(--slate); margin: 0 0 .3rem; }
+      .field { margin-bottom: .9rem; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+      .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .6rem; }
+      input, textarea, select {
+        width: 100%; font-family: var(--body); font-size: .9rem; color: var(--ink);
+        background: var(--paper); border: 1px solid rgba(26,24,21,.15); border-radius: 3px;
+        padding: .55rem .7rem; outline: none; transition: border-color .2s;
+      }
+      input:focus, textarea:focus, select:focus { border-color: var(--brass); }
+      textarea { resize: vertical; min-height: 80px; }
+      .hint { font-size: .72rem; color: var(--slate); margin-top: .3rem; }
+      .btn { font-family: var(--body); cursor: pointer; border-radius: 3px; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; padding: .8rem 1.3rem; border: none; transition: background .2s, border-color .2s, color .2s; }
+      .btn-primary { background: var(--ink); color: var(--paper); }
+      .btn-primary:hover { background: #322c24; }
+      .btn-primary:disabled { opacity: .5; cursor: default; }
+      .btn-ghost { background: none; border: 1px solid rgba(26,24,21,.2); color: var(--slate); }
+      .btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
+      .btn-dashed { background: none; border: 1px dashed rgba(26,24,21,.25); color: var(--slate); padding: .5rem .8rem; border-radius: 3px; cursor: pointer; font-size: .78rem; font-family: var(--body); }
+      .btn-dashed:hover { border-color: var(--brass); color: var(--brass); }
+      .nav { display: flex; gap: .6rem; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(26,24,21,.1); }
+      .nav .spacer { flex: 1; }
+      .icon-btn { border: 1px solid rgba(26,24,21,.15); background: #fff; color: var(--slate); width: 30px; height: 30px; border-radius: 3px; cursor: pointer; font-size: 1rem; line-height: 1; flex-shrink: 0; }
+      .icon-btn:hover { border-color: var(--brass); color: var(--brass); }
+      .poi-row { display: grid; grid-template-columns: 110px 1fr 110px auto; gap: .5rem; margin-bottom: .5rem; align-items: center; }
+      .poi-row select, .poi-row input { padding: .45rem .55rem; font-size: .82rem; }
+      /* rooms */
+      .room-card { border: 1px solid rgba(26,24,21,.12); border-radius: 5px; padding: 1rem; margin-bottom: 1rem; background: #fff; }
+      .room-head { display: grid; grid-template-columns: 1fr 130px auto; gap: .5rem; align-items: center; margin-bottom: .6rem; }
+      .room-guidance { font-size: .78rem; color: var(--slate); line-height: 1.5; background: var(--paper); border-radius: 4px; padding: .6rem .7rem; margin-bottom: .7rem; }
+      .checklist { list-style: none; margin: 0 0 .7rem; padding: 0; }
+      .checklist li { display: flex; gap: .5rem; align-items: baseline; font-size: .78rem; padding: .3rem 0; border-bottom: 1px dashed rgba(26,24,21,.1); }
+      .checklist li:last-child { border-bottom: none; }
+      .checklist .ck { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(26,24,21,.3); flex-shrink: 0; margin-top: 2px; }
+      .checklist li.got .ck { background: var(--brass); border-color: var(--brass); }
+      .checklist .ang { font-weight: 600; color: var(--ink); }
+      .checklist .tip { color: var(--slate); }
+      .shots { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0; }
+      .thumb { position: relative; width: 76px; height: 56px; border-radius: 3px; overflow: hidden; border: 1px solid rgba(26,24,21,.12); background: var(--stone); }
+      .thumb img { width: 100%; height: 100%; object-fit: cover; }
+      .thumb .rm { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 999px; background: rgba(26,24,21,.75); color: #fff; border: none; font-size: .7rem; line-height: 1; cursor: pointer; }
+      .meter { font-size: .72rem; color: var(--slate); margin-bottom: .5rem; }
+      .meter b { color: var(--brass); }
+      .uploader { display: inline-block; }
+      .uploader input { display: none; }
+      .result { margin-top: 1rem; padding: 1rem; background: var(--stone); border-radius: 4px; font-size: .82rem; }
+      .result a { color: var(--brass); word-break: break-all; }
+      /* preview */
+      .preview { position: sticky; top: 0; height: 100vh; background: var(--ink); display: flex; flex-direction: column; }
+      .preview-bar { display: flex; align-items: center; justify-content: space-between; padding: .7rem 1.2rem; color: rgba(244,240,232,.7); font-size: .72rem; letter-spacing: .1em; }
+      .toggle { display: flex; gap: .25rem; }
+      .toggle button { background: rgba(255,255,255,.08); color: rgba(255,255,255,.6); border: none; padding: .35rem .8rem; border-radius: 3px; cursor: pointer; font-size: .7rem; font-family: var(--body); }
+      .toggle button.active { background: rgba(255,255,255,.2); color: #fff; }
+      .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.1rem; overflow: hidden; }
+      .frame { background: #fff; box-shadow: 0 20px 60px rgba(0,0,0,.4); border-radius: 4px; overflow: hidden; }
+      .frame iframe { width: 100%; height: 100%; border: none; display: block; }
+      .stage[data-view='desktop'] .frame { width: 100%; height: 100%; }
+      .stage[data-view='mobile'] .frame { width: 390px; height: 100%; max-height: 844px; }
+      .hidden { display: none !important; }
+      .busy { position: fixed; inset: 0; background: rgba(26,24,21,.5); display: none; align-items: center; justify-content: center; z-index: 50; }
+      .busy.show { display: flex; }
+      .busy .box { background: #fff; padding: 1.5rem 2rem; border-radius: 5px; font-size: .9rem; color: var(--ink); }
+      @media (max-width: 980px) {
+        .app { grid-template-columns: 1fr; }
+        .preview { position: relative; height: 60vh; }
+        .panel { max-height: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="brandbar"><span class="dot"></span><span>Linova Estate Sites</span></div>
+          <div class="authbar" id="auth-bar"></div>
+          <div class="stepper">
+            <div class="step-pill active" data-pill="1"><div class="bar"></div><span class="lbl">1 · Basics</span></div>
+            <div class="step-pill" data-pill="2"><div class="bar"></div><span class="lbl">2 · Review</span></div>
+            <div class="step-pill" data-pill="3"><div class="bar"></div><span class="lbl">3 · The Tour</span></div>
+          </div>
+
+          <!-- ============ STEP 1 ============ -->
+          <section id="step-1">
+            <h1 class="title">Start with the essentials</h1>
+            <p class="lede">Enter the address and your details. We'll pull the neighbourhood, nearby amenities, commute times, and a first draft of the story.</p>
+            <form id="basics" autocomplete="off">
+              <fieldset>
+                <legend>The Property</legend>
+                <div class="field"><label for="f-address">Full address</label><input id="f-address" name="address" placeholder="14 Ravine Crest, Forest Hill, Toronto ON" required /></div>
+                <div class="row">
+                  <div class="field"><label for="f-price">Price</label><input id="f-price" name="price" placeholder="$4,250,000" /></div>
+                  <div class="field"><label for="f-lot">Lot</label><input id="f-lot" name="lot_text" placeholder="0.42 acres" /></div>
+                </div>
+                <div class="row-3">
+                  <div class="field"><label for="f-beds">Beds</label><input id="f-beds" name="beds" inputmode="numeric" placeholder="5" /></div>
+                  <div class="field"><label for="f-baths">Baths</label><input id="f-baths" name="baths" inputmode="numeric" placeholder="6" /></div>
+                  <div class="field"><label for="f-sqft">Sq ft</label><input id="f-sqft" name="sqft" inputmode="numeric" placeholder="6200" /></div>
+                </div>
+                <div class="field"><label for="f-year">Year built</label><input id="f-year" name="year_built" inputmode="numeric" placeholder="2019" /></div>
+              </fieldset>
+              <fieldset>
+                <legend>The Agent</legend>
+                <div class="field"><label for="f-agent">Agent name</label><input id="f-agent" name="agent_name" placeholder="Jordan Ellis" /></div>
+                <div class="row">
+                  <div class="field"><label for="f-brokerage">Brokerage</label><input id="f-brokerage" name="brokerage" placeholder="Meridian Estates" /></div>
+                  <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" placeholder="(416) 555-0142" /></div>
+                </div>
+                <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" placeholder="hello@meridianestates.com" /></div>
+              </fieldset>
+              <div class="nav">
+                <div class="spacer"></div>
+                <button type="submit" class="btn btn-primary">Continue →</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- ============ STEP 2 ============ -->
+          <section id="step-2" class="hidden">
+            <h1 class="title">Confirm the details</h1>
+            <p class="lede">Here's what we found. Edit anything, and add your own nearby points.</p>
+            <div id="review"></div>
+            <div class="nav">
+              <button type="button" class="btn btn-ghost" data-goto="1">← Back</button>
+              <div class="spacer"></div>
+              <button type="button" class="btn btn-primary" id="to-step-3">Continue → the tour</button>
+            </div>
+          </section>
+
+          <!-- ============ STEP 3 ============ -->
+          <section id="step-3" class="hidden">
+            <h1 class="title">Build the tour</h1>
+            <p class="lede">Optionally upload a floor plan to auto-section the rooms. Then capture each room from the recommended angles — more photos make a richer walkthrough.</p>
+            <fieldset>
+              <legend>Floor plan (optional)</legend>
+              <p class="hint" style="margin-bottom:.5rem">Upload a plan and we'll suggest the rooms. You can always add or rename.</p>
+              <label class="uploader btn-dashed">Upload floor plan<input type="file" accept="image/*" id="floorplan-input" /></label>
+              <span id="floorplan-status" class="hint"></span>
+            </fieldset>
+            <fieldset>
+              <legend>Rooms</legend>
+              <div id="rooms"></div>
+              <button type="button" class="btn-dashed" id="add-room">+ Add room</button>
+            </fieldset>
+            <div class="nav">
+              <button type="button" class="btn btn-ghost" data-goto="2">← Back</button>
+              <div class="spacer"></div>
+              <button type="button" class="btn btn-primary" id="generate">Generate preview link</button>
+            </div>
+            <div class="result hidden" id="result"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="preview">
+        <div class="preview-bar">
+          <span>Live preview · watermarked</span>
+          <div class="toggle">
+            <button type="button" data-view="desktop" class="active">Desktop</button>
+            <button type="button" data-view="mobile">Mobile</button>
+          </div>
+        </div>
+        <div class="stage" id="stage" data-view="desktop">
+          <div class="frame"><iframe id="preview-frame" title="Preview"></iframe></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="busy" id="busy"><div class="box" id="busy-text">Working…</div></div>
+
+    <script>
+      import { buildSiteHTML } from '../../lib/estate/template';
+      import { POI_TYPES } from '../../lib/estate/types';
+      import { ROOM_GUIDES } from '../../lib/estate/rooms';
+      import { getBrowserClient } from '../../lib/estate/supabase-browser';
+
+      const CATEGORIES = Object.keys(ROOM_GUIDES);
+      const sb = getBrowserClient();
+      let user: any = null;
+
+      // ---- Draft state ----
+      const draft: any = {
+        address: '', price: '', beds: null, baths: null, sqft: null, year_built: null, lot_text: '',
+        agent_name: '', brokerage: '', phone: '', email: '',
+        name: '', neighbourhood: '', headline: '', description: '',
+        pois: [], commute: {}, floorplanUrl: '', rooms: [],
+      };
+      try { Object.assign(draft, JSON.parse(localStorage.getItem('estate-draft') || '{}')); } catch {}
+      let serverSaveTimer = 0;
+      const save = () => {
+        try { localStorage.setItem('estate-draft', JSON.stringify(draft)); } catch {}
+        if (sb && user) { clearTimeout(serverSaveTimer); serverSaveTimer = window.setTimeout(serverSave, 1200); }
+      };
+
+      const num = (v: string) => { const n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); return Number.isFinite(n) ? n : null; };
+      const $ = (id: string) => document.getElementById(id)!;
+      const busy = (msg?: string) => { const b = $('busy'); if (msg) { $('busy-text').textContent = msg; b.classList.add('show'); } else b.classList.remove('show'); };
+
+      // ---- Live preview ----
+      const frame = $('preview-frame') as HTMLIFrameElement;
+      let raf = 0;
+      function render() {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          frame.srcdoc = buildSiteHTML({ slug: 'preview', ...draft }, { locked: true });
+        });
+        save();
+      }
+
+      // ---- Step navigation ----
+      function goto(step: number) {
+        [1, 2, 3].forEach((s) => $(`step-${s}`).classList.toggle('hidden', s !== step));
+        document.querySelectorAll('.step-pill').forEach((p) => {
+          const n = Number((p as HTMLElement).dataset.pill);
+          p.classList.toggle('active', n === step);
+          p.classList.toggle('done', n < step);
+        });
+        if (step === 2) renderReview();
+        if (step === 3) renderRooms();
+        document.querySelector('.panel')!.scrollTop = 0;
+        render();
+      }
+      document.querySelectorAll('[data-goto]').forEach((b) =>
+        b.addEventListener('click', () => goto(Number((b as HTMLElement).dataset.goto)))
+      );
+
+      // ---- Image compress + upload ----
+      async function compress(file: File, maxW = 1800, q = 0.72): Promise<File> {
+        if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return file;
+        try {
+          const img = await createImageBitmap(file);
+          const scale = Math.min(1, maxW / img.width);
+          const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
+          canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+          const blob: Blob = await new Promise((res) => canvas.toBlob((b) => res(b!), 'image/jpeg', q));
+          return new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+        } catch { return file; }
+      }
+      async function uploadFile(file: File): Promise<string> {
+        const c = await compress(file);
+        const fd = new FormData(); fd.append('file', c);
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        const j = await res.json();
+        if (!res.ok) throw new Error(j.error || 'Upload failed');
+        return j.url;
+      }
+
+      // ---- STEP 1: submit → extract + nearby ----
+      ($('basics') as HTMLFormElement).addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = $('basics') as HTMLFormElement;
+        const val = (n: string) => (f.elements.namedItem(n) as HTMLInputElement)?.value.trim() ?? '';
+        Object.assign(draft, {
+          address: val('address'), price: val('price'), lot_text: val('lot_text'),
+          beds: num(val('beds')), baths: num(val('baths')), sqft: num(val('sqft')), year_built: num(val('year_built')),
+          agent_name: val('agent_name'), brokerage: val('brokerage'), phone: val('phone'), email: val('email'),
+        });
+        if (!draft.address) { alert('A full address is required.'); return; }
+        busy('Reading the address…');
+        try {
+          const [ext, near] = await Promise.all([
+            fetch('/api/extract', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(draft) }).then((r) => r.json()).catch(() => ({})),
+            fetch('/api/nearby', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ address: draft.address }) }).then((r) => r.json()).catch(() => ({})),
+          ]);
+          draft.name = draft.name || ext.heroTitle || draft.address.split(',')[0];
+          draft.neighbourhood = draft.neighbourhood || ext.neighbourhood || '';
+          draft.headline = draft.headline || ext.headline || '';
+          draft.description = draft.description || ext.description || '';
+          if ((!draft.pois || !draft.pois.length) && Array.isArray(near.pois)) draft.pois = near.pois;
+          if (near.commute && Object.keys(draft.commute || {}).length === 0) draft.commute = near.commute;
+        } finally {
+          busy();
+          goto(2);
+        }
+      });
+
+      // ---- STEP 2: review ----
+      function renderReview() {
+        const c = draft.commute || {};
+        const poiRows = (draft.pois || []).map((p: any, i: number) => poiRowHTML(p, i)).join('');
+        $('review').innerHTML = `
+          <fieldset>
+            <legend>Identity</legend>
+            <div class="field"><label>Hero title</label><input data-d="name" value="${esc(draft.name)}" /></div>
+            <div class="row">
+              <div class="field"><label>Neighbourhood</label><input data-d="neighbourhood" value="${esc(draft.neighbourhood)}" /></div>
+              <div class="field"><label>Price</label><input data-d="price" value="${esc(draft.price)}" /></div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>The Story</legend>
+            <div class="field"><label>Headline</label><input data-d="headline" value="${esc(draft.headline)}" /></div>
+            <div class="field"><label>Description</label><textarea data-d="description">${esc(draft.description)}</textarea></div>
+          </fieldset>
+          <fieldset>
+            <legend>Nearby amenities</legend>
+            <div id="poi-list">${poiRows}</div>
+            <button type="button" class="btn-dashed" id="add-poi">+ Add point</button>
+          </fieldset>
+          <fieldset>
+            <legend>Commute &amp; Access (GTA)</legend>
+            <div class="row">
+              <div class="field"><label>Downtown</label><input data-c="downtown" value="${esc(c.downtown)}" placeholder="18 min drive" /></div>
+              <div class="field"><label>Pearson (YYZ)</label><input data-c="airport" value="${esc(c.airport)}" placeholder="24 min drive" /></div>
+            </div>
+            <div class="row"><div class="field"><label>Hwy 401</label><input data-c="hwy401" value="${esc(c.hwy401)}" /></div><div class="field"><label>Hwy 407</label><input data-c="hwy407" value="${esc(c.hwy407)}" /></div></div>
+            <div class="row"><div class="field"><label>Hwy 404</label><input data-c="hwy404" value="${esc(c.hwy404)}" /></div><div class="field"><label>Hwy 400</label><input data-c="hwy400" value="${esc(c.hwy400)}" /></div></div>
+            <div class="field"><label>Nearest hospital</label><input data-c="hospital" value="${esc(c.hospital)}" /></div>
+          </fieldset>`;
+
+        $('review').querySelectorAll('[data-d]').forEach((el) =>
+          el.addEventListener('input', () => { draft[(el as HTMLElement).dataset.d!] = (el as HTMLInputElement).value; render(); })
+        );
+        $('review').querySelectorAll('[data-c]').forEach((el) =>
+          el.addEventListener('input', () => { draft.commute[(el as HTMLElement).dataset.c!] = (el as HTMLInputElement).value; render(); })
+        );
+        bindPoiRows();
+        $('add-poi')?.addEventListener('click', () => { draft.pois.push({ type: 'grocery', name: '', dist: '' }); renderReview(); render(); });
+      }
+
+      function poiRowHTML(p: any, i: number) {
+        const opts = POI_TYPES.map((t) => `<option value="${t.value}"${t.value === p.type ? ' selected' : ''}>${t.label}</option>`).join('');
+        return `<div class="poi-row" data-i="${i}">
+          <select data-pk="type">${opts}</select>
+          <input data-pk="name" value="${esc(p.name)}" placeholder="Whole Foods" />
+          <input data-pk="dist" value="${esc(p.dist)}" placeholder="5 min walk" />
+          <button type="button" class="icon-btn" data-poi-rm>&times;</button>
+        </div>`;
+      }
+      function bindPoiRows() {
+        $('poi-list')?.querySelectorAll('.poi-row').forEach((row) => {
+          const i = Number((row as HTMLElement).dataset.i);
+          row.querySelectorAll('[data-pk]').forEach((el) =>
+            el.addEventListener('input', () => { draft.pois[i][(el as HTMLElement).dataset.pk!] = (el as HTMLInputElement).value; render(); })
+          );
+          row.querySelector('[data-poi-rm]')?.addEventListener('click', () => { draft.pois.splice(i, 1); renderReview(); render(); });
+        });
+      }
+
+      // ---- STEP 3: rooms ----
+      $('to-step-3').addEventListener('click', async () => {
+        if (!draft.rooms || !draft.rooms.length) {
+          busy('Preparing rooms…');
+          try {
+            const r = await fetch('/api/floorplan', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ beds: draft.beds, baths: draft.baths }) }).then((x) => x.json());
+            draft.rooms = (r.rooms || []).map((rm: any) => ({ name: rm.name, category: rm.category, shots: [] }));
+          } catch {} finally { busy(); }
+        }
+        goto(3);
+      });
+
+      ($('floorplan-input') as HTMLInputElement).addEventListener('change', async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+        busy('Reading the floor plan…');
+        try {
+          const url = await uploadFile(file);
+          draft.floorplanUrl = url;
+          const r = await fetch('/api/floorplan', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url, beds: draft.beds, baths: draft.baths }) }).then((x) => x.json());
+          const rooms = (r.rooms || []).map((rm: any) => ({ name: rm.name, category: rm.category, shots: [] }));
+          if (rooms.length && confirm(`Use these ${rooms.length} rooms from the floor plan? This replaces the current list.`)) {
+            draft.rooms = rooms;
+            renderRooms(); render();
+          }
+          $('floorplan-status').textContent = r.source === 'ai' ? 'Rooms suggested from your plan.' : 'Using a standard room list.';
+        } catch (err) {
+          $('floorplan-status').textContent = (err as Error).message;
+        } finally { busy(); }
+      });
+
+      $('add-room').addEventListener('click', () => { draft.rooms.push({ name: 'New room', category: 'detail', shots: [] }); renderRooms(); render(); });
+
+      function renderRooms() {
+        $('rooms').innerHTML = (draft.rooms || []).map((rm: any, i: number) => roomCardHTML(rm, i)).join('');
+        (draft.rooms || []).forEach((_: any, i: number) => bindRoomCard(i));
+      }
+
+      function roomCardHTML(rm: any, i: number) {
+        const cat = CATEGORIES.includes(rm.category) ? rm.category : 'detail';
+        const guide = (ROOM_GUIDES as any)[cat];
+        const opts = CATEGORIES.map((k) => `<option value="${k}"${k === cat ? ' selected' : ''}>${(ROOM_GUIDES as any)[k].label}</option>`).join('');
+        const got = (rm.shots || []).length;
+        const rec = guide.shots.length;
+        const checklist = guide.shots.map((s: any, si: number) =>
+          `<li class="${si < got ? 'got' : ''}"><span class="ck"></span><span><span class="ang">${esc(s.angle)}</span> — <span class="tip">${esc(s.tip)}</span></span></li>`
+        ).join('');
+        const thumbs = (rm.shots || []).map((s: any, si: number) =>
+          `<div class="thumb"><img src="${esc(s.url)}" alt=""><button type="button" class="rm" data-shot-rm="${si}">&times;</button></div>`
+        ).join('');
+        return `<div class="room-card" data-ri="${i}">
+          <div class="room-head">
+            <input data-rk="name" value="${esc(rm.name)}" placeholder="Room name" />
+            <select data-rk="category">${opts}</select>
+            <button type="button" class="icon-btn" data-room-rm>&times;</button>
+          </div>
+          <div class="room-guidance">${esc(guide.guidance)}</div>
+          <div class="meter">Recommended shots — <b>${got}</b> of ${rec} captured</div>
+          <ul class="checklist">${checklist}</ul>
+          <div class="shots">${thumbs}</div>
+          <label class="uploader btn-dashed">+ Add photos<input type="file" accept="image/*" multiple data-room-upload capture="environment" /></label>
+        </div>`;
+      }
+
+      function bindRoomCard(i: number) {
+        const card = $('rooms').querySelector(`[data-ri="${i}"]`)!;
+        card.querySelectorAll('[data-rk]').forEach((el) =>
+          el.addEventListener('input', () => {
+            const key = (el as HTMLElement).dataset.rk!;
+            draft.rooms[i][key] = (el as HTMLInputElement).value;
+            if (key === 'category') renderRooms();
+            render();
+          })
+        );
+        card.querySelector('[data-room-rm]')?.addEventListener('click', () => { draft.rooms.splice(i, 1); renderRooms(); render(); });
+        card.querySelectorAll('[data-shot-rm]').forEach((el) =>
+          el.addEventListener('click', () => { draft.rooms[i].shots.splice(Number((el as HTMLElement).dataset.shotRm), 1); renderRooms(); render(); })
+        );
+        card.querySelector('[data-room-upload]')?.addEventListener('change', async (e) => {
+          const files = Array.from((e.target as HTMLInputElement).files || []);
+          if (!files.length) return;
+          busy(`Uploading ${files.length} photo${files.length > 1 ? 's' : ''}…`);
+          try {
+            for (const file of files) {
+              const url = await uploadFile(file);
+              draft.rooms[i].shots = draft.rooms[i].shots || [];
+              draft.rooms[i].shots.push({ url, angle: '' });
+              draft.rooms[i].photo = draft.rooms[i].photo || url;
+            }
+            renderRooms(); render();
+          } catch (err) {
+            alert((err as Error).message);
+          } finally { busy(); }
+        });
+      }
+
+      // ---- Generate ----
+      $('generate').addEventListener('click', async () => {
+        if (!draft.name || !draft.address) { alert('Address and hero title are required.'); return; }
+        const btn = $('generate') as HTMLButtonElement;
+        btn.disabled = true; busy('Generating your preview…');
+        try {
+          const token = await accessToken();
+          const res = await fetch('/api/generate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(token ? { ...draft, access_token: token } : draft) });
+          const j = await res.json();
+          const r = $('result'); r.classList.remove('hidden');
+          if (!res.ok) { r.textContent = j.error || 'Could not generate the preview.'; }
+          else {
+            r.innerHTML = `<strong>Preview ready.</strong><br>Live at:<br><a href="${j.previewUrl}" target="_blank" rel="noopener">${j.previewUrl}</a>` +
+              `<p class="hint" style="margin-top:.6rem">Share it, then unlock (pay) to remove the watermark and publish.</p>`;
+          }
+        } catch { $('result').classList.remove('hidden'); $('result').textContent = 'Network error — please try again.'; }
+        finally { btn.disabled = false; busy(); }
+      });
+
+      // ---- Device toggle ----
+      const stage = $('stage');
+      document.querySelectorAll('.toggle button').forEach((b) =>
+        b.addEventListener('click', () => {
+          document.querySelectorAll('.toggle button').forEach((x) => x.classList.remove('active'));
+          b.classList.add('active');
+          stage.setAttribute('data-view', (b as HTMLElement).dataset.view || 'desktop');
+        })
+      );
+
+      // ---- esc helper (for innerHTML values) ----
+      function esc(v: any) {
+        return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      // ---- Auth + server draft sync ----
+      const authBar = $('auth-bar');
+      function renderAuth() {
+        if (!sb) { authBar.innerHTML = ''; return; }
+        if (user) {
+          authBar.innerHTML = `<span>Signed in as <b>${esc(user.email)}</b></span><span id="save-state" class="ok"></span><button type="button" class="link" id="signout">Sign out</button>`;
+          $('signout').addEventListener('click', async () => { await sb!.auth.signOut(); });
+        } else {
+          authBar.innerHTML = `<span>Save across devices —</span><input id="auth-email" type="email" placeholder="you@brokerage.com" /><button type="button" class="link" id="sendlink">email me a link</button><span id="auth-msg"></span>`;
+          $('sendlink').addEventListener('click', async () => {
+            const email = ($('auth-email') as HTMLInputElement).value.trim();
+            if (!email) return;
+            $('auth-msg').textContent = ' Sending…';
+            const { error } = await sb!.auth.signInWithOtp({ email, options: { emailRedirectTo: location.href.split('#')[0] } });
+            $('auth-msg').textContent = error ? ' ' + error.message : ' Check your email for the link.';
+          });
+        }
+      }
+      async function serverSave() {
+        if (!sb || !user) return;
+        try {
+          await sb.from('estate_drafts').upsert({ agent_id: user.id, data: draft, updated_at: new Date().toISOString() });
+          const s = $('save-state'); if (s) { s.textContent = ' · saved'; setTimeout(() => { if (s) s.textContent = ''; }, 1500); }
+        } catch {}
+      }
+      async function serverLoad() {
+        if (!sb || !user) return;
+        try {
+          const { data } = await sb.from('estate_drafts').select('data').eq('agent_id', user.id).maybeSingle();
+          if (data && data.data && Object.keys(data.data).length) {
+            Object.assign(draft, data.data);
+            refillStep1();
+            render();
+          }
+        } catch {}
+      }
+      async function accessToken(): Promise<string | undefined> {
+        if (!sb || !user) return undefined;
+        try { return (await sb.auth.getSession()).data.session?.access_token; } catch { return undefined; }
+      }
+
+      // ---- init ----
+      function refillStep1() {
+        const bf = $('basics') as HTMLFormElement;
+        ['address', 'price', 'lot_text', 'beds', 'baths', 'sqft', 'year_built', 'agent_name', 'brokerage', 'phone', 'email'].forEach((k) => {
+          const el = bf.elements.namedItem(k) as HTMLInputElement | null;
+          if (el && draft[k] != null && draft[k] !== '') el.value = String(draft[k]);
+        });
+      }
+      refillStep1();
+      render();
+
+      (async () => {
+        if (!sb) { renderAuth(); return; }
+        try {
+          const { data } = await sb.auth.getSession();
+          user = data.session?.user ?? null;
+        } catch {}
+        renderAuth();
+        if (user) await serverLoad();
+        sb.auth.onAuthStateChange(async (_e: any, session: any) => {
+          user = session?.user ?? null;
+          renderAuth();
+          if (user) await serverLoad();
+        });
+      })();
+    </script>
+  </body>
+</html>

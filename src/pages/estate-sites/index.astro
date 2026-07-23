@@ -1,0 +1,103 @@
+---
+// /estate-sites — marketing landing page for the Estate Sites tool.
+// Uses the main-site chrome so it lives on thelinovagroup.com.
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/navbar/Navbar.astro';
+import Footer from '../../components/footer/Footer.astro';
+
+const steps = [
+  { n: '01', t: 'Enter the listing', d: 'One form: photos, the story, the numbers, and the nearby points buyers care about.' },
+  { n: '02', t: 'See it built live', d: 'A cinematic single-property site renders as you type — hero, stats, location intelligence, gallery.' },
+  { n: '03', t: 'Unlock & publish', d: 'Review the real, watermarked preview, then pay to remove the watermark and point a custom domain.' },
+];
+
+const reasons = [
+  { stat: '59%', label: 'of buyers rank neighbourhood quality as a top factor', src: 'NAR 2025 Profile of Home Buyers & Sellers' },
+  { stat: '47%', label: 'weigh proximity to friends & family', src: 'NAR 2025' },
+  { stat: '0.2mi', label: 'a grocery store this close outweighs three at 0.7mi', src: 'Proximity is weighted' },
+];
+---
+
+<Layout
+  title="Estate Sites — Cinematic single-property websites | Linova Group"
+  description="Turn one luxury listing into a cinematic single-property website in minutes — with real walk & drive times to the places buyers care about. Preview it free, pay to publish."
+>
+  <Navbar />
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-[#1a1815] text-[#f4f0e8]">
+    <div class="max-w-6xl mx-auto px-6 pt-40 pb-28">
+      <p class="text-[0.72rem] tracking-[0.28em] uppercase text-[#c9a961] font-semibold mb-6">Linova Estate Sites</p>
+      <h1 class="font-serif text-[clamp(2.5rem,6vw,4.75rem)] leading-[1.02] tracking-tight max-w-[16ch] mb-6" style="font-family: Georgia, 'Times New Roman', serif;">
+        One listing. One cinematic website. Minutes, not weeks.
+      </h1>
+      <p class="text-lg text-[#e8e2d6]/80 max-w-2xl mb-10">
+        A premium single-property site for luxury inventory — scroll animations, animated stats, and real
+        walk &amp; drive times to the grocery, schools and transit buyers actually search for.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="/estate-sites/new" class="inline-flex items-center gap-2 bg-[#a8843f] text-[#1a1815] px-8 py-4 rounded-sm text-sm tracking-[0.15em] uppercase font-semibold hover:bg-[#c9a961] transition-colors">
+          Build a listing
+        </a>
+        <a href="#how" class="inline-flex items-center gap-2 border border-[#c9a961]/40 text-[#c9a961] px-8 py-4 rounded-sm text-sm tracking-[0.15em] uppercase hover:border-[#c9a961] transition-colors">
+          See how it works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how" class="bg-[#f4f0e8] py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <p class="text-[0.72rem] tracking-[0.28em] uppercase text-[#a8843f] font-semibold mb-3">How it works</p>
+      <h2 class="font-serif text-[clamp(1.8rem,4vw,2.8rem)] text-[#1a1815] mb-14 max-w-[20ch]" style="font-family: Georgia, serif;">The locked preview is the pitch.</h2>
+      <div class="grid md:grid-cols-3 gap-10">
+        {steps.map((s) => (
+          <div>
+            <div class="font-serif text-4xl text-[#a8843f] mb-4" style="font-family: Georgia, serif;">{s.n}</div>
+            <h3 class="text-lg font-semibold text-[#1a1815] mb-2">{s.t}</h3>
+            <p class="text-[#6b6559] text-sm leading-relaxed">{s.d}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why location matters -->
+  <section class="bg-[#1a1815] text-[#f4f0e8] py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <p class="text-[0.72rem] tracking-[0.28em] uppercase text-[#c9a961] font-semibold mb-3">Location intelligence</p>
+      <h2 class="font-serif text-[clamp(1.8rem,4vw,2.8rem)] mb-14 max-w-[24ch]" style="font-family: Georgia, serif;">
+        Buyers buy the neighbourhood. So we make it a first-class section.
+      </h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        {reasons.map((r) => (
+          <div class="border-t border-[#c9a961]/25 pt-6">
+            <div class="font-serif text-5xl text-[#c9a961] mb-3" style="font-family: Georgia, serif;">{r.stat}</div>
+            <p class="text-[#e8e2d6]/85 mb-2">{r.label}</p>
+            <p class="text-xs text-[#e8e2d6]/45 uppercase tracking-wider">{r.src}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing note -->
+  <section class="bg-[#e8e2d6] py-24">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <p class="text-[0.72rem] tracking-[0.28em] uppercase text-[#a8843f] font-semibold mb-3">Pricing</p>
+      <h2 class="font-serif text-[clamp(1.8rem,4vw,2.6rem)] text-[#1a1815] mb-6" style="font-family: Georgia, serif;">
+        Per listing, or a subscription for your whole book.
+      </h2>
+      <p class="text-[#6b6559] max-w-2xl mx-auto mb-10">
+        A flat per-listing fee paid on delivery, or a monthly plan for agents publishing across many listings.
+        You only pay to unlock — building the preview is free.
+      </p>
+      <a href="/estate-sites/new" class="inline-flex items-center gap-2 bg-[#1a1815] text-[#f4f0e8] px-8 py-4 rounded-sm text-sm tracking-[0.15em] uppercase font-semibold hover:bg-[#322c24] transition-colors">
+        Start a preview — free
+      </a>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
