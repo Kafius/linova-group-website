@@ -40,12 +40,24 @@ Vercel project.
 - `supabase-admin.ts` — **server-only** Supabase client (service role key). Never
   import into client code.
 
+## Sale or lease
+
+The builder opens in **lease** mode (the Sale/Lease toggle at the top of Step 1;
+lease is the default). `listing_type` (`'sale' | 'lease'`) drives the generated
+site: leases show the rent as **"$X / month"**, add a **Terms at a glance**
+section (term, availability, furnished, pets, utilities, deposit), swap the CTA
+to *Now Leasing → Request a Viewing*, and drop the sale-only *Per Sq Ft* figure.
+Sales render exactly as before. `price` holds the sale price, or the monthly
+rent when leasing. The DB column defaults to `'sale'` so any legacy row keeps its
+meaning; the form defaults new listings to `'lease'`.
+
 ## Setup
 
 1. **Database** — run the migrations in order in the Supabase SQL editor:
-   `0001_estate_listings.sql`, `0002_estate_tour_commute.sql`, `0003_estate_wizard.sql`
-   (creates `listings` + `distance_cache`, the tour/commute + email columns, and
-   the public `listing-photos` storage bucket + read policy).
+   `0001_estate_listings.sql` … `0006_estate_lease.sql`
+   (creates `listings` + `distance_cache`; the tour/commute + email columns; the
+   public `listing-photos` storage bucket + read policy; the caching + rate-limit
+   tables; the `estate_drafts` table; and the lease columns + `listing_type`).
 2. **Env vars** (add to `.env` locally and the Vercel project):
    - `PUBLIC_SUPABASE_URL` — already present
    - `SUPABASE_SERVICE_ROLE_KEY` — Supabase → Settings → API (uploads + writes)

@@ -2,6 +2,9 @@
 // Kept framework-agnostic so they can be imported server-side (preview route,
 // API endpoints) and client-side (builder live preview).
 
+/** Whether the property is being sold or leased. Absent is treated as 'sale'. */
+export type ListingType = 'sale' | 'lease';
+
 export interface Poi {
   /** icon key — one of POI_TYPES below */
   type: PoiType;
@@ -88,10 +91,11 @@ export interface Listing {
   agent_id?: string | null;
 
   // hero / identity
+  listing_type?: ListingType; // 'sale' | 'lease' — drives copy, pricing, terms
   name: string; // hero title (street name)
   address: string; // full address, used for geocoding
   neighbourhood?: string; // eyebrow
-  price?: string; // display string, e.g. "$4,250,000"
+  price?: string; // display string — sale price ("$4,250,000") or monthly rent ("$4,250") when leasing
 
   // stats
   beds?: number | null;
@@ -99,6 +103,14 @@ export interface Listing {
   sqft?: number | null;
   year_built?: number | null;
   lot_text?: string; // display string, e.g. "0.42 acres"
+
+  // lease terms (shown when listing_type = 'lease')
+  lease_term?: string; // "12 months", "Flexible"
+  available_date?: string; // "Available Aug 1", "Immediate"
+  furnished?: string; // "Furnished", "Unfurnished", "Partially furnished"
+  pets?: string; // "Cats & small dogs OK", "No pets"
+  utilities?: string; // "Heat & water included"
+  deposit?: string; // "First & last", "$4,250"
 
   // story
   headline?: string;

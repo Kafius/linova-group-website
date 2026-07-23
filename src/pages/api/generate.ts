@@ -110,9 +110,12 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
+  const listingType = String((body as any).listing_type ?? '') === 'lease' ? 'lease' : 'sale';
+
   const row = {
     slug: '', // set below
     agent_id: agentId,
+    listing_type: listingType,
     name: name.slice(0, 160),
     address: address.slice(0, 240),
     neighbourhood: String(body.neighbourhood ?? '').slice(0, 120) || null,
@@ -122,6 +125,13 @@ export const POST: APIRoute = async ({ request }) => {
     sqft: toInt(body.sqft),
     year_built: toInt(body.year_built),
     lot_text: String(body.lot_text ?? '').slice(0, 60) || null,
+    // lease terms (persisted regardless of type; only surfaced when leasing)
+    lease_term: String((body as any).lease_term ?? '').slice(0, 60) || null,
+    available_date: String((body as any).available_date ?? '').slice(0, 60) || null,
+    furnished: String((body as any).furnished ?? '').slice(0, 60) || null,
+    pets: String((body as any).pets ?? '').slice(0, 80) || null,
+    utilities: String((body as any).utilities ?? '').slice(0, 80) || null,
+    deposit: String((body as any).deposit ?? '').slice(0, 60) || null,
     headline: String(body.headline ?? '').slice(0, 200) || null,
     description: String(body.description ?? '').slice(0, 4000) || null,
     photos,

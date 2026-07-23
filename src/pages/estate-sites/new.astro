@@ -49,6 +49,13 @@
       .step-pill.active .lbl { color: var(--ink); font-weight: 600; }
       h1.title { font-family: var(--display); font-weight: 400; font-size: 1.7rem; line-height: 1.1; margin-bottom: .35rem; }
       .lede { color: var(--slate); font-size: .88rem; margin-bottom: 1.5rem; }
+      /* sale / lease mode toggle */
+      .modebar { display: flex; gap: .5rem; margin-bottom: 1.4rem; }
+      .modebar .mode { flex: 1; margin: 0; cursor: pointer; }
+      .modebar .mode input { position: absolute; opacity: 0; pointer-events: none; }
+      .modebar .mode span { display: block; text-align: center; padding: .7rem; border: 1px solid rgba(26,24,21,.2); border-radius: 4px; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--slate); background: #fff; transition: background .2s, color .2s, border-color .2s; }
+      .modebar .mode input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+      .modebar .mode input:focus-visible + span { border-color: var(--brass); }
       fieldset { border: none; border-top: 1px solid rgba(26,24,21,.1); padding: 1.25rem 0 .4rem; }
       legend { font-size: .66rem; letter-spacing: .22em; text-transform: uppercase; color: var(--brass); font-weight: 600; padding-right: .6rem; }
       label { display: block; font-size: .7rem; letter-spacing: .05em; text-transform: uppercase; color: var(--slate); margin: 0 0 .3rem; }
@@ -137,11 +144,15 @@
             <h1 class="title">Start with the essentials</h1>
             <p class="lede">Enter the address and your details. We'll pull the neighbourhood, nearby amenities, commute times, and a first draft of the story.</p>
             <form id="basics" autocomplete="off">
+              <div class="modebar" role="radiogroup" aria-label="Listing type">
+                <label class="mode"><input type="radio" name="listing_type" value="lease" checked /><span>For Lease</span></label>
+                <label class="mode"><input type="radio" name="listing_type" value="sale" /><span>For Sale</span></label>
+              </div>
               <fieldset>
                 <legend>The Property</legend>
                 <div class="field"><label for="f-address">Full address</label><input id="f-address" name="address" placeholder="14 Ravine Crest, Forest Hill, Toronto ON" required /></div>
                 <div class="row">
-                  <div class="field"><label for="f-price">Price</label><input id="f-price" name="price" placeholder="$4,250,000" /></div>
+                  <div class="field"><label for="f-price" id="price-label">Monthly rent</label><input id="f-price" name="price" placeholder="$4,250 / month" /></div>
                   <div class="field"><label for="f-lot">Lot</label><input id="f-lot" name="lot_text" placeholder="0.42 acres" /></div>
                 </div>
                 <div class="row-3">
@@ -150,6 +161,21 @@
                   <div class="field"><label for="f-sqft">Sq ft</label><input id="f-sqft" name="sqft" inputmode="numeric" placeholder="6200" /></div>
                 </div>
                 <div class="field"><label for="f-year">Year built</label><input id="f-year" name="year_built" inputmode="numeric" placeholder="2019" /></div>
+              </fieldset>
+              <fieldset id="lease-terms">
+                <legend>Lease terms</legend>
+                <div class="row">
+                  <div class="field"><label for="f-term">Lease term</label><input id="f-term" name="lease_term" placeholder="12 months" /></div>
+                  <div class="field"><label for="f-avail">Available</label><input id="f-avail" name="available_date" placeholder="Aug 1" /></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label for="f-furnished">Furnished</label><input id="f-furnished" name="furnished" placeholder="Unfurnished" /></div>
+                  <div class="field"><label for="f-pets">Pets</label><input id="f-pets" name="pets" placeholder="Cats & small dogs OK" /></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label for="f-utils">Utilities</label><input id="f-utils" name="utilities" placeholder="Heat & water included" /></div>
+                  <div class="field"><label for="f-deposit">Deposit</label><input id="f-deposit" name="deposit" placeholder="First & last" /></div>
+                </div>
               </fieldset>
               <fieldset>
                 <legend>The Agent</legend>
@@ -232,7 +258,9 @@
 
       // ---- Draft state ----
       const draft: any = {
+        listing_type: 'lease',
         address: '', price: '', beds: null, baths: null, sqft: null, year_built: null, lot_text: '',
+        lease_term: '', available_date: '', furnished: '', pets: '', utilities: '', deposit: '',
         agent_name: '', brokerage: '', phone: '', email: '',
         name: '', neighbourhood: '', headline: '', description: '',
         pois: [], commute: {}, floorplanUrl: '', rooms: [],
@@ -258,6 +286,22 @@
         });
         save();
       }
+
+      // ---- Sale / Lease mode ----
+      // Retitles the price field, shows/hides the lease-terms block, and keeps
+      // draft.listing_type in sync. The live preview + template react to it.
+      function applyMode(type: string) {
+        const lease = type === 'lease';
+        draft.listing_type = lease ? 'lease' : 'sale';
+        const label = document.getElementById('price-label');
+        const price = document.getElementById('f-price') as HTMLInputElement | null;
+        if (label) label.textContent = lease ? 'Monthly rent' : 'Price';
+        if (price) price.placeholder = lease ? '$4,250 / month' : '$4,250,000';
+        document.getElementById('lease-terms')?.classList.toggle('hidden', !lease);
+      }
+      document.querySelectorAll('input[name="listing_type"]').forEach((r) =>
+        r.addEventListener('change', (e) => { applyMode((e.target as HTMLInputElement).value); render(); })
+      );
 
       // ---- Step navigation ----
       function goto(step: number) {
@@ -303,9 +347,13 @@
         e.preventDefault();
         const f = $('basics') as HTMLFormElement;
         const val = (n: string) => (f.elements.namedItem(n) as HTMLInputElement)?.value.trim() ?? '';
+        const mode = (f.elements.namedItem('listing_type') as RadioNodeList | null)?.value || 'lease';
         Object.assign(draft, {
+          listing_type: mode === 'sale' ? 'sale' : 'lease',
           address: val('address'), price: val('price'), lot_text: val('lot_text'),
           beds: num(val('beds')), baths: num(val('baths')), sqft: num(val('sqft')), year_built: num(val('year_built')),
+          lease_term: val('lease_term'), available_date: val('available_date'), furnished: val('furnished'),
+          pets: val('pets'), utilities: val('utilities'), deposit: val('deposit'),
           agent_name: val('agent_name'), brokerage: val('brokerage'), phone: val('phone'), email: val('email'),
         });
         if (!draft.address) { alert('A full address is required.'); return; }
@@ -330,6 +378,7 @@
       // ---- STEP 2: review ----
       function renderReview() {
         const c = draft.commute || {};
+        const lease = draft.listing_type === 'lease';
         const poiRows = (draft.pois || []).map((p: any, i: number) => poiRowHTML(p, i)).join('');
         $('review').innerHTML = `
           <fieldset>
@@ -337,9 +386,25 @@
             <div class="field"><label>Hero title</label><input data-d="name" value="${esc(draft.name)}" /></div>
             <div class="row">
               <div class="field"><label>Neighbourhood</label><input data-d="neighbourhood" value="${esc(draft.neighbourhood)}" /></div>
-              <div class="field"><label>Price</label><input data-d="price" value="${esc(draft.price)}" /></div>
+              <div class="field"><label>${lease ? 'Monthly rent' : 'Price'}</label><input data-d="price" value="${esc(draft.price)}" /></div>
             </div>
           </fieldset>
+          ${lease ? `
+          <fieldset>
+            <legend>Lease terms</legend>
+            <div class="row">
+              <div class="field"><label>Lease term</label><input data-d="lease_term" value="${esc(draft.lease_term)}" /></div>
+              <div class="field"><label>Available</label><input data-d="available_date" value="${esc(draft.available_date)}" /></div>
+            </div>
+            <div class="row">
+              <div class="field"><label>Furnished</label><input data-d="furnished" value="${esc(draft.furnished)}" /></div>
+              <div class="field"><label>Pets</label><input data-d="pets" value="${esc(draft.pets)}" /></div>
+            </div>
+            <div class="row">
+              <div class="field"><label>Utilities</label><input data-d="utilities" value="${esc(draft.utilities)}" /></div>
+              <div class="field"><label>Deposit</label><input data-d="deposit" value="${esc(draft.deposit)}" /></div>
+            </div>
+          </fieldset>` : ''}
           <fieldset>
             <legend>The Story</legend>
             <div class="field"><label>Headline</label><input data-d="headline" value="${esc(draft.headline)}" /></div>
@@ -564,10 +629,16 @@
       // ---- init ----
       function refillStep1() {
         const bf = $('basics') as HTMLFormElement;
-        ['address', 'price', 'lot_text', 'beds', 'baths', 'sqft', 'year_built', 'agent_name', 'brokerage', 'phone', 'email'].forEach((k) => {
+        ['address', 'price', 'lot_text', 'beds', 'baths', 'sqft', 'year_built',
+         'lease_term', 'available_date', 'furnished', 'pets', 'utilities', 'deposit',
+         'agent_name', 'brokerage', 'phone', 'email'].forEach((k) => {
           const el = bf.elements.namedItem(k) as HTMLInputElement | null;
           if (el && draft[k] != null && draft[k] !== '') el.value = String(draft[k]);
         });
+        const type = draft.listing_type === 'sale' ? 'sale' : 'lease';
+        const radio = bf.querySelector(`input[name="listing_type"][value="${type}"]`) as HTMLInputElement | null;
+        if (radio) radio.checked = true;
+        applyMode(type);
       }
       refillStep1();
       render();

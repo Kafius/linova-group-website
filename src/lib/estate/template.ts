@@ -226,25 +226,73 @@ function pricePerSqft(price?: string, sqft?: number | null): string | null {
   return `$${per.toLocaleString()}`;
 }
 
+/** Is this a lease listing? Absent listing_type is treated as a sale. */
+const isLease = (l: Listing) => l.listing_type === 'lease';
+
+/** The hero/numbers money line. Appends "/ month" for leases (once). */
+function priceDisplay(listing: Listing): string {
+  const p = (listing.price ?? '').trim();
+  if (!p) return '';
+  if (!isLease(listing)) return p;
+  return /month|\/\s*mo\b/i.test(p) ? p : `${p} / month`;
+}
+
 function numbersSection(listing: Listing): string {
+  const lease = isLease(listing);
   const items = [
     numItem(listing.beds, 'Bedrooms'),
     numItem(listing.baths, 'Bathrooms'),
     numItem(listing.sqft ? listing.sqft.toLocaleString() : null, 'Interior Sq Ft'),
     numItem(listing.year_built, 'Year Built'),
     numItem(listing.lot_text, 'Lot', false),
-    numItem(pricePerSqft(listing.price, listing.sqft), 'Per Sq Ft', false),
+    // Per-sq-ft is a sale metric; leases show rent below instead.
+    lease ? '' : numItem(pricePerSqft(listing.price, listing.sqft), 'Per Sq Ft', false),
   ]
     .filter(Boolean)
     .join('');
   if (!items) return '';
+  const money = priceDisplay(listing);
   return `
   <section class="section numbers">
     <div class="wrap">
       <p class="eyebrow reveal">By the Numbers</p>
       <h2 class="section-title reveal">The residence, in figures</h2>
       <div class="num-grid">${items}</div>
-      ${listing.price ? `<p class="num-price reveal">${esc(listing.price)}</p>` : ''}
+      ${money ? `<p class="num-price reveal">${esc(money)}</p>` : ''}
+    </div>
+  </section>`;
+}
+
+/* --------------------------------------------------------------------------
+ * 3b. THE LEASE — terms at a glance (lease listings only)
+ * ------------------------------------------------------------------------ */
+function leaseTermsSection(listing: Listing): string {
+  if (!isLease(listing)) return '';
+  const rows: [string, string | undefined][] = [
+    ['Lease term', listing.lease_term],
+    ['Availability', listing.available_date],
+    ['Furnished', listing.furnished],
+    ['Pets', listing.pets],
+    ['Utilities', listing.utilities],
+    ['Deposit', listing.deposit],
+  ];
+  const items = rows
+    .filter(([, v]) => v && String(v).trim())
+    .map(
+      ([label, v]) => `
+      <div class="term reveal">
+        <span class="term-label">${esc(label)}</span>
+        <span class="term-value">${esc(v)}</span>
+      </div>`
+    )
+    .join('');
+  if (!items) return '';
+  return `
+  <section class="section terms">
+    <div class="wrap">
+      <p class="eyebrow reveal">The Lease</p>
+      <h2 class="section-title reveal">Terms at a glance</h2>
+      <div class="term-grid">${items}</div>
     </div>
   </section>`;
 }
@@ -259,6 +307,7 @@ export interface BuildOptions {
 
 export function buildSiteHTML(listing: Listing, opts: BuildOptions = {}): string {
   const locked = opts.locked ?? listing.locked ?? true;
+  const lease = isLease(listing);
   const photos = (listing.photos ?? []).filter(Boolean);
   const scenes = toScenes(listing);
   const hero = photos[0] ?? scenes[0]?.url ?? '';
@@ -408,6 +457,14 @@ ${robots}
   .num-price{font-family:var(--display);font-size:clamp(1.6rem,4vw,2.4rem);color:var(--paper);
     padding-top:2rem;border-top:1px solid rgba(244,240,232,.14);max-width:16ch;margin:0 auto}
 
+  /* ---- 3b. THE LEASE — terms ---- */
+  .terms{background:var(--paper)}
+  .term-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;
+    background:rgba(26,24,21,.1);border:1px solid rgba(26,24,21,.1)}
+  .term{background:var(--paper);padding:1.5rem;display:flex;flex-direction:column;gap:.55rem}
+  .term-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .term-value{font-family:var(--display);font-size:1.25rem;color:var(--ink);line-height:1.2}
+
   /* ---- CTA + footer ---- */
   .cta{background:var(--stone);text-align:center}
   .cta-btn{display:inline-block;margin-top:1rem;padding:1rem 2.5rem;
@@ -453,7 +510,7 @@ ${watermark}
     ${listing.neighbourhood ? `<p class="eyebrow">${esc(listing.neighbourhood)}</p>` : ''}
     <h1 class="hero-title">${esc(title)}</h1>
     ${listing.headline ? `<p class="hero-sub">${esc(listing.headline)}</p>` : ''}
-    ${listing.price ? `<p class="hero-price">${esc(listing.price)}</p>` : ''}
+    ${priceDisplay(listing) ? `<p class="hero-price">${esc(priceDisplay(listing))}</p>` : ''}
   </div>
 </header>
 
@@ -472,12 +529,13 @@ ${
 ${tourSection(scenes)}
 ${locationSection(listing.pois, listing.commute)}
 ${numbersSection(listing)}
+${leaseTermsSection(listing)}
 
 <section class="section cta">
   <div class="wrap">
-    <p class="eyebrow reveal" style="color:var(--brass)">Private Viewing</p>
-    <h2 class="section-title reveal">Arrange a private viewing</h2>
-    <a class="cta-btn" href="${listing.phone ? 'tel:' + esc(listing.phone) : '#'}">Request a Showing</a>
+    <p class="eyebrow reveal" style="color:var(--brass)">${lease ? 'Now Leasing' : 'Private Viewing'}</p>
+    <h2 class="section-title reveal">${lease ? 'Book a private viewing' : 'Arrange a private viewing'}</h2>
+    <a class="cta-btn" href="${listing.phone ? 'tel:' + esc(listing.phone) : '#'}">${lease ? 'Request a Viewing' : 'Request a Showing'}</a>
     ${agentLine}
   </div>
 </section>
