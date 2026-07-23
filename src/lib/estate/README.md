@@ -64,14 +64,16 @@ meaning; the form defaults new listings to `'lease'`.
    - `GOOGLE_MAPS_KEY` — restricted to Geocoding + Places + Distance Matrix + your
      domain, with billing alerts enabled
    - `ANTHROPIC_API_KEY` — powers AI story/hero-title and floor-plan room detection
-   - `UNLOCK_WEBHOOK_SECRET` — shared/signing secret for the payment webhook
+   - `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` — unlock/publish payments (see
+     **Payments** below); optional `UNLOCK_PRICE_CENTS` / `UNLOCK_CURRENCY`
 3. **DNS** — add `preview.thelinovagroup.com` to the Vercel project.
 
 **Graceful degradation.** Every smart feature falls back to manual entry when its
 key is missing: no `GOOGLE_MAPS_KEY` → `/api/nearby` returns empty suggestions and
 `/api/extract` skips the neighbourhood lookup; no `ANTHROPIC_API_KEY` → the AI story
 is blank and `/api/floorplan` returns the beds/baths room template; no Supabase
-service key → `/api/upload` and writes return 503.
+service key → `/api/upload` and writes return 503; no `STRIPE_SECRET_KEY` →
+`/api/checkout` and the Publish button return 503 (the preview still works).
 
 ## Accounts, drafts & cost controls
 
@@ -90,21 +92,41 @@ service key → `/api/upload` and writes return 503.
   `nearby_cache` (30-day TTL); `/api/distances` caches per (address, POI). Both
   avoid re-billing Google on re-renders.
 
+## Payments (Stripe)
+
+Unlocking a listing (remove watermark → publish) is a **one-time Stripe payment**:
+
+1. The locked preview shows a **Publish this site** button (`buildSiteHTML`'s
+   `publish` option, set only by the preview route). It posts the slug to
+   [`/api/checkout`](../../pages/api/checkout.ts).
+2. `/api/checkout` creates a hosted **Checkout Session** (`mode: 'payment'`, price
+   from `UNLOCK_PRICE_CENTS`/`UNLOCK_CURRENCY`, default $99 CAD) with the slug in
+   `metadata`, and returns `url` for the browser to redirect to.
+3. On success Stripe calls [`/api/unlock`](../../pages/api/unlock.ts) — the
+   **webhook**. It verifies the `stripe-signature` against `STRIPE_WEBHOOK_SECRET`,
+   and on `checkout.session.completed` flips `locked=false` for the slug.
+
+Payment methods are **dynamic** (configured in the Stripe Dashboard, not in code).
+
+**Setup:** set `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` (use **test** keys
+first), then register a webhook endpoint at
+`https://<domain>/api/unlock` subscribed to `checkout.session.completed`.
+Locally, forward events with:
+
+```
+stripe listen --forward-to localhost:4321/api/unlock
+```
+
+The webhook secret it prints is your local `STRIPE_WEBHOOK_SECRET`. Test cards:
+`4242 4242 4242 4242`, any future expiry/CVC.
+
 ## Deliberately deferred (integration boundaries)
 
-These need external credentials/decisions and are stubbed with clear TODOs:
-
-- **Payments** — `/api/unlock` currently accepts a shared-secret header
-  (`x-unlock-secret`) as a stand-in. Replace with real Stripe/Clover webhook
-  signature verification and map the provider payload → listing slug via
-  checkout metadata.
+- **Custom-domain provisioning** — on unlock, point `custom_domain` via the
+  Vercel Domains API (`/api/unlock` flips `locked`; domain provisioning is TODO).
 - **Photo uploads** — the builder takes image URLs (per the prototype). Production
   should upload to a Supabase storage bucket (client-side resize first) and store
   the returned URLs in `listings.photos`.
-- **Custom-domain provisioning** — on unlock, point `custom_domain` via the
-  Vercel Domains API (`/api/unlock` marks the column; provisioning is TODO).
-- **AI copywriting** — generate the headline/story from raw details to cut build
-  time (not yet wired).
 
 ## How the preview stays private
 

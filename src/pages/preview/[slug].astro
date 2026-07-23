@@ -36,7 +36,7 @@ if (slug) {
 // Found → return the full generated document and short-circuit rendering.
 if (listing) {
   const locked = listing.locked ?? true;
-  const html = buildSiteHTML(listing, { locked });
+  const html = buildSiteHTML(listing, { locked, publish: true });
   return new Response(html, {
     status: 200,
     headers: {

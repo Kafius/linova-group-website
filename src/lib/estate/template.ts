@@ -303,11 +303,14 @@ function leaseTermsSection(listing: Listing): string {
 export interface BuildOptions {
   locked?: boolean;
   baseUrl?: string;
+  /** Show the "Publish this site" checkout button (locked preview route only). */
+  publish?: boolean;
 }
 
 export function buildSiteHTML(listing: Listing, opts: BuildOptions = {}): string {
   const locked = opts.locked ?? listing.locked ?? true;
   const lease = isLease(listing);
+  const showPublish = locked && !!opts.publish;
   const photos = (listing.photos ?? []).filter(Boolean);
   const scenes = toScenes(listing);
   const hero = photos[0] ?? scenes[0]?.url ?? '';
@@ -319,6 +322,10 @@ export function buildSiteHTML(listing: Listing, opts: BuildOptions = {}): string
 
   const watermark = locked
     ? `<div class="watermark" aria-hidden="true"><span>PREVIEW</span><span class="wm-sub">unlock to publish</span></div>`
+    : '';
+
+  const publishBar = showPublish
+    ? `<div class="publish-bar"><span>This is a watermarked preview.</span><button id="publish-btn" type="button">Publish this site</button><span class="pb-msg" id="pb-msg"></span></div>`
     : '';
 
   const agentLine =
@@ -485,6 +492,18 @@ ${robots}
   .watermark span:first-child{font-weight:700}
   .wm-sub{margin-top:.35rem;font-size:.55rem;letter-spacing:.2em;color:var(--brass-light);text-transform:uppercase}
 
+  /* ---- Publish bar (locked preview only) ---- */
+  .publish-bar{position:fixed;left:50%;bottom:1.25rem;transform:translateX(-50%);z-index:9999;
+    display:flex;align-items:center;gap:.9rem;background:rgba(26,24,21,.92);color:#fff;
+    padding:.7rem .8rem .7rem 1.25rem;border-radius:999px;box-shadow:0 12px 40px rgba(0,0,0,.35);
+    font-size:.82rem;max-width:calc(100vw - 2rem)}
+  .publish-bar .pb-msg{color:var(--brass-light);font-size:.75rem}
+  .publish-bar button{border:none;cursor:pointer;background:var(--brass);color:#fff;
+    padding:.6rem 1.3rem;border-radius:999px;font-family:var(--body);font-size:.72rem;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;transition:background .2s}
+  .publish-bar button:hover{background:var(--brass-light)}
+  .publish-bar button:disabled{opacity:.6;cursor:default}
+
   @keyframes kenburns{from{transform:scale(1.05) translate(0,0)}to{transform:scale(1.16) translate(0,-2%)}}
   @keyframes rise{to{opacity:1;transform:none}}
   @keyframes nudge{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,4px)}}
@@ -503,6 +522,7 @@ ${robots}
 </head>
 <body class="${locked ? 'locked' : ''}">
 ${watermark}
+${publishBar}
 
 <header class="hero">
   <div class="hero-bg"></div>
@@ -633,6 +653,29 @@ ${leaseTermsSection(listing)}
       window.addEventListener('resize', onScroll);
       render();
     }
+  }
+
+  // ---- Publish → Stripe Checkout ----
+  var pubBtn = document.getElementById('publish-btn');
+  if (pubBtn) {
+    var slug = ${JSON.stringify(listing.slug || '')};
+    var msg = document.getElementById('pb-msg');
+    pubBtn.addEventListener('click', function(){
+      pubBtn.disabled = true;
+      if (msg) msg.textContent = 'Redirecting to secure checkout…';
+      fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ slug: slug })
+      }).then(function(r){ return r.json(); }).then(function(j){
+        if (j && j.url) { window.location.href = j.url; return; }
+        if (msg) msg.textContent = (j && j.error) || 'Could not start checkout.';
+        pubBtn.disabled = false;
+      }).catch(function(){
+        if (msg) msg.textContent = 'Network error — please try again.';
+        pubBtn.disabled = false;
+      });
+    });
   }
 })();
 </script>
