@@ -73,6 +73,17 @@ export const POST: APIRoute = async ({ request }) => {
       metadata: { slug },
       // Mirror onto the PaymentIntent so the slug is available from either object.
       payment_intent_data: { metadata: { slug } },
+      // Let the client name the domain they'd like; the webhook saves it to the
+      // listing so you know what to buy and wire up.
+      custom_fields: [
+        {
+          key: 'preferreddomain',
+          label: { type: 'custom', custom: 'Preferred domain (optional)' },
+          type: 'text',
+          optional: true,
+          text: { maximum_length: 100 },
+        },
+      ],
       success_url: `${previewUrl}?published=1`,
       cancel_url: `${previewUrl}?canceled=1`,
     });

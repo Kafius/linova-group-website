@@ -130,7 +130,8 @@ export interface Listing {
 
   // state
   locked?: boolean; // default true
-  custom_domain?: string | null;
+  requested_domain?: string | null; // what the client asked for at checkout
+  custom_domain?: string | null; // the domain actually wired up; drives host routing
   created_at?: string;
 }
 

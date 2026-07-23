@@ -120,10 +120,36 @@ stripe listen --forward-to localhost:4321/api/unlock
 The webhook secret it prints is your local `STRIPE_WEBHOOK_SECRET`. Test cards:
 `4242 4242 4242 4242`, any future expiry/CVC.
 
+## Custom domains (manual provisioning)
+
+A published listing can live on its own domain. Provisioning is **deliberately
+manual** — you buy the domain and wire it up; the app resolves it by Host header,
+so no per-domain code or redeploy is needed.
+
+**How it routes.** [`site.ts`](site.ts) `listingByDomain()` matches an incoming
+Host against `listings.custom_domain` (with/without `www.`, unlocked only). The
+homepage ([`index.astro`](../../pages/index.astro), `prerender=false`) serves that
+listing at the root for any host that isn't ours; our own hosts get the marketing
+page. Both responses are edge-cached (`public, max-age=300`), keyed per host.
+
+**Two fields, on purpose:**
+- `requested_domain` — what the client typed in the "Preferred domain" field at
+  Stripe checkout. Saved automatically by the webhook. This is the *order*.
+- `custom_domain` — the domain you've actually wired up. Setting this is what
+  makes the site go live on that domain.
+
+**Runbook (per order, do within your SLA):**
+1. In Supabase (or the Stripe payment), read the listing's `requested_domain`.
+2. Buy that domain (any registrar).
+3. Vercel → the project → **Settings → Domains** → add the domain; follow
+   Vercel's DNS instructions at the registrar (Vercel auto-issues SSL). Add both
+   the apex and `www` if you want both to work.
+4. In Supabase, set that listing's **`custom_domain`** to the domain (bare apex,
+   e.g. `12ravinecrest.com`).
+5. Visit the domain — it now serves the listing. Done, no redeploy.
+
 ## Deliberately deferred (integration boundaries)
 
-- **Custom-domain provisioning** — on unlock, point `custom_domain` via the
-  Vercel Domains API (`/api/unlock` flips `locked`; domain provisioning is TODO).
 - **Photo uploads** — the builder takes image URLs (per the prototype). Production
   should upload to a Supabase storage bucket (client-side resize first) and store
   the returned URLs in `listings.photos`.

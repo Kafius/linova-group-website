@@ -16,10 +16,11 @@ import type Stripe from 'stripe';
 import { serverEnv, json } from '../../lib/estate/server';
 import { getAdminClient } from '../../lib/estate/supabase-admin';
 import { getStripe } from '../../lib/estate/stripe';
+import { normalizeDomain } from '../../lib/estate/site';
 
 export const prerender = false;
 
-async function publish(slug: string): Promise<Response> {
+async function publish(slug: string, requestedDomain?: string): Promise<Response> {
   if (!slug) return json({ error: 'No slug in session metadata.' }, 400);
   let supabase;
   try {
@@ -27,12 +28,17 @@ async function publish(slug: string): Promise<Response> {
   } catch (e) {
     return json({ error: (e as Error).message }, 503);
   }
-  const { data, error } = await supabase
-    .from('listings')
-    .update({ locked: false })
-    .eq('slug', slug)
-    .select('slug, locked')
-    .maybeSingle();
+  const domain = requestedDomain ? normalizeDomain(requestedDomain).slice(0, 120) : '';
+
+  const doUpdate = (fields: Record<string, unknown>) =>
+    supabase.from('listings').update(fields).eq('slug', slug).select('slug, locked').maybeSingle();
+
+  let { data, error } = await doUpdate(domain ? { locked: false, requested_domain: domain } : { locked: false });
+  // Never let capturing the requested domain block the unlock the client paid
+  // for — if that column isn't there yet (migration 0007), unlock anyway.
+  if (error && domain) {
+    ({ data, error } = await doUpdate({ locked: false }));
+  }
   if (error) return json({ error: error.message }, 500);
   if (!data) return json({ error: 'No listing with that slug.' }, 404);
   // TODO on unlock: provision/point custom_domain (Vercel Domains API) and
@@ -67,7 +73,9 @@ export const POST: APIRoute = async ({ request }) => {
       if (session.payment_status && session.payment_status !== 'paid') {
         return json({ received: true, skipped: session.payment_status });
       }
-      return publish(String(session.metadata?.slug ?? '').trim());
+      const domainField = (session.custom_fields ?? []).find((f) => f.key === 'preferreddomain');
+      const requestedDomain = domainField?.text?.value ?? undefined;
+      return publish(String(session.metadata?.slug ?? '').trim(), requestedDomain);
     }
     default:
       // Acknowledge everything else so Stripe doesn't retry.

@@ -1,4 +1,9 @@
 ---
+// Server-rendered so a custom domain's root can serve its listing. For our own
+// hosts (thelinovagroup.com, *.vercel.app, localhost) this is just the marketing
+// homepage; for a client's wired-up custom_domain it returns their site.
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import TransformationIntro from '../components/TransformationIntro.astro';
 import Navbar from '../components/navbar/Navbar.astro';
@@ -7,6 +12,31 @@ import Clients from '../components/clients/Clients.astro';
 import ServicesTeaser from '../components/services/ServicesTeaser.astro';
 import Industries from '../components/industries/Industries.astro';
 import Footer from '../components/footer/Footer.astro';
+import { isCustomHost, listingByDomain } from '../lib/estate/site';
+import { buildSiteHTML } from '../lib/estate/template';
+
+// Custom domain → serve the wired-up listing at the root and short-circuit.
+const host = Astro.request.headers.get('host');
+if (isCustomHost(host)) {
+  const listing = await listingByDomain(host!);
+  if (listing) {
+    return new Response(buildSiteHTML(listing, { locked: false }), {
+      status: 200,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'public, max-age=300',
+      },
+    });
+  }
+  // Unknown/not-yet-wired custom host: don't show our marketing page on it.
+  return new Response('This site is not available yet.', {
+    status: 404,
+    headers: { 'content-type': 'text/plain; charset=utf-8', 'x-robots-tag': 'noindex, nofollow' },
+  });
+}
+
+// Our own hosts fall through to the marketing homepage (cache like a static page).
+Astro.response.headers.set('cache-control', 'public, max-age=300');
 ---
 
 <Layout title="Linova Group — Premium Websites, Fraction of the Cost">
