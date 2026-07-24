@@ -1,0 +1,86 @@
+---
+// /estate-sites/demo — a live example listing, rendered by the real engine.
+//
+// This is the actual buildSiteHTML output for a hand-crafted sample listing, so
+// the marketing page can link to a genuine, unlocked (watermark-free) site
+// instead of describing one. No database — the sample lives here.
+
+export const prerender = false;
+
+import { buildSiteHTML } from '../../lib/estate/template';
+import type { Listing } from '../../lib/estate/types';
+
+const img = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1600&q=70`;
+const scene = (name: string, category: any, caption: string, id: string, angle: string) => ({
+  name,
+  category,
+  caption,
+  photo: img(id),
+  shots: [{ url: img(id), angle }],
+});
+
+const listing: Listing = {
+  slug: 'demo',
+  listing_type: 'lease',
+  name: 'Sylvan Terrace',
+  address: '24 Sylvan Terrace, The Beaches, Toronto ON',
+  neighbourhood: 'The Beaches',
+  price: '$6,800',
+  beds: 3,
+  baths: 3,
+  sqft: 2400,
+  year_built: 2021,
+  lot_text: '50 × 120 ft',
+  headline: 'Lake-facing calm, a block from the boardwalk',
+  description:
+    'A newly built three-bedroom on a quiet terrace where the city softens into sand and water. ' +
+    'Walls of glass pull the lake inside; the boardwalk, the tennis club, and Queen Street’s cafés are all on foot.',
+
+  lease_term: '12 months',
+  available_date: '2026-09-01',
+  furnished: 'Partially furnished',
+  pets: 'Cats & small dogs OK',
+  utilities: 'Heat & water included',
+  deposit: 'First & last',
+
+  rooms: [
+    scene('Sylvan Terrace', 'exterior', 'Cedar, glass, and a west-facing façade', '1600596542815-ffad4c1539a9', 'The approach'),
+    scene('The Great Room', 'living', 'Ten-foot glass opens toward the lake', '1600210492493-0946911123ea', 'Toward the windows'),
+    scene('The Kitchen', 'kitchen', 'Honed marble and an eight-foot island', '1600489000022-c2086d79f9d4', 'Along the island'),
+    scene('Dining', 'dining', 'Dinners that run past sunset', '1617806118233-18e1de247200', 'Full room'),
+    scene('Primary Suite', 'primary', 'Wake to water on three windows', '1616594039964-ae9021a400a0', 'From the doorway'),
+    scene('The Spa Bath', 'bathroom', 'Soaking tub, heated stone floor', '1600566753086-00f18fb6b3ea', 'Tub'),
+    scene('The Garden', 'outdoor', 'A private yard steps from the sand', '1600585154340-be6161a56a0c', 'Yard'),
+    scene('The Lake', 'view', 'The reason you come home early', '1502005229762-cf1b2da7c5d6', 'The outlook'),
+  ],
+
+  pois: [
+    { type: 'park', name: 'Kew Gardens', dist: '3 min walk' },
+    { type: 'restaurant', name: 'Queen Street cafés', dist: '4 min walk' },
+    { type: 'transit', name: 'Queen streetcar (501)', dist: '5 min walk' },
+    { type: 'grocery', name: 'Leslieville Farmers’ Market', dist: '6 min walk' },
+    { type: 'school', name: 'Balmy Beach P.S.', dist: '8 min walk' },
+    { type: 'medical', name: 'Beaches Health Clinic', dist: '7 min walk' },
+  ],
+  commute: {
+    downtown: '18 min drive',
+    airport: '28 min drive',
+    hwy401: '14 min drive',
+    hwy404: '16 min drive',
+    hospital: '9 min drive',
+  },
+
+  agent_name: 'Jordan Ellis',
+  brokerage: 'The Linova Group',
+  phone: '(416) 555-0142',
+  locked: false,
+};
+
+return new Response(buildSiteHTML(listing, { locked: false }), {
+  status: 200,
+  headers: {
+    'content-type': 'text/html; charset=utf-8',
+    'cache-control': 'public, max-age=3600',
+  },
+});
+---

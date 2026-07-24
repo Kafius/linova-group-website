@@ -78,6 +78,12 @@
       .btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
       .btn-dashed { background: none; border: 1px dashed rgba(26,24,21,.25); color: var(--slate); padding: .5rem .8rem; border-radius: 3px; cursor: pointer; font-size: .78rem; font-family: var(--body); }
       .btn-dashed:hover { border-color: var(--brass); color: var(--brass); }
+      .room-actions { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-top: .3rem; }
+      .btn-ai { display: inline-flex; align-items: center; gap: .4rem; background: var(--brass); color: #fff; border: none; border-radius: 3px; padding: .5rem .95rem; cursor: pointer; font-size: .78rem; font-weight: 600; letter-spacing: .03em; font-family: var(--body); transition: background .2s; }
+      .btn-ai:hover { background: var(--brass-light); }
+      .btn-ai:disabled { opacity: .55; cursor: default; }
+      .btn-ai svg { width: 15px; height: 15px; flex-shrink: 0; }
+      .room-caption { margin-top: .5rem; font-style: italic; }
       .nav { display: flex; gap: .6rem; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(26,24,21,.1); }
       .nav .spacer { flex: 1; }
       .icon-btn { border: 1px solid rgba(26,24,21,.15); background: #fff; color: var(--slate); width: 30px; height: 30px; border-radius: 3px; cursor: pointer; font-size: 1rem; line-height: 1; flex-shrink: 0; }
@@ -150,42 +156,54 @@
               </div>
               <fieldset>
                 <legend>The Property</legend>
-                <div class="field"><label for="f-address">Full address</label><input id="f-address" name="address" placeholder="14 Ravine Crest, Forest Hill, Toronto ON" required /></div>
+                <div class="field"><label for="f-address">Full address</label><input id="f-address" name="address" autocomplete="off" placeholder="14 Ravine Crest, Forest Hill, Toronto ON" required /></div>
                 <div class="row">
-                  <div class="field"><label for="f-price" id="price-label">Monthly rent</label><input id="f-price" name="price" placeholder="$4,250 / month" /></div>
+                  <div class="field"><label for="f-price" id="price-label">Monthly rent</label><input id="f-price" name="price" inputmode="decimal" placeholder="$4,250 / month" /></div>
                   <div class="field"><label for="f-lot">Lot</label><input id="f-lot" name="lot_text" placeholder="0.42 acres" /></div>
                 </div>
                 <div class="row-3">
-                  <div class="field"><label for="f-beds">Beds</label><input id="f-beds" name="beds" inputmode="numeric" placeholder="5" /></div>
-                  <div class="field"><label for="f-baths">Baths</label><input id="f-baths" name="baths" inputmode="numeric" placeholder="6" /></div>
-                  <div class="field"><label for="f-sqft">Sq ft</label><input id="f-sqft" name="sqft" inputmode="numeric" placeholder="6200" /></div>
+                  <div class="field"><label for="f-beds">Beds</label><input id="f-beds" name="beds" type="number" min="0" step="1" inputmode="numeric" placeholder="5" /></div>
+                  <div class="field"><label for="f-baths">Baths</label><input id="f-baths" name="baths" type="number" min="0" step="1" inputmode="numeric" placeholder="6" /></div>
+                  <div class="field"><label for="f-sqft">Sq ft</label><input id="f-sqft" name="sqft" type="number" min="0" step="1" inputmode="numeric" placeholder="6200" /></div>
                 </div>
-                <div class="field"><label for="f-year">Year built</label><input id="f-year" name="year_built" inputmode="numeric" placeholder="2019" /></div>
+                <div class="field"><label for="f-year">Year built</label><input id="f-year" name="year_built" type="number" min="1800" step="1" inputmode="numeric" placeholder="2019" /></div>
               </fieldset>
               <fieldset id="lease-terms">
                 <legend>Lease terms</legend>
                 <div class="row">
-                  <div class="field"><label for="f-term">Lease term</label><input id="f-term" name="lease_term" placeholder="12 months" /></div>
-                  <div class="field"><label for="f-avail">Available</label><input id="f-avail" name="available_date" placeholder="Aug 1" /></div>
+                  <div class="field"><label for="f-term">Lease term</label><input id="f-term" name="lease_term" list="dl-term" placeholder="12 months" /></div>
+                  <div class="field"><label for="f-avail">Available from</label><input id="f-avail" name="available_date" type="date" /></div>
                 </div>
                 <div class="row">
-                  <div class="field"><label for="f-furnished">Furnished</label><input id="f-furnished" name="furnished" placeholder="Unfurnished" /></div>
-                  <div class="field"><label for="f-pets">Pets</label><input id="f-pets" name="pets" placeholder="Cats & small dogs OK" /></div>
+                  <div class="field"><label for="f-furnished">Furnished</label>
+                    <select id="f-furnished" name="furnished">
+                      <option value="">Select…</option>
+                      <option>Unfurnished</option>
+                      <option>Partially furnished</option>
+                      <option>Furnished</option>
+                    </select>
+                  </div>
+                  <div class="field"><label for="f-pets">Pets</label><input id="f-pets" name="pets" list="dl-pets" placeholder="Cats & small dogs OK" /></div>
                 </div>
                 <div class="row">
-                  <div class="field"><label for="f-utils">Utilities</label><input id="f-utils" name="utilities" placeholder="Heat & water included" /></div>
-                  <div class="field"><label for="f-deposit">Deposit</label><input id="f-deposit" name="deposit" placeholder="First & last" /></div>
+                  <div class="field"><label for="f-utils">Utilities</label><input id="f-utils" name="utilities" list="dl-utils" placeholder="Heat & water included" /></div>
+                  <div class="field"><label for="f-deposit">Deposit</label><input id="f-deposit" name="deposit" list="dl-deposit" placeholder="First & last" /></div>
                 </div>
               </fieldset>
               <fieldset>
                 <legend>The Agent</legend>
-                <div class="field"><label for="f-agent">Agent name</label><input id="f-agent" name="agent_name" placeholder="Jordan Ellis" /></div>
+                <div class="field"><label for="f-agent">Agent name</label><input id="f-agent" name="agent_name" autocomplete="name" placeholder="Jordan Ellis" /></div>
                 <div class="row">
-                  <div class="field"><label for="f-brokerage">Brokerage</label><input id="f-brokerage" name="brokerage" placeholder="Meridian Estates" /></div>
-                  <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" placeholder="(416) 555-0142" /></div>
+                  <div class="field"><label for="f-brokerage">Brokerage</label><input id="f-brokerage" name="brokerage" autocomplete="organization" placeholder="Meridian Estates" /></div>
+                  <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="(416) 555-0142" /></div>
                 </div>
-                <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" placeholder="hello@meridianestates.com" /></div>
+                <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="hello@meridianestates.com" /></div>
               </fieldset>
+
+              <datalist id="dl-term"><option>Month-to-month</option><option>6 months</option><option>12 months</option><option>18 months</option><option>24 months</option><option>Flexible</option></datalist>
+              <datalist id="dl-pets"><option>No pets</option><option>Cats OK</option><option>Dogs OK</option><option>Cats &amp; small dogs OK</option><option>Cats &amp; dogs OK</option></datalist>
+              <datalist id="dl-utils"><option>None included</option><option>Heat &amp; water included</option><option>Hydro included</option><option>All utilities included</option></datalist>
+              <datalist id="dl-deposit"><option>First &amp; last</option><option>One month</option><option>First &amp; last + key deposit</option></datalist>
               <div class="nav">
                 <div class="spacer"></div>
                 <button type="submit" class="btn btn-primary">Continue →</button>
@@ -218,7 +236,14 @@
             <fieldset>
               <legend>Rooms</legend>
               <div id="rooms"></div>
-              <button type="button" class="btn-dashed" id="add-room">+ Add room</button>
+              <div class="room-actions">
+                <button type="button" class="btn-dashed" id="add-room">+ Add room</button>
+                <button type="button" class="btn-ai" id="direct-tour">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 4.9L18.5 8.5 13.6 10 12 15l-1.6-5L5.5 8.5l4.9-1.6z"/><path d="M19 13l.7 2.1L21.8 16l-2.1.7L19 19l-.7-2.3L16 16l2.3-.9z"/></svg>
+                  Direct the tour with AI
+                </button>
+              </div>
+              <p class="hint">The director orders your rooms into a cinematic walkthrough and drafts a caption for each. Edit anything after — it's a starting point.</p>
             </fieldset>
             <div class="nav">
               <button type="button" class="btn btn-ghost" data-goto="2">← Back</button>
@@ -393,16 +418,21 @@
           <fieldset>
             <legend>Lease terms</legend>
             <div class="row">
-              <div class="field"><label>Lease term</label><input data-d="lease_term" value="${esc(draft.lease_term)}" /></div>
-              <div class="field"><label>Available</label><input data-d="available_date" value="${esc(draft.available_date)}" /></div>
+              <div class="field"><label>Lease term</label><input data-d="lease_term" list="dl-term" value="${esc(draft.lease_term)}" /></div>
+              <div class="field"><label>Available from</label><input type="date" data-d="available_date" value="${esc(draft.available_date)}" /></div>
             </div>
             <div class="row">
-              <div class="field"><label>Furnished</label><input data-d="furnished" value="${esc(draft.furnished)}" /></div>
-              <div class="field"><label>Pets</label><input data-d="pets" value="${esc(draft.pets)}" /></div>
+              <div class="field"><label>Furnished</label>
+                <select data-d="furnished">
+                  <option value=""${draft.furnished ? '' : ' selected'}>Select…</option>
+                  ${['Unfurnished', 'Partially furnished', 'Furnished'].map((o) => `<option${draft.furnished === o ? ' selected' : ''}>${o}</option>`).join('')}
+                </select>
+              </div>
+              <div class="field"><label>Pets</label><input data-d="pets" list="dl-pets" value="${esc(draft.pets)}" /></div>
             </div>
             <div class="row">
-              <div class="field"><label>Utilities</label><input data-d="utilities" value="${esc(draft.utilities)}" /></div>
-              <div class="field"><label>Deposit</label><input data-d="deposit" value="${esc(draft.deposit)}" /></div>
+              <div class="field"><label>Utilities</label><input data-d="utilities" list="dl-utils" value="${esc(draft.utilities)}" /></div>
+              <div class="field"><label>Deposit</label><input data-d="deposit" list="dl-deposit" value="${esc(draft.deposit)}" /></div>
             </div>
           </fieldset>` : ''}
           <fieldset>
@@ -488,6 +518,38 @@
 
       $('add-room').addEventListener('click', () => { draft.rooms.push({ name: 'New room', category: 'detail', shots: [] }); renderRooms(); render(); });
 
+      // ---- AI tour director: reorder rooms + draft captions ----
+      $('direct-tour')?.addEventListener('click', async () => {
+        if (!draft.rooms || !draft.rooms.length) { alert('Add a few rooms first, then let the director sequence them.'); return; }
+        const btn = $('direct-tour') as HTMLButtonElement;
+        btn.disabled = true; busy('Directing your tour…');
+        try {
+          const payload = {
+            listing_type: draft.listing_type, neighbourhood: draft.neighbourhood,
+            headline: draft.headline, price: draft.price, address: draft.address,
+            rooms: draft.rooms.map((r: any) => ({ name: r.name, category: r.category })),
+          };
+          const res = await fetch('/api/direct', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+          const j = await res.json();
+          const scenes = Array.isArray(j.scenes) ? j.scenes : [];
+          if (scenes.length) {
+            const orig = draft.rooms.slice();
+            const used = new Set<number>();
+            const next: any[] = [];
+            for (const s of scenes) {
+              const rm = orig[s.index];
+              if (!rm || used.has(s.index)) continue;
+              used.add(s.index);
+              next.push({ ...rm, caption: (s.caption && String(s.caption).trim()) ? String(s.caption) : (rm.caption || '') });
+            }
+            orig.forEach((rm: any, i: number) => { if (!used.has(i)) next.push(rm); });
+            draft.rooms = next;
+            renderRooms(); render();
+          }
+        } catch { alert('Could not reach the director — please try again.'); }
+        finally { btn.disabled = false; busy(); }
+      });
+
       function renderRooms() {
         $('rooms').innerHTML = (draft.rooms || []).map((rm: any, i: number) => roomCardHTML(rm, i)).join('');
         (draft.rooms || []).forEach((_: any, i: number) => bindRoomCard(i));
@@ -515,6 +577,7 @@
           <div class="meter">Recommended shots — <b>${got}</b> of ${rec} captured</div>
           <ul class="checklist">${checklist}</ul>
           <div class="shots">${thumbs}</div>
+          <input class="room-caption" data-rk="caption" value="${esc(rm.caption || '')}" placeholder="Caption — one evocative line (optional)" />
           <label class="uploader btn-dashed">+ Add photos<input type="file" accept="image/*" multiple data-room-upload capture="environment" /></label>
         </div>`;
       }

@@ -263,6 +263,20 @@ function numbersSection(listing: Listing): string {
   </section>`;
 }
 
+/** A wizard date picker stores ISO (2026-08-01); show it as "Aug 1, 2026".
+ *  Anything that isn't an ISO date (e.g. "Immediate") passes through as-is. */
+function formatAvailability(v?: string): string {
+  if (!v) return '';
+  const s = String(v).trim();
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  if (!m) return s;
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const [, y, mo, d] = m;
+  const mi = parseInt(mo, 10) - 1;
+  if (mi < 0 || mi > 11) return s;
+  return `${months[mi]} ${parseInt(d, 10)}, ${y}`;
+}
+
 /* --------------------------------------------------------------------------
  * 3b. THE LEASE — terms at a glance (lease listings only)
  * ------------------------------------------------------------------------ */
@@ -270,7 +284,7 @@ function leaseTermsSection(listing: Listing): string {
   if (!isLease(listing)) return '';
   const rows: [string, string | undefined][] = [
     ['Lease term', listing.lease_term],
-    ['Availability', listing.available_date],
+    ['Availability', formatAvailability(listing.available_date)],
     ['Furnished', listing.furnished],
     ['Pets', listing.pets],
     ['Utilities', listing.utilities],
