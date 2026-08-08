@@ -1,0 +1,184 @@
+---
+const bullets = [
+  { title: 'Graphics that match your brand', desc: 'Every post uses your colours, fonts, and logo — so your feed and your website finally look like the same business.' },
+  { title: 'A month of content at a time', desc: 'We plan, design, and write the batch up front. You approve it in one sitting instead of scrambling for something to post.' },
+  { title: 'Sized for every platform', desc: 'Instagram, Facebook, LinkedIn, and Google Business Profile exports from a single design — no awkward crops.' },
+  { title: 'Captions and hashtags written for you', desc: 'Copy that sounds like your business, ready to paste into a scheduler or post as-is.' },
+];
+
+const packages = [
+  { name: 'Starter', posts: '8 posts / month', extras: ['Branded post templates', 'Captions + hashtags', '1 revision round'] },
+  { name: 'Growth', posts: '16 posts / month', extras: ['Everything in Starter', '8 story graphics', 'Monthly content plan'], featured: true },
+  { name: 'Full Service', posts: '30 posts / month', extras: ['Everything in Growth', 'Scheduling handled for you', 'Monthly performance recap'] },
+];
+
+// Feed tiles for the phone mockup
+const tiles = [
+  { label: 'Promo',   from: '#d946ef', to: '#8b5cf6' },
+  { label: 'Tip',     from: '#f97316', to: '#db2777' },
+  { label: 'Quote',   from: '#26275E', to: '#3b82f6' },
+  { label: 'Team',    from: '#0891b2', to: '#10b981' },
+  { label: 'Offer',   from: '#8b5cf6', to: '#3b82f6' },
+  { label: 'Before',  from: '#db2777', to: '#f59e0b' },
+  { label: 'Review',  from: '#10b981', to: '#0891b2' },
+  { label: 'Event',   from: '#6366f1', to: '#d946ef' },
+  { label: 'FAQ',     from: '#f59e0b', to: '#ef4444' },
+];
+---
+
+<section id="social-media" class="py-24 bg-white overflow-hidden">
+  <div class="max-w-[1140px] mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Left: mockup -->
+      <div class="relative order-2 lg:order-1">
+        <!-- Glow -->
+        <div class="absolute -inset-4 rounded-3xl pointer-events-none" style="background: radial-gradient(ellipse at 50% 50%, rgba(217,70,239,0.09) 0%, transparent 70%); filter: blur(24px);"></div>
+
+        <div class="relative flex justify-center py-4">
+
+          <!-- Phone frame -->
+          <div class="relative w-[268px] rounded-[2rem] border-[6px] border-[#1c1d33] bg-[#1c1d33] shadow-2xl">
+            <!-- Notch -->
+            <div class="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-[5px] rounded-full bg-white/20"></div>
+
+            <div class="rounded-[1.6rem] overflow-hidden bg-white pt-4">
+
+              <!-- Profile header -->
+              <div class="px-4 pt-2 pb-3 flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full p-[2px] flex-shrink-0" style="background: linear-gradient(135deg,#f59e0b,#db2777,#8b5cf6);">
+                  <div class="w-full h-full rounded-full bg-white flex items-center justify-center">
+                    <span class="text-[10px] font-extrabold text-dark">YB</span>
+                  </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-[10.5px] font-bold text-dark leading-none">yourbusiness</div>
+                  <div class="text-[8.5px] text-muted mt-1">Posts · Followers · Following</div>
+                </div>
+                <div class="px-2.5 py-1 rounded-md text-[8px] font-bold text-white" style="background: linear-gradient(135deg,#d946ef,#8b5cf6);">Follow</div>
+              </div>
+
+              <!-- Highlight row -->
+              <div class="px-4 pb-3 flex gap-3">
+                {['Offers', 'Work', 'Team', 'FAQ'].map(h => (
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-9 h-9 rounded-full border border-border bg-light"></div>
+                    <span class="text-[7px] text-muted">{h}</span>
+                  </div>
+                ))}
+              </div>
+
+              <!-- Feed grid -->
+              <div class="grid grid-cols-3 gap-[2px] bg-white">
+                {tiles.map(tile => (
+                  <div
+                    class="aspect-square flex items-end p-1.5 relative"
+                    style={`background: linear-gradient(135deg, ${tile.from}, ${tile.to});`}
+                  >
+                    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-white/50"></span>
+                    <span class="text-[7.5px] font-bold text-white/90 tracking-wide uppercase">{tile.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <!-- Bottom bar -->
+              <div class="flex items-center justify-around py-2.5 border-t border-border bg-white">
+                {[
+                  'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',
+                  'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35',
+                  'M12 5v14M5 12h14',
+                  'M20.8 8.6a5.5 5.5 0 0 0-9.3-3 5.5 5.5 0 0 0-9.3 3c0 6 9.3 11.4 9.3 11.4s9.3-5.4 9.3-11.4z',
+                ].map(d => (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d={d}/></svg>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating: caption card -->
+          <div class="hidden sm:block absolute -left-4 lg:-left-10 top-[42%] w-[190px] bg-white rounded-xl border border-border shadow-[0_12px_32px_rgba(15,23,42,0.14)] p-3">
+            <div class="flex items-center gap-1.5 mb-2">
+              <span class="w-1.5 h-1.5 rounded-full" style="background:#d946ef;"></span>
+              <span class="text-[8px] font-bold uppercase tracking-wider text-muted">Caption drafted</span>
+            </div>
+            <p class="text-[9px] text-dark leading-relaxed mb-2">
+              Booked out for the month — thank you! Spots open again from the 14th. Tap the link to reserve yours.
+            </p>
+            <p class="text-[8.5px] font-medium" style="color:#8b5cf6;">#localbusiness #brisbane #booknow</p>
+          </div>
+
+          <!-- Floating: approval pill -->
+          <div class="absolute -right-1 lg:-right-4 bottom-10 flex items-center gap-1.5 bg-white rounded-full border border-border shadow-[0_10px_28px_rgba(15,23,42,0.14)] px-3 py-2">
+            <div class="w-4 h-4 rounded-full flex items-center justify-center" style="background:#10b981;">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="text-[9px] font-bold text-dark">Approved &amp; scheduled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: copy -->
+      <div class="order-1 lg:order-2">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] mb-3" style="color:#c026d3;">Social Media Packages</span>
+        <h2 class="text-3xl lg:text-4xl font-extrabold text-dark tracking-tight mb-5 leading-tight">
+          Your Website's Look —<br />Everywhere You Post
+        </h2>
+        <p class="text-muted text-lg leading-relaxed mb-8">
+          Posting consistently is the part most businesses drop first. We design the graphics, write the captions, and hand you a month of on-brand content — or post it for you.
+        </p>
+
+        <ul class="flex flex-col gap-4 mb-10">
+          {bullets.map(({ title, desc }) => (
+            <li class="flex gap-3">
+              <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(217,70,239,0.1);">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c026d3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="text-dark font-semibold text-sm">{title}</div>
+                <div class="text-muted text-sm mt-0.5">{desc}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <a href="/contact" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-white hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(217,70,239,0.3)] transition-all duration-200 cursor-pointer" style="background: linear-gradient(135deg, #c026d3, #8b5cf6);">
+          Get a Social Media Package
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Package tiers -->
+    <div class="grid sm:grid-cols-3 gap-5 mt-20">
+      {packages.map(pkg => (
+        <div class={`relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
+          pkg.featured
+            ? 'border-2 shadow-[0_16px_40px_rgba(192,38,211,0.12)]'
+            : 'border border-border bg-white hover:shadow-[0_16px_40px_rgba(15,23,42,0.07)]'
+        }`} style={pkg.featured ? 'border-color:#d946ef; background: linear-gradient(180deg, rgba(217,70,239,0.04), #ffffff);' : undefined}>
+          {pkg.featured && (
+            <span class="absolute -top-2.5 left-6 text-[9px] font-bold uppercase tracking-[0.15em] text-white px-2.5 py-1 rounded-full" style="background: linear-gradient(135deg,#c026d3,#8b5cf6);">
+              Most popular
+            </span>
+          )}
+          <div class="text-dark font-bold text-lg mb-1">{pkg.name}</div>
+          <div class="text-sm font-semibold mb-5" style="color:#c026d3;">{pkg.posts}</div>
+          <ul class="flex flex-col gap-2.5">
+            {pkg.extras.map(extra => (
+              <li class="flex items-start gap-2 text-sm text-muted">
+                <svg class="flex-shrink-0 mt-1" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#c026d3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {extra}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-center text-muted text-sm mt-8">
+      Bundled with a website build or run on its own — <a href="/contact" class="font-semibold hover:underline" style="color:#c026d3;">ask for a quote</a>.
+    </p>
+
+  </div>
+</section>
