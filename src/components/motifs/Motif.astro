@@ -1,0 +1,24 @@
+---
+// Renders one plotted motif. Color comes from the parent's `color` (the
+// vertical accent); paths use currentColor. Decorative by contract.
+import { getMotif } from './motifs';
+
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+const motif = getMotif(id);
+if (!motif) throw new Error(`Unknown motif: ${id}`);
+---
+
+<svg
+  viewBox={motif.viewBox}
+  fill="none"
+  stroke="currentColor"
+  aria-hidden="true"
+  class={className}
+  data-motif={id}
+  set:html={motif.svg}
+/>

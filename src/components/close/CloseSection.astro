@@ -1,0 +1,55 @@
+---
+// Act 7 — the close. Ink ground; the CTA is the headline itself, magnetic.
+// A thin sliver on the right edge quietly reprises all seven accents.
+import { industries } from '../../data/industries';
+
+const stops = industries.map((i) => i.accent);
+---
+
+<section id="act-close" class="relative overflow-hidden bg-ink" aria-label="Book a call">
+  <div
+    class="reprise pointer-events-none absolute inset-y-0 right-0 w-[3px]"
+    aria-hidden="true"
+    style={`background: linear-gradient(to bottom, ${stops.join(', ')})`}
+  ></div>
+
+  <div class="mx-auto max-w-[1200px] px-6 py-32 lg:py-44">
+    <p class="label-mono">one call · no pitch deck</p>
+    <a
+      href="/book"
+      data-close-cta
+      data-track="book_click"
+      data-track-label="close"
+      class="mt-6 inline-block font-display text-display-xl leading-[0.95] text-film no-underline transition-colors hover:text-gold"
+    >
+      Book a call<span class="text-redline">.</span>
+    </a>
+    <p class="mt-8 max-w-[52ch] text-body text-film-dim">
+      Twenty minutes. Bring what you have — an old site, an Instagram page, a
+      napkin sketch — and leave with a straight read on what we'd build and
+      what it costs.
+    </p>
+    <p class="label-mono mt-14 normal-case tracking-normal text-film-dim/60">
+      [--] session complete · humans standing by
+    </p>
+  </div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .reprise {
+      animation: reprise-drift 14s linear infinite;
+      background-size: 100% 400%;
+    }
+    @keyframes reprise-drift {
+      from { background-position: 0 0; }
+      to { background-position: 0 400%; }
+    }
+  }
+</style>
+
+<script>
+  import { magnetic } from '../../lib/motion';
+  const cta = document.querySelector<HTMLElement>('[data-close-cta]');
+  if (cta) magnetic(cta, 0.12, 14);
+</script>

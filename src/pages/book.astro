@@ -1,0 +1,96 @@
+---
+// /book — Calendly inline embed. widget.js loads on THIS route only (§10 —
+// it would wreck LCP in the base layout). Prefills from ?name=&email=,
+// fires calendly_scheduled into GA4 on booking, and keeps a plain-link
+// fallback for anyone blocking the embed.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { breadcrumbs } from '../lib/jsonld';
+
+// Default is the live booking link already in use on /discovery;
+// PUBLIC_CALENDLY_EVENT overrides it (e.g. for a new event type).
+const calendlyEvent =
+  (import.meta.env.PUBLIC_CALENDLY_EVENT as string | undefined) ||
+  'ddeleon-thelinovagroup/30min';
+const calendlyUrl = `https://calendly.com/${calendlyEvent}`;
+---
+
+<BaseLayout
+  title="Book a call — The Linova Group"
+  description="Twenty minutes with the person who builds the sites. Bring what you have; leave with a straight read on what we'd build and what it costs."
+  jsonLd={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Book a call', path: '/book' }])]}
+>
+  <div class="plot-grid">
+    <header class="mx-auto max-w-[1100px] px-6 pb-10 pt-24">
+      <p class="label-mono">twenty minutes · no pitch deck</p>
+      <h1 class="mt-4 font-display text-display text-film">Book a call</h1>
+      <p class="mt-5 max-w-[54ch] text-body text-film-dim">
+        You talk to Dennis — the person who actually builds the sites. Bring
+        an old site, an Instagram page, or nothing at all.
+      </p>
+    </header>
+  </div>
+
+  <div class="mx-auto max-w-[1100px] px-6 pb-24">
+    {calendlyUrl ? (
+      <>
+        <div
+          class="calendly-host border border-grid/40 bg-film"
+          data-calendly-url={calendlyUrl}
+          style="min-width: 320px; height: 760px;"
+        >
+          <p class="p-6 text-caption text-navy">Loading the calendar…</p>
+        </div>
+        <p class="mt-4 text-caption text-film-dim">
+          Calendar not loading?
+          <a href={calendlyUrl} target="_blank" rel="noopener" class="text-gold underline decoration-1 underline-offset-4">
+            Open it in a new tab
+          </a>
+          — same times, same call.
+        </p>
+      </>
+    ) : (
+      <div class="border border-grid/40 p-8">
+        <p class="m-0 max-w-[52ch] text-body text-film">
+          The calendar isn't wired up yet — the Calendly event slug is waiting
+          in the environment (see the README). Until it is:
+          <a href="/contact" class="text-gold underline decoration-1 underline-offset-4">send a message</a>
+          and we'll reply with times within one business day.
+        </p>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+{calendlyUrl && (
+  <script is:inline>
+    (function () {
+      var host = document.querySelector('[data-calendly-url]');
+      if (!host) return;
+      var url = host.getAttribute('data-calendly-url');
+
+      // Prefill from query params any earlier form already captured
+      var params = new URLSearchParams(location.search);
+      var prefill = new URLSearchParams();
+      if (params.get('name')) prefill.set('name', params.get('name'));
+      if (params.get('email')) prefill.set('email', params.get('email'));
+      var full = url + (prefill.toString() ? '?' + prefill.toString() : '');
+
+      var s = document.createElement('script');
+      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.async = true;
+      s.onload = function () {
+        host.innerHTML = '';
+        window.Calendly.initInlineWidget({ url: full, parentElement: host });
+      };
+      document.head.appendChild(s);
+
+      // Booking confirmed → GA4 conversion (§10). The button said "Book a
+      // call"; the event says the call is booked.
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.event === 'calendly.event_scheduled') {
+          if (window.linovaTrack) window.linovaTrack('calendly_scheduled', { source: 'book' });
+        }
+      });
+    })();
+  </script>
+)}

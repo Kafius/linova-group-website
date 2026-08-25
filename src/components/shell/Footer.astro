@@ -1,0 +1,77 @@
+---
+// Footer — closes every page like an engineering title block (design plan §signature).
+import { nav, site } from '../../data/site';
+import { industries } from '../../data/industries';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-ink">
+  <div class="mx-auto max-w-[1200px] px-6 pt-16 pb-8">
+    <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-2">
+        <a href="/" class="font-display text-3xl leading-none text-film">
+          Linova<span class="text-gold">/</span>
+        </a>
+        <p class="mt-4 max-w-[36ch] text-caption text-film-dim">
+          {site.tagline} Web design, development, and marketing for small and
+          mid-sized businesses — from {site.locality}, Ontario.
+        </p>
+      </div>
+
+      <div>
+        <p class="label-mono mb-5">Pages</p>
+        <ul class="flex flex-col gap-3">
+          {nav.links.map((link) => (
+            <li><a href={link.href} class="text-caption text-film-dim transition-colors hover:text-film">{link.label}</a></li>
+          ))}
+          <li><a href="/book" class="text-caption text-film-dim transition-colors hover:text-film">Book a call</a></li>
+          <li><a href="/contact" class="text-caption text-film-dim transition-colors hover:text-film">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="label-mono mb-5">Industries</p>
+        <ul class="flex flex-col gap-3">
+          {industries.map((industry) => (
+            <li>
+              <a href={`/industries/${industry.slug}`} class="text-caption text-film-dim transition-colors hover:text-film">
+                {industry.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Title block -->
+    <div class="mt-14 grid grid-cols-2 border border-gold/60 text-caption sm:grid-cols-4">
+      <div class="border-r border-b border-gold/40 p-3 sm:border-b-0">
+        <span class="label-mono block text-[0.65rem]">Project</span>
+        <span class="text-film-dim">thelinovagroup.com</span>
+      </div>
+      <div class="border-b border-gold/40 p-3 sm:border-r sm:border-b-0">
+        <span class="label-mono block text-[0.65rem]">Office</span>
+        <span class="text-film-dim">{site.locality}, Ontario</span>
+      </div>
+      <div class="border-r border-gold/40 p-3">
+        <span class="label-mono block text-[0.65rem]">Rev</span>
+        <span class="text-film-dim">v2</span>
+      </div>
+      <div class="p-3">
+        <span class="label-mono block text-[0.65rem]">&copy; {year}</span>
+        <span class="text-film-dim">{site.name}</span>
+      </div>
+    </div>
+
+    <div class="mt-6 flex flex-col items-start justify-between gap-2 sm:flex-row">
+      <p class="text-[0.75rem] text-film-dim/70">
+        Built with the same system we build for clients.
+      </p>
+      <p class="flex gap-5 text-[0.75rem]">
+        <a href="/privacy" class="text-film-dim/70 transition-colors hover:text-film">Privacy</a>
+        <a href="/terms" class="text-film-dim/70 transition-colors hover:text-film">Terms</a>
+      </p>
+    </div>
+  </div>
+</footer>

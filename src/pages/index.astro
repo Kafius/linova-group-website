@@ -1,50 +1,37 @@
 ---
-// Server-rendered so a custom domain's root can serve its listing. For our own
-// hosts (thelinovagroup.com, *.vercel.app, localhost) this is just the marketing
-// homepage; for a client's wired-up custom_domain it returns their site.
-export const prerender = false;
+// Homepage v2 — the seven acts (design plan, sheet 01).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Opening from '../components/opening/Opening.astro';
+import IndustriesRail from '../components/industries/IndustriesRail.astro';
+import SystemSection from '../components/system/SystemSection.astro';
+import HandoffSection from '../components/handoff/HandoffSection.astro';
+import WorkSection from '../components/work/WorkSection.astro';
+import ProofSection from '../components/proof/ProofSection.astro';
+import CloseSection from '../components/close/CloseSection.astro';
+import BuildLog from '../components/shell/BuildLog.astro';
+import { site } from '../data/site';
 
-import Layout from '../layouts/Layout.astro';
-import TransformationIntro from '../components/TransformationIntro.astro';
-import Navbar from '../components/navbar/Navbar.astro';
-import Hero from '../components/hero/Hero.astro';
-import Clients from '../components/clients/Clients.astro';
-import ServicesTeaser from '../components/services/ServicesTeaser.astro';
-import Industries from '../components/industries/Industries.astro';
-import Footer from '../components/footer/Footer.astro';
-import { isCustomHost, listingByDomain } from '../lib/estate/site';
-import { buildSiteHTML } from '../lib/estate/template';
-
-// Custom domain → serve the wired-up listing at the root and short-circuit.
-const host = Astro.request.headers.get('host');
-if (isCustomHost(host)) {
-  const listing = await listingByDomain(host!);
-  if (listing) {
-    return new Response(buildSiteHTML(listing, { locked: false }), {
-      status: 200,
-      headers: {
-        'content-type': 'text/html; charset=utf-8',
-        'cache-control': 'public, max-age=300',
-      },
-    });
-  }
-  // Unknown/not-yet-wired custom host: don't show our marketing page on it.
-  return new Response('This site is not available yet.', {
-    status: 404,
-    headers: { 'content-type': 'text/plain; charset=utf-8', 'x-robots-tag': 'noindex, nofollow' },
-  });
-}
-
-// Our own hosts fall through to the marketing homepage (cache like a static page).
-Astro.response.headers.set('cache-control', 'public, max-age=300');
+const acts: [string, string][] = [
+  ['act-opening', 'the compiler'],
+  ['act-industries', 'industries'],
+  ['act-system', 'the system'],
+  ['act-handoff', 'the handoff'],
+  ['act-work', 'selected work'],
+  ['act-close', 'book a call'],
+];
 ---
 
-<Layout title="Linova Group — Premium Websites, Fraction of the Cost">
-  <TransformationIntro />
-  <Navbar />
-  <Hero />
-  <Clients />
-  <ServicesTeaser />
-  <Industries />
-  <Footer />
-</Layout>
+<BaseLayout
+  title="The Linova Group — web design & marketing, Thornhill"
+  description={site.description}
+  withBusinessJsonLd
+>
+  <Opening />
+  <IndustriesRail />
+  <SystemSection />
+  <HandoffSection />
+  <WorkSection />
+  <ProofSection />
+  <CloseSection />
+  <BuildLog acts={acts} />
+</BaseLayout>

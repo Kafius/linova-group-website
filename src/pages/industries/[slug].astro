@@ -1,0 +1,167 @@
+---
+// /industries/[slug] — one page per vertical, fully data-driven. Live
+// verticals show real proof; concept verticals show the honest spec piece.
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Motif from '../../components/motifs/Motif.astro';
+import ConceptPiece from '../../components/industries/ConceptPiece.astro';
+import { industries, type Industry } from '../../data/industries';
+import { proofShots } from '../../data/proofShots';
+import { breadcrumbs, service } from '../../lib/jsonld';
+
+export function getStaticPaths() {
+  return industries.map((industry) => ({
+    params: { slug: industry.slug },
+    props: { industry },
+  }));
+}
+
+interface Props {
+  industry: Industry;
+}
+
+const { industry } = Astro.props;
+const shot = proofShots[industry.slug];
+const isConcept = industry.status === 'concept';
+---
+
+<BaseLayout
+  title={industry.seo.title}
+  description={industry.seo.description}
+  jsonLd={[
+    service(`Web design & marketing for ${industry.name.toLowerCase()}`, industry.seo.description, industry.slug),
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Industries', path: '/industries' },
+      { name: industry.name, path: `/industries/${industry.slug}` },
+    ]),
+  ]}
+  pageEvent={{ name: 'industry_view', params: { industry: industry.slug } }}
+>
+  <article style={`--vx: ${industry.accent}`}>
+    <!-- Hero -->
+    <header class="plot-grid relative overflow-hidden">
+      <div class="pointer-events-none absolute inset-y-0 right-[3vw] hidden w-[34%] max-w-[460px] items-center lg:flex" style="color: var(--vx)" aria-hidden="true">
+        <Motif id={industry.motif} class="w-full opacity-25" />
+      </div>
+      <div class="relative mx-auto max-w-[1200px] px-6 pb-16 pt-24">
+        <nav class="label-mono" aria-label="Breadcrumb">
+          <a href="/industries" class="hover:text-film">industries</a>
+          <span aria-hidden="true"> / </span>
+          <span style="color: var(--vx)">{industry.name.toLowerCase()}</span>
+          {isConcept && <span class="ml-3 rounded-chip border border-grid/50 px-2.5 py-1">concept</span>}
+        </nav>
+        <h1 class="mt-6 max-w-[16ch] font-display text-display text-film">
+          {industry.headline}
+        </h1>
+        <p class="mt-6 max-w-[58ch] text-body text-film-dim">{industry.problem}</p>
+        <a
+          href="/book"
+          data-hero-cta
+          class="mt-10 inline-block rounded-chip border border-gold px-6 py-3 text-body text-film transition-colors hover:border-redline"
+        >
+          Book a call
+        </a>
+      </div>
+    </header>
+
+    <!-- Approach -->
+    <section class="mx-auto max-w-[1200px] px-6 py-20" aria-label="What we do differently">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 class="font-display text-title text-film">What we do differently</h2>
+        <span class="label-mono hidden sm:block" style="color: var(--vx)">{industry.accentName}</span>
+      </div>
+      <hr class="rule-gold mt-3" />
+      <dl class="m-0 grid gap-x-12 gap-y-10 pt-10 md:grid-cols-2">
+        {industry.approach.map((item) => (
+          <div class="max-w-[52ch]">
+            <dt class="text-heading font-medium text-film">{item.title}</dt>
+            <dd class="m-0 mt-2 text-body text-film-dim">{item.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <!-- Marketing angles -->
+    <section class="border-y border-grid/30 bg-ink" aria-label="The marketing plays">
+      <div class="mx-auto max-w-[1200px] px-6 py-20">
+        <h2 class="font-display text-title text-film">The marketing plays</h2>
+        <p class="mt-3 max-w-[58ch] text-body text-film-dim">
+          Written for {industry.name.toLowerCase()} — not recycled from another
+          industry with the nouns swapped. This is the human half of the shop.
+        </p>
+        <div class="mt-10 grid gap-px border border-grid/40 bg-grid/40 md:grid-cols-2">
+          {industry.marketingAngles.map((angle) => (
+            <div class="bg-ink p-6 sm:p-8">
+              <p class="label-mono" style="color: var(--vx)">{angle.channel}</p>
+              <p class="m-0 mt-3 max-w-[52ch] text-body text-film-dim">{angle.angle}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof / concept -->
+    <section class="mx-auto max-w-[1200px] px-6 py-20" aria-label={isConcept ? 'Concept piece' : 'Proof'}>
+      {isConcept ? (
+        <div class="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
+          <div>
+            <h2 class="font-display text-title text-film">No client yet. Here's the spec work.</h2>
+            <p class="mt-4 max-w-[52ch] text-body text-film-dim">{industry.conceptPitch}</p>
+            <a
+              href="/book"
+              class="mt-8 inline-block rounded-chip border border-gold px-6 py-3 text-body text-film transition-colors hover:border-redline"
+            >
+              Book a call
+            </a>
+          </div>
+          <ConceptPiece variant={industry.slug as 'barbershops' | 'retail'} />
+        </div>
+      ) : (
+        <div class="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
+          <div>
+            <h2 class="font-display text-title text-film">Live for {industry.proof?.client}</h2>
+            <p class="mt-4 max-w-[52ch] text-body text-film-dim">
+              Not a mockup — a working site with real customers on it. Open it,
+              tap around, check the speed on your own phone.
+            </p>
+            <a
+              href={industry.proof?.url}
+              target="_blank"
+              rel="noopener"
+              class="label-mono mt-6 inline-block normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
+            >
+              visit {industry.proof?.client} ↗
+            </a>
+          </div>
+          {shot && (
+            <a href={industry.proof?.url} target="_blank" rel="noopener" class="group block overflow-hidden border border-grid/40">
+              <Image
+                src={shot}
+                alt={`${industry.proof?.client} — live site`}
+                widths={[640, 1024, 1440]}
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                class="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.015]"
+                loading="lazy"
+              />
+            </a>
+          )}
+        </div>
+      )}
+    </section>
+
+    <!-- Close -->
+    <section class="border-t border-grid/30 bg-ink">
+      <div class="mx-auto max-w-[1200px] px-6 py-20">
+        <p class="label-mono">next step</p>
+        <a href="/book" class="mt-4 inline-block font-display text-display text-film no-underline transition-colors hover:text-gold">
+          Book a call<span class="text-redline">.</span>
+        </a>
+        <p class="mt-4 max-w-[52ch] text-body text-film-dim">
+          Twenty minutes, straight answers, and a read on what a
+          {' '}{industry.name.toLowerCase()} build would look like for you.
+        </p>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

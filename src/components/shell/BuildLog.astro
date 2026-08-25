@@ -1,0 +1,169 @@
+---
+// The Build Log — the site's signature element. A quiet mono readout,
+// bottom-left, that performs the load sequence once per session and then
+// stamps act boundaries. Every act line is a jump link, so it doubles as
+// section navigation (and keyboard access to the pinned rail).
+// Plain build language, never CI jargon.
+
+interface Props {
+  /** act anchors on this page, in order — [id, label] */
+  acts?: [string, string][];
+}
+
+const { acts = [] } = Astro.props;
+
+const bootLines = [
+  { t: '0.0s', text: 'grid plotted', meta: 'ok' },
+  { t: '0.4s', text: 'type set', meta: 'instrument serif' },
+  { t: '0.8s', text: 'palette mixed', meta: '6/6' },
+  { t: '1.2s', text: 'seven industries loaded', meta: 'scroll' },
+];
+---
+
+<aside
+  class="build-log fixed bottom-5 left-5 z-30 hidden lg:block"
+  data-build-log
+>
+  <div aria-hidden="true" data-boot class="flex flex-col gap-0.5">
+    {bootLines.map((line) => (
+      <p class="boot-line m-0 font-mono text-[0.8125rem] leading-relaxed text-film-dim" data-boot-line>
+        <span class="text-gold" style="font-variant-numeric: tabular-nums">[{line.t}]</span>
+        {' '}{line.text} <span class="opacity-60">· {line.meta}</span>
+      </p>
+    ))}
+  </div>
+  <p
+    class="handoff-line m-0 hidden font-display text-[1.05rem] italic text-film"
+    data-handoff-line
+    aria-hidden="true"
+  >
+    handoff: <span class="marker-u">humans take it from here.</span>
+  </p>
+  {acts.length > 0 && (
+    <nav aria-label="Page sections" class="mt-2">
+      <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
+        {acts.map(([id, label], i) => (
+          <li>
+            <a
+              href={`#${id}`}
+              data-act-link={id}
+              class="act-link font-mono text-[0.8125rem] text-film-dim/70 no-underline transition-colors hover:text-film"
+            >
+              <span class="text-gold/80" style="font-variant-numeric: tabular-nums">
+                act/{String(i + 1).padStart(2, '0')}
+              </span>
+              {' '}{label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+</aside>
+
+<style>
+  /* Boot lines are hidden until the intro orchestrator (or the no-intro
+     fallback) reveals them. After the intro they collapse away — the log
+     stays quiet at rest, leaving only the act nav. */
+  html.is-intro .boot-line {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  html.is-intro .boot-line.is-printed {
+    opacity: 1;
+    transform: none;
+  }
+  [data-boot] {
+    max-height: 8rem;
+    overflow: hidden;
+    transition: max-height 0.6s var(--ease-plot), opacity 0.6s ease;
+  }
+  .build-log {
+    transition: opacity 0.3s ease;
+  }
+  .build-log.is-retired {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .build-log.boot-collapsed [data-boot] {
+    max-height: 0;
+    opacity: 0;
+  }
+  .act-link[aria-current='true'] {
+    color: var(--color-film);
+  }
+
+  /* Film-ground variant — while the handoff act is current the log sits on
+     light ground: inks flip to navy, gold deepens to stay readable. */
+  .build-log.on-film .act-link {
+    color: color-mix(in srgb, var(--color-navy) 65%, transparent);
+  }
+  .build-log.on-film .act-link:hover,
+  .build-log.on-film .act-link[aria-current='true'] {
+    color: var(--color-navy);
+  }
+  .build-log.on-film .act-link span:first-child,
+  .build-log.on-film [data-boot] .text-gold {
+    color: var(--color-gold-deep);
+  }
+  .build-log.on-film .handoff-line {
+    color: var(--color-navy);
+  }
+  /* Reduced motion: no boot theatre — the log is a static section index */
+  @media (prefers-reduced-motion: reduce) {
+    [data-boot] {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { prefersReducedMotion, hasPlayedIntro } from '../../lib/motion';
+
+  const log = document.querySelector<HTMLElement>('[data-build-log]');
+  if (log) {
+    // Collapse boot lines shortly after they finish printing (or immediately
+    // when the intro was already played this session).
+    const delay = prefersReducedMotion() || hasPlayedIntro() ? 0 : 3200;
+    setTimeout(() => log.classList.add('boot-collapsed'), delay);
+
+    // The log retires when the footer arrives — it never overlaps the
+    // title block.
+    const footer = document.querySelector('footer');
+    if (footer && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) =>
+        log.classList.toggle('is-retired', entry.isIntersecting)
+      ).observe(footer);
+    }
+
+    // Track the current act in the nav
+    const links = log.querySelectorAll<HTMLAnchorElement>('[data-act-link]');
+    if (links.length > 0 && 'IntersectionObserver' in window) {
+      const byId = new Map<string, HTMLAnchorElement>();
+      links.forEach((link) => byId.set(link.dataset.actLink ?? '', link));
+      const handoffLine = log.querySelector<HTMLElement>('[data-handoff-line]');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              links.forEach((l) => l.removeAttribute('aria-current'));
+              byId.get(entry.target.id)?.setAttribute('aria-current', 'true');
+              // The register break: crossing into the human act, the machine
+              // stamps stop and a serif-italic line takes over. The log also
+              // flips its inks for the light ground.
+              const inHandoff = entry.target.id === 'act-handoff';
+              handoffLine?.classList.toggle('hidden', !inHandoff);
+              log.classList.toggle('on-film', inHandoff);
+            }
+          }
+        },
+        { rootMargin: '-40% 0px -55% 0px' }
+      );
+      byId.forEach((_link, id) => {
+        const section = document.getElementById(id);
+        if (section) observer.observe(section);
+      });
+    }
+  }
+</script>

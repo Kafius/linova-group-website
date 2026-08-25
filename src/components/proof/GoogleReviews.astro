@@ -1,0 +1,40 @@
+---
+// Google reviews band — renders only when the feature flag is on and the
+// build-time fetch succeeded. Attribution and unmodified review text are
+// Google's terms, not options.
+import { fetchGoogleReviews } from '../../lib/googleReviews';
+
+const data = await fetchGoogleReviews();
+---
+
+{data && data.reviews.length > 0 && (
+  <section class="border-b border-grid/30" aria-label="Google reviews">
+    <div class="mx-auto max-w-[1200px] px-6 py-16">
+      <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <h2 class="m-0 font-display text-title text-film">
+          {data.rating.toFixed(1)} on Google
+        </h2>
+        <a href={data.url} target="_blank" rel="noopener" class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+          {data.count} reviews · powered by Google
+        </a>
+      </div>
+      <div class="mt-8 grid gap-px border border-grid/40 bg-grid/40 md:grid-cols-2 lg:grid-cols-3">
+        {data.reviews.slice(0, 3).map((review) => (
+          <figure class="m-0 bg-navy p-6">
+            <p class="m-0 text-gold" aria-label={`${review.rating} out of 5 stars`}>
+              {'★'.repeat(Math.round(review.rating))}<span class="text-grid">{'★'.repeat(5 - Math.round(review.rating))}</span>
+            </p>
+            <blockquote class="m-0 mt-3 text-caption text-film-dim">{review.text}</blockquote>
+            <figcaption class="mt-4 flex items-center gap-3">
+              {review.authorPhoto && (
+                <img src={review.authorPhoto} alt="" width="32" height="32" class="h-8 w-8 rounded-full" loading="lazy" />
+              )}
+              <span class="text-caption text-film">{review.author}</span>
+              <span class="label-mono normal-case tracking-normal">{review.relativeTime}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

@@ -1,0 +1,104 @@
+---
+// Act 4 — the warm turn. The machine draws the line (a gold hairline leads
+// the inversion wipe), then the instrumentation goes silent: film ground,
+// people, no scrub inside. Team content ships as honestly-labeled
+// placeholders until real names, roles, and photos arrive (brief §17).
+
+const teamSlots = [
+  { role: 'Marketing strategy' },
+  { role: 'Content & social' },
+  { role: 'Creative design' },
+];
+---
+
+<section id="act-handoff" class="handoff relative" data-ground="film" aria-label="The marketing team">
+  <!-- The wipe: a film layer revealed by scroll, its leading edge a gold rule -->
+  <div class="wipe pointer-events-none absolute inset-x-0 top-0 h-[22vh]" aria-hidden="true">
+    <div class="wipe-fill absolute inset-0 origin-top bg-film" data-wipe-fill></div>
+    <hr class="wipe-rule rule-gold absolute inset-x-0 top-0 m-0" data-wipe-rule />
+  </div>
+
+  <div class="relative bg-film">
+    <div class="mx-auto max-w-[1100px] px-6 py-28 lg:py-36">
+      <p class="label-mono !text-gold-deep">the marketing team · philippines</p>
+      <h2 class="mt-4 max-w-[16ch] font-display text-display text-navy">
+        This is where the AI stops.
+      </h2>
+      <div class="mt-8 grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
+        <div class="max-w-[58ch] text-body text-navy/80">
+          <p>
+            AI can compress a build. It cannot do marketing. It cannot read a
+            neighbourhood, feel out a brand's voice, or know why one Reel lands
+            and the next one dies.
+          </p>
+          <p class="mt-5">
+            That work is done by <span class="marker-u">people</span> — a real
+            marketing team of strategists and creatives in the Philippines who
+            plan campaigns, write the words, and make the content. We are not
+            going to pretend otherwise while everyone else ships AI slop.
+          </p>
+          <p class="mt-8 font-display text-heading italic text-navy">
+            Machine-fast where machines are better. Human where humans are.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-5">
+          {teamSlots.map((slot) => (
+            <div class="flex items-center gap-5 border border-navy/20 p-4">
+              <div class="flex h-20 w-20 shrink-0 items-center justify-center border border-dashed border-navy/30" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" class="text-navy/30">
+                  <circle cx="14" cy="10" r="5" stroke-width="1.5" />
+                  <path d="M4 25c1.5-5 6-7 10-7s8.5 2 10 7" stroke-width="1.5" />
+                </svg>
+              </div>
+              <div>
+                <p class="m-0 text-caption font-medium text-navy">{slot.role}</p>
+                <p class="label-mono m-0 mt-1 !text-gold-deep normal-case tracking-normal">
+                  faces + names on the way from Manila
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The wipe scrubs in via the section script; reduced motion = end state. */
+  .wipe-fill {
+    transform: scaleY(0);
+  }
+  .wipe-rule {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wipe {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { prefersReducedMotion, afterLoad } from '../../lib/motion';
+
+  const section = document.querySelector<HTMLElement>('#act-handoff');
+  const fill = document.querySelector<HTMLElement>('[data-wipe-fill]');
+  const rule = document.querySelector<HTMLElement>('[data-wipe-rule]');
+
+  if (section && fill && rule && !prefersReducedMotion()) afterLoad(async () => {
+    const { gsap } = await import('../../lib/motion/scroll');
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 85%',
+        end: 'top 30%',
+        scrub: 0.4,
+      },
+    })
+      .to(rule, { opacity: 1, duration: 0.08 }, 0)
+      .fromTo(fill, { scaleY: 0 }, { scaleY: 1, ease: 'none', duration: 0.92 }, 0.04)
+      .fromTo(rule, { y: 0 }, { y: () => section.querySelector('.wipe')!.clientHeight, ease: 'none', duration: 0.92 }, 0.04);
+  });
+</script>

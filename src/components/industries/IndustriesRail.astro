@@ -1,0 +1,211 @@
+---
+// Act 2 — the page's ONE pinned section (§5 budget). Desktop: horizontal rail
+// scrubbed through all seven verticals. Below lg: snap-scroll carousel, no
+// pin. Reduced motion: a vertical stack. The hero's cycle resolves into
+// panel 1, so the transition is causal, not decorative.
+import { industries } from '../../data/industries';
+import Motif from '../motifs/Motif.astro';
+
+const firstSentence = (text: string) => {
+  const match = text.match(/^.*?[.!?](?=\s|$)/);
+  return match ? match[0] : text;
+};
+---
+
+<section id="act-industries" class="rail-section relative" aria-label="Industries">
+  <div class="rail-viewport">
+    <div class="rail flex" data-rail>
+      {industries.map((industry, i) => (
+        <article
+          class="rail-panel plot-grid relative flex shrink-0 flex-col justify-center px-6 py-24 sm:px-12"
+          style={`--vx: ${industry.accent}`}
+          data-rail-panel={industry.slug}
+        >
+          <div class="pointer-events-none absolute right-[6%] top-1/2 w-[38%] max-w-[420px] -translate-y-1/2 opacity-25" style={`color: ${industry.accent}`} aria-hidden="true">
+            <Motif id={industry.motif} class="w-full" />
+          </div>
+
+          <div class="relative max-w-[820px]">
+            <p class="label-mono">
+              {String(i + 1).padStart(2, '0')}/07 · {industry.accentName}
+            </p>
+            <h2 class="mt-4 font-display text-display" style="color: var(--vx)">
+              {industry.name}
+            </h2>
+            <p class="mt-4 max-w-[52ch] text-heading font-normal text-film">
+              {industry.headline}
+            </p>
+            <p class="mt-5 max-w-[58ch] text-body text-film-dim">
+              {firstSentence(industry.problem)}
+            </p>
+
+            <div class="mt-8 flex flex-wrap items-center gap-6">
+              <a
+                href={`/industries/${industry.slug}`}
+                class="rail-link rounded-chip border border-gold px-5 py-2.5 text-caption text-film transition-colors hover:border-redline"
+              >
+                How we build for {industry.cycleWord}
+              </a>
+              {industry.proof ? (
+                <a
+                  href={industry.proof.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
+                >
+                  proof: {industry.proof.client} ↗
+                </a>
+              ) : (
+                <span class="label-mono rounded-chip border border-grid/50 px-3 py-1.5">
+                  concept — built on spec
+                </span>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+
+  <!-- progress chips — one per vertical, no numerals needed -->
+  <div class="rail-chips pointer-events-none absolute bottom-8 left-1/2 hidden -translate-x-1/2 gap-2 lg:flex" aria-hidden="true">
+    {industries.map((industry, i) => (
+      <span
+        class:list={['rail-chip h-1.5 w-7 rounded-full transition-colors duration-300', { 'is-active': i === 0 }]}
+        style={`--chip: ${industry.accent}`}
+        data-rail-chip
+      ></span>
+    ))}
+  </div>
+</section>
+
+<style>
+  .rail-chip {
+    background: color-mix(in srgb, var(--color-grid) 45%, transparent);
+  }
+  .rail-chip.is-active {
+    background: var(--chip);
+  }
+
+  /* ── Mobile / tablet: snap carousel ─────────────────────────────── */
+  .rail-viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .rail-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .rail-panel {
+    width: 88vw;
+    min-height: 78svh;
+    scroll-snap-align: center;
+    border-right: 1px solid color-mix(in srgb, var(--color-grid) 30%, transparent);
+  }
+
+  /* ── Desktop: the pin owns horizontal movement ──────────────────── */
+  @media (min-width: 1024px) {
+    .rail-viewport {
+      overflow: hidden;
+      height: 100svh;
+      display: flex;
+      align-items: stretch;
+      scroll-snap-type: none;
+    }
+    .rail-panel {
+      width: 92vw;
+      max-width: 1240px;
+      min-height: 100svh;
+    }
+  }
+
+  /* ── Reduced motion: a vertical stack, everything visible ───────── */
+  @media (prefers-reduced-motion: reduce) {
+    .rail-viewport {
+      overflow: visible;
+      height: auto;
+      display: block;
+    }
+    .rail {
+      flex-direction: column;
+    }
+    .rail-panel {
+      width: 100%;
+      max-width: none;
+      min-height: 0;
+      border-right: 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--color-grid) 30%, transparent);
+    }
+    .rail-chips {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { prefersReducedMotion, afterLoad } from '../../lib/motion';
+
+  const section = document.querySelector<HTMLElement>('#act-industries');
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  const opening = document.querySelector<HTMLElement>('#act-opening');
+
+  const desktop = window.matchMedia('(min-width: 1024px)').matches;
+
+  // Post-paint boot: the scroll engine (gsap + ScrollTrigger + Lenis) is
+  // dynamic-imported off the LCP critical path. Until it lands, the page
+  // scrolls natively and the rail is a plain horizontal strip.
+  if (section && rail && !prefersReducedMotion()) afterLoad(async () => {
+    const { initSmoothScroll, scrollToY, gsap, ScrollTrigger } = await import('../../lib/motion/scroll');
+    initSmoothScroll();
+
+    // Hero → rail: scroll progress feeds the cycle so it spins up and
+    // resolves onto panel 1 as the pin engages.
+    if (opening) {
+      ScrollTrigger.create({
+        trigger: opening,
+        start: 'top top',
+        end: 'bottom 25%',
+        onUpdate: (self) => {
+          document.dispatchEvent(
+            new CustomEvent('linova:cycle-progress', { detail: { p: self.progress } })
+          );
+        },
+      });
+    }
+
+    if (desktop) {
+      const distance = () => rail.scrollWidth - window.innerWidth;
+      const chips = document.querySelectorAll<HTMLElement>('[data-rail-chip]');
+      const panels = gsap.utils.toArray<HTMLElement>('[data-rail-panel]');
+
+      const tween = gsap.to(rail, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${distance()}`,
+          pin: true,
+          scrub: 0.6,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const active = Math.round(self.progress * (panels.length - 1));
+            chips.forEach((chip, i) => chip.classList.toggle('is-active', i === active));
+          },
+        },
+      });
+
+      // Keyboard operability (§14): focusing a link inside a panel seeks the
+      // pinned scroll position so the focused panel is actually in view.
+      const st = tween.scrollTrigger!;
+      panels.forEach((panel, i) => {
+        panel.addEventListener('focusin', () => {
+          const target = st.start + (i / (panels.length - 1)) * (st.end - st.start);
+          if (Math.abs(window.scrollY - target) > 40) {
+            scrollToY(target);
+          }
+        });
+      });
+    }
+  });
+</script>

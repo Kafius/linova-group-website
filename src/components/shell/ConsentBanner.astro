@@ -1,0 +1,91 @@
+---
+// Google Consent Mode v2 banner — default denied (PIPEDA / Quebec Law 25
+// posture), granted only on explicit acceptance. Lightweight, no layout
+// shift, choice stored locally.
+---
+
+<div
+  class="consent-banner fixed inset-x-4 bottom-4 z-50 mx-auto hidden max-w-[560px] border border-grid/50 bg-ink p-5 shadow-lg sm:inset-x-auto sm:right-5 sm:bottom-5"
+  data-consent-banner
+  role="region"
+  aria-label="Cookie consent"
+>
+  <p class="m-0 text-caption text-film">
+    We use analytics and ad cookies to see what's working. Nothing runs until
+    you say so.
+    <a href="/privacy" class="text-gold underline decoration-1 underline-offset-2">How we use data</a>
+  </p>
+  <div class="mt-4 flex flex-wrap gap-3">
+    <button
+      type="button"
+      data-consent-accept
+      class="rounded-chip border border-gold bg-film px-4 py-2 text-caption font-medium text-navy transition-colors hover:bg-white"
+    >
+      Allow analytics &amp; ads
+    </button>
+    <button
+      type="button"
+      data-consent-decline
+      class="rounded-chip border border-grid/60 px-4 py-2 text-caption text-film-dim transition-colors hover:border-film hover:text-film"
+    >
+      Only what's needed
+    </button>
+  </div>
+</div>
+
+<script>
+  const KEY = 'linova:consent';
+  const banner = document.querySelector<HTMLElement>('[data-consent-banner]');
+
+  const readChoice = (): string | null => {
+    try {
+      return localStorage.getItem(KEY);
+    } catch {
+      return 'declined'; // storage blocked → treat as declined, no banner loop
+    }
+  };
+
+  const store = (value: string) => {
+    try {
+      localStorage.setItem(KEY, value);
+    } catch {
+      /* storage blocked */
+    }
+  };
+
+  declare global {
+    interface Window {
+      gtag?: (...args: unknown[]) => void;
+    }
+  }
+
+  const grant = () => {
+    window.gtag?.('consent', 'update', {
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+      analytics_storage: 'granted',
+    });
+    // deferred trackers (e.g. the /lp/* Meta pixel) listen for this
+    window.dispatchEvent(new Event('linova:consent-granted'));
+  };
+
+  if (banner) {
+    const choice = readChoice();
+    if (choice === 'granted') {
+      grant();
+    } else if (choice === null) {
+      banner.classList.remove('hidden');
+    }
+
+    banner.querySelector('[data-consent-accept]')?.addEventListener('click', () => {
+      store('granted');
+      grant();
+      banner.classList.add('hidden');
+    });
+    banner.querySelector('[data-consent-decline]')?.addEventListener('click', () => {
+      store('declined');
+      banner.classList.add('hidden');
+    });
+  }
+</script>

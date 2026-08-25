@@ -1,0 +1,172 @@
+---
+// Internal styleguide — the living render of the Plotter & Marker tokens and
+// the typed data modules. Noindexed; kept as a build artifact.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { industries } from '../data/industries';
+import { services } from '../data/services';
+import { processStages } from '../data/process';
+import { clients } from '../data/clients';
+
+const core = [
+  { name: 'Linova Navy', hex: '#242460', note: 'dominant ground' },
+  { name: 'Ink', hex: '#0F0F26', note: 'inversion ground' },
+  { name: 'Drafting Film', hex: '#EFF1F8', note: 'cool paper / body ink' },
+  { name: 'Grid Blue', hex: '#4D4D8F', note: 'structure only, never text' },
+  { name: 'Gold', hex: '#C8A05A', note: 'the plotter’s line' },
+  { name: 'Redline', hex: '#FF4E00', note: 'the human hand' },
+];
+---
+
+<BaseLayout
+  title="Styleguide — The Linova Group"
+  description="Internal design-system reference for thelinovagroup.com v2."
+  noindex
+>
+  <div class="plot-grid">
+    <div class="mx-auto max-w-[1100px] px-6 py-16">
+      <p class="label-mono">sheet 02 · foundation · v2</p>
+      <h1 class="text-display mt-4 text-film">Styleguide</h1>
+      <p class="mt-4 max-w-[65ch] text-film-dim">
+        The Plotter &amp; Marker system as shipped: tokens, type, registers, and
+        the typed data modules every component reads from. Nothing on the site
+        is styled outside this sheet.
+      </p>
+
+      <!-- Palette -->
+      <section class="mt-16">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-title text-film">Palette</h2>
+          <span class="label-mono">6 core + 7 scoped accents</span>
+        </div>
+        <hr class="rule-gold mt-2 mb-8" />
+        <div class="grid grid-cols-2 gap-px border border-grid/50 bg-grid/50 sm:grid-cols-3 lg:grid-cols-6">
+          {core.map((c) => (
+            <div class="bg-navy">
+              <div class="h-20" style={`background:${c.hex}; border-bottom:1px solid rgba(77,77,143,0.4)`}></div>
+              <div class="p-3">
+                <span class="block text-caption font-medium text-film">{c.name}</span>
+                <span class="label-mono block normal-case">{c.hex}</span>
+                <span class="block text-[0.75rem] text-film-dim">{c.note}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="mt-6 flex flex-wrap gap-3">
+          {industries.map((i) => (
+            <span class="inline-flex items-center gap-2 rounded-chip border border-grid/50 px-3 py-1.5 text-caption text-film-dim">
+              <span class="h-3 w-3 rounded-[2px]" style={`background:${i.accent}`}></span>
+              {i.accentName}
+              <span class="label-mono normal-case">{i.accent}</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <!-- Type -->
+      <section class="mt-16">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-title text-film">Type</h2>
+          <span class="label-mono">instrument serif · plex sans var · plex mono</span>
+        </div>
+        <hr class="rule-gold mt-2 mb-8" />
+        <div class="flex flex-col gap-8 overflow-hidden border border-grid/50 p-6 sm:p-10">
+          <div>
+            <span class="label-mono">display-xl · clamp → 10.5rem</span>
+            <p class="text-display-xl mt-2 text-film">Built for <em class="text-vx-restaurants">restaurants.</em></p>
+          </div>
+          <div>
+            <span class="label-mono">display</span>
+            <p class="text-display mt-2 text-film">The system shows its work</p>
+          </div>
+          <div>
+            <span class="label-mono">title</span>
+            <p class="text-title mt-2 text-film">Machine-fast, <span class="marker-u">human-real</span></p>
+          </div>
+          <div class="max-w-[65ch]">
+            <span class="label-mono">body · plex sans · 65ch</span>
+            <p class="mt-2 text-film-dim">
+              Body is IBM Plex Sans — the same superfamily as the mono already in
+              the brand, so prose and typed data share one skeleton. The cold
+              register condenses the width axis for data-dense contexts:&nbsp;
+              <span class="register-cold">this sentence is set at 88% width, the
+              machine&rsquo;s voice.</span>
+            </p>
+          </div>
+          <div>
+            <span class="label-mono">mono-label · the gold register</span>
+            <p class="label-mono mt-2">sheet 02 · rev 1 · thornhill on · 6:12 pitch · covers 84</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Registers -->
+      <section class="mt-16">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-title text-film">Registers</h2>
+          <span class="label-mono">plotter · marker</span>
+        </div>
+        <hr class="rule-gold mt-2 mb-8" />
+        <div class="grid gap-px border border-grid/50 bg-grid/50 sm:grid-cols-2">
+          <div class="bg-navy p-6">
+            <span class="label-mono">the plotter — gold, ruled</span>
+            <hr class="rule-gold my-4" />
+            <p class="label-mono normal-case tracking-normal">[0.8s] palette mixed · 6/6</p>
+            <p class="label-mono normal-case tracking-normal">[1.2s] seven industries loaded</p>
+          </div>
+          <div class="bg-navy p-6">
+            <span class="label-mono text-redline">the marker — redline, one per viewport</span>
+            <p class="mt-4 font-display text-heading italic text-film">
+              handoff: <span class="marker-u">humans take it from here.</span>
+            </p>
+            <a href="/book" class="mt-5 inline-block rounded-chip border border-gold px-5 py-2.5 text-caption text-film transition-colors hover:border-redline">
+              Book a call
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data modules -->
+      <section class="mt-16">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-title text-film">Data modules</h2>
+          <span class="label-mono">src/data — the single source of truth</span>
+        </div>
+        <hr class="rule-gold mt-2 mb-8" />
+        <div class="overflow-x-auto border border-grid/50">
+          <table class="w-full text-caption">
+            <thead>
+              <tr class="border-b border-gold text-left">
+                <th class="label-mono p-3 font-medium">Vertical</th>
+                <th class="label-mono p-3 font-medium">Accent</th>
+                <th class="label-mono p-3 font-medium">Motif</th>
+                <th class="label-mono p-3 font-medium">Headline</th>
+                <th class="label-mono p-3 font-medium">Proof</th>
+              </tr>
+            </thead>
+            <tbody>
+              {industries.map((i) => (
+                <tr class="border-b border-grid/40 align-top">
+                  <td class="p-3 whitespace-nowrap text-film">{i.name}</td>
+                  <td class="p-3 whitespace-nowrap">
+                    <span class="mr-2 inline-block h-3 w-3 rounded-[2px] align-[-1px]" style={`background:${i.accent}`}></span>
+                    <span class="text-film-dim">{i.accentName}</span>
+                  </td>
+                  <td class="label-mono p-3 normal-case">{i.motif}</td>
+                  <td class="p-3 text-film-dim">{i.headline}</td>
+                  <td class="p-3 whitespace-nowrap">
+                    {i.proof
+                      ? <a href={i.proof.url} class="text-gold underline decoration-1 underline-offset-4" target="_blank" rel="noopener">{i.proof.client}</a>
+                      : <span class="label-mono normal-case">concept</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-6 text-caption text-film-dim">
+          {`Also loaded: ${services.length} service groups · ${processStages.length} pipeline stages · ${clients.length} clients.`}
+        </p>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

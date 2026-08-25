@@ -1,0 +1,214 @@
+---
+// /lp/[campaign] — paid-social landing template (§11). No nav, no footer,
+// logo not linked. One offer, one CTA. Mobile-first: this traffic is ~90%
+// in-app browsers. Meta pixel fires ONLY on /lp/* and only after consent;
+// the server-side CAPI event fires either way with a matched event_id.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { campaigns, type Campaign } from '../../data/campaigns';
+
+export function getStaticPaths() {
+  return campaigns
+    .filter((c) => c.active)
+    .map((campaign) => ({ params: { campaign: campaign.slug }, props: { campaign } }));
+}
+
+interface Props {
+  campaign: Campaign;
+}
+
+const { campaign } = Astro.props;
+const FORMSPREE = 'https://formspree.io/f/xeepbppp';
+const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID as string | undefined;
+const accent = campaign.accent ?? 'var(--color-gold)';
+---
+
+<BaseLayout title={campaign.metaTitle} description={campaign.subhead} noindex chrome={false}>
+  <div class="lp plot-grid min-h-svh" style={`--vx: ${accent}`}>
+    <div class="mx-auto flex max-w-[640px] flex-col px-5 pb-16 pt-8">
+      <!-- logo, not a link (§11) -->
+      <p class="m-0 font-display text-2xl text-film" aria-label="The Linova Group">
+        Linova<span class="text-gold">/</span>
+      </p>
+
+      <h1 class="mt-10 font-display text-title text-film">{campaign.headline}</h1>
+      <p class="mt-4 text-body text-film-dim">{campaign.subhead}</p>
+
+      <!-- the form IS the fold -->
+      <form data-lp-form action={FORMSPREE} method="POST" class="mt-8 flex flex-col gap-4" novalidate>
+        <input type="hidden" name="_subject" value={`Lead — ${campaign.slug}`} />
+        <input type="hidden" name="campaign" value={campaign.slug} />
+        {['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'fbclid'].map((field) => (
+          <input type="hidden" name={field} data-attribution={field} value="" />
+        ))}
+
+        <label class="flex flex-col gap-1.5">
+          <span class="label-mono">your name</span>
+          <input type="text" name="name" required autocomplete="name" class="field" />
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="label-mono">business</span>
+          <input type="text" name="business" required autocomplete="organization" class="field" />
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="label-mono">email</span>
+          <input type="email" name="email" required autocomplete="email" class="field" />
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="label-mono">phone</span>
+          <input type="tel" name="phone" required autocomplete="tel" class="field" />
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="label-mono">what do you need</span>
+          <select name="need" class="field">
+            <option value="new-site">A new website</option>
+            <option value="rebuild">A rebuild of an existing site</option>
+            <option value="marketing">Marketing & social media</option>
+            <option value="both">Site + marketing</option>
+          </select>
+        </label>
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+        <button
+          type="submit"
+          class="mt-2 rounded-chip border-2 py-4 text-body font-medium text-navy transition-transform active:scale-[0.99]"
+          style={`background: ${accent}; border-color: ${accent}`}
+        >
+          {campaign.formCta}
+        </button>
+        <p data-lp-err hidden class="m-0 border border-redline/60 p-3 text-caption text-film">
+          That didn't send. Try once more — or email us directly and mention
+          "{campaign.slug}".
+        </p>
+      </form>
+
+      <section class="mt-12" aria-label="What you get">
+        <h2 class="label-mono">{campaign.offer.title}</h2>
+        <ul class="m-0 mt-4 flex list-none flex-col gap-3 p-0">
+          {campaign.offer.points.map((point) => (
+            <li class="flex items-baseline gap-3 text-body text-film-dim">
+              <span class="shrink-0" style={`color: ${accent}`} aria-hidden="true">—</span>
+              {point}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- the one CTA, repeated -->
+      <button
+        type="button"
+        data-lp-repeat
+        class="mt-10 rounded-chip border-2 py-4 text-body font-medium text-navy"
+        style={`background: ${accent}; border-color: ${accent}`}
+      >
+        {campaign.formCta}
+      </button>
+
+      <p class="mt-10 text-[0.75rem] text-film-dim/70">
+        The Linova Group · Thornhill, Ontario ·
+        <a href="/privacy" class="underline decoration-1 underline-offset-2">privacy</a>
+      </p>
+    </div>
+  </div>
+
+  {pixelId && (
+    <script is:inline define:vars={{ pixelId }}>
+      /* Meta pixel — /lp/* only (§10), loaded once analytics consent is
+         granted; the server-side CAPI event covers measurement either way. */
+      function linovaLoadPixel() {
+        if (window.fbq) return;
+        !(function (f, b, e, v, n, t, s) {
+          if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+          if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+          t = b.createElement(e); t.async = !0; t.src = v;
+          s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+        })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+        window.fbq('init', pixelId);
+        window.fbq('track', 'PageView');
+      }
+      try {
+        if (localStorage.getItem('linova:consent') === 'granted') linovaLoadPixel();
+        else window.addEventListener('linova:consent-granted', linovaLoadPixel, { once: true });
+      } catch (e) { /* stay off */ }
+    </script>
+  )}
+
+  <script is:inline define:vars={{ campaignSlug: campaign.slug }}>
+    (function () {
+      // Persist attribution so it survives in-app browser navigation
+      var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'fbclid'];
+      var params = new URLSearchParams(location.search);
+      KEYS.forEach(function (key) {
+        var value = params.get(key);
+        try {
+          if (value) sessionStorage.setItem('linova:' + key, value);
+          value = value || sessionStorage.getItem('linova:' + key) || '';
+        } catch (e) { value = value || ''; }
+        var input = document.querySelector('[data-attribution="' + key + '"]');
+        if (input) input.value = value;
+      });
+
+      // Repeated CTA scrolls back to the form
+      var repeat = document.querySelector('[data-lp-repeat]');
+      var form = document.querySelector('[data-lp-form]');
+      if (repeat && form) {
+        repeat.addEventListener('click', function () {
+          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var first = form.querySelector('input[name="name"]');
+          if (first) first.focus({ preventScroll: true });
+        });
+      }
+
+      // Submit: browser pixel + server CAPI share one event_id (§10 dedup),
+      // then Formspree, then the thanks page.
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!form.reportValidity()) return;
+          var err = document.querySelector('[data-lp-err]');
+          if (err) err.hidden = true;
+
+          var eventId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random()).slice(2);
+          var data = new FormData(form);
+          var email = data.get('email') || '';
+          var phone = data.get('phone') || '';
+          var utm = {};
+          KEYS.forEach(function (k) { var v = data.get(k); if (v) utm[k] = v; });
+
+          if (window.fbq) window.fbq('track', 'Lead', {}, { eventID: eventId });
+          fetch('/api/capi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event_name: 'Lead', event_id: eventId, email: email, phone: phone,
+              fbclid: data.get('fbclid') || '', url: location.href, utm: utm,
+            }),
+          }).catch(function () { /* CAPI down ≠ lost lead */ });
+          if (window.linovaTrack) window.linovaTrack('lp_conversion', { campaign: campaignSlug });
+
+          fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
+            .then(function (res) {
+              if (!res.ok) throw new Error(res.status);
+              var q = new URLSearchParams({ name: String(data.get('name') || ''), email: String(email) });
+              location.href = '/lp/' + campaignSlug + '/thanks?' + q.toString();
+            })
+            .catch(function () { if (err) err.hidden = false; });
+        });
+      }
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .field {
+    background: color-mix(in srgb, var(--color-ink) 60%, var(--color-navy));
+    border: 1px solid color-mix(in srgb, var(--color-grid) 50%, transparent);
+    border-radius: var(--radius-chip);
+    color: var(--color-film);
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+  }
+  .field:focus {
+    outline: 2px solid var(--color-film);
+    outline-offset: 1px;
+  }
+</style>

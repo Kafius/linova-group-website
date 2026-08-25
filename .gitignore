@@ -11,6 +11,10 @@ node_modules/
 # environment variables
 .env
 .env.*
+!.env.example
+
+# playwright tool artifacts
+.playwright-mcp/
 
 # OS
 .DS_Store

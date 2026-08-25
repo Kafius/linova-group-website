@@ -1,0 +1,184 @@
+/* ═══════════════════════════════════════════════════════════════════
+   thelinovagroup.com v2 — "Plotter & Marker" design system
+   Entry stylesheet for the rebuilt Linova pages (BaseLayout).
+   Legacy pages and client sub-sites keep src/styles/global.css.
+   ═══════════════════════════════════════════════════════════════════ */
+
+@import "tailwindcss";
+
+/* ── Self-hosted fonts — latin subsets, display face preloaded in BaseLayout ── */
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-latin-400-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Variable: wght 100–700, wdth 85–100. Condensed width is the "cold" register. */
+@font-face {
+  font-family: "IBM Plex Sans Var";
+  font-style: normal;
+  font-weight: 100 700;
+  font-stretch: 85% 100%;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin-wdth-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@theme {
+  /* ── Core palette — see design plan sheet 01 ──────────────────── */
+  --color-*: initial;
+  --color-navy: #242460;      /* dominant ground; the brand carrier          */
+  --color-ink: #0f0f26;       /* deepest ground for inversion; never a text color */
+  --color-film: #eff1f8;      /* drafting film — cool blue-white paper       */
+  --color-grid: #4d4d8f;      /* plotted structure at 8–35% opacity; never text */
+  --color-gold: #c8a05a;      /* the plotter's line — hairlines, numerals, labels */
+  --color-gold-deep: #7d5f29; /* gold's ink on film grounds (5.3:1 on film)  */
+  --color-redline: #ff4e00;   /* the human hand — one per viewport           */
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Film at rest for secondary text on dark grounds (12.4:1 → ~8:1) */
+  --color-film-dim: rgba(239, 241, 248, 0.72);
+
+  /* ── Vertical accents — display & graphic use on navy only (all ≥4.5:1).
+       Quarantined to industry panels, industry pages, and the hero slot. ── */
+  --color-vx-barbershops: #3ec1e8;  /* Barbicide Cyan  6.7:1 */
+  --color-vx-restaurants: #ff5a4e;  /* Chili Crimson   4.6:1 */
+  --color-vx-contractors: #ffd426;  /* Hi-Vis Yellow   9.8:1 */
+  --color-vx-schools: #a48cff;      /* Belt Purple     5.2:1 */
+  --color-vx-supply: #8fbf4d;       /* Sedum Green     6.5:1 */
+  --color-vx-retail: #f45fad;       /* Label Pink      4.7:1 */
+  --color-vx-transport: #23c9b6;    /* Route Teal      6.8:1 */
+
+  /* ── Type ─────────────────────────────────────────────────────── */
+  --font-*: initial;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans Var", "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+
+  /* Scale — display clamps past 8rem on desktop; body stays disciplined */
+  --text-*: initial;
+  --text-display-xl: clamp(3.5rem, 1.6rem + 9.6vw, 10.5rem);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.01em;
+  --text-display: clamp(2.5rem, 1.4rem + 5.5vw, 7rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.01em;
+  --text-title: clamp(1.9rem, 1.4rem + 2.2vw, 3.5rem);
+  --text-title--line-height: 1.05;
+  --text-heading: clamp(1.35rem, 1.15rem + 0.9vw, 2rem);
+  --text-heading--line-height: 1.2;
+  --text-body: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  --text-body--line-height: 1.65;
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.5;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+
+  /* ── Motion durations (motion lib reads these) ────────────────── */
+  --ease-plot: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --radius-*: initial;
+  --radius-chip: 4px; /* drafting film, not newsprint — chips/CTAs carry 4px */
+}
+
+/* ═══ Base ═══════════════════════════════════════════════════════ */
+
+body {
+  background: var(--color-navy);
+  color: var(--color-film);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-redline);
+  color: var(--color-navy);
+}
+
+/* Accessible focus — film ring on dark grounds, navy ring on film grounds */
+:where(a, button, [role="button"], [tabindex], input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-film);
+  outline-offset: 2px;
+  border-radius: var(--radius-chip);
+}
+[data-ground="film"] :where(a, button, [role="button"], [tabindex], input, select, textarea, summary):focus-visible {
+  outline-color: var(--color-navy);
+}
+
+/* ═══ Registers (utility classes shared across sections) ═════════ */
+
+/* The gold register: mono small-caps labels with tabular numerals */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gold);
+}
+
+/* The plotter's line */
+.rule-gold {
+  border: 0;
+  border-top: 1px solid var(--color-gold);
+}
+
+/* The human hand: a marker underline, never a fill behind body text */
+.marker-u {
+  background-image: linear-gradient(to top, var(--color-redline) 0.14em, transparent 0.14em);
+  background-position: 0 102%;
+  background-repeat: no-repeat;
+  padding-bottom: 0.05em;
+}
+
+/* Plotted grid ground (Grid Blue @ ~10%) */
+.plot-grid {
+  background-image: radial-gradient(rgba(77, 77, 143, 0.28) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* The cold register: condensed body for data-dense machine contexts */
+.register-cold {
+  font-stretch: 88%;
+}
+
+/* Display type never wraps mid-word awkwardly */
+.text-display-xl,
+.text-display,
+.text-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-wrap: balance;
+}

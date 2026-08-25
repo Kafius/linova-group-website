@@ -1,0 +1,43 @@
+---
+// /terms — short, readable site terms.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Terms — The Linova Group"
+  description="Terms of use for thelinovagroup.com."
+  noindex={false}
+>
+  <div class="bg-film text-navy" data-ground="film">
+    <article class="mx-auto max-w-[680px] px-6 pb-24 pt-24">
+      <p class="label-mono !text-gold-deep">terms</p>
+      <h1 class="mt-4 font-display text-title">Terms of use</h1>
+      <p class="label-mono mt-4 normal-case tracking-normal !text-gold-deep">last updated august 2026</p>
+
+      <div class="mt-10 flex flex-col gap-5 text-body">
+        <p>
+          This site is published by The Linova Group, Thornhill, Ontario. The
+          content is here to help you decide whether to work with us; it isn't
+          professional advice and it doesn't form a contract. Project work is
+          governed by the written agreement we sign together, not by this page.
+        </p>
+        <p>
+          Client names, logos, and site screenshots appear with permission and
+          belong to their owners. Everything else — the design, the copy, the
+          code of this site — belongs to The Linova Group. Don't republish it
+          as your own.
+        </p>
+        <p>
+          Case studies describe what shipped on real projects. Where numbers
+          appear, they're measured, not projected. Results for your business
+          depend on your business — that's exactly why the first step is
+          <a href="/book" class="text-navy underline decoration-gold decoration-2 underline-offset-4">a call</a>, not a checkout page.
+        </p>
+        <p>
+          Questions about these terms:
+          <a href="/contact" class="text-navy underline decoration-gold decoration-2 underline-offset-4">send a message</a>.
+        </p>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /lp/
+Disallow: /studio
+Allow: /
+
+Sitemap: https://thelinovagroup.com/sitemap-index.xml

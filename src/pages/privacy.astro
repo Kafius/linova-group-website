@@ -1,0 +1,58 @@
+---
+// /privacy — plain-language privacy policy covering what the site actually
+// does: GA4 behind consent, Meta pixel on /lp/* only, Formspree, Calendly.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy — The Linova Group"
+  description="What The Linova Group collects, why, and the choices you have — in plain language."
+  noindex={false}
+>
+  <div class="bg-film text-navy" data-ground="film">
+    <article class="mx-auto max-w-[680px] px-6 pb-24 pt-24">
+      <p class="label-mono !text-gold-deep">privacy</p>
+      <h1 class="mt-4 font-display text-title">What we collect, and why</h1>
+      <p class="label-mono mt-4 normal-case tracking-normal !text-gold-deep">last updated august 2026</p>
+
+      <div class="mt-10 flex flex-col gap-5 text-body">
+        <p>
+          The Linova Group operates from Thornhill, Ontario and follows PIPEDA
+          (Canada's federal privacy law) and the spirit of Quebec's Law 25.
+          Short version: nothing on this site tracks you until you say it can,
+          and everything you send us is used to reply to you — not to build a
+          profile of you.
+        </p>
+
+        <h2 class="mt-4 font-display text-heading">Analytics and ads</h2>
+        <p>
+          We use Google Analytics 4 to see which pages work. Ad and analytics
+          cookies are <strong class="font-medium">off by default</strong> and
+          turn on only if you choose "Allow analytics &amp; ads" in the banner.
+          Decline and the site works exactly the same. Our ad landing pages
+          (the ones you reach from a Facebook or Instagram ad) also use Meta's
+          pixel and conversions tools so we know an ad led to a message —
+          contact details sent that way are hashed before they leave our
+          server.
+        </p>
+
+        <h2 class="mt-4 font-display text-heading">Forms and bookings</h2>
+        <p>
+          The contact form is processed by Formspree; what you type goes to
+          our inbox and nowhere else. Call bookings run on Calendly, which has
+          its own privacy policy; we receive the name, email, and time you
+          give it.
+        </p>
+
+        <h2 class="mt-4 font-display text-heading">Your choices</h2>
+        <p>
+          You can decline cookies in the banner, clear your browser's storage
+          to reset the choice, and ask us at any time what we hold about you
+          or ask us to delete it. Use the
+          <a href="/contact" class="text-navy underline decoration-gold decoration-2 underline-offset-4">contact form</a>
+          — a person reads it.
+        </p>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

@@ -1,0 +1,145 @@
+---
+// /about — the narrative. The quietest page on the site: long-form, film
+// ground, generous measure, one scroll device (a gold reading-progress
+// hairline). No Build Log, no motifs, no accents beyond gold and one
+// Redline mark. Byline: Dennis De Leon.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { breadcrumbs } from '../lib/jsonld';
+---
+
+<BaseLayout
+  title="About — The Linova Group"
+  description="Computer science, then cold calls, then a system: why Linova builds machine-fast and markets human-real. By Dennis De Leon, founder."
+  jsonLd={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }])]}
+>
+  <div class="about bg-film text-navy" data-ground="film">
+    <!-- the one scroll device: a reading-progress hairline -->
+    <div class="progress-track fixed inset-x-0 top-0 z-50 h-px bg-navy/10">
+      <div class="progress-fill h-full w-full origin-left scale-x-0 bg-gold" data-progress></div>
+    </div>
+
+    <article class="mx-auto max-w-[680px] px-6 pb-28 pt-24">
+      <header>
+        <p class="label-mono !text-gold-deep">about · the linova group</p>
+        <h1 class="mt-6 font-display text-title leading-[1.08]">
+          I learned to build software, then I learned why people buy it.
+          This company is what happened when the two finally met.
+        </h1>
+        <p class="label-mono mt-8 normal-case tracking-normal !text-gold-deep">
+          Dennis De Leon · founder, Thornhill, Ontario
+        </p>
+      </header>
+
+      <div class="about-body mt-14 flex flex-col gap-6 text-body">
+        <p>
+          My background is computer science. My first real job was not writing
+          code — it was B2B sales. Cold calls, BDR lists, hearing "no" forty
+          times a day and learning what made the forty-first call different.
+          That combination is rarer than it should be: most developers have
+          never had to sell anything, and most salespeople can't build what
+          they're selling. I ended up able to do both, and for a while I
+          didn't know what that was for.
+        </p>
+
+        <p>
+          Then I started paying attention to how small businesses around the
+          GTA actually get websites. A restaurant, a landscaping crew, a
+          taekwondo school, a transport company — they all hit the same two
+          doors. Door one: an agency quotes them fifteen or twenty thousand
+          dollars and a three-month timeline for what turns out to be a
+          template with their logo on it. Door two: they pay a few hundred
+          bucks for the template directly, and it costs them quietly, every
+          week, in customers who looked at the site and called someone else.
+          Both doors are bad. The owners know it. They just haven't had a
+          third door.
+        </p>
+
+        <p>
+          When AI code tools showed up, everyone assumed the third door was
+          "let the machine write it." It isn't. I've seen what that produces
+          — it's a genre now. Sites that demo beautifully and fall apart the
+          first time a menu changes or a form fails or a page needs to exist
+          in two places. The industry calls it vibe coding, and the name is
+          honest: there's a vibe, and there's no engineering under it.
+        </p>
+
+        <p>
+          What I built instead is a system. Every site starts as typed data —
+          the menu, the services, the projects, the hours, all of it lives in
+          structured modules with interfaces that enforce their shape.
+          Components read the data; nothing is hand-pasted into a page. The
+          build is deterministic: same inputs, same output, every time. AI
+          works inside that discipline as an accelerant — it makes me faster
+          at the parts that were already engineered, and it is never allowed
+          to improvise the architecture. That's the entire difference. It's
+          why one developer can ship an agency-grade site in days instead of
+          months, and why the output survives contact with production —
+          across dozens of client sites, not impressively once.
+        </p>
+
+        <p>
+          That's half the company. Here's the other half, and I'm going to
+          say it plainly because most people in my position won't:
+          <strong class="font-medium">AI cannot do marketing.</strong>
+          It can compress a build. It cannot read a neighbourhood. It can't
+          feel out a brand's voice, or know why one Reel lands and the next
+          one dies, or understand what a Filipino restaurant means to its
+          community in a way that shows up in the caption. Marketing runs on
+          judgment, cultural read, and taste — and those come from
+          <span class="marker-u">people</span>.
+        </p>
+
+        <p>
+          So Linova's marketing is done by a human team in the Philippines —
+          real strategists and creatives who plan campaigns, write the words,
+          and make the content. Not AI slop with a human's name on it. Their
+          faces and names belong on this page, and they're coming to it as
+          soon as the photos are in — that's a promise to them as much as to
+          you.
+        </p>
+
+        <p>
+          That's the whole company. Machine-fast where machines are genuinely
+          better: the build, the data, the pipeline, the performance. Human
+          where humans are genuinely better: the strategy, the words, the
+          taste. Neither half pretending to be the other. If that sounds like
+          the third door you've been looking for,
+          <a href="/book" class="text-navy underline decoration-gold decoration-2 underline-offset-4 hover:decoration-redline">book a call</a>
+          — it's twenty minutes, and I'm the one who picks up.
+        </p>
+      </div>
+
+      <footer class="mt-16 border-t border-navy/15 pt-8">
+        <p class="m-0 font-display text-heading italic">— Dennis De Leon</p>
+        <p class="label-mono mt-2 normal-case tracking-normal !text-gold-deep">
+          founder &amp; lead developer
+        </p>
+      </footer>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-body p {
+    margin: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-track {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { prefersReducedMotion } from '../lib/motion';
+
+  const fill = document.querySelector<HTMLElement>('[data-progress]');
+  if (fill && !prefersReducedMotion()) {
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      fill.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    };
+    document.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>

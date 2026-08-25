@@ -1,0 +1,38 @@
+---
+// Act 6 — quiet proof. The logo wall survives, demoted: one silent row, no
+// marquee. Google reviews render here once the Business Profile exists
+// (feature flag, build phase 8) — until then the band stays honest and small.
+import { clients } from '../../data/clients';
+import GoogleReviews from './GoogleReviews.astro';
+---
+
+<GoogleReviews />
+<section id="act-proof" class="border-y border-grid/30" aria-label="Clients">
+  <div class="mx-auto max-w-[1200px] px-6 py-14">
+    <p class="label-mono text-center">trusted by</p>
+    <ul class="mt-8 flex list-none flex-wrap items-center justify-center gap-x-10 gap-y-6 p-0">
+      {clients.map((client) => (
+        <li>
+          <a
+            href={client.url}
+            target="_blank"
+            rel="noopener"
+            class:list={[
+              'flex items-center opacity-45 grayscale transition-all duration-300 hover:opacity-90 hover:grayscale-0',
+              client.logoHeight === 'tall' ? 'h-14' : 'h-9',
+            ]}
+            aria-label={`Visit ${client.name}`}
+          >
+            <img
+              src={client.logo}
+              alt={client.name}
+              loading="lazy"
+              decoding="async"
+              class="max-h-full w-auto max-w-[140px] object-contain brightness-0 invert"
+            />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

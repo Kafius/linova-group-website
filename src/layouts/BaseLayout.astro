@@ -1,0 +1,140 @@
+---
+// v2 layout shell — "Plotter & Marker". Legacy pages keep Layout.astro until
+// they are replaced; client sub-sites keep their own layouts.
+import '../styles/linova.css';
+import Nav from '../components/shell/Nav.astro';
+import Footer from '../components/shell/Footer.astro';
+import ConsentBanner from '../components/shell/ConsentBanner.astro';
+import { site } from '../data/site';
+import { organization, localBusiness } from '../lib/jsonld';
+
+interface Props {
+  title: string;
+  description: string;
+  /** absolute-path OG image; falls back to the site default */
+  ogImage?: string;
+  noindex?: boolean;
+  /** extra JSON-LD blocks for this page */
+  jsonLd?: Record<string, unknown>[];
+  /** org + local-business JSON-LD — home page only */
+  withBusinessJsonLd?: boolean;
+  /** nav + footer; landing pages opt out */
+  chrome?: boolean;
+  /** custom GA4 event fired once on page load (e.g. industry_view) */
+  pageEvent?: { name: string; params?: Record<string, string> };
+}
+
+const {
+  title,
+  description,
+  ogImage = site.ogImage,
+  noindex = false,
+  jsonLd = [],
+  withBusinessJsonLd = false,
+  chrome = true,
+  pageEvent,
+} = Astro.props;
+
+// Default is the GA4 property already live on the old site; env overrides.
+const gaId =
+  (import.meta.env.PUBLIC_GA4_MEASUREMENT_ID as string | undefined) || 'G-V6RVGVM23G';
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImageUrl = new URL(ogImage, site.url).href;
+const blocks = [
+  ...(withBusinessJsonLd ? [organization(), localBusiness()] : []),
+  ...jsonLd,
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/svg+xml" href="/linova-logo.svg" />
+    <meta name="theme-color" content="#242460" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Display face only — §14: preload the display face, swap the rest -->
+    <link
+      rel="preload"
+      href="/fonts/instrument-serif-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {blocks.map((block) => (
+      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    ))}
+
+    {gaId && (
+      <script is:inline define:vars={{ gaId, pageEvent }}>
+        /* GA4 + Consent Mode v2 — consent defaults MUST queue before gtag.js
+           processes. Deliberately inline (not Partytown): consent-mode
+           ordering breaks under Partytown often enough that the brief allows
+           the inline path. */
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('consent', 'default', {
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied',
+          analytics_storage: 'denied',
+        });
+        try {
+          if (localStorage.getItem('linova:consent') === 'granted') {
+            gtag('consent', 'update', {
+              ad_storage: 'granted',
+              ad_user_data: 'granted',
+              ad_personalization: 'granted',
+              analytics_storage: 'granted',
+            });
+          }
+        } catch (e) { /* storage blocked — stay denied */ }
+        gtag('js', new Date());
+        gtag('config', gaId);
+        window.linovaTrack = function (name, params) {
+          try { gtag('event', name, params || {}); } catch (e) { /* noop */ }
+        };
+        if (pageEvent) window.linovaTrack(pageEvent.name, pageEvent.params);
+        /* Delegated tracking: any element with data-track fires that event */
+        document.addEventListener('click', function (e) {
+          var el = e.target && e.target.closest ? e.target.closest('[data-track]') : null;
+          if (el) window.linovaTrack(el.getAttribute('data-track'), { label: el.getAttribute('data-track-label') || undefined });
+        });
+      </script>
+    )}
+    {gaId && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>}
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-film focus:text-navy focus:px-4 focus:py-2 focus:rounded-chip"
+    >
+      Skip to content
+    </a>
+    {chrome && <Nav />}
+    <main id="main">
+      <slot />
+    </main>
+    {chrome && <Footer />}
+    {gaId && <ConsentBanner />}
+  </body>
+</html>
