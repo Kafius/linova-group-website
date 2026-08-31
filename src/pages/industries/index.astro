@@ -1,81 +1,81 @@
 ---
-// /industries — the overview of all seven. An index sheet: each vertical a
-// full-width plotted row in its own accent, magnetic on desktop.
+// /industries — the directory of every vertical, grouped so a visitor can
+// find their own trade fast: category rail on top, then the playbooks under
+// their group heading, each row carrying the specific businesses it covers.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Motif from '../../components/motifs/Motif.astro';
-import { industries } from '../../data/industries';
+import SectionRail from '../../components/shell/SectionRail.astro';
+import IndustryCards from '../../components/industries/IndustryCards.astro';
+import { industries, categoryMenu, industriesIn } from '../../data/industries';
 import { breadcrumbs } from '../../lib/jsonld';
+
+const menu = categoryMenu();
+const railItems = [
+  { label: 'all', href: '/industries', count: industries.length },
+  ...menu.map((category) => ({
+    label: category.name,
+    href: `/industries/category/${category.slug}`,
+    count: category.count,
+  })),
+];
 ---
 
 <BaseLayout
   title="Industries — The Linova Group"
-  description="Seven kinds of business, one build system: barbershops, restaurants, contractors, schools, suppliers, retail, and transport — each with its own playbook."
+  description="One build system, a playbook per vertical: trades, restaurants, clinics, auto, retail, schools, suppliers and more — grouped so you can find yours."
   jsonLd={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Industries', path: '/industries' }])]}
 >
   <div class="plot-grid">
     <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
-      <p class="label-mono">seven industries · one system</p>
+      <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+        <p class="label-mono">playbooks</p>
+      </div>
       <h1 class="mt-4 max-w-[18ch] font-display text-display text-film">
-        Your business isn't generic. Your site shouldn't be.
+        Playbooks Designed for your Industry
       </h1>
-      <p class="mt-5 max-w-[58ch] text-body text-film-dim">
-        Every vertical breaks online in its own way — so each gets its own
-        playbook, its own proof, and its own page. Find yours.
+      <p class="mt-5 max-w-[54ch] text-body text-film-dim">
+        We've done the work to find what works for your industry. Pick your
+        group, then find the line that describes what you actually do.
       </p>
     </header>
+  </div>
 
-    <ul class="m-0 list-none border-t border-grid/40 p-0">
-      {industries.map((industry, i) => (
-        <li class="border-b border-grid/40">
-          <a
-            href={`/industries/${industry.slug}`}
-            class="industry-row group relative block overflow-hidden"
-            style={`--vx: ${industry.accent}`}
-            data-magnetic-row
-          >
-            <div class="mx-auto flex max-w-[1200px] items-center gap-6 px-6 py-10 sm:py-12">
-              <span class="label-mono w-14 shrink-0">{String(i + 1).padStart(2, '0')}/07</span>
-              <span class="min-w-0 flex-1">
-                <span class="block font-display text-title transition-colors duration-300" style="color: var(--vx)">
-                  {industry.name}
-                </span>
-                <span class="mt-1 block text-caption text-film-dim">
-                  {industry.headline}
-                </span>
-              </span>
-              <span class="hidden shrink-0 items-center gap-6 sm:flex">
-                {industry.status === 'live' && industry.proof ? (
-                  <span class="label-mono normal-case tracking-normal">proof: {industry.proof.client}</span>
-                ) : (
-                  <span class="label-mono rounded-chip border border-grid/50 px-2.5 py-1">concept</span>
-                )}
-                <span class="h-14 w-20 opacity-40 transition-opacity duration-300 group-hover:opacity-80" style="color: var(--vx)" aria-hidden="true">
-                  <Motif id={industry.motif} class="h-full w-full" />
-                </span>
-              </span>
-              <span class="text-gold" aria-hidden="true">→</span>
-            </div>
-          </a>
-        </li>
-      ))}
-    </ul>
+  <SectionRail label="Industry groups" active="/industries" items={railItems} />
+
+  <div class="plot-grid pb-4">
+    {menu.map((category, i) => (
+      <section
+        class:list={['pb-16 pt-14', i > 0 && 'border-t border-gold/40']}
+        aria-labelledby={`group-${category.slug}`}
+      >
+        <div class="mx-auto max-w-[1200px] px-6 pb-6">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
+            <h2 id={`group-${category.slug}`} class="m-0 font-display text-heading text-film">
+              <a href={`/industries/category/${category.slug}`} class="no-underline hover:text-gold">
+                {category.name}
+              </a>
+            </h2>
+
+          </div>
+          <p class="mt-2 max-w-[64ch] text-caption text-film-dim">{category.blurb}</p>
+        </div>
+        <IndustryCards
+          items={industriesIn(category.slug)}
+          start={menu.slice(0, i).reduce((n, c) => n + c.count, 0)}
+          total={industries.length}
+        />
+      </section>
+    ))}
 
     <div class="mx-auto max-w-[1200px] px-6 py-20">
       <p class="max-w-[52ch] text-body text-film-dim">
         Not on the list? The system doesn't care what you sell — the playbook
-        just hasn't been written yet.
+        just hasn't been written yet.{' '}
         <a href="/book" class="text-gold underline decoration-1 underline-offset-4">Book a call</a>
         and we'll write it on the spot.
       </p>
     </div>
   </div>
 </BaseLayout>
-
-<style>
-  .industry-row:hover {
-    background: color-mix(in srgb, var(--vx) 6%, transparent);
-  }
-</style>
 
 <script>
   import { magnetic } from '../../lib/motion';

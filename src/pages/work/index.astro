@@ -1,73 +1,65 @@
 ---
-// /work — case studies index. Sanity-driven with seeded fallback.
-import { Image } from 'astro:assets';
+// /work — the case-study index, set like a section front: masthead, section
+// rail, one lead story, then the rest newest-first. Content is Sanity at
+// build time, seeds until the project has documents (see lib/caseStudies).
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { fetchCaseStudies } from '../../lib/caseStudies';
-import { getIndustry } from '../../data/industries';
-import { breadcrumbs } from '../../lib/jsonld';
+import SectionRail from '../../components/shell/SectionRail.astro';
+import StoryGrid from '../../components/work/StoryGrid.astro';
+import { fetchCaseStudies, workSections } from '../../lib/caseStudies';
+import { breadcrumbs, itemList } from '../../lib/jsonld';
 
 const studies = await fetchCaseStudies();
+const sections = workSections(studies);
+
+const railItems = [
+  { label: 'all', href: '/work', count: studies.length },
+  ...sections.map((s) => ({ label: s.name, href: s.href, count: s.count, accent: s.accent })),
+];
+
+const latest = studies[0]?.publishedAt;
+// UTC to match the datelines on the stories themselves (see StoryGrid).
+const latestDate = latest
+  ? new Intl.DateTimeFormat('en-CA', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(latest))
+  : '';
 ---
 
 <BaseLayout
   title="Work — The Linova Group"
   description="Case studies from the Linova build system: live sites for contractors, restaurants, suppliers, schools, and transport companies across Ontario."
-  jsonLd={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Work', path: '/work' }])]}
+  jsonLd={[
+    breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Work', path: '/work' }]),
+    itemList(
+      'Linova case studies',
+      studies.map((study) => ({ name: study.title, path: `/work/${study.slug}` })),
+    ),
+  ]}
 >
   <div class="plot-grid">
-    <header class="mx-auto max-w-[1200px] px-6 pb-14 pt-24">
-      <p class="label-mono">selected work</p>
+    <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
+      <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+        <p class="label-mono">selected work</p>
+        <p class="label-mono" style="color: var(--color-film-dim)">
+          {studies.length} filed{latestDate && ` · latest ${latestDate}`}
+        </p>
+      </div>
       <h1 class="mt-4 max-w-[16ch] font-display text-display text-film">
         The receipts.
       </h1>
-      <p class="mt-5 max-w-[56ch] text-body text-film-dim">
-        Every study below is a live site with real customers on it. Open them
-        on your phone — speed is the first thing we'd want you to check.
+      <p class="mt-5 max-w-[52ch] text-body text-film-dim">
+        Every study is a live site with real customers on it. Open one on your
+        phone — speed is the first thing we'd check.
       </p>
     </header>
   </div>
 
-  <div class="mx-auto flex max-w-[1200px] flex-col gap-20 px-6 pb-28">
-    {studies.map((study, i) => {
-      const industry = study.industrySlug ? getIndustry(study.industrySlug) : undefined;
-      return (
-        <article class="grid items-end gap-6 lg:grid-cols-12" style={`--vx: ${industry?.accent ?? 'var(--color-gold)'}`}>
-          <a
-            href={`/work/${study.slug}`}
-            class:list={['group block overflow-hidden border border-grid/40 lg:col-span-8', i % 2 === 1 ? 'lg:order-2 lg:col-start-5' : '']}
-          >
-            {study.image ? (
-              <Image
-                src={study.image}
-                alt={`${study.client} — live site`}
-                widths={[640, 1024, 1440]}
-                sizes="(min-width: 1024px) 66vw, 100vw"
-                class="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.015]"
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-            ) : study.imageUrl ? (
-              <img
-                src={study.imageUrl}
-                alt={`${study.client} — live site`}
-                class="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.015]"
-                loading={i === 0 ? 'eager' : 'lazy'}
-                width="1440"
-                height="900"
-              />
-            ) : null}
-          </a>
-          <div class:list={['lg:col-span-4 lg:pb-4', i % 2 === 1 ? 'lg:order-1 lg:col-start-1' : '']}>
-            <p class="label-mono" style="color: var(--vx)">{industry?.name ?? 'case study'}</p>
-            <h2 class="mt-2 font-display text-heading text-film">
-              <a href={`/work/${study.slug}`} class="no-underline hover:text-gold">{study.title}</a>
-            </h2>
-            <p class="mt-3 text-caption text-film-dim">{study.summary}</p>
-            <a href={`/work/${study.slug}`} class="label-mono mt-4 inline-block normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
-              read the case study →
-            </a>
-          </div>
-        </article>
-      );
-    })}
+  <SectionRail label="Case study sections" active="/work" items={railItems} />
+
+  <div class="mx-auto max-w-[1200px] px-6 pb-28 pt-12">
+    <StoryGrid studies={studies} />
   </div>
 </BaseLayout>

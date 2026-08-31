@@ -4,7 +4,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { industries } from '../data/industries';
 import { services } from '../data/services';
-import { processStages } from '../data/process';
 import { clients } from '../data/clients';
 
 const core = [
@@ -66,13 +65,13 @@ const core = [
       <section class="mt-16">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="text-title text-film">Type</h2>
-          <span class="label-mono">instrument serif · plex sans var · plex mono</span>
+          <span class="label-mono">outfit var · plex sans var · plex mono</span>
         </div>
         <hr class="rule-gold mt-2 mb-8" />
         <div class="flex flex-col gap-8 overflow-hidden border border-grid/50 p-6 sm:p-10">
           <div>
-            <span class="label-mono">display-xl · clamp → 10.5rem</span>
-            <p class="text-display-xl mt-2 text-film">Built for <em class="text-vx-restaurants">restaurants.</em></p>
+            <span class="label-mono">display-xl · clamp → 9rem</span>
+            <p class="text-display-xl mt-2 text-film">Built for <span class="text-vx-restaurants">restaurants.</span></p>
           </div>
           <div>
             <span class="label-mono">display</span>
@@ -85,8 +84,10 @@ const core = [
           <div class="max-w-[65ch]">
             <span class="label-mono">body · plex sans · 65ch</span>
             <p class="mt-2 text-film-dim">
-              Body is IBM Plex Sans — the same superfamily as the mono already in
-              the brand, so prose and typed data share one skeleton. The cold
+              Display is Outfit — a geometric sans in the same Futura lineage as
+              the LINOVA wordmark, so headlines and the mark share one skeleton.
+              Body stays IBM Plex Sans, the same superfamily as the mono, so
+              prose and typed data share another. The cold
               register condenses the width axis for data-dense contexts:&nbsp;
               <span class="register-cold">this sentence is set at 88% width, the
               machine&rsquo;s voice.</span>
@@ -94,7 +95,7 @@ const core = [
           </div>
           <div>
             <span class="label-mono">mono-label · the gold register</span>
-            <p class="label-mono mt-2">sheet 02 · rev 1 · thornhill on · 6:12 pitch · covers 84</p>
+            <p class="label-mono mt-2">sheet 02 · rev 1 · lot 14 · 6:12 pitch · covers 84</p>
           </div>
         </div>
       </section>
@@ -111,11 +112,11 @@ const core = [
             <span class="label-mono">the plotter — gold, ruled</span>
             <hr class="rule-gold my-4" />
             <p class="label-mono normal-case tracking-normal">[0.8s] palette mixed · 6/6</p>
-            <p class="label-mono normal-case tracking-normal">[1.2s] seven industries loaded</p>
+            <p class="label-mono normal-case tracking-normal">[1.2s] {industries.length} industries loaded</p>
           </div>
           <div class="bg-navy p-6">
             <span class="label-mono text-redline">the marker — redline, one per viewport</span>
-            <p class="mt-4 font-display text-heading italic text-film">
+            <p class="mt-4 font-display text-heading font-normal text-film">
               handoff: <span class="marker-u">humans take it from here.</span>
             </p>
             <a href="/book" class="mt-5 inline-block rounded-chip border border-gold px-5 py-2.5 text-caption text-film transition-colors hover:border-redline">
@@ -164,7 +165,7 @@ const core = [
           </table>
         </div>
         <p class="mt-6 text-caption text-film-dim">
-          {`Also loaded: ${services.length} service groups · ${processStages.length} pipeline stages · ${clients.length} clients.`}
+          {`Also loaded: ${services.length} service groups · ${clients.length} clients.`}
         </p>
       </section>
     </div>

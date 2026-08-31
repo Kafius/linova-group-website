@@ -1,15 +1,27 @@
 ---
 // Site chrome: navy + gold + film only — vertical accents never touch this.
-// The nav's Book link participates in the one-CTA-per-viewport law: pages with
-// a hero CTA mark it [data-hero-cta]; a tiny observer below hides the nav CTA
-// while the hero CTA is on screen.
-import { nav, site } from '../../data/site';
+// The nav's Book link is always on at sm+ (phones reach it through the menu
+// below). It used to hide itself while a page's [data-hero-cta] was on screen
+// — the one-CTA-per-viewport law — but a booking link you have to scroll to
+// find is worse than two of them on one screen.
+import { Image } from 'astro:assets';
+import wordmark from '../../assets/linova-logo-horizontal-white.png';
+import { nav } from '../../data/site';
 ---
 
 <header class="sticky top-0 z-40 bg-navy/90 backdrop-blur-sm">
   <div class="mx-auto flex max-w-[1200px] items-center justify-between gap-6 px-6 py-4">
-    <a href="/" class="font-display text-2xl leading-none text-film" aria-label={site.name}>
-      Linova<span class="text-gold">/</span>
+    <a href="/" class="flex items-center cursor-pointer">
+      {/* Through the image pipeline, not public/: the source is 2370px wide
+          and was shipping 191KB to every page for a 176px box. */}
+      <Image
+        src={wordmark}
+        alt="Linova Group"
+        width={188}
+        densities={[1, 2]}
+        loading="eager"
+        class="h-11 w-auto"
+      />
     </a>
 
     <nav aria-label="Main">
@@ -30,7 +42,6 @@ import { nav, site } from '../../data/site';
     <div class="flex items-center gap-3">
       <a
         href={nav.cta.href}
-        data-nav-cta
         data-track="book_click"
         data-track-label="nav"
         class="hidden rounded-chip border border-gold px-4 py-2 text-caption text-film transition-colors hover:border-redline sm:inline-block"
@@ -80,19 +91,4 @@ import { nav, site } from '../../data/site';
     toggle.setAttribute('aria-expanded', String(!open));
     if (menu) menu.hidden = open;
   });
-
-  // One CTA per viewport: the nav's Book link appears only after the page's
-  // hero CTA (if any) has scrolled away.
-  const navCta = document.querySelector<HTMLElement>('[data-nav-cta]');
-  const heroCta = document.querySelector<HTMLElement>('[data-hero-cta]');
-  if (navCta && heroCta && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(([entry]) => {
-      navCta.classList.toggle('sm:inline-block', !entry.isIntersecting);
-      navCta.classList.toggle('hidden', entry.isIntersecting);
-    });
-    observer.observe(heroCta);
-  } else if (navCta && !heroCta) {
-    navCta.classList.remove('hidden');
-    navCta.classList.add('sm:inline-block');
-  }
 </script>

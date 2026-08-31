@@ -1,0 +1,155 @@
+---
+// The client band under the hero — one row of logos on a white ground.
+// No plates, no label: the logos are the whole content.
+//
+// Rebuilt from a standalone showcase exhibit written against a different
+// design system (fuchsia accents, Plus Jakarta Sans, and Instrument Serif +
+// JetBrains Mono pulled from the Google Fonts CDN, which broke the
+// self-hosted-fonts rule in brief §14). What survives is the part that was
+// good: contra-rotating tracks, the edge mask, and hover-to-pause.
+//
+// Not a kill-list violation: §2 forbids a logo marquee as the ONLY social
+// proof. Act 5 (case studies) and act 6 (the quiet logo wall + reviews) both
+// still carry proof.
+import { getImage } from 'astro:assets';
+import { clients } from '../../data/clients';
+
+// The row repeats the roster REPEATS times so the track always overflows the
+// viewport. The shift is a percentage of the track's own width, so one set is
+// exactly 100/REPEATS% regardless of how wide the individual logos are.
+// Four sets clears an ultrawide viewport even if every logo renders narrow.
+const REPEATS = 4;
+const shift = `-${(100 / REPEATS).toFixed(4)}%`;
+
+// Every logo is re-encoded to the box it actually occupies, at 2x for retina:
+// the CSS caps height at 42px (66 for the tall slot) and width at 190. SVGs
+// pass straight through — they're already resolution-independent, and the
+// image pipeline doesn't transform them.
+const CAP_W = 190 * 2;
+const rendered = await Promise.all(
+  clients.map(async (client) => {
+    const { logo } = client;
+    if (logo.format === 'svg') {
+      return { client, src: logo.src, width: logo.width, height: logo.height };
+    }
+    let height = (client.logoHeight === 'tall' ? 66 : 42) * 2;
+    let width = Math.round(logo.width * (height / logo.height));
+    if (width > CAP_W) {
+      width = CAP_W;
+      height = Math.round(logo.height * (CAP_W / logo.width));
+    }
+    const image = await getImage({ src: logo, width, height, format: 'webp' });
+    return { client, src: image.src, width, height };
+  }),
+);
+---
+
+<!-- data-ground="film" swaps the focus ring to navy; the default film-coloured
+     ring is invisible against this white band. -->
+<section class="marquee-band" data-ground="film" aria-label="Clients">
+  <div class="marquee" style={`--marquee-shift: ${shift}`}>
+    <div class="marquee__row">
+      <div class="marquee__track">
+        {Array.from({ length: REPEATS }).flatMap((_, copy) =>
+          rendered.map(({ client, src, width, height }) => {
+            // Only the first copy is real; the rest are decorative and are
+            // taken out of the focus order, so aria-hidden never wraps a
+            // focusable element.
+            const isCopy = copy > 0;
+            return (
+              <a
+                class="logo"
+                href={client.url}
+                target="_blank"
+                rel="noopener"
+                tabindex={isCopy ? -1 : 0}
+                aria-hidden={isCopy ? 'true' : undefined}
+                aria-label={isCopy ? undefined : `Visit ${client.name}`}
+              >
+                {/* width/height reserve the box: without them the band
+                    collapsed to its padding until the logos loaded, then
+                    grew and shoved the page down behind it. */}
+                <img
+                  src={src}
+                  width={width}
+                  height={height}
+                  alt={isCopy ? '' : client.name}
+                  loading="lazy"
+                  decoding="async"
+                  class:list={['logo__img', { 'logo__img--tall': client.logoHeight === 'tall' }]}
+                />
+              </a>
+            );
+          })
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee-band {
+    background: var(--color-white);
+    padding-block: 3.25rem;
+  }
+
+  .marquee__row {
+    overflow: hidden;
+    /* logos emerge from the ground rather than hard-clipping at the edge */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+  .marquee__track {
+    display: flex;
+    align-items: center;
+    gap: 4.5rem;
+    width: max-content;
+    will-change: transform;
+  }
+  .marquee__track {
+    animation: marquee-scroll 52s linear infinite;
+  }
+  .marquee__row:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(var(--marquee-shift), 0, 0); }
+  }
+
+  .logo {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo__img {
+    max-height: 42px;
+    width: auto;
+    max-width: 190px;
+    object-fit: contain;
+    /* Several logos are JPGs with a white box baked in. Against a white
+       ground multiply is a no-op for colour (x x 1 = x) but drops that box
+       out, so the logos keep their real colours without grey rectangles. */
+    mix-blend-mode: multiply;
+  }
+  /* stacked crest-over-wordmark logos need more height to read at the same
+     optical weight as the wordmarks (see logoHeight in clients.ts) */
+  .logo__img--tall {
+    max-height: 66px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .marquee-band { padding-block: 2.25rem; }
+    .marquee__track { gap: 2.75rem; }
+    .logo__img { max-height: 32px; max-width: 140px; }
+    .logo__img--tall { max-height: 50px; }
+    .marquee__track { animation-duration: 38s; }
+  }
+</style>

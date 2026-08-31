@@ -1,7 +1,7 @@
 # Build Brief — thelinovagroup.com v2
 
 **For:** Claude Fable 5
-**Client:** The Linova Group (Dennis De Leon, Founder & Lead Developer) — Thornhill, Ontario
+**Client:** The Linova Group (Dennis De Leon, Founder & Lead Developer)
 **Type:** Full rebuild of an existing marketing site. Not a restyle.
 
 ---
@@ -26,7 +26,7 @@ Note: the existing GitHub repo for this site watches `master`, not `main`. If re
 
 ## 1. What this business actually is
 
-The Linova Group is a web design, development, and digital marketing studio in Thornhill, Ontario, serving small and mid-sized businesses across the GTA, the rest of Canada, and the US.
+The Linova Group is a web design, development, and digital marketing studio serving small and mid-sized businesses across the GTA, the rest of Canada, and the US.
 
 The differentiator is not "cheap agency work." It is a **two-engine model**:
 
@@ -349,7 +349,7 @@ Byline and all business-facing attribution: **Dennis De Leon**.
 - All images AVIF/WebP with correct `width`/`height`, `loading="lazy"` below the fold, `fetchpriority="high"` on the LCP image.
 - WCAG 2.1 AA: visible keyboard focus on every interactive element, 4.5:1 text contrast, full keyboard operability of horizontal-scroll sections, no motion-only information.
 - Self-host fonts. `font-display: swap`, subset, preload the display face only.
-- Per-page meta, OG images, JSON-LD (`Organization`, `LocalBusiness` with the Thornhill address, `Service`, `BreadcrumbList`), sitemap, robots.txt with `/lp/` and `/studio` disallowed.
+- Per-page meta, OG images, JSON-LD (`Organization`, `LocalBusiness` at region level (no locality published), `Service`, `BreadcrumbList`), sitemap, robots.txt with `/lp/` and `/studio` disallowed.
 
 ---
 

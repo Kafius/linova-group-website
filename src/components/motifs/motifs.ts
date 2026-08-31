@@ -1,4 +1,4 @@
-// The seven plotted motifs — one visual signature per vertical (design plan).
+// The plotted motifs — one visual signature per vertical (design plan).
 // Rules: inline SVG only, stroke = currentColor (the vertical's accent is set
 // by the consumer), fill none, no filters. Every path is drawable via
 // stroke-dashoffset. Each motif stays under ~2KB.
@@ -98,6 +98,104 @@ export const motifs: Record<string, Motif> = {
       <circle cx="190" cy="150" r="6" stroke-width="2" opacity="0.75"/>
       <circle cx="350" cy="60" r="10" stroke-width="3"/>
       <path d="M350 38 l0 -14 M350 24 a4 4 0 1 1 0.1 0" stroke-width="2" opacity="0.6"/>`,
+  },
+
+  // Janitorial & cleaning — the squeegee sweep: a blade and the arcs it leaves
+  'squeegee-sweep': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <path d="M250 62 l92 40" stroke-width="10" stroke-linecap="round"/>
+      <path d="M296 82 l28 -46" stroke-width="4" stroke-linecap="round"/>
+      <path d="M60 208 C 122 150, 202 120, 300 106" stroke-width="2.5"/>
+      <path d="M62 238 C 132 178, 216 146, 318 130" stroke-width="2.5" opacity="0.7"/>
+      <path d="M64 182 C 118 130, 188 98, 282 84" stroke-width="2.5" opacity="0.45"/>
+      <circle cx="98" cy="122" r="5" stroke-width="2" opacity="0.7"/>
+      <circle cx="142" cy="96" r="3.5" stroke-width="2" opacity="0.55"/>
+      <circle cx="76" cy="86" r="3" stroke-width="2" opacity="0.4"/>`,
+  },
+
+  // Clinics — the pulse crossing the cross: vitals over the caring symbol
+  'pulse-cross': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <path d="M170 44 h60 v66 h66 v60 h-66 v66 h-60 v-66 h-66 v-60 h66 z" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M18 140 h56 l16 -42 l26 88 l20 -46 h30" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M296 140 h68" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+      <circle cx="376" cy="140" r="7" stroke-width="2" opacity="0.7"/>`,
+  },
+
+  // Herbal & natural health — the specimen leaf, drawn as a botanical plate
+  'leaf-vein': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <path d="M58 224 C 88 122, 190 50, 328 58 C 334 192, 218 246, 58 224 Z" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M58 224 C 150 182, 250 122, 328 58" stroke-width="2"/>
+      <path d="M110 198 C 138 172, 148 142, 150 114" stroke-width="1.5" opacity="0.7"/>
+      <path d="M164 180 C 194 154, 206 126, 210 98" stroke-width="1.5" opacity="0.7"/>
+      <path d="M220 156 C 248 132, 260 108, 264 84" stroke-width="1.5" opacity="0.7"/>
+      <path d="M124 216 C 156 210, 184 198, 204 184" stroke-width="1.5" opacity="0.45"/>
+      <path d="M328 58 l36 -24" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="370" cy="28" r="4" stroke-width="1.5" opacity="0.6"/>`,
+  },
+
+  // Auto shops — the rotor: bolt circle, vent ring, machined faces
+  'rotor-disc': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <circle cx="200" cy="140" r="106" stroke-width="2.5"/>
+      <circle cx="200" cy="140" r="90" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="200" cy="140" r="46" stroke-width="2.5"/>
+      <circle cx="200" cy="140" r="13" stroke-width="2" opacity="0.7"/>
+      <circle cx="244" cy="140" r="6" stroke-width="2"/>
+      <circle cx="222" cy="102" r="6" stroke-width="2"/>
+      <circle cx="178" cy="102" r="6" stroke-width="2"/>
+      <circle cx="156" cy="140" r="6" stroke-width="2"/>
+      <circle cx="178" cy="178" r="6" stroke-width="2"/>
+      <circle cx="222" cy="178" r="6" stroke-width="2"/>
+      <path d="M200 34 v-18 M306 140 h18 M200 246 v18 M94 140 h-18" stroke-width="1.5" opacity="0.5"/>`,
+  },
+
+  // Car wash & detailing — the spray fan off a nozzle
+  'spray-fan': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <path d="M36 128 h68 v24 h-68 z" stroke-width="2"/>
+      <path d="M104 126 l28 14 l-28 14 z" stroke-width="2"/>
+      <path d="M138 140 L356 58" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M138 140 L368 114" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M138 140 L368 166" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M138 140 L356 222" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="298" cy="86" r="4" stroke-width="2" opacity="0.6"/>
+      <circle cx="330" cy="150" r="5" stroke-width="2" opacity="0.6"/>
+      <circle cx="294" cy="196" r="4" stroke-width="2" opacity="0.6"/>`,
+  },
+
+  // Tailoring & alterations — the tape edge and the seam it marks out
+  'seam-allowance': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <path d="M40 66 h324" stroke-width="2"/>
+      <path d="M62 66 v16 M102 66 v26 M142 66 v16 M182 66 v26 M222 66 v16 M262 66 v26 M302 66 v16 M342 66 v26" stroke-width="1.5" opacity="0.7"/>
+      <path d="M50 192 C 132 148, 252 232, 356 174" stroke-width="2.5" stroke-dasharray="12 9"/>
+      <path d="M98 176 l6 28 M188 190 l2 28 M278 210 l-4 28" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="50" cy="192" r="5" stroke-width="2"/>
+      <path d="M356 174 l20 -10 M356 174 l20 10" stroke-width="2" opacity="0.7"/>`,
+  },
+
+  // Event venues — the proscenium arch and its bulb run
+  'stage-arch': {
+    viewBox: '0 0 400 280',
+    svg: `
+      <path d="M70 250 V150 A130 130 0 0 1 330 150 V250" stroke-width="2.5"/>
+      <path d="M104 250 V156 A96 96 0 0 1 296 156 V250" stroke-width="1.5" opacity="0.5"/>
+      <path d="M36 250 h328" stroke-width="2.5"/>
+      <circle cx="88" cy="150" r="5" stroke-width="2"/>
+      <circle cx="103" cy="94" r="5" stroke-width="2" opacity="0.85"/>
+      <circle cx="144" cy="53" r="5" stroke-width="2" opacity="0.7"/>
+      <circle cx="200" cy="38" r="5" stroke-width="2" opacity="0.85"/>
+      <circle cx="256" cy="53" r="5" stroke-width="2" opacity="0.7"/>
+      <circle cx="297" cy="94" r="5" stroke-width="2" opacity="0.85"/>
+      <circle cx="312" cy="150" r="5" stroke-width="2"/>`,
   },
 };
 

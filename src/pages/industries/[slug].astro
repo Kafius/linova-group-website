@@ -4,9 +4,11 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Motif from '../../components/motifs/Motif.astro';
-import ConceptPiece from '../../components/industries/ConceptPiece.astro';
-import { industries, type Industry } from '../../data/industries';
+import SiteMockup from '../../components/industries/SiteMockup.astro';
+import Covers from '../../components/industries/Covers.astro';
+import { industries, getCategory, type Industry } from '../../data/industries';
 import { proofShots } from '../../data/proofShots';
+import { getMockup } from '../../data/industryMockups';
 import { breadcrumbs, service } from '../../lib/jsonld';
 
 export function getStaticPaths() {
@@ -23,6 +25,8 @@ interface Props {
 const { industry } = Astro.props;
 const shot = proofShots[industry.slug];
 const isConcept = industry.status === 'concept';
+const mockup = getMockup(industry.slug);
+const category = getCategory(industry.category);
 ---
 
 <BaseLayout
@@ -47,6 +51,14 @@ const isConcept = industry.status === 'concept';
       <div class="relative mx-auto max-w-[1200px] px-6 pb-16 pt-24">
         <nav class="label-mono" aria-label="Breadcrumb">
           <a href="/industries" class="hover:text-film">industries</a>
+          {category && (
+            <>
+              <span aria-hidden="true"> / </span>
+              <a href={`/industries/category/${category.slug}`} class="hover:text-film">
+                {category.name.toLowerCase()}
+              </a>
+            </>
+          )}
           <span aria-hidden="true"> / </span>
           <span style="color: var(--vx)">{industry.name.toLowerCase()}</span>
           {isConcept && <span class="ml-3 rounded-chip border border-grid/50 px-2.5 py-1">concept</span>}
@@ -55,6 +67,7 @@ const isConcept = industry.status === 'concept';
           {industry.headline}
         </h1>
         <p class="mt-6 max-w-[58ch] text-body text-film-dim">{industry.problem}</p>
+        <Covers items={industry.covers} label="built for" class="mt-7 max-w-[62ch]" />
         <a
           href="/book"
           data-hero-cta
@@ -101,54 +114,66 @@ const isConcept = industry.status === 'concept';
       </div>
     </section>
 
-    <!-- Proof / concept -->
-    <section class="mx-auto max-w-[1200px] px-6 py-20" aria-label={isConcept ? 'Concept piece' : 'Proof'}>
-      {isConcept ? (
-        <div class="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
-          <div>
-            <h2 class="font-display text-title text-film">No client yet. Here's the spec work.</h2>
-            <p class="mt-4 max-w-[52ch] text-body text-film-dim">{industry.conceptPitch}</p>
-            <a
-              href="/book"
-              class="mt-8 inline-block rounded-chip border border-gold px-6 py-3 text-body text-film transition-colors hover:border-redline"
-            >
-              Book a call
-            </a>
-          </div>
-          <ConceptPiece variant={industry.slug as 'barbershops' | 'retail'} />
+    <!-- What we'd build — the interactive spec build, for every vertical.
+         The old industry pages each carried one of these and it was the
+         thing people actually played with; it is back, and no longer
+         limited to the two verticals without a client. -->
+    {mockup && (
+      <section id="spec-build" class="mx-auto max-w-[1200px] px-6 py-20" aria-label="What we'd build">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="font-display text-title text-film">
+            {isConcept ? "No client yet. Here's the spec work." : `What we'd build for ${industry.cycleWord}`}
+          </h2>
+          <span class="label-mono hidden shrink-0 sm:block" style="color: var(--vx)">spec build</span>
         </div>
-      ) : (
-        <div class="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
-          <div>
-            <h2 class="font-display text-title text-film">Live for {industry.proof?.client}</h2>
-            <p class="mt-4 max-w-[52ch] text-body text-film-dim">
-              Not a mockup — a working site with real customers on it. Open it,
-              tap around, check the speed on your own phone.
-            </p>
-            <a
-              href={industry.proof?.url}
-              target="_blank"
-              rel="noopener"
-              class="label-mono mt-6 inline-block normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
-            >
-              visit {industry.proof?.client} ↗
-            </a>
-          </div>
-          {shot && (
-            <a href={industry.proof?.url} target="_blank" rel="noopener" class="group block overflow-hidden border border-grid/40">
-              <Image
-                src={shot}
-                alt={`${industry.proof?.client} — live site`}
-                widths={[640, 1024, 1440]}
-                sizes="(min-width: 1024px) 55vw, 100vw"
-                class="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.015]"
-                loading="lazy"
-              />
-            </a>
-          )}
+        <hr class="rule-gold mt-3" />
+        <p class="mt-6 max-w-[58ch] text-body text-film-dim">
+          {isConcept
+            ? industry.conceptPitch
+            : `A ${industry.name.toLowerCase().replace(/^b2b & /, '')} site built the way this page describes — click through the pages, flip it to a phone, and hold it against what you have now. It is spec work, not a client; the real one is below.`}
+        </p>
+        <div class="mt-10">
+          <SiteMockup mockup={mockup} slug={industry.slug} />
         </div>
-      )}
-    </section>
+      </section>
+    )}
+
+    <!-- Proof — the live client site, for verticals that have one -->
+    {!isConcept && (
+      <section class="border-t border-grid/30 bg-ink" aria-label="Proof">
+        <div class="mx-auto max-w-[1200px] px-6 py-20">
+          <div class="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
+            <div>
+              <h2 class="font-display text-title text-film">Live for {industry.proof?.client}</h2>
+              <p class="mt-4 max-w-[52ch] text-body text-film-dim">
+                Not a mockup — a working site with real customers on it. Open it,
+                tap around, check the speed on your own phone.
+              </p>
+              <a
+                href={industry.proof?.url}
+                target="_blank"
+                rel="noopener"
+                class="label-mono mt-6 inline-block normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
+              >
+                visit {industry.proof?.client} ↗
+              </a>
+            </div>
+            {shot && (
+              <a href={industry.proof?.url} target="_blank" rel="noopener" class="group block overflow-hidden border border-grid/40">
+                <Image
+                  src={shot}
+                  alt={`${industry.proof?.client} — live site`}
+                  widths={[640, 1024, 1440]}
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  class="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.015]"
+                  loading="lazy"
+                />
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    )}
 
     <!-- Close -->
     <section class="border-t border-grid/30 bg-ink">

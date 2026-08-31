@@ -1,0 +1,203 @@
+---
+// The stories under the section rail: the newest study runs as the lead
+// (full width, image left), the rest as dated cards. Same component on /work
+// and on a section front — whatever is passed in first becomes the lead.
+import { Image } from 'astro:assets';
+import type { CaseStudyView } from '../../lib/caseStudies';
+import { getIndustry } from '../../data/industries';
+
+interface Props {
+  studies: CaseStudyView[];
+}
+
+const { studies } = Astro.props;
+
+// UTC, always: publishedAt is a midnight timestamp, and formatting it in the
+// build machine's zone dates every study a day early west of Greenwich.
+const dateFormat = new Intl.DateTimeFormat('en-CA', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const dateline = (iso: string) => (iso ? dateFormat.format(new Date(iso)) : '');
+
+// Two cards go 2-up so the row fills; three or more take the news 3-up.
+const cardColumns = studies.length - 1 <= 2 ? 2 : 3;
+---
+
+<div class="stories" data-cards={cardColumns}>
+  {studies.map((study, i) => {
+    const industry = study.industrySlug ? getIndustry(study.industrySlug) : undefined;
+    const lead = i === 0;
+    return (
+      <article
+        class:list={['story', lead && 'story--lead']}
+        style={`--vx: ${industry?.accent ?? 'var(--color-gold)'}`}
+      >
+        {/* Second link to the same story — hidden from the a11y tree so the
+            headline below is the single announced link for this card. */}
+        <a class="story__media" href={`/work/${study.slug}`} tabindex="-1" aria-hidden="true">
+          {study.image ? (
+            <Image
+              src={study.image}
+              alt=""
+              widths={lead ? [640, 1024, 1600] : [400, 640, 800]}
+              sizes={lead ? '(min-width: 900px) 60vw, 100vw' : '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw'}
+              class="story__img"
+              loading={lead ? 'eager' : 'lazy'}
+            />
+          ) : study.imageUrl || study.thumbUrl ? (
+            <img
+              src={lead ? study.imageUrl : (study.thumbUrl ?? study.imageUrl)}
+              alt=""
+              class="story__img"
+              width="1440"
+              height="900"
+              loading={lead ? 'eager' : 'lazy'}
+            />
+          ) : null}
+        </a>
+
+        <div class="story__body">
+          <p class="story__kicker">
+            <span class="story__section">{industry?.name ?? 'case study'}</span>
+            {study.publishedAt && (
+              <>
+                <span aria-hidden="true"> · </span>
+                <time datetime={study.publishedAt}>{dateline(study.publishedAt)}</time>
+              </>
+            )}
+            <span aria-hidden="true"> · </span>
+            {study.readMinutes} min read
+          </p>
+          <h2 class="story__title">
+            <a href={`/work/${study.slug}`}>{study.title}</a>
+          </h2>
+          <p class="story__dek">{study.summary}</p>
+          <p class="story__more" aria-hidden="true">read the case study →</p>
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+<style>
+  .stories {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3.5rem 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .stories {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .stories[data-cards='3'] {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .story {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  /* The lead takes the full measure and turns on its side at desktop. */
+  .story--lead {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 900px) {
+    .story--lead {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 2.5rem;
+      align-items: end;
+    }
+  }
+
+  .story__media {
+    display: block;
+    overflow: hidden;
+    border: 1px solid rgba(77, 77, 143, 0.4);
+  }
+  .story__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s var(--ease-plot);
+  }
+  .story:hover .story__img {
+    transform: scale(1.015);
+  }
+
+  .story__kicker {
+    margin: 0;
+    color: var(--color-film-dim);
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+  .story__section {
+    color: var(--vx);
+  }
+
+  .story__title {
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: var(--text-heading);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  .story--lead .story__title {
+    font-size: var(--text-title);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+  .story__title a {
+    color: var(--color-film);
+    text-decoration: none;
+    transition: color 0.2s var(--ease-plot);
+  }
+  .story__title a:hover {
+    color: var(--color-gold);
+  }
+
+  .story__dek {
+    margin: 0.75rem 0 0;
+    max-width: 52ch;
+    color: var(--color-film-dim);
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+  }
+  .story--lead .story__dek {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  .story__more {
+    margin: 1rem 0 0;
+    color: var(--color-gold);
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story__img,
+    .story__title a {
+      transition: none;
+    }
+    .story:hover .story__img {
+      transform: none;
+    }
+  }
+</style>

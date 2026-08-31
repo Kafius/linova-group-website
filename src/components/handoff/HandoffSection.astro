@@ -1,13 +1,44 @@
 ---
 // Act 4 — the warm turn. The machine draws the line (a gold hairline leads
 // the inversion wipe), then the instrumentation goes silent: film ground,
-// people, no scrub inside. Team content ships as honestly-labeled
-// placeholders until real names, roles, and photos arrive (brief §17).
-
-const teamSlots = [
-  { role: 'Marketing strategy' },
-  { role: 'Content & social' },
-  { role: 'Creative design' },
+// people, no scrub inside.
+//
+// This act used to hold team placeholders waiting on names and photos. It now
+// carries the three things the team actually makes. Location is deliberately
+// not mentioned — see src/data/services.ts, which still says it in the
+// marketing deck if that ever needs to match.
+//
+// Icons: inline SVG, stroke = currentColor, fill none, 1.5 weight — same
+// contract as the vertical motifs in src/components/motifs. Decorative, so
+// each is aria-hidden; the heading beside it carries the name.
+const services = [
+  {
+    name: 'Graphic design',
+    body: 'Logos, menus, signage, and the templates your posts are built on. Made to survive a truck door and a phone screen.',
+    // a bezier with its control handles — vector work, and the plotter register.
+    // The earlier pen-nib crowded one corner of the viewBox and went muddy at 34px.
+    icon: `<path d="M6 25C6 15 18 15 26 7" stroke-width="1.5" stroke-linecap="round"/>
+           <rect x="2.5" y="22.5" width="7" height="7" rx="1.5" stroke-width="1.5"/>
+           <rect x="22.5" y="2.5" width="7" height="7" rx="1.5" stroke-width="1.5"/>`,
+  },
+  {
+    name: 'Social media management',
+    body: 'Calendars planned around your real weeks. Posted, answered, and reported on — not scheduled and abandoned.',
+    // the feed as a grid, with the week marked out along the top
+    icon: `<rect x="4" y="6" width="24" height="22" rx="2" stroke-width="1.5"/>
+           <path d="M4 12h24" stroke-width="1.5"/>
+           <path d="M10 6V3M22 6V3" stroke-width="1.5" stroke-linecap="round"/>
+           <rect x="8" y="16" width="6" height="6" rx="1" stroke-width="1.5"/>
+           <path d="M18 17h6M18 21h4" stroke-width="1.5" stroke-linecap="round"/>`,
+  },
+  {
+    name: 'Content creation',
+    body: 'Reels, photographs, and captions shot in your shop — not pulled from a stock library.',
+    // a frame with a play triangle: the Reel, not a generic camera
+    icon: `<rect x="3" y="7" width="20" height="18" rx="2" stroke-width="1.5"/>
+           <path d="M23 14l6-4v12l-6-4" stroke-width="1.5" stroke-linejoin="round"/>
+           <path d="M11 12.5l5 3.5-5 3.5v-7z" stroke-width="1.5" stroke-linejoin="round"/>`,
+  },
 ];
 ---
 
@@ -20,52 +51,64 @@ const teamSlots = [
 
   <div class="relative bg-film">
     <div class="mx-auto max-w-[1100px] px-6 py-28 lg:py-36">
-      <p class="label-mono !text-gold-deep">the marketing team · philippines</p>
-      <h2 class="mt-4 max-w-[16ch] font-display text-display text-navy">
-        This is where the AI stops.
+      <p class="label-mono !text-gold-deep">design · social · content</p>
+      <h2 class="mt-4 max-w-[18ch] font-display text-display text-navy">
+        The part a machine can't fake.
       </h2>
-      <div class="mt-8 grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-        <div class="max-w-[58ch] text-body text-navy/80">
-          <p>
-            AI can compress a build. It cannot do marketing. It cannot read a
-            neighbourhood, feel out a brand's voice, or know why one Reel lands
-            and the next one dies.
-          </p>
-          <p class="mt-5">
-            That work is done by <span class="marker-u">people</span> — a real
-            marketing team of strategists and creatives in the Philippines who
-            plan campaigns, write the words, and make the content. We are not
-            going to pretend otherwise while everyone else ships AI slop.
-          </p>
-          <p class="mt-8 font-display text-heading italic text-navy">
-            Machine-fast where machines are better. Human where humans are.
-          </p>
-        </div>
+      <p class="mt-6 max-w-[54ch] text-body text-navy/80">
+        AI compresses a build. It cannot read a neighbourhood, hold a brand's
+        voice, or know why one Reel lands and the next one dies. Three things
+        our team makes by hand.
+      </p>
 
-        <div class="flex flex-col gap-5">
-          {teamSlots.map((slot) => (
-            <div class="flex items-center gap-5 border border-navy/20 p-4">
-              <div class="flex h-20 w-20 shrink-0 items-center justify-center border border-dashed border-navy/30" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" class="text-navy/30">
-                  <circle cx="14" cy="10" r="5" stroke-width="1.5" />
-                  <path d="M4 25c1.5-5 6-7 10-7s8.5 2 10 7" stroke-width="1.5" />
-                </svg>
-              </div>
-              <div>
-                <p class="m-0 text-caption font-medium text-navy">{slot.role}</p>
-                <p class="label-mono m-0 mt-1 !text-gold-deep normal-case tracking-normal">
-                  faces + names on the way from Manila
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ul class="m-0 mt-14 grid list-none gap-10 p-0 md:grid-cols-3 md:gap-8">
+        {services.map((service) => (
+          <li class="service">
+            <span class="service__icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" set:html={service.icon} />
+            </span>
+            <h3 class="service__name mt-5 m-0">{service.name}</h3>
+            <p class="service__body m-0 mt-2">{service.body}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
 
 <style>
+  .service__icon {
+    display: block;
+    /* gold-deep is the gold register's ink on film grounds (5.3:1) */
+    color: var(--color-gold-deep);
+  }
+  .service__icon svg {
+    width: 34px;
+    height: 34px;
+  }
+  .service__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--color-navy);
+  }
+  .service__body {
+    max-width: 34ch;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--color-navy) 78%, transparent);
+  }
+  @media (max-width: 767px) {
+    .service__body { font-size: 1rem; }
+  }
+  /* A hairline above each item, so the three read as a set on the film sheet */
+  .service {
+    border-top: 1px solid color-mix(in srgb, var(--color-navy) 22%, transparent);
+    padding-top: 1.5rem;
+  }
+
   /* The wipe scrubs in via the section script; reduced motion = end state. */
   .wipe-fill {
     transform: scaleY(0);

@@ -1,37 +1,40 @@
 ---
-// Homepage v2 — the seven acts (design plan, sheet 01).
+// Homepage v2 — the acts (design plan, sheet 01).
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Opening from '../components/opening/Opening.astro';
-import IndustriesRail from '../components/industries/IndustriesRail.astro';
-import SystemSection from '../components/system/SystemSection.astro';
+import LogoMarquee from '../components/clients/LogoMarquee.astro';
+import FitSection from '../components/fit/FitSection.astro';
+import FeaturesSection from '../components/features/FeaturesSection.astro';
 import HandoffSection from '../components/handoff/HandoffSection.astro';
 import WorkSection from '../components/work/WorkSection.astro';
 import ProofSection from '../components/proof/ProofSection.astro';
 import CloseSection from '../components/close/CloseSection.astro';
-import BuildLog from '../components/shell/BuildLog.astro';
 import { site } from '../data/site';
-
-const acts: [string, string][] = [
-  ['act-opening', 'the compiler'],
-  ['act-industries', 'industries'],
-  ['act-system', 'the system'],
-  ['act-handoff', 'the handoff'],
-  ['act-work', 'selected work'],
-  ['act-close', 'book a call'],
-];
 ---
 
 <BaseLayout
-  title="The Linova Group — web design & marketing, Thornhill"
+  title="The Linova Group — websites • marketing • content"
   description={site.description}
   withBusinessJsonLd
 >
   <Opening />
-  <IndustriesRail />
-  <SystemSection />
+  <LogoMarquee />
+  <FitSection />
+  <FeaturesSection />
   <HandoffSection />
   <WorkSection />
-  <ProofSection />
   <CloseSection />
-  <BuildLog acts={acts} />
 </BaseLayout>
+
+<script>
+  // Page-level scroll boot. The sections below the hero drive ScrollTrigger,
+  // and brief §5 says every scroll effect runs through Lenis — so the engine
+  // starts once here rather than inside whichever section happens to be
+  // first. Dynamic-imported after paint so it stays off the LCP path.
+  import { prefersReducedMotion, afterLoad } from '../lib/motion';
+
+  if (!prefersReducedMotion()) afterLoad(async () => {
+    const { initSmoothScroll } = await import('../lib/motion/scroll');
+    initSmoothScroll();
+  });
+</script>

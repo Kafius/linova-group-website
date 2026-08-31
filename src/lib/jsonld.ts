@@ -25,10 +25,8 @@ export function localBusiness(): JsonLd {
     description: site.description,
     address: {
       '@type': 'PostalAddress',
-      addressLocality: site.locality,
       addressRegion: site.region,
       addressCountry: site.country,
-      // TODO(README): street address once confirmed for the Google Business Profile
     },
     areaServed: site.areaServed.map((name) => ({ '@type': 'Place', name })),
     founder: { '@type': 'Person', name: site.founder },
@@ -56,6 +54,21 @@ export function breadcrumbs(items: { name: string; path: string }[]): JsonLd {
       position: i + 1,
       name: item.name,
       item: `${site.url}${item.path}`,
+    })),
+  };
+}
+
+/** Ordered index of pages — /work publishes its case studies this way. */
+export function itemList(name: string, items: { name: string; path: string }[]): JsonLd {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name,
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      url: `${site.url}${item.path}`,
     })),
   };
 }

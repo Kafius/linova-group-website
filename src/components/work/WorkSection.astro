@@ -20,7 +20,7 @@ const studies = (await fetchCaseStudies()).filter((s) => s.featured).slice(0, 3)
       const industry = study.industrySlug ? getIndustry(study.industrySlug) : undefined;
       return (
         <article
-          class="work-spread lg:sticky"
+          class="work-spread lg:sticky lg:border-t lg:border-gold/40 lg:pt-5"
           style={`top: calc(8vh + ${i * 22}px); --vx: ${industry?.accent ?? 'var(--color-gold)'}`}
         >
           <div class="mx-auto max-w-[1240px] px-6">
@@ -70,7 +70,7 @@ const studies = (await fetchCaseStudies()).filter((s) => s.featured).slice(0, 3)
   </div>
 
   <p class="mx-auto max-w-[1240px] px-6 pb-24 text-caption text-film-dim">
-    All of it, with the build stories:
+    All of it, with the build stories:{' '}
     <a href="/work" class="text-gold underline decoration-1 underline-offset-4">see the work</a>.
   </p>
 </section>
@@ -78,6 +78,15 @@ const studies = (await fetchCaseStudies()).filter((s) => s.featured).slice(0, 3)
 <style>
   .work-section {
     background: linear-gradient(to bottom, var(--color-film) 0, var(--color-navy) 220px);
+  }
+
+  /* Each spread is a sheet on a stack. It MUST be opaque: the spreads are
+     sticky, so an incoming one slides over the parked one below it, and a
+     transparent box drops its text column straight onto the previous
+     screenshot. Navy is safe here — the first spread starts ~770px in, well
+     past the 220px film→navy gradient above. */
+  .work-spread {
+    background: var(--color-navy);
   }
   @media (prefers-reduced-motion: reduce) {
     .work-spread {

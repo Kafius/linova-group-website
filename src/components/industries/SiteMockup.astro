@@ -1,0 +1,707 @@
+---
+// The interactive site mockup — a fictional client site inside a plotted
+// browser frame, with clickable page tabs and a desktop/mobile toggle.
+//
+// Ported from the old site's industry pages ("See what we'd build for a law
+// firm"), which hand-wrote a 500-line mockup per vertical. This one renders
+// from src/data/industryMockups.ts. Verticals without one simply skip the
+// section (see the {mockup && ...} guard on /industries/[slug]).
+//
+// Plotter & Marker stops at the frame: the chrome, tabs, toggle, and stamp
+// are ours (mono labels, gold hairline, redline stamp); everything inside
+// the viewport is the client's brand world, drawn in the vertical's accent.
+// The stamp is not decoration — nothing in here is a real client (brief §8).
+import type { IndustryMockup, MockupBlock } from '../../data/industryMockups';
+
+interface Props {
+  mockup: IndustryMockup;
+  /** used to scope the instance's ids so two mockups can share a page */
+  slug: string;
+}
+
+const { mockup, slug } = Astro.props;
+const { palette: p } = mockup;
+
+// A hero title line wrapped in {braces} renders in the client's accent.
+const splitTitle = (line: string) =>
+  line.startsWith('{') && line.endsWith('}')
+    ? { text: line.slice(1, -1), accent: true }
+    : { text: line, accent: false };
+
+// Inline style strings — the mockup interior is deliberately outside the
+// Tailwind token system, because it is not our brand.
+const s = {
+  page: `background:${p.bg};color:${p.text}`,
+  surface: `background:${p.surface};border:1px solid ${p.line}`,
+  muted: `color:${p.muted}`,
+  accent: `color:${p.accent}`,
+  fill: `background:${p.accent};color:${p.onAccent}`,
+  hair: `border-color:${p.line}`,
+};
+
+const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
+---
+
+<div class="mockup" data-mockup={slug} style={`--mk-accent:${p.accent}; --mk-line:${p.line}; --mk-bg:${p.bg}`}>
+  <!-- ── Above the frame: the premise, and the device toggle ───────── -->
+  <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <p class="m-0 max-w-[54ch] text-caption text-film-dim">{mockup.premise}</p>
+
+    <div class="shrink-0" role="group" aria-label="Preview device">
+      <button
+        type="button"
+        data-device="desktop"
+        aria-pressed="true"
+        class="device-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+      >desktop</button>
+      <button
+        type="button"
+        data-device="mobile"
+        aria-pressed="false"
+        class="device-btn label-mono ml-2 rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+      >mobile</button>
+    </div>
+  </div>
+
+  <!-- ── The frame ─────────────────────────────────────────────────── -->
+  <div class="mockup-frame relative border border-grid/40" data-view="desktop">
+    <!-- chrome -->
+    <div class="flex items-center gap-3 bg-ink px-4 py-2.5">
+      <span class="flex shrink-0 gap-1.5" aria-hidden="true">
+        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+      </span>
+      <span class="label-mono truncate normal-case tracking-normal">{mockup.url}</span>
+      <span class="label-mono ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
+        concept
+      </span>
+    </div>
+    <hr class="rule-gold m-0" />
+
+    <!-- page tabs — the old mockup's clickable nav, pulled out of the
+         fiction and into our own register so it reads as a control -->
+    <div class="flex flex-wrap items-center gap-x-1 gap-y-1 border-b border-grid/40 bg-ink px-3 py-2" role="tablist" aria-label={`${mockup.business} pages`}>
+      {mockup.pages.map((page, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`tab-${slug}-${page.id}`}
+          aria-controls={`panel-${slug}-${page.id}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-tab={page.id}
+          class="page-tab label-mono rounded-chip px-3 py-1.5 normal-case tracking-normal"
+        >{page.label}</button>
+      ))}
+      <span class="label-mono ml-auto hidden pr-1 normal-case tracking-normal text-film-dim/60 md:block" aria-hidden="true">
+        click through it
+      </span>
+    </div>
+
+    <!-- viewport -->
+    <div class="mockup-viewport">
+      <div class="mockup-stage">
+        {mockup.pages.map((page, pageIndex) => (
+          <div
+            role="tabpanel"
+            id={`panel-${slug}-${page.id}`}
+            aria-labelledby={`tab-${slug}-${page.id}`}
+            data-panel={page.id}
+            hidden={pageIndex !== 0}
+            class="mockup-page"
+            style={s.page}
+          >
+            {page.blocks.map((block, i) => {
+              const key = blockKey(block, i);
+
+              /* ── nav ───────────────────────────────────────────── */
+              if (block.kind === 'nav') {
+                return (
+                  <div class="mk-nav" style={`border-bottom:1px solid ${p.line}`} data-key={key}>
+                    <span class="mk-brand">
+                      {block.brand}<span style={s.accent}>{block.brandTail}</span>
+                    </span>
+                    <span class="mk-navlinks">
+                      {block.links.map((link) => <span style={s.muted}>{link}</span>)}
+                      <span class="mk-navcta" style={s.fill}>{block.cta}</span>
+                    </span>
+                  </div>
+                );
+              }
+
+              /* ── hero ──────────────────────────────────────────── */
+              if (block.kind === 'hero') {
+                return (
+                  <div
+                    class="mk-hero"
+                    data-key={key}
+                    style={
+                      block.wash === 'accent'
+                        ? `background:linear-gradient(160deg, ${p.bg} 42%, color-mix(in srgb, ${p.accent} 16%, ${p.bg}))`
+                        : ''
+                    }
+                  >
+                    <p class="mk-eyebrow" style={s.accent}>{block.eyebrow}</p>
+                    <p class="mk-title">
+                      {block.title.map((line) => {
+                        const part = splitTitle(line);
+                        return (
+                          <span class="mk-titleline" style={part.accent ? s.accent : ''}>{part.text}</span>
+                        );
+                      })}
+                    </p>
+                    <p class="mk-lede" style={s.muted}>{block.body}</p>
+                    <span class="mk-btnrow">
+                      <span class="mk-btn" style={s.fill}>{block.primary}</span>
+                      {block.secondary && (
+                        <span class="mk-btn mk-btn-ghost" style={`border:1px solid ${p.line}; color:${p.text}`}>
+                          {block.secondary}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                );
+              }
+
+              /* ── stats ─────────────────────────────────────────── */
+              if (block.kind === 'stats') {
+                return (
+                  <div class="mk-stats" style={`border-top:1px solid ${p.line}; border-bottom:1px solid ${p.line}`} data-key={key}>
+                    {block.items.map((item) => (
+                      <span class="mk-stat">
+                        <span class="mk-statval" style={s.accent}>{item.value}</span>
+                        <span class="mk-statlabel" style={s.muted}>{item.label}</span>
+                      </span>
+                    ))}
+                  </div>
+                );
+              }
+
+              /* ── cards ─────────────────────────────────────────── */
+              if (block.kind === 'cards') {
+                return (
+                  <div class="mk-section" data-key={key}>
+                    {block.title && <p class="mk-h2">{block.title}</p>}
+                    {block.note && <p class="mk-note" style={s.muted}>{block.note}</p>}
+                    <div class="mk-cards" data-cols={block.cols}>
+                      {block.items.map((item) => (
+                        <span class="mk-card" style={s.surface}>
+                          {item.tone && <span class="mk-swatch" style={`background:${item.tone}`}></span>}
+                          <span class="mk-cardbody">
+                            <span class="mk-cardtitle">{item.title}</span>
+                            <span class="mk-cardmeta" style={item.dim ? s.muted : s.accent}>{item.meta}</span>
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              /* ── rows ──────────────────────────────────────────── */
+              if (block.kind === 'rows') {
+                return (
+                  <div class="mk-section" data-key={key}>
+                    {block.title && <p class="mk-h2">{block.title}</p>}
+                    {block.note && <p class="mk-note" style={s.muted}>{block.note}</p>}
+                    <span class="mk-rows" style={`border-top:1px solid ${p.line}`}>
+                      {block.items.map((item) => (
+                        <span class="mk-row" style={`border-bottom:1px solid ${p.line}`}>
+                          <span class="mk-rowlabel">
+                            {item.label}
+                            {item.note && <span class="mk-rownote" style={s.muted}>{item.note}</span>}
+                          </span>
+                          <span class="mk-rowvalue" style={s.accent}>{item.value}</span>
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                );
+              }
+
+              /* ── gallery ───────────────────────────────────────── */
+              if (block.kind === 'gallery') {
+                return (
+                  <div class="mk-section" data-key={key}>
+                    {block.title && <p class="mk-h2">{block.title}</p>}
+                    {block.note && <p class="mk-note" style={s.muted}>{block.note}</p>}
+                    <div class="mk-gallery">
+                      {block.items.map((item) => (
+                        <span class="mk-shot" style={`background:${item.tone}; border:1px solid ${p.line}`}>
+                          <span class="mk-shotlabel" style={s.muted}>{item.label}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
+              /* ── form ──────────────────────────────────────────── */
+              if (block.kind === 'form') {
+                return (
+                  <div class="mk-section" data-key={key}>
+                    <p class="mk-h2">{block.title}</p>
+                    {block.body && <p class="mk-note" style={s.muted}>{block.body}</p>}
+                    <span class="mk-form" style={s.surface}>
+                      {block.fields.map((field) => (
+                        <span class="mk-field" data-wide={field.wide ? 'true' : 'false'}>
+                          <span class="mk-fieldlabel" style={s.muted}>{field.label}</span>
+                          <span class="mk-fieldvalue" style={`border-bottom:1px solid ${p.line}`}>{field.value}</span>
+                        </span>
+                      ))}
+                      <span class="mk-submit" style={s.fill}>{block.submit}</span>
+                      {block.note && <span class="mk-formnote" style={s.muted}>{block.note}</span>}
+                    </span>
+                  </div>
+                );
+              }
+
+              /* ── reviews ───────────────────────────────────────── */
+              if (block.kind === 'reviews') {
+                return (
+                  <div class="mk-section mk-reviews" data-key={key}>
+                    <span class="mk-stars" style={s.accent} aria-hidden="true">★★★★★</span>
+                    <span class="mk-rating">
+                      <strong>{block.rating}</strong>
+                      <span style={s.muted}> · {block.count}</span>
+                    </span>
+                    <p class="mk-quote">“{block.quote}”</p>
+                    <p class="mk-note" style={s.muted}>{block.author}</p>
+                  </div>
+                );
+              }
+
+              /* ── band ──────────────────────────────────────────── */
+              return (
+                <div class="mk-band" style={s.fill} data-key={key}>
+                  <span>{block.text}</span>
+                  <span class="mk-bandcta">{block.cta} →</span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- The honest stamp: nothing in this frame is a real client. Parked in
+         the bottom corner — every mockup nav carries a right-aligned CTA, so
+         a top-right stamp lands on a button and reads as a render bug. -->
+    <span
+      class="pointer-events-none absolute bottom-4 right-4 rotate-6 border-2 bg-ink/70 px-2 py-0.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.12em] backdrop-blur-[2px]"
+      style="border-color: var(--color-redline); color: var(--color-redline)"
+      aria-hidden="true"
+    >concept</span>
+  </div>
+
+  <p class="label-mono mt-3 normal-case tracking-normal text-film-dim/60">
+    {mockup.business} — spec work, built by Linova. Not a client.
+  </p>
+</div>
+
+<style>
+  /* ── Our controls (Plotter & Marker register) ──────────────────── */
+  .device-btn[aria-pressed='true'],
+  .page-tab[aria-selected='true'] {
+    border-color: var(--mk-accent);
+    color: var(--mk-accent);
+  }
+  .page-tab {
+    border: 1px solid transparent;
+    color: var(--color-film-dim);
+  }
+  .page-tab:hover {
+    color: var(--color-film);
+  }
+  .device-btn:hover {
+    color: var(--color-film);
+  }
+
+  /* ── The frame ─────────────────────────────────────────────────── */
+  .mockup-viewport {
+    height: 480px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* ink, so the gutter beside a phone-width stage reads as off-screen */
+    background: var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .mockup-viewport {
+      height: 560px;
+    }
+  }
+  /* The stage carries the client's ground and fills the viewport, so a
+     short page (a bare contact form) doesn't leave our ink showing under
+     it as if the mockup had run out. */
+  .mockup-stage {
+    transition: max-width 0.35s var(--ease-plot);
+    max-width: none;
+    min-height: 100%;
+    margin: 0 auto;
+    background: var(--mk-bg);
+  }
+  /* Mobile preview: the same markup at phone width — the reflow IS the
+     point, so nothing here hides content, it just narrows the stage. */
+  .mockup-frame[data-view='mobile'] .mockup-stage {
+    max-width: 380px;
+    border-left: 1px solid color-mix(in srgb, var(--color-grid) 40%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--color-grid) 40%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mockup-stage {
+      transition: none;
+    }
+  }
+
+  /* ── The client's world (deliberately outside our tokens) ──────── */
+  .mockup-page {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100%;
+  }
+  .mockup-page[hidden] {
+    display: none;
+  }
+
+  .mk-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+  }
+  .mk-brand {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .mk-navlinks {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 12px;
+  }
+  .mk-navcta {
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .mk-hero {
+    padding: 40px 24px 36px;
+  }
+  .mk-eyebrow {
+    margin: 0;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .mk-title {
+    margin: 12px 0 0;
+    font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+  }
+  .mk-titleline {
+    display: block;
+  }
+  .mk-lede {
+    margin: 14px 0 0;
+    max-width: 46ch;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .mk-btnrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .mk-btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .mk-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .mk-stat {
+    display: block;
+  }
+  .mk-statval {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .mk-statlabel {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+
+  .mk-section {
+    padding: 28px 24px;
+  }
+  .mk-h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .mk-note {
+    margin: 6px 0 0;
+    font-size: 11.5px;
+  }
+
+  .mk-cards {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .mk-cards[data-cols='2'] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mk-cards[data-cols='3'] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .mk-card {
+    display: block;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .mk-swatch {
+    display: block;
+    height: 56px;
+  }
+  .mk-cardbody {
+    display: block;
+    padding: 10px 12px;
+  }
+  .mk-cardtitle {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .mk-cardmeta {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+  }
+
+  .mk-rows {
+    display: block;
+    margin-top: 16px;
+  }
+  .mk-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 0;
+  }
+  .mk-rowlabel {
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  .mk-rownote {
+    display: block;
+    margin-top: 1px;
+    font-size: 11px;
+    font-weight: 400;
+  }
+  .mk-rowvalue {
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .mk-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .mk-shot {
+    display: flex;
+    align-items: flex-end;
+    height: 84px;
+    padding: 8px;
+    border-radius: 5px;
+  }
+  .mk-shotlabel {
+    font-size: 10.5px;
+  }
+
+  .mk-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: 6px;
+  }
+  .mk-field {
+    display: block;
+  }
+  .mk-field[data-wide='true'] {
+    grid-column: 1 / -1;
+  }
+  .mk-fieldlabel {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .mk-fieldvalue {
+    display: block;
+    margin-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12.5px;
+  }
+  .mk-submit {
+    grid-column: 1 / -1;
+    padding: 11px 18px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .mk-formnote {
+    grid-column: 1 / -1;
+    font-size: 11px;
+  }
+
+  .mk-reviews {
+    text-align: center;
+  }
+  .mk-stars {
+    display: block;
+    font-size: 15px;
+    letter-spacing: 0.14em;
+  }
+  .mk-rating {
+    display: block;
+    margin-top: 4px;
+    font-size: 12.5px;
+  }
+  .mk-quote {
+    margin: 12px auto 0;
+    max-width: 44ch;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .mk-band {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 7px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .mk-bandcta {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ── Phone-width reflow (mobile preview AND small real viewports) ─ */
+  .mockup-frame[data-view='mobile'] .mk-navlinks span:not(.mk-navcta),
+  .mockup-frame[data-view='mobile'] .mk-formnote {
+    display: none;
+  }
+  .mockup-frame[data-view='mobile'] .mk-cards[data-cols='3'],
+  .mockup-frame[data-view='mobile'] .mk-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mockup-frame[data-view='mobile'] .mk-form {
+    grid-template-columns: 1fr;
+  }
+  .mockup-frame[data-view='mobile'] .mk-hero,
+  .mockup-frame[data-view='mobile'] .mk-section {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  @media (max-width: 639px) {
+    .mk-navlinks span:not(.mk-navcta) {
+      display: none;
+    }
+    .mk-cards[data-cols='3'],
+    .mk-gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .mk-form {
+      grid-template-columns: 1fr;
+    }
+    .mk-hero,
+    .mk-section {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+  }
+</style>
+
+<script>
+  // Tab switching + device toggle, scoped per mockup instance so more than
+  // one can live on a page. Pure DOM — no motion library, the pin budget is
+  // spent on the industries rail.
+  document.querySelectorAll<HTMLElement>('[data-mockup]').forEach((root) => {
+    const frame = root.querySelector<HTMLElement>('.mockup-frame');
+    const viewport = root.querySelector<HTMLElement>('.mockup-viewport');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    if (!frame || !viewport) return;
+
+    const select = (id: string, focus = false) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.tab === id;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== id;
+      });
+      // A new "page" starts at the top, the way a real navigation would.
+      viewport.scrollTop = 0;
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab.dataset.tab ?? ''));
+      tab.addEventListener('keydown', (event) => {
+        const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        event.preventDefault();
+        const next = tabs[(i + step + tabs.length) % tabs.length];
+        select(next.dataset.tab ?? '', true);
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.device ?? 'desktop';
+        frame.dataset.view = view;
+        root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((other) => {
+          other.setAttribute('aria-pressed', String(other === btn));
+        });
+      });
+    });
+  });
+</script>

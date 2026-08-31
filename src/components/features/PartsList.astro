@@ -1,0 +1,132 @@
+---
+// The full annotated parts list — every feature with what it does for the
+// owner. Lives on /services, where someone has already decided to read
+// detail. The homepage only previews it (see FeaturesSection.astro).
+//
+// Drawn as a bill of materials rather than a card grid: continuous numbering
+// across all groups, mono indices in the gold register, no icons and no
+// "learn more" (brief §2 kills that pattern outright).
+import { featureGroups, featureCount } from '../../data/siteFeatures';
+
+// Continuous index across groups — computed here so the markup stays dumb.
+let running = 0;
+const numbered = featureGroups.map((group) => ({
+  ...group,
+  features: group.features.map((feature) => ({ ...feature, index: ++running })),
+}));
+---
+
+<section id="parts-list" aria-labelledby="parts-list-heading">
+  <div class="max-w-[760px]">
+    <p class="label-mono">the parts list</p>
+    <h2 id="parts-list-heading" class="mt-4 font-display text-title text-film">
+      Everything that can go in a site.
+    </h2>
+    <p class="register-cold mt-5 max-w-[60ch] text-body text-film-dim">
+      Not a package, and not a checklist you pay for twice. Your playbook
+      decides which parts earn their place; the rest stay off the site.
+    </p>
+  </div>
+
+  <div class="parts-grid mt-14">
+    {numbered.map((group) => (
+      <section class="parts-group" aria-labelledby={`pg-${group.id}`}>
+        <hr class="rule-gold m-0" />
+        <h3 id={`pg-${group.id}`} class="label-mono mt-3">
+          {group.name}
+          <span class="parts-count">{group.features.length}</span>
+        </h3>
+
+        <ul class="m-0 mt-4 list-none p-0">
+          {group.features.map((feature) => (
+            <li class="parts-row" data-parts-row>
+              <span class="parts-index" aria-hidden="true">
+                {String(feature.index).padStart(2, '0')}
+              </span>
+              <span class="min-w-0">
+                <span class="parts-name">{feature.name}</span>
+                <span class="parts-detail register-cold">{feature.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Multicol rather than grid: the groups are different lengths, and a grid of
+     equal cells would leave a gutter of dead space under every short one.
+     Two columns, not three — a group can never be split (break-inside below),
+     so with seven groups of uneven size the best three-way balance the browser
+     can reach still left ~540px of void under the shortest column. */
+  .parts-grid {
+    column-gap: 3.5rem;
+  }
+  @media (min-width: 640px) {
+    .parts-grid {
+      columns: 2;
+    }
+  }
+  .parts-group {
+    /* a group must never be split across a column break */
+    break-inside: avoid;
+    margin-bottom: 2.75rem;
+  }
+
+  .parts-count {
+    float: right;
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .parts-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-grid) 28%, transparent);
+  }
+  .parts-row:last-child {
+    border-bottom: 0;
+  }
+
+  .parts-index {
+    flex: none;
+    width: 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-gold);
+    opacity: 0.75;
+  }
+  .parts-name {
+    display: block;
+    font-size: 0.9375rem;
+    line-height: 1.3;
+    color: var(--color-film);
+  }
+  .parts-detail {
+    display: block;
+    margin-top: 0.125rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-film) 62%, transparent);
+  }
+
+  /* Pointer only — a hover that moves the row would fight touch scrolling. */
+  @media (hover: hover) {
+    .parts-row,
+    .parts-row .parts-index {
+      transition: border-color 0.25s var(--ease-plot), opacity 0.25s var(--ease-plot);
+    }
+    .parts-row:hover {
+      border-bottom-color: var(--color-gold);
+    }
+    .parts-row:hover .parts-index {
+      opacity: 1;
+    }
+  }
+</style>

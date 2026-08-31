@@ -1,10 +1,10 @@
 ---
 // Act 1 — "The compiler". The anchor sentence is the LCP and never animates;
-// the cycling word, motif layer, and chrome animate around it (design plan law 7).
-// Reduced motion: no cycle — the slot freezes and a plain list of all seven
-// verticals is shown instead.
+// the cycling word, photo layer, and chrome animate around it (design plan law 7).
+// Reduced motion: no cycle — the slot freezes and a plain list of every
+// vertical is shown instead.
 import { industries } from '../../data/industries';
-import Motif from '../motifs/Motif.astro';
+import IndustryPhoto from '../industries/IndustryPhoto.astro';
 
 const first = industries[0];
 const cycleData = industries.map((i) => ({
@@ -19,7 +19,7 @@ const cycleData = industries.map((i) => ({
   class="opening plot-grid relative flex min-h-[100svh] flex-col justify-center overflow-hidden"
   style={`--vx: ${first.accent}`}
 >
-  <!-- Motif layer — one plotted signature at a time, behind the sentence -->
+  <!-- Photo layer — one picture at a time, behind the sentence -->
   <div class="motif-stage pointer-events-none absolute inset-y-0 right-[4vw] w-[42%] max-w-[560px]" aria-hidden="true">
     {industries.map((industry, i) => (
       <div
@@ -27,7 +27,15 @@ const cycleData = industries.map((i) => ({
         data-motif-slide={industry.slug}
         style={`color: ${industry.accent}`}
       >
-        <Motif id={industry.motif} class="max-h-[52svh] w-full opacity-30" />
+        <IndustryPhoto
+          slug={industry.slug}
+          name={industry.name}
+          subject={industry.heroPhoto.subject}
+          alt={industry.heroPhoto.alt}
+          eager={i === 0}
+          defer={i !== 0}
+          class="h-[52svh] w-full"
+        />
       </div>
     ))}
   </div>
@@ -36,23 +44,23 @@ const cycleData = industries.map((i) => ({
     <h1 class="m-0">
       <!-- Screen readers get the whole claim; the kinetic slot is theatre -->
       <span class="sr-only">
-        Machine-built for barbershops, restaurants, contractors, dojos, roofing
+        Built for barbershops, restaurants, contractors, dojos, roofing
         suppliers, retail, and transport. Human-marketed for people.
       </span>
       <span aria-hidden="true" class="block">
-        <span class="block font-sans text-title font-medium text-film-dim">machine-built for</span>
+        <span class="block font-sans text-title font-medium text-film-dim">built for</span>
         <span
           class="cycle-slot block font-display text-display-xl"
           data-cycle-slot
           style="color: var(--vx)"
         >{first.cycleWord}</span>
         <span class="mt-3 block font-display text-title text-film">
-          human-marketed for <span class="marker-u">people.</span>
+          powered by the <span class="marker-u marker-u--gold">future.</span>
         </span>
       </span>
     </h1>
 
-    <!-- Reduced motion / no-JS: the seven, spelled out -->
+    <!-- Reduced motion / no-JS: every vertical, spelled out -->
     <p class="cycle-static label-mono mt-6 hidden max-w-[60ch] normal-case tracking-normal" aria-hidden="true">
       {industries.map((i) => i.cycleWord).join(' · ')}
     </p>
@@ -72,7 +80,15 @@ const cycleData = industries.map((i) => ({
 </section>
 
 <style>
-  /* Motif crossfade — opacity/transform only, compositor-safe */
+  /* The picture is set dressing, not the subject: dimmed and feathered on
+     the text side so the sentence stays the only thing you read first. */
+  .motif-stage :global(.industry-photo) {
+    opacity: 0.6;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 32%);
+    mask-image: linear-gradient(to right, transparent, #000 32%);
+  }
+
+  /* Photo crossfade — opacity/transform only, compositor-safe */
   .motif-slide {
     opacity: 0;
     transform: translateY(12px) scale(0.985);
@@ -88,7 +104,19 @@ const cycleData = industries.map((i) => ({
   .cycle-slot {
     font-size: calc(var(--text-display-xl) * var(--slot-scale, 1));
     line-height: 1.05;
-    min-height: 1.05em;
+    /* The box is a mask: chars animate up from yPercent 60 and overflow:hidden
+       hides them below the line. But the display face's content box is 1.26em
+       (ascent 1.0 + descent 0.26), so at line-height 1.05 the negative
+       half-leading pushes descenders 0.065em past the mask edge and "dojos",
+       "barbershops", "roofing suppliers" lost the tails of their j/p/g.
+       Pad the mask past the deepest descender, then pull the layout back up so
+       the sentence rhythm is unchanged. Both are em, so --slot-scale scales them. */
+    --slot-descender: 0.14em;
+    padding-bottom: var(--slot-descender);
+    margin-bottom: calc(var(--slot-descender) * -1);
+    /* Constant height whether or not the slot currently holds chars — the
+       cycle script empties textContent before each re-split. */
+    min-height: calc(1.05em + var(--slot-descender));
     overflow: hidden;
     white-space: nowrap;
   }
@@ -207,10 +235,25 @@ const cycleData = industries.map((i) => ({
       });
     };
 
+    // Deferred slides carry their URLs in data-attributes (see IndustryPhoto)
+    // so the hero downloads one photo on load instead of all of them.
+    const hydrate = (slug: string) => {
+      const img = slides.get(slug)?.querySelector<HTMLImageElement>('img[data-src]');
+      if (!img) return;
+      img.srcset = img.dataset.srcset ?? '';
+      img.src = img.dataset.src ?? '';
+      delete img.dataset.src;
+      delete img.dataset.srcset;
+    };
+
     const showEntry = (next: number) => {
       const entry = entries[next];
       const prev = entries[index];
       index = next;
+
+      hydrate(entry.slug);
+      // warm the one after it so the crossfade never waits on a download
+      hydrate(entries[(next + 1) % entries.length].slug);
 
       // motif + accent swap in sync with the word
       slides.get(prev.slug)?.classList.remove('is-active');
@@ -248,10 +291,9 @@ const cycleData = industries.map((i) => ({
     // law 7: nothing animates the LCP. Real visitors move within a second;
     // lab traces without input simply see the static hero.
     let interval: ReturnType<typeof setInterval> | null = null;
-    let scrubbing = false;
     let armed = false;
     const start = () => {
-      if (armed && !interval && !scrubbing) interval = setInterval(cycleOut, 2600);
+      if (armed && !interval) interval = setInterval(cycleOut, 2600);
     };
     const arm = () => {
       armed = true;
@@ -272,24 +314,6 @@ const cycleData = industries.map((i) => ({
     new IntersectionObserver(([entry]) =>
       entry.isIntersecting ? start() : stop()
     ).observe(section);
-
-    // Scroll makes the system spin up: as the hero exits, the cycle
-    // accelerates through a fixed sequence and resolves onto the first
-    // rail panel — deterministic, so the pin length never varies.
-    const SEEK = [1, 3, 5, 0];
-    document.addEventListener('linova:cycle-progress', (event) => {
-      const p: number = (event as CustomEvent).detail?.p ?? 0;
-      if (p < 0.04) {
-        scrubbing = false;
-        start();
-        return;
-      }
-      scrubbing = true;
-      stop();
-      const target =
-        p < 0.3 ? SEEK[0] : p < 0.55 ? SEEK[1] : p < 0.8 ? SEEK[2] : SEEK[3];
-      if (target !== index) showEntry(target);
-    });
   });
   if (slot && reduced) {
     // Reduced motion: freeze the slot on the first word; the static list shows.

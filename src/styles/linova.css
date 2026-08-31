@@ -1,26 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════
    thelinovagroup.com v2 — "Plotter & Marker" design system
-   Entry stylesheet for the rebuilt Linova pages (BaseLayout).
-   Legacy pages and client sub-sites keep src/styles/global.css.
+   The site's only stylesheet, loaded by BaseLayout. The old design's
+   global.css and Layout.astro were removed on 2026-08-31.
    ═══════════════════════════════════════════════════════════════════ */
 
 @import "tailwindcss";
 
 /* ── Self-hosted fonts — latin subsets, display face preloaded in BaseLayout ── */
+/* Display: geometric sans in the same Futura lineage as the LINOVA wordmark. */
 @font-face {
-  font-family: "Instrument Serif";
+  font-family: "Outfit Var";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/instrument-serif-latin-400-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Instrument Serif";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/instrument-serif-latin-400-italic.woff2") format("woff2");
+  src: url("/fonts/outfit-latin-wght-normal.woff2") format("woff2-variations");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 /* Variable: wght 100–700, wdth 85–100. Condensed width is the "cold" register. */
@@ -76,25 +69,34 @@
   --color-vx-supply: #8fbf4d;       /* Sedum Green     6.5:1 */
   --color-vx-retail: #f45fad;       /* Label Pink      4.7:1 */
   --color-vx-transport: #23c9b6;    /* Route Teal      6.8:1 */
+  --color-vx-cleaning: #d6e84f;     /* Citrus Lime    10.4:1 */
+  --color-vx-clinic: #3fe08d;       /* Scrubs Green    8.2:1 */
+  --color-vx-herbal: #6fe05a;       /* Tincture Green  8.3:1 */
+  --color-vx-auto: #ff8b3d;         /* Shop Orange     6.0:1 */
+  --color-vx-carwash: #6b9fff;      /* Rinse Blue      5.4:1 */
+  --color-vx-tailoring: #e8c49a;    /* Tailor's Chalk  8.6:1 */
+  --color-vx-venue: #e87fff;        /* Stage Violet    6.0:1 */
 
   /* ── Type ─────────────────────────────────────────────────────── */
   --font-*: initial;
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-display: "Outfit Var", "Century Gothic", "Segoe UI", system-ui, sans-serif;
   --font-sans: "IBM Plex Sans Var", "Segoe UI", Roboto, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
 
   /* Scale — display clamps past 8rem on desktop; body stays disciplined */
   --text-*: initial;
-  --text-display-xl: clamp(3.5rem, 1.6rem + 9.6vw, 10.5rem);
-  --text-display-xl--line-height: 0.92;
-  --text-display-xl--letter-spacing: -0.01em;
-  --text-display: clamp(2.5rem, 1.4rem + 5.5vw, 7rem);
-  --text-display--line-height: 0.95;
-  --text-display--letter-spacing: -0.01em;
-  --text-title: clamp(1.9rem, 1.4rem + 2.2vw, 3.5rem);
-  --text-title--line-height: 1.05;
-  --text-heading: clamp(1.35rem, 1.15rem + 0.9vw, 2rem);
-  --text-heading--line-height: 1.2;
+  --text-display-xl: clamp(3rem, 1.45rem + 8.1vw, 9rem);
+  --text-display-xl--line-height: 0.9;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display: clamp(2.15rem, 1.25rem + 4.6vw, 5.9rem);
+  --text-display--line-height: 0.96;
+  --text-display--letter-spacing: -0.03em;
+  --text-title: clamp(1.7rem, 1.3rem + 1.9vw, 3.1rem);
+  --text-title--line-height: 1.08;
+  --text-title--letter-spacing: -0.02em;
+  --text-heading: clamp(1.3rem, 1.12rem + 0.8vw, 1.9rem);
+  --text-heading--line-height: 1.22;
+  --text-heading--letter-spacing: -0.012em;
   --text-body: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
   --text-body--line-height: 1.65;
   --text-caption: 0.875rem;
@@ -149,18 +151,37 @@ body {
   color: var(--color-gold);
 }
 
+/* Scanning emphasis: a keyword lifted out of dim body copy by contrast and
+   weight — never by colour, which is quarantined to the vertical accents and
+   would carry meaning that a colourblind reader can't see. Applied by
+   src/lib/emphasis.ts, so it must live here rather than in a scoped block:
+   the markup is injected with set:html and carries no scope attribute. */
+.keyword {
+  color: var(--color-film);
+  font-weight: 500;
+}
+
 /* The plotter's line */
 .rule-gold {
   border: 0;
   border-top: 1px solid var(--color-gold);
 }
 
-/* The human hand: a marker underline, never a fill behind body text */
+/* The human hand: a marker underline, never a fill behind body text.
+   Colour is a variable so an instance can swap it without a second rule. */
 .marker-u {
-  background-image: linear-gradient(to top, var(--color-redline) 0.14em, transparent 0.14em);
+  --marker-ink: var(--color-redline);
+  background-image: linear-gradient(to top, var(--marker-ink) 0.14em, transparent 0.14em);
   background-position: 0 102%;
   background-repeat: no-repeat;
   padding-bottom: 0.05em;
+}
+
+/* Gold marker — the star in the logo samples #caa55e, which --color-gold
+   (#c8a05a) already matches to within a rounding error, so this reuses the
+   token rather than introducing a second near-identical gold. */
+.marker-u--gold {
+  --marker-ink: var(--color-gold);
 }
 
 /* Plotted grid ground (Grid Blue @ ~10%) */
@@ -179,6 +200,6 @@ body {
 .text-display,
 .text-title {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 600;
   text-wrap: balance;
 }

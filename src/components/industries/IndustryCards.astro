@@ -1,0 +1,109 @@
+---
+// The playbooks as a card grid, three up: photograph, index number, the
+// vertical in its own accent, the pain line, and the trades it covers. Cards
+// stretch to a common height per row, so a long headline never leaves its
+// neighbours short.
+import Covers from './Covers.astro';
+import IndustryPhoto from './IndustryPhoto.astro';
+import { type Industry } from '../../data/industries';
+
+interface Props {
+  items: Industry[];
+  /** how many cards the page already printed above this block */
+  start?: number;
+  /** the denominator — the page's whole roster, not just this block */
+  total?: number;
+}
+
+const { items, start = 0, total = items.length } = Astro.props;
+
+// Numbered in reading order down the page. Grouping breaks the roster's own
+// order, and 03 / 08 / 02 running across a page reads as a bug rather than as
+// an index.
+const pad = (n: number) => String(n).padStart(2, '0');
+const denominator = pad(total);
+---
+
+<ul class="industry-grid m-0 mx-auto grid max-w-[1200px] list-none gap-x-6 gap-y-8 px-6 p-0">
+  {items.map((industry, i) => (
+    <li class="flex">
+      <a
+        href={`/industries/${industry.slug}`}
+        class="industry-card group flex w-full flex-col"
+        style={`--vx: ${industry.accent}`}
+        data-magnetic-row
+      >
+        <span class="block overflow-hidden" style="color: var(--vx)">
+          <IndustryPhoto
+            slug={industry.slug}
+            name={industry.name}
+            subject={industry.heroPhoto.subject}
+            alt={industry.heroPhoto.alt}
+            sizes="(min-width: 1024px) 370px, (min-width: 640px) 46vw, 90vw"
+            widths={[400, 560, 740]}
+            class="aspect-[3/2] w-full opacity-85 transition-opacity duration-300 group-hover:opacity-100"
+          />
+        </span>
+
+        <span class="flex flex-1 flex-col p-5">
+          <span class="flex items-baseline justify-between gap-3">
+            <span class="label-mono">{pad(start + i + 1)}/{denominator}</span>
+            {industry.status === 'live' && industry.proof ? (
+              <span class="label-mono normal-case tracking-normal">proof: {industry.proof.client}</span>
+            ) : (
+              <span class="label-mono rounded-chip border border-grid/50 px-2 py-0.5">concept</span>
+            )}
+          </span>
+
+          <span
+            class="mt-3 block font-display text-heading font-semibold leading-tight"
+            style="color: var(--vx)"
+          >
+            {industry.name}
+          </span>
+          <span class="mt-2 block text-caption text-film-dim">{industry.headline}</span>
+
+          <Covers items={industry.covers} class="mt-4" />
+
+          <span class="label-mono mt-auto block pt-5 text-gold" aria-hidden="true">
+            open the playbook →
+          </span>
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .industry-grid {
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .industry-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .industry-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .industry-card {
+    border: 1px solid rgba(77, 77, 143, 0.4);
+    text-decoration: none;
+    transition:
+      border-color 0.3s var(--ease-plot),
+      background-color 0.3s var(--ease-plot);
+  }
+  .industry-card:hover {
+    border-color: color-mix(in srgb, var(--vx) 55%, transparent);
+    background: color-mix(in srgb, var(--vx) 6%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .industry-card {
+      transition: none;
+    }
+  }
+</style>

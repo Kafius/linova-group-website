@@ -3,6 +3,8 @@
 // Marketing and social carry the same weight as web (brief §1).
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { services } from '../data/services';
+import { emphasize } from '../lib/emphasis';
+import PartsList from '../components/features/PartsList.astro';
 import { breadcrumbs, service as serviceJsonLd } from '../lib/jsonld';
 
 const engineLabel = {
@@ -22,19 +24,14 @@ const engineLabel = {
 >
   <div class="plot-grid">
     <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
-      <p class="label-mono">services · two engines</p>
-      <h1 class="mt-4 max-w-[18ch] font-display text-display text-film">
-        The machine builds. The humans market.
+      <p class="label-mono">services</p>
+      <h1 class="mt-4 max-w-[18 ch] font-display text-display text-film">
+        You are good at what you do. Let's keep it that way.
       </h1>
       <p class="mt-5 max-w-[58ch] text-body text-film-dim">
-        Every service below is tagged with the engine that delivers it — the
-        AI-implemented build system, the marketing team in the Philippines,
-        or both working the same project.
+        Your job should be delivering the high quality product or outstanding service to your clients and customers.
+        Leave the website, marketing, and content to us.
       </p>
-      <div class="mt-8 flex flex-wrap gap-x-8 gap-y-2" aria-hidden="true">
-        <span class="label-mono"><span class="mr-2 inline-block h-px w-6 bg-gold align-middle"></span>machine — the plotter's line</span>
-        <span class="label-mono text-redline"><span class="mr-2 inline-block h-[3px] w-6 bg-redline align-middle"></span>human — the marker</span>
-      </div>
     </header>
   </div>
 
@@ -46,27 +43,32 @@ const engineLabel = {
             <p class="label-mono" class:list={[svc.engine === 'human' ? 'text-redline' : '']}>
               {engineLabel[svc.engine]}
             </p>
-            <h2 class="mt-3 font-display text-title text-film">
-              <span
-                class:list={[
-                  svc.engine === 'human' || svc.engine === 'both' ? 'marker-u' : '',
-                ]}
-              >{svc.name}</span>
-            </h2>
-            {svc.engine !== 'human' && <hr class="rule-gold mt-4 max-w-[120px]" />}
-            <p class="mt-5 max-w-[52ch] text-body text-film-dim">{svc.deck}</p>
+            <h2 class="mt-3 font-display text-title text-film">{svc.name}</h2>
+            {/* The gold hairline runs under every group. It used to be held
+                back from the human-engine ones so a redline marker could sit
+                under their names instead — four marked headings on one page,
+                against the one-redline-per-viewport law, and it read as noise.
+                The engine label above the heading carries that distinction. */}
+            <hr class="rule-gold mt-4 max-w-[120px]" />
+            <p class="mt-5 max-w-[52ch] text-body text-film-dim" set:html={emphasize(svc.deck, svc.keywords)} />
           </div>
           <ul class="m-0 flex list-none flex-col gap-3 self-center p-0">
             {svc.deliverables.map((item) => (
               <li class="flex items-baseline gap-3 text-caption text-film-dim">
                 <span class="label-mono shrink-0" aria-hidden="true">—</span>
-                {item}
+                <span set:html={emphasize(item, svc.keywords)} />
               </li>
             ))}
           </ul>
         </li>
       ))}
     </ul>
+
+    <!-- The full parts list the homepage only previews. Sits after the five
+         service groups: by here a reader has decided they want detail. -->
+    <div class="border-t border-grid/40 pt-16">
+      <PartsList />
+    </div>
 
     <div class="pt-16">
       <p class="label-mono">where to start</p>

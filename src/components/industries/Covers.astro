@@ -1,0 +1,63 @@
+---
+// The subcategory layer, boxed: the specific business types a playbook is
+// written for. One component so the rows on /industries and the vertical's
+// own page can't drift apart. Renders as inline elements — it sits inside a
+// <span> in the index rows, where a <div> would be invalid markup.
+interface Props {
+  items: string[];
+  /** optional lead-in ("built for"), which takes the vertical's accent */
+  label?: string;
+  class?: string;
+}
+
+const { items, label, class: className } = Astro.props;
+---
+
+<span class:list={['covers', className]}>
+  {label && <span class="covers__label">{label}</span>}
+  <span class="sr-only">Covers: </span>
+  {items.map((entry, i) => (
+    <>
+      {i > 0 && <span class="covers__dot" aria-hidden="true"> · </span>}
+      <span>{entry}</span>
+    </>
+  ))}
+</span>
+
+<style>
+  /* Quieter than the headline above it — this layer is for scanning, not
+     reading — and it picks up the vertical's accent only on hover, so a page
+     of fourteen rows stays calm at rest. */
+  .covers {
+    display: block;
+    color: rgba(239, 241, 248, 0.58);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.75;
+    transition: color 0.3s var(--ease-plot);
+  }
+
+  .covers__label {
+    margin-right: 0.9ch;
+    color: var(--vx, var(--color-gold));
+    font-size: var(--text-label);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+  }
+
+  .covers__dot {
+    color: var(--color-gold);
+    opacity: 0.55;
+  }
+
+  /* The hover lives on the card, which is a different component's scope. */
+  :global(.industry-card:hover) .covers {
+    color: rgba(239, 241, 248, 0.8);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .covers {
+      transition: none;
+    }
+  }
+</style>

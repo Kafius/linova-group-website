@@ -1,0 +1,111 @@
+---
+// /work/section/<industry> — a section front. Real pages rather than a JS
+// filter, so the rail's links are shareable and work without script.
+//
+// noindexed on purpose: a section front is a navigation convenience over the
+// same case studies /work already publishes, and with one or two studies in a
+// section it would be thin, duplicate content. Worth flipping to indexable
+// once a section carries three-plus studies (it is also kept out of the
+// sitemap — see astro.config.mjs).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionRail from '../../../components/shell/SectionRail.astro';
+import StoryGrid from '../../../components/work/StoryGrid.astro';
+import {
+  fetchCaseStudies,
+  workSections,
+  type CaseStudyView,
+  type WorkSection,
+} from '../../../lib/caseStudies';
+import { getIndustry } from '../../../data/industries';
+import { breadcrumbs } from '../../../lib/jsonld';
+
+export async function getStaticPaths() {
+  const studies = await fetchCaseStudies();
+  const sections = workSections(studies);
+
+  return sections.map((section) => ({
+    params: { section: section.slug },
+    props: {
+      section,
+      sections,
+      total: studies.length,
+      studies: studies.filter((study) => study.industrySlug === section.slug),
+    },
+  }));
+}
+
+interface Props {
+  section: WorkSection;
+  sections: WorkSection[];
+  total: number;
+  studies: CaseStudyView[];
+}
+
+const { section, sections, total, studies } = Astro.props;
+const railItems = [
+  { label: 'all', href: '/work', count: total },
+  ...sections.map((s) => ({ label: s.name, href: s.href, count: s.count, accent: s.accent })),
+];
+const industry = getIndustry(section.slug);
+const noun = section.count === 1 ? 'study' : 'studies';
+---
+
+<BaseLayout
+  title={`${section.name} — Work — The Linova Group`}
+  description={`Linova case studies for ${section.name}: live sites, what shipped, and the build story behind each one.`}
+  noindex
+  jsonLd={[
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Work', path: '/work' },
+      { name: section.name, path: `/work/section/${section.slug}` },
+    ]),
+  ]}
+>
+  <div class="plot-grid">
+    <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24" style={`--vx: ${section.accent}`}>
+      <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+        <p class="label-mono">
+          <a href="/work" class="text-gold no-underline hover:text-film">work</a>
+          <span aria-hidden="true"> / </span>
+          <span style="color: var(--color-film-dim)">section</span>
+        </p>
+        <p class="label-mono" style="color: var(--color-film-dim)">
+          {section.count} {noun} of {total}
+        </p>
+      </div>
+      <h1 class="mt-4 max-w-[16ch] font-display text-display text-film">
+        {/* The section's own accent closes the headline — on a page this
+            saturated in one vertical, a redline full stop just muddies it. */}
+        {section.name}<span style="color: var(--vx)">.</span>
+      </h1>
+      <p class="mt-5 max-w-[52ch] text-body text-film-dim">
+        Live sites in this trade, newest first.{' '}
+        {industry && (
+          <a
+            href={`/industries/${industry.slug}`}
+            class="text-film underline decoration-1 underline-offset-4 hover:text-gold"
+          >
+            How we build for {industry.name} →
+          </a>
+        )}
+      </p>
+    </header>
+  </div>
+
+  <SectionRail
+    label="Case study sections"
+    active={`/work/section/${section.slug}`}
+    items={railItems}
+  />
+
+  <div class="mx-auto max-w-[1200px] px-6 pb-16 pt-12">
+    <StoryGrid studies={studies} />
+  </div>
+
+  <div class="mx-auto max-w-[1200px] px-6 pb-28">
+    <a href="/work" class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+      ← every section
+    </a>
+  </div>
+</BaseLayout>

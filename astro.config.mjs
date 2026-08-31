@@ -30,6 +30,12 @@ export default defineConfig({
   site: 'https://thelinovagroup.com',
   output: 'static',
   adapter: vercel(),
+  redirects: {
+    // /discovery was the old booking landing page; /book replaces it on the
+    // same Calendly event. Kept as a permanent redirect so ads, emails and
+    // bookmarks pointing at it still land somewhere real.
+    '/discovery': '/book',
+  },
   build: {
     // Inline all page CSS — kills ~470ms of render-blocking requests on
     // mobile 4G (the styles are small; the fonts carry the real weight).
@@ -39,15 +45,16 @@ export default defineConfig({
     ...sanityIntegrations,
     sitemap({
       // §14: /lp/* and /studio stay out of the sitemap (robots.txt disallows
-      // them too); legacy client sub-sites are not Linova pages.
+      // them too); the styleguide is an internal build artifact. /work/section/*
+      // and /industries/category/* are noindexed navigation views over content
+      // /work and /industries already publish in full, and the thank-you pages
+      // are confirmation screens with nothing to offer search.
       filter: (page) =>
         !page.includes('/lp/') &&
         !page.includes('/studio') &&
-        !page.includes('/sourdelusions') &&
-        !page.includes('/vinyllitetech') &&
-        !page.includes('/wardkraft') &&
-        !page.includes('/estate-sites') &&
-        !page.includes('/preview/') &&
+        !page.includes('/work/section/') &&
+        !page.includes('/industries/category/') &&
+        !page.includes('/thank-you-') &&
         !page.includes('/styleguide'),
     }),
   ],

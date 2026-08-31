@@ -36,6 +36,14 @@ const industry = study.industrySlug ? getIndustry(study.industrySlug) : undefine
       <div class="mx-auto max-w-[1000px] px-6 pb-12 pt-24">
         <nav class="label-mono" aria-label="Breadcrumb">
           <a href="/work" class="hover:text-film">work</a>
+          {industry && (
+            <>
+              <span aria-hidden="true"> / </span>
+              <a href={`/work/section/${industry.slug}`} class="hover:text-film">
+                {industry.name.toLowerCase()}
+              </a>
+            </>
+          )}
           <span aria-hidden="true"> / </span>
           <span style="color: var(--vx)">{study.client.toLowerCase()}</span>
         </nav>

@@ -1,0 +1,360 @@
+---
+// Act 2 — the thesis. Promoted out of the old act-3 pillar list because it is
+// the first real claim the site makes: the build is shaped to the vertical.
+//
+// Two devices, both reading from src/data/industries.ts:
+//   left  — the sentence, with both nouns on the hero's cycling rail. The two
+//           slots are never allowed to hold the same vertical, or the line
+//           argues with itself ("a clinic site is not a clinic site").
+//   right — the photographs, stacked and continuously re-dealt. Same system,
+//           different build: one pile, fourteen jobs.
+//
+// Ground stays navy so act 3's navy → ink gradient still starts where it did.
+import { industries } from '../../data/industries';
+import IndustryPhoto from '../industries/IndustryPhoto.astro';
+
+// The collage deals from the same list, but starting further along so the
+// opening frame is not the vertical the hero just finished showing.
+const stack = [...industries.slice(4), ...industries.slice(0, 4)];
+
+// Opening state of the sentence. Slot A and slot B must differ on the server
+// too — this is what a no-JS reader gets, and it is the LCP text.
+const openA = industries.find((i) => i.slug === 'restaurants')!;
+const openB = industries.find((i) => i.slug === 'contractors')!;
+
+const article = (word: string) => ('aeiou'.includes(word[0]) ? 'an' : 'a');
+
+// What the rail draws from — word + accent only, so the payload stays small.
+const railData = industries.map((i) => ({ word: i.railWord, accent: i.accent }));
+---
+
+<section id="act-fit" class="fit-section plot-grid relative" aria-label="Built for your industry">
+  <div class="mx-auto grid max-w-[1200px] items-center gap-14 px-6 py-28 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,0.84fr)] lg:gap-20 lg:py-36">
+    <!-- ── The sentence ─────────────────────────────────────────── -->
+    <div>
+
+      <h2 class="fit-head mt-5 font-display text-title text-film">
+        <!-- Screen readers get the claim once, in its settled form; the two
+             cycling slots are theatre and are hidden from them. -->
+        <span class="sr-only">
+          A restaurant site is not a contractor site. Every build starts from
+          the playbook for your vertical.
+        </span>
+        <span aria-hidden="true" class="block">
+          <span class="fit-line">
+            <span class="fit-slot" data-fit-slot="0" style={`--vx: ${openA.accent}`}
+              >A {openA.railWord}</span
+            > site
+          </span>
+          <span class="fit-line">
+            is not <span class="fit-slot" data-fit-slot="1" style={`--vx: ${openB.accent}`}
+              >{article(openB.railWord)} {openB.railWord}</span
+            > site.
+          </span>
+        </span>
+      </h2>
+
+      <hr class="rule-gold mt-7 max-w-[120px]" />
+
+      <p class="mt-6 max-w-[54ch] text-body text-film-dim">
+        A barbershop needs a chair booked. A supplier needs a spec sheet
+        downloaded. Same system, different build — never a template with your
+        logo dropped in.
+      </p>
+
+      <p class="mt-6 text-body text-film-dim">
+        <a
+          href="/industries"
+          class="text-gold underline decoration-1 underline-offset-4"
+          >See what we've built for you</a>
+      </p>
+    </div>
+
+    <!-- ── The pile ─────────────────────────────────────────────── -->
+    <!-- Every card ships deferred (see IndustryPhoto): the collage promotes a
+         photo's data-src just before dealing it, so a section most visitors
+         scroll past does not pull fourteen photographs on load. -->
+    <div class="fit-collage" data-fit-collage>
+      <div class="fit-pile">
+        {stack.map((industry, i) => (
+          <div
+            class="fit-card"
+            data-fit-card={industry.slug}
+            data-fit-label={industry.name}
+            style={`--vx: ${industry.accent}; z-index: ${stack.length - i}`}
+          >
+            <IndustryPhoto
+              slug={industry.slug}
+              name={industry.name}
+              subject={industry.heroPhoto.subject}
+              alt={industry.heroPhoto.alt}
+              defer={i > 2}
+              class="h-full w-full"
+            />
+          </div>
+        ))}
+      </div>
+      <p class="label-mono fit-caption" data-fit-caption>{stack[0].name}</p>
+    </div>
+  </div>
+
+  <script type="application/json" data-fit-data set:html={JSON.stringify(railData)} />
+</section>
+
+<style>
+  .fit-section {
+    background: var(--color-navy);
+  }
+
+  /* ── The sentence ──────────────────────────────────────────────── */
+  .fit-head {
+    text-wrap: initial; /* the two lines are authored, not balanced */
+  }
+  /* The LINE is the mask, not the word. An inline-block with overflow:hidden
+     takes its bottom margin edge as its baseline (CSS 2.1 §10.8.1), which
+     drags the static " site" off the phrase it belongs to — so the clipping
+     happens one level up, where the box is a block and the text is plain
+     inline content.
+     The padding is the descender fix from .cycle-slot: the display face's
+     content box is 1.26em (ascent 1.0 + descent 0.26), so a tight line-height
+     would otherwise cut the tails of j/p/g. Pad past the deepest descender,
+     then pull the layout back so the sentence keeps its rhythm. */
+  .fit-line {
+    --slot-descender: 0.14em;
+    display: block;
+    padding-bottom: var(--slot-descender);
+    margin-bottom: calc(var(--slot-descender) * -1);
+    overflow: hidden;
+  }
+  .fit-slot {
+    color: var(--vx);
+    white-space: nowrap;
+    transition: color 0.45s var(--ease-plot);
+  }
+  .fit-slot :global(.char) {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+  .fit-slot :global(.char.space) {
+    white-space: pre;
+  }
+
+  /* ── The pile ──────────────────────────────────────────────────── */
+  .fit-collage {
+    position: relative;
+  }
+  .fit-pile {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    /* room for the cards that sit rotated outside the frame */
+    padding: 6%;
+  }
+  .fit-card {
+    position: absolute;
+    inset: 6%;
+    overflow: hidden;
+    border-radius: 3px;
+    box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.55);
+    /* dealt state is written by the script; this is the at-rest top card */
+    transform-origin: 50% 60%;
+  }
+  .fit-card :global(.industry-photo) {
+    height: 100%;
+    border-radius: 0;
+  }
+  /* A hairline in the vertical's accent, so the pile carries the palette even
+     while the photographs are still greyscale placeholders. */
+  .fit-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid color-mix(in srgb, var(--vx) 60%, transparent);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .fit-caption {
+    margin: 1.25rem 0 0;
+    text-align: center;
+    transition: opacity 0.3s var(--ease-plot);
+  }
+
+  @media (max-width: 1023px) {
+    .fit-pile {
+      max-width: 420px;
+      margin-inline: auto;
+    }
+  }
+
+  /* Resting fan, in CSS, matching rest(d) in the script. Without this the
+     pile collapses into a single card whenever the script does not run —
+     reduced motion (it returns early) and no-JS. gsap.set writes inline
+     transforms, so these are only ever the fallback. */
+  .fit-card:nth-child(2) {
+    transform: translate(-5%, 3%) rotate(-3.2deg) scale(0.965);
+    opacity: 0.84;
+  }
+  .fit-card:nth-child(3) {
+    transform: translate(6%, -3%) rotate(3.8deg) scale(0.93);
+    opacity: 0.68;
+  }
+  .fit-card:nth-child(4) {
+    transform: translate(-6%, 8%) rotate(-2.4deg) scale(0.895);
+    opacity: 0.52;
+  }
+  .fit-card:nth-child(n + 5) {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { prefersReducedMotion, afterLoad } from '../../lib/motion';
+
+  const section = document.querySelector<HTMLElement>('#act-fit');
+  const slots = [...document.querySelectorAll<HTMLElement>('[data-fit-slot]')];
+  const collage = document.querySelector<HTMLElement>('[data-fit-collage]');
+  const caption = document.querySelector<HTMLElement>('[data-fit-caption]');
+
+  interface RailEntry { word: string; accent: string }
+
+  if (section && slots.length === 2 && !prefersReducedMotion()) afterLoad(async () => {
+    const { gsap } = await import('gsap');
+
+    const dataEl = document.querySelector<HTMLScriptElement>('[data-fit-data]');
+    const entries: RailEntry[] = JSON.parse(dataEl?.textContent ?? '[]');
+    if (entries.length < 2) return;
+
+    const article = (word: string) => ('aeiou'.includes(word[0]) ? 'an' : 'a');
+    // slot 0 opens the sentence, so its article is capitalised
+    const phrase = (i: number, word: string) => {
+      const art = article(word);
+      return i === 0 ? `${art[0].toUpperCase()}${art.slice(1)} ${word}` : `${art} ${word}`;
+    };
+
+    // Current vertical per slot. Seeded to match what the server rendered.
+    const current = [
+      entries.findIndex((e) => e.word === 'restaurant'),
+      entries.findIndex((e) => e.word === 'contractor'),
+    ];
+
+    const splitToChars = (slot: HTMLElement, text: string): HTMLElement[] => {
+      slot.textContent = '';
+      return [...text].map((ch) => {
+        const span = document.createElement('span');
+        span.className = ch === ' ' ? 'char space' : 'char';
+        span.textContent = ch;
+        slot.appendChild(span);
+        return span;
+      });
+    };
+
+    // Pick a vertical for `which` that is neither what it shows now nor what
+    // the other slot shows — the sentence has to stay an argument.
+    const pick = (which: number): number => {
+      const other = current[1 - which];
+      let next = current[which];
+      while (next === current[which] || next === other) {
+        next = Math.floor(Math.random() * entries.length);
+      }
+      return next;
+    };
+
+    const advance = (which: number) => {
+      const next = pick(which);
+      current[which] = next;
+      const entry = entries[next];
+      const slot = slots[which];
+      slot.style.setProperty('--vx', entry.accent);
+      const chars = splitToChars(slot, phrase(which, entry.word));
+      gsap.fromTo(
+        chars,
+        { yPercent: 60, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out', stagger: 0.014 }
+      );
+    };
+
+    // ── The pile ────────────────────────────────────────────────────
+    const cards = collage ? [...collage.querySelectorAll<HTMLElement>('[data-fit-card]')] : [];
+
+    // Resting transform for depth `d` (0 = top of the pile). Deterministic
+    // rather than random so a card's slot in the stack never jumps.
+    const rest = (d: number) => ({
+      xPercent: [0, -5, 4, -3][d % 4] * (d + 1) * 0.5,
+      yPercent: [0, 3, -2, 4][d % 4] * (d + 1) * 0.5,
+      rotate: [0, -3.2, 3.8, -2.4][d % 4] * (d ? 1 : 0),
+      scale: 1 - d * 0.035,
+      opacity: d > 3 ? 0 : 1 - d * 0.16,
+      zIndex: cards.length - d,
+    });
+
+    const hydrate = (card: HTMLElement) => {
+      const img = card.querySelector<HTMLImageElement>('img[data-src]');
+      if (!img) return;
+      img.srcset = img.dataset.srcset ?? '';
+      img.src = img.dataset.src ?? '';
+      delete img.dataset.src;
+      delete img.dataset.srcset;
+    };
+
+    // order[0] is the card currently on top
+    let order = [...cards];
+    order.forEach((card, d) => gsap.set(card, rest(d)));
+    order.slice(0, 4).forEach(hydrate);
+
+    const deal = () => {
+      // take the bottom card and throw it onto the top of the pile
+      const incoming = order.pop();
+      if (!incoming) return;
+      order.unshift(incoming);
+      hydrate(incoming);
+      // warm the next one to be dealt so it never arrives mid-download
+      const nextUp = order[order.length - 1];
+      if (nextUp) hydrate(nextUp);
+
+      if (caption) {
+        caption.textContent = incoming.dataset.fitLabel ?? '';
+      }
+
+      const top = rest(0);
+      gsap.set(incoming, { zIndex: top.zIndex });
+      // Opacity resolves in the first third of the move. Fading it across the
+      // whole tween cross-dissolves it with the card it is landing on, which
+      // reads as two muddy photographs rather than one being dealt onto a pile.
+      const { opacity, ...place } = top;
+      gsap.fromTo(
+        incoming,
+        { xPercent: 14, yPercent: 26, rotate: 7, scale: 0.92, opacity: 0 },
+        { ...place, duration: 0.75, ease: 'power3.out' }
+      );
+      gsap.to(incoming, { opacity, duration: 0.24, ease: 'power2.out' });
+      order.slice(1).forEach((card, i) => {
+        gsap.to(card, { ...rest(i + 1), duration: 0.75, ease: 'power3.out' });
+      });
+    };
+
+    // ── Timers, paused whenever the act is off-screen ───────────────
+    let railTimer: ReturnType<typeof setInterval> | undefined;
+    let pileTimer: ReturnType<typeof setInterval> | undefined;
+    let turn = 0;
+
+    const start = () => {
+      if (railTimer) return;
+      railTimer = setInterval(() => advance(turn++ % 2), 2600);
+      pileTimer = setInterval(deal, 1900);
+    };
+    const stop = () => {
+      clearInterval(railTimer);
+      clearInterval(pileTimer);
+      railTimer = pileTimer = undefined;
+    };
+
+    new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? start() : stop()),
+      { rootMargin: '0px 0px -20% 0px' }
+    ).observe(section);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop();
+    });
+  });
+</script>

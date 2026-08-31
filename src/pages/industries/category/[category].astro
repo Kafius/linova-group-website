@@ -1,0 +1,100 @@
+---
+// /industries/category/<group> — one group of playbooks. Real pages rather
+// than a JS filter, so the rail's links are shareable and work without script.
+//
+// noindexed on purpose, same rule as /work/section/*: a group front is a
+// navigation view over playbooks /industries already lists in full. Worth
+// making indexable if a group ever earns its own copy beyond the blurb (it is
+// also kept out of the sitemap — see astro.config.mjs).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SectionRail from '../../../components/shell/SectionRail.astro';
+import IndustryCards from '../../../components/industries/IndustryCards.astro';
+import {
+  industries,
+  categoryMenu,
+  industriesIn,
+  type Industry,
+  type IndustryCategory,
+} from '../../../data/industries';
+import { breadcrumbs } from '../../../lib/jsonld';
+
+export function getStaticPaths() {
+  const menu = categoryMenu();
+  return menu.map((category) => ({
+    params: { category: category.slug },
+    props: { category, menu, items: industriesIn(category.slug) },
+  }));
+}
+
+interface Props {
+  category: IndustryCategory & { count: number };
+  menu: (IndustryCategory & { count: number })[];
+  items: Industry[];
+}
+
+const { category, menu, items } = Astro.props;
+
+const railItems = [
+  { label: 'all', href: '/industries', count: industries.length },
+  ...menu.map((entry) => ({
+    label: entry.name,
+    href: `/industries/category/${entry.slug}`,
+    count: entry.count,
+  })),
+];
+---
+
+<BaseLayout
+  title={`${category.name} — Industries — The Linova Group`}
+  description={`Linova playbooks for ${category.name}: ${category.blurb}`}
+  noindex
+  jsonLd={[
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Industries', path: '/industries' },
+      { name: category.name, path: `/industries/category/${category.slug}` },
+    ]),
+  ]}
+>
+  <div class="plot-grid">
+    <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
+      <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+        <p class="label-mono">
+          <a href="/industries" class="text-gold no-underline hover:text-film">industries</a>
+          <span aria-hidden="true"> / </span>
+          <span style="color: var(--color-film-dim)">group</span>
+        </p>
+        <p class="label-mono" style="color: var(--color-film-dim)">
+          {category.count} of {industries.length} playbooks
+        </p>
+      </div>
+      <h1 class="mt-4 max-w-[16ch] font-display text-display text-film">{category.name}</h1>
+      <p class="mt-5 max-w-[58ch] text-body text-film-dim">{category.blurb}</p>
+    </header>
+  </div>
+
+  <SectionRail
+    label="Industry groups"
+    active={`/industries/category/${category.slug}`}
+    items={railItems}
+  />
+
+  <div class="plot-grid">
+    <div class="pt-10">
+      <IndustryCards items={items} />
+    </div>
+
+    <div class="mx-auto max-w-[1200px] px-6 py-20">
+      <a href="/industries" class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+        ← every playbook
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { magnetic } from '../../../lib/motion';
+  document
+    .querySelectorAll<HTMLElement>('[data-magnetic-row]')
+    .forEach((row) => magnetic(row, 0.02, 4));
+</script>
