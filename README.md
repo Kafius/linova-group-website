@@ -93,6 +93,35 @@ npm run sanity:seed            # create missing docs + upload hero images
 npm run sanity:seed -- --force # overwrite them
 ```
 
+### Hosting the Studio
+
+Two ways to reach it, and they are independent:
+
+- **Embedded** at `/studio`, built with the site by `npm run build`. Nothing
+  extra to run; it ships whenever the site deploys. Register it under
+  sanity.io/manage → Studios → "add a manually-hosted studio" as
+  `https://thelinovagroup.com/studio` if you want it listed there — that panel
+  is a bookmark, not a deployment.
+- **Sanity-hosted** at **https://thelinovagroup.sanity.studio** (deployed
+  2026-08-31). Re-deploy with `npx sanity deploy`; the app id is pinned in
+  `sanity.cli.ts` so it no longer prompts. It keeps working when the site
+  build is broken, needs no CORS entry (it authenticates under sanity.io's own
+  domain), and **updates only when you re-run `sanity deploy`** — it does not
+  follow the site's deploys, so a schema change needs a deploy here as well as
+  a site build.
+
+`sanity.cli.ts` exists for the CLI path and hardcodes the project id: the CLI
+runs outside Astro's Vite and only auto-loads `SANITY_STUDIO_*`, so the
+`PUBLIC_*` variables resolve to nothing there. Same reason `sanity.config.ts`
+falls back to the literal id rather than a placeholder — a placeholder builds
+a Studio pointed at a project that doesn't exist. `styled-components` is a
+direct dependency for the same reason: the CLI checks the manifest, and
+`@sanity/astro` only supplies it transitively.
+
+`sanity build` writes to `./dist` by default, which is where Astro's output
+goes — pass a path (`npx sanity build .studio`) if you ever need a local
+Studio build. `sanity deploy` builds to its own temp directory.
+
 Two things to know before touching the data:
 
 - **The dataset is public.** Published *and* draft documents are readable by
