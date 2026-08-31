@@ -1,0 +1,845 @@
+---
+// The shell for a sample client site. Deliberately NOT BaseLayout: it opens
+// its own document, loads none of Linova's tokens or fonts, and imports no
+// Tailwind. A demo that borrowed our stylesheet would look like our site,
+// which is the one thing it must not do.
+//
+// Structure is here; the look arrives as CSS custom properties through the
+// `theme` prop, so the next demo reuses this file with a different palette
+// and a different pair of faces. Nothing restaurant-coloured belongs in
+// src/styles/linova.css.
+//
+// The ribbon and the nav sit inside one sticky element on purpose. Fixing the
+// ribbon and offsetting the nav by a hard-coded height breaks the moment the
+// ribbon wraps to two lines on a narrow screen; sticking them together makes
+// overlap structurally impossible at every width.
+import { site } from '../data/site';
+
+export interface DemoTheme {
+  ink: string;
+  inkRaised: string;
+  inkLine: string;
+  paper: string;
+  paperRaised: string;
+  paperLine: string;
+  accent: string;
+  accentOnPaper: string;
+  onInk: string;
+  onInkDim: string;
+  onPaper: string;
+  onPaperDim: string;
+  onAccent: string;
+  displayFont: string;
+  bodyFont: string;
+}
+
+export interface DemoNavLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage: string;
+  theme: DemoTheme;
+  brand: string;
+  tagline: string;
+  navLinks: DemoNavLink[];
+  navCta: DemoNavLink;
+  navToggleOpen: string;
+  navToggleClose: string;
+  skipLabel: string;
+  ribbon: { text: string; linkLabel: string; linkHref: string };
+  footerHoursHeading: string;
+  footerFindHeading: string;
+  footerLegal: string;
+  footerAddress: string[];
+  footerPhone: { label: string; href: string };
+  footerEmail: { label: string; href: string };
+  footerHours: { label: string; value: string }[];
+  /** schema.org blocks for this page */
+  jsonLd?: Record<string, unknown>[];
+  /** marks the current nav item */
+  current: string;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  theme,
+  brand,
+  tagline,
+  navLinks,
+  navCta,
+  navToggleOpen,
+  navToggleClose,
+  skipLabel,
+  ribbon,
+  footerHoursHeading,
+  footerFindHeading,
+  footerLegal,
+  footerAddress,
+  footerPhone,
+  footerEmail,
+  footerHours,
+  jsonLd = [],
+  current,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImageUrl = new URL(ogImage, site.url).href;
+
+// A real client site has its own mark in the tab. Drawn from the demo's own
+// palette and initial so no image file has to exist for the next demo either.
+const favicon = `data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="${theme.ink}"/><text x="16" y="24" font-family="Georgia,serif" font-size="22" font-weight="700" fill="${theme.accent}" text-anchor="middle">${brand.trim().charAt(0)}</text></svg>`
+)}`;
+
+// The palette rides in as inline custom properties on the wrapper, which is
+// what keeps two demos with different palettes able to share this file.
+const themeVars = [
+  `--ink:${theme.ink}`,
+  `--ink-raised:${theme.inkRaised}`,
+  `--ink-line:${theme.inkLine}`,
+  `--paper:${theme.paper}`,
+  `--paper-raised:${theme.paperRaised}`,
+  `--paper-line:${theme.paperLine}`,
+  `--accent:${theme.accent}`,
+  `--accent-paper:${theme.accentOnPaper}`,
+  `--on-ink:${theme.onInk}`,
+  `--on-ink-dim:${theme.onInkDim}`,
+  `--on-paper:${theme.onPaper}`,
+  `--on-paper-dim:${theme.onPaperDim}`,
+  `--on-accent:${theme.onAccent}`,
+  `--font-display:${theme.displayFont}`,
+  `--font-body:${theme.bodyFont}`,
+].join(';');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {/* A fictional restaurant must never compete in search under Linova's
+        domain. The SEO build below is real and inspectable; it just isn't
+        pointed at Google. astro.config.mjs keeps /preview out of the sitemap
+        to match. */}
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <meta name="theme-color" content={theme.ink} />
+
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:site_name" content={brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <link
+      rel="preload"
+      href="/fonts/demos/fraunces-latin-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {jsonLd.map((block) => (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(block)} />
+    ))}
+
+    {/* ── Analytics slot ────────────────────────────────────────────────
+        A real build drops the client's own GA4 property in here. It stays
+        commented out on the demo so sample traffic never lands in a live
+        property. Every conversion action on these pages already carries a
+        data-analytics-event attribute for it to read.
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=GA_ID"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){ dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', 'GA_ID');
+          document.addEventListener('click', function (e) {
+            var el = e.target.closest('[data-analytics-event]');
+            if (el) gtag('event', el.getAttribute('data-analytics-event'));
+          });
+        </script>
+    ───────────────────────────────────────────────────────────────────── */}
+  </head>
+
+  <body>
+    <div class="demo" style={themeVars}>
+      <a class="skip" href="#demo-main">{skipLabel}</a>
+
+      <div class="chrome">
+        <div class="ribbon">
+          <div class="ribbon__in">
+            <p class="ribbon__text">{ribbon.text}</p>
+            {/* _top so the link escapes the browser frame on the industry
+                page, instead of loading Linova inside the sample site. It is
+                an ordinary navigation when the page is not framed. */}
+            <a class="ribbon__link" href={ribbon.linkHref} target="_top">{ribbon.linkLabel}</a>
+          </div>
+        </div>
+
+        <header class="nav">
+          <div class="nav__in">
+            <a class="nav__brand" href={navLinks[0]?.href ?? '/'}>
+              <span class="nav__brand-name">{brand}</span>
+              <span class="nav__brand-tag">{tagline}</span>
+            </a>
+
+            <button
+              class="nav__toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="demo-nav-menu"
+              aria-label={navToggleOpen}
+              data-nav-toggle
+              data-label-open={navToggleOpen}
+              data-label-close={navToggleClose}
+            >
+              {/* The visible word drops below 480px, where it and the brand
+                  cannot share a row. aria-label carries the name either way. */}
+              <span class="nav__toggle-label">{navToggleOpen}</span>
+              <span class="nav__toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+            </button>
+
+            <nav class="nav__menu" id="demo-nav-menu" aria-label="Main" data-nav-menu>
+              <ul class="nav__list">
+                {navLinks.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      class:list={['nav__link', current === link.href && 'is-current']}
+                      aria-current={current === link.href ? 'page' : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a class="nav__cta" href={navCta.href} data-analytics-event="order_cta_nav">
+                {navCta.label}
+              </a>
+            </nav>
+          </div>
+        </header>
+      </div>
+
+      <main id="demo-main"><slot /></main>
+
+      <footer class="foot">
+        <div class="foot__in">
+          <div class="foot__brand">
+            <p class="foot__name">{brand}</p>
+            <p class="foot__tag">{tagline}</p>
+          </div>
+
+          <div class="foot__col">
+            <h2 class="foot__h">{footerFindHeading}</h2>
+            <address class="foot__address">
+              {footerAddress.map((line) => <span>{line}</span>)}
+            </address>
+            <a class="foot__link" href={footerPhone.href} data-analytics-event="phone_tap_footer">
+              {footerPhone.label}
+            </a>
+            <a class="foot__link" href={footerEmail.href}>{footerEmail.label}</a>
+          </div>
+
+          <div class="foot__col">
+            <h2 class="foot__h">{footerHoursHeading}</h2>
+            <dl class="foot__hours">
+              {footerHours.map((row) => (
+                <div class="foot__hours-row">
+                  <dt>{row.label}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+        <p class="foot__legal">{footerLegal}</p>
+      </footer>
+    </div>
+
+    <script>
+      // The only chrome-level script on the demo: the mobile nav toggle.
+      const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+      const menu = document.querySelector<HTMLElement>('[data-nav-menu]');
+      const label = toggle?.querySelector<HTMLElement>('.nav__toggle-label');
+
+      if (toggle && menu && label) {
+        const openText = toggle.dataset.labelOpen ?? 'Open menu';
+        const closeText = toggle.dataset.labelClose ?? 'Close menu';
+
+        const setOpen = (open: boolean) => {
+          toggle.setAttribute('aria-expanded', String(open));
+          toggle.setAttribute('aria-label', open ? closeText : openText);
+          menu.classList.toggle('is-open', open);
+          label.textContent = open ? closeText : openText;
+        };
+
+        toggle.addEventListener('click', () => {
+          setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+        });
+
+        // Escape closes it and returns focus to the control that opened it.
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+            setOpen(false);
+            toggle.focus();
+          }
+        });
+      }
+    </script>
+
+    <style is:global>
+      /* ═══════════════════════════════════════════════════════════════
+         Demo design system. Every rule is nested under .demo, and every
+         colour and face resolves through a custom property set on that
+         wrapper — so this file is the structure and the demo's data
+         module is the look.
+         ═══════════════════════════════════════════════════════════════ */
+
+      @font-face {
+        font-family: 'Fraunces';
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url('/fonts/demos/fraunces-latin-var.woff2') format('woff2-variations');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+          U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+          U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Karla';
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url('/fonts/demos/karla-latin-var.woff2') format('woff2-variations');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+          U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+          U+FEFF, U+FFFD;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        /* the sticky chrome would otherwise cover a jump-nav target */
+        scroll-padding-top: 8.5rem;
+      }
+      body {
+        margin: 0;
+      }
+
+      .demo {
+        --fs-display: clamp(2.75rem, 1.5rem + 5.4vw, 6rem);
+        --fs-title: clamp(1.9rem, 1.4rem + 2.2vw, 3.25rem);
+        --fs-heading: clamp(1.35rem, 1.18rem + 0.8vw, 1.9rem);
+        --fs-dish: clamp(1.08rem, 1rem + 0.35vw, 1.3rem);
+        --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+        --fs-small: 0.9rem;
+        --fs-label: 0.72rem;
+        --measure: 60ch;
+        --gutter: clamp(1.25rem, 4vw, 3rem);
+        --bay: clamp(3.5rem, 8vw, 7rem);
+        --wrap: 1180px;
+
+        background: var(--ink);
+        color: var(--on-ink);
+        font-family: var(--font-body);
+        font-size: var(--fs-body);
+        line-height: 1.62;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .demo *,
+      .demo *::before,
+      .demo *::after {
+        box-sizing: border-box;
+      }
+
+      /* A positioned element with an explicit `display` would otherwise beat
+         the [hidden] attribute. Every JS-toggled element on these pages uses
+         `hidden`, so this keeps that contract honest. */
+      .demo [hidden] {
+        display: none !important;
+      }
+
+      .demo h1,
+      .demo h2,
+      .demo h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-variation-settings: 'SOFT' 30, 'WONK' 1, 'opsz' 60;
+        line-height: 1.04;
+        letter-spacing: -0.015em;
+        text-wrap: balance;
+        margin: 0;
+      }
+
+      .demo p {
+        margin: 0;
+      }
+
+      /* :where() so this contributes no specificity. As `.demo a` it scored
+         (0,1,1) and beat every single-class rule in this global block, which
+         silently overrode the filled buttons' own colour and dropped them to
+         2.6:1 on the accent. */
+      .demo :where(a) {
+        color: inherit;
+      }
+
+      .demo :where(a, button, input, textarea, summary, [tabindex]):focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+
+      .demo .on-paper :where(a, button, input, textarea, summary):focus-visible {
+        outline-color: var(--accent-paper);
+      }
+
+      .skip {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip:focus {
+        left: 1rem;
+        top: 1rem;
+        z-index: 90;
+        background: var(--accent);
+        color: var(--on-accent);
+        padding: 0.65rem 1rem;
+        font-weight: 700;
+      }
+
+      /* ── Sticky chrome: ribbon and nav travel as one block ──────────── */
+      .chrome {
+        position: sticky;
+        top: 0;
+        z-index: 60;
+      }
+
+      .ribbon {
+        background: var(--accent);
+        color: var(--on-accent);
+      }
+      .ribbon__in {
+        max-width: var(--wrap);
+        margin: 0 auto;
+        padding: 0.5rem var(--gutter);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.25rem 1rem;
+      }
+      .ribbon__text {
+        font-size: var(--fs-label);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      .ribbon__link {
+        font-size: var(--fs-label);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 700;
+        text-underline-offset: 3px;
+        white-space: nowrap;
+      }
+
+      .nav {
+        background: color-mix(in srgb, var(--ink) 94%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--ink-line);
+      }
+      .nav__in {
+        max-width: var(--wrap);
+        margin: 0 auto;
+        padding: 0.7rem var(--gutter);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+      .nav__brand {
+        text-decoration: none;
+        display: grid;
+        gap: 0.1rem;
+      }
+      .nav__brand-name {
+        font-family: var(--font-display);
+        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 30;
+        /* Shrinks rather than wrapping: a restaurant's name breaking across
+           two lines in its own nav reads as a layout fault. */
+        font-size: clamp(1.05rem, 0.85rem + 0.5vw, 1.22rem);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+      .nav__brand-tag {
+        font-size: var(--fs-label);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--on-ink-dim);
+      }
+
+      .nav__toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        background: none;
+        border: 1px solid var(--ink-line);
+        color: var(--on-ink);
+        font: inherit;
+        font-size: var(--fs-label);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+      }
+      .nav__toggle-bars {
+        display: grid;
+        gap: 3px;
+      }
+      @media (max-width: 479px) {
+        .nav__toggle-label {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip-path: inset(50%);
+          white-space: nowrap;
+        }
+        .nav__in {
+          gap: 0.75rem;
+        }
+      }
+      .nav__toggle-bars i {
+        display: block;
+        width: 16px;
+        height: 1.5px;
+        background: currentColor;
+      }
+
+      .nav__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .nav__link {
+        text-decoration: none;
+        font-size: var(--fs-small);
+        letter-spacing: 0.02em;
+        color: var(--on-ink-dim);
+        transition: color 0.18s ease;
+        white-space: nowrap;
+      }
+      .nav__link:hover,
+      .nav__link.is-current {
+        color: var(--on-ink);
+      }
+      .nav__link.is-current {
+        box-shadow: inset 0 -1px 0 0 var(--accent);
+      }
+      .nav__cta {
+        text-decoration: none;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-weight: 700;
+        font-size: var(--fs-small);
+        padding: 0.6rem 1.1rem;
+        white-space: nowrap;
+      }
+      .nav__cta:hover {
+        background: color-mix(in srgb, var(--accent) 85%, white);
+      }
+
+      /* The tagline repeats what the hero says a moment later. Below 1024 it
+         is the thing that pushes the nav to two and three lines, so it comes
+         out of the sticky block rather than costing that much of the fold. */
+      @media (max-width: 1023px) {
+        .nav__brand-tag {
+          display: none;
+        }
+      }
+
+      /* Mobile: menu collapses behind the toggle */
+      @media (max-width: 767px) {
+        .nav__menu {
+          display: none;
+          width: 100%;
+          order: 3;
+          padding-top: 0.9rem;
+        }
+        .nav__menu.is-open {
+          display: block;
+        }
+        .nav__in {
+          flex-wrap: wrap;
+        }
+        .nav__list {
+          display: grid;
+          gap: 0.15rem;
+          border-top: 1px solid var(--ink-line);
+          padding-top: 0.75rem;
+        }
+        .nav__link {
+          display: block;
+          padding: 0.6rem 0;
+          font-size: 1.05rem;
+        }
+        .nav__cta {
+          display: block;
+          text-align: center;
+          margin-top: 0.75rem;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .nav__toggle {
+          display: none;
+        }
+        .nav__menu {
+          display: flex;
+          align-items: center;
+          gap: clamp(1.25rem, 2.5vw, 2.25rem);
+        }
+        .nav__list {
+          display: flex;
+          gap: clamp(1.25rem, 2.5vw, 2.25rem);
+        }
+      }
+
+      /* ── Shared page furniture ──────────────────────────────────────── */
+      .bay {
+        padding: var(--bay) 0;
+      }
+      .wrap {
+        max-width: var(--wrap);
+        margin: 0 auto;
+        padding: 0 var(--gutter);
+      }
+      .narrow {
+        max-width: var(--measure);
+      }
+      .on-paper {
+        background: var(--paper);
+        color: var(--on-paper);
+      }
+      .on-paper h1,
+      .on-paper h2,
+      .on-paper h3 {
+        color: var(--on-paper);
+      }
+
+      .eyebrow {
+        font-size: var(--fs-label);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--accent);
+        margin: 0 0 1rem;
+      }
+      .on-paper .eyebrow {
+        color: var(--accent-paper);
+      }
+
+      .lede {
+        font-size: clamp(1.08rem, 1rem + 0.5vw, 1.35rem);
+        line-height: 1.5;
+        color: var(--on-ink-dim);
+      }
+      .on-paper .lede {
+        color: var(--on-paper-dim);
+      }
+
+      .dim {
+        color: var(--on-ink-dim);
+      }
+      .on-paper .dim {
+        color: var(--on-paper-dim);
+      }
+
+      /* The one rule the accent is allowed to draw */
+      .rule {
+        border: 0;
+        border-top: 1px solid var(--accent);
+        margin: 1.25rem 0 0;
+      }
+      .on-paper .rule {
+        border-top-color: var(--accent-paper);
+      }
+
+      .btn {
+        display: inline-block;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: var(--fs-small);
+        letter-spacing: 0.04em;
+        padding: 0.85rem 1.5rem;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .btn--fill {
+        background: var(--accent);
+        color: var(--on-accent);
+      }
+      .btn--fill:hover {
+        background: color-mix(in srgb, var(--accent) 85%, white);
+      }
+      .btn--line {
+        border-color: color-mix(in srgb, var(--on-ink) 40%, transparent);
+        color: var(--on-ink);
+      }
+      .btn--line:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .on-paper .btn--line {
+        border-color: color-mix(in srgb, var(--on-paper) 40%, transparent);
+        color: var(--on-paper);
+      }
+      .on-paper .btn--line:hover {
+        border-color: var(--accent-paper);
+        color: var(--accent-paper);
+      }
+
+      /* ── Footer ─────────────────────────────────────────────────────── */
+      .foot {
+        border-top: 1px solid var(--ink-line);
+        background: var(--ink-raised);
+      }
+      .foot__in {
+        max-width: var(--wrap);
+        margin: 0 auto;
+        padding: var(--bay) var(--gutter) 2.5rem;
+        display: grid;
+        gap: 2.5rem;
+      }
+      @media (min-width: 768px) {
+        .foot__in {
+          grid-template-columns: 1.4fr 1fr 1fr;
+          gap: 3rem;
+        }
+      }
+      .foot__name {
+        font-family: var(--font-display);
+        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .foot__tag {
+        color: var(--on-ink-dim);
+        font-size: var(--fs-small);
+        margin-top: 0.4rem;
+        max-width: 30ch;
+      }
+      .foot__h {
+        font-family: var(--font-body);
+        font-size: var(--fs-label);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 0.9rem;
+      }
+      .foot__address {
+        font-style: normal;
+        display: grid;
+        gap: 0.1rem;
+        color: var(--on-ink-dim);
+        font-size: var(--fs-small);
+        margin-bottom: 0.8rem;
+      }
+      .foot__link {
+        display: block;
+        font-size: var(--fs-small);
+        text-underline-offset: 3px;
+      }
+      .foot__hours {
+        margin: 0;
+        display: grid;
+        gap: 0.3rem;
+        font-size: var(--fs-small);
+      }
+      .foot__hours-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: var(--on-ink-dim);
+      }
+      .foot__hours-row dt {
+        font-weight: 700;
+        color: var(--on-ink);
+      }
+      .foot__hours-row dd {
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .foot__legal {
+        max-width: var(--wrap);
+        margin: 0 auto;
+        padding: 1.25rem var(--gutter) 2.5rem;
+        border-top: 1px solid var(--ink-line);
+        font-size: var(--fs-label);
+        letter-spacing: 0.04em;
+        color: var(--on-ink-dim);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .demo *,
+        .demo *::before,
+        .demo *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+      }
+
+      /* ── Print ──────────────────────────────────────────────────────
+         A restaurant owner will try to print the menu. Chrome, CTAs and
+         the demo ribbon come off; the page goes to ink on white.        */
+      @media print {
+        .chrome,
+        .foot,
+        .skip,
+        .no-print {
+          display: none !important;
+        }
+        .demo {
+          background: #fff;
+          color: #000;
+          font-size: 10.5pt;
+        }
+        .demo .on-paper {
+          background: #fff;
+          color: #000;
+        }
+        .demo a {
+          text-decoration: none;
+          color: #000;
+        }
+        .bay {
+          padding: 0.5rem 0;
+        }
+      }
+    </style>
+  </body>
+</html>

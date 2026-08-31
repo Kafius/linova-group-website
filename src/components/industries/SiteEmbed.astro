@@ -1,0 +1,242 @@
+---
+// The real sample site inside the plotted browser frame — the same chrome as
+// SiteMockup.astro, with a live same-origin iframe where that one draws a
+// fiction out of typed blocks.
+//
+// This is the upgrade path for a vertical: it renders the drawn mockup until
+// the demo actually exists, then swaps to the built site with the frame,
+// tabs, and device toggle unchanged. The page tabs really navigate and the
+// mobile toggle really reflows, because there is nothing to simulate.
+//
+// Plotter & Marker stops at the frame, exactly as it does for the mockup.
+// Everything inside the iframe is the demo's own brand world, isolated by the
+// document boundary rather than by CSS discipline.
+import type { LivePlaybook } from '../../data/playbooks';
+
+interface Props {
+  playbook: LivePlaybook;
+  /** scopes the instance's ids so a page could carry more than one */
+  slug: string;
+  /** the vertical's accent — the frame's own colour, as with the mockup */
+  accent: string;
+}
+
+const { playbook, slug, accent } = Astro.props;
+const { demo } = playbook;
+const first = demo.pages[0];
+---
+
+<div class="embed-root" data-site-embed={slug} style={`--mk-accent:${accent}`}>
+  <!-- ── Above the frame: the premise, and the device toggle ───────── -->
+  <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <p class="m-0 max-w-[54ch] text-caption text-film-dim">{demo.premise}</p>
+
+    <div class="shrink-0" role="group" aria-label="Preview device">
+      <button
+        type="button"
+        data-device="desktop"
+        aria-pressed="true"
+        class="device-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+      >desktop</button>
+      <button
+        type="button"
+        data-device="mobile"
+        aria-pressed="false"
+        class="device-btn label-mono ml-2 rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+      >mobile</button>
+    </div>
+  </div>
+
+  <!-- ── The frame ─────────────────────────────────────────────────── -->
+  <div class="mockup-frame relative border border-grid/40" data-view="desktop">
+    <!-- chrome -->
+    <div class="flex items-center gap-3 bg-ink px-4 py-2.5">
+      <span class="flex shrink-0 gap-1.5" aria-hidden="true">
+        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+      </span>
+      <span class="label-mono truncate normal-case tracking-normal">{demo.displayUrl}</span>
+      <span class="label-mono ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
+        sample site
+      </span>
+    </div>
+    <hr class="rule-gold m-0" />
+
+    <!-- page tabs — these drive a real navigation, not a panel swap -->
+    <div
+      class="flex flex-wrap items-center gap-x-1 gap-y-1 border-b border-grid/40 bg-ink px-3 py-2"
+      role="tablist"
+      aria-label={`${playbook.name} sample pages`}
+    >
+      {demo.pages.map((page, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`etab-${slug}-${page.id}`}
+          aria-controls={`eframe-${slug}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+          data-tab={page.id}
+          data-path={page.path}
+          class="page-tab label-mono rounded-chip px-3 py-1.5 normal-case tracking-normal"
+        >{page.label}</button>
+      ))}
+      <span class="label-mono ml-auto hidden pr-1 normal-case tracking-normal text-film-dim/60 md:block" aria-hidden="true">
+        click through it
+      </span>
+    </div>
+
+    <!-- viewport: the iframe does its own scrolling, so the frame does not -->
+    <div class="embed-viewport">
+      <div class="embed-stage">
+        <iframe
+          id={`eframe-${slug}`}
+          data-embed-frame
+          src={first?.path}
+          title={`${playbook.name} sample site`}
+          loading="lazy"
+          class="embed-iframe"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-4 text-caption text-film-dim">
+    <a
+      href={playbook.demoUrl}
+      target="_blank"
+      rel="noopener"
+      data-track="demo_view"
+      data-track-label={playbook.slug}
+      class="text-gold underline decoration-1 underline-offset-4"
+    >Open the sample site full size</a>
+    {' '}— it is easier to judge at the size a customer would see it.
+  </p>
+</div>
+
+<script>
+  // Tabs drive a real navigation inside the frame, and the frame reports back
+  // when the visitor navigates it themselves, so the tabs never go stale.
+  document.querySelectorAll<HTMLElement>('[data-site-embed]').forEach((root) => {
+    const frame = root.querySelector<HTMLElement>('.mockup-frame');
+    const iframe = root.querySelector<HTMLIFrameElement>('[data-embed-frame]');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    if (!frame || !iframe) return;
+
+    const normalise = (path: string) => path.replace(/\/+$/, '') || '/';
+
+    const mark = (id: string, focus = false) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.tab === id;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+    };
+
+    const go = (tab: HTMLButtonElement) => {
+      const path = tab.dataset.path;
+      if (!path) return;
+      mark(tab.dataset.tab ?? '');
+      // replace() rather than assigning src: a sample site the visitor clicked
+      // through should not stack up entries in their own back button.
+      try {
+        iframe.contentWindow?.location.replace(path);
+      } catch {
+        iframe.src = path;
+      }
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => go(tab));
+      tab.addEventListener('keydown', (event) => {
+        const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        event.preventDefault();
+        const next = tabs[(i + step + tabs.length) % tabs.length];
+        if (next) {
+          mark(next.dataset.tab ?? '', true);
+          next.click();
+        }
+      });
+    });
+
+    // Same origin, so the frame's own nav can be read back and mirrored onto
+    // the tabs. Wrapped because a cross-origin frame would throw here.
+    iframe.addEventListener('load', () => {
+      try {
+        const here = normalise(iframe.contentWindow?.location.pathname ?? '');
+        const match = tabs.find((tab) => normalise(tab.dataset.path ?? '') === here);
+        if (match) mark(match.dataset.tab ?? '');
+      } catch {
+        /* not readable — leave the tabs as they are */
+      }
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        frame.dataset.view = btn.dataset.device ?? 'desktop';
+        root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((other) => {
+          other.setAttribute('aria-pressed', String(other === btn));
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Controls, in our register — matched to SiteMockup so the two frames are
+     indistinguishable from outside. */
+  .device-btn[aria-pressed='true'],
+  .page-tab[aria-selected='true'] {
+    border-color: var(--mk-accent);
+    color: var(--mk-accent);
+  }
+  .page-tab {
+    border: 1px solid transparent;
+    color: var(--color-film-dim);
+  }
+  .page-tab:hover,
+  .device-btn:hover {
+    color: var(--color-film);
+  }
+
+  .embed-viewport {
+    height: 480px;
+    /* The iframe scrolls itself; a second scroller here would trap the wheel. */
+    overflow: hidden;
+    background: var(--color-ink);
+  }
+  @media (min-width: 640px) {
+    .embed-viewport {
+      height: 620px;
+    }
+  }
+
+  .embed-stage {
+    height: 100%;
+    max-width: none;
+    margin: 0 auto;
+    transition: max-width 0.35s var(--ease-plot);
+  }
+  /* Narrowing the stage narrows the iframe, so the sample site hits its own
+     mobile breakpoints. The reflow is real, not a simulation of one. */
+  .mockup-frame[data-view='mobile'] .embed-stage {
+    max-width: 390px;
+    border-left: 1px solid color-mix(in srgb, var(--color-grid) 40%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--color-grid) 40%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .embed-stage {
+      transition: none;
+    }
+  }
+
+  .embed-iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>

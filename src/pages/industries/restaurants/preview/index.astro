@@ -1,0 +1,650 @@
+---
+// Harbourview demo — home. Layout only: every string comes from
+// src/data/demos/fnb-full-service.ts.
+import DemoLayout from '../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../lib/demos/harbourviewChrome';
+import { restaurant } from '../../../../lib/demos/restaurantJsonld';
+import {
+  business,
+  findMenuItem,
+  formatPrice,
+  formatTime,
+  home,
+  hours,
+  pageMeta,
+  serviceRail,
+  toMinutes,
+} from '../../../../data/demos/fnb-full-service';
+
+const meta = pageMeta.home;
+
+// The rail's horizontal scale: earliest door to latest last call, so every
+// day is plotted against the same clock and a short Sunday reads short.
+const railStart = Math.min(...hours.map((day) => toMinutes(day.open)));
+const railEnd = Math.max(...hours.map((day) => toMinutes(day.barClose)));
+const railSpan = railEnd - railStart;
+const pct = (minutes: number) => ((minutes - railStart) / railSpan) * 100;
+
+const railRows = hours.map((day) => {
+  const open = toMinutes(day.open);
+  return {
+    ...day,
+    left: pct(open),
+    barWidth: pct(toMinutes(day.barClose)) - pct(open),
+    kitchenWidth: pct(toMinutes(day.kitchenClose)) - pct(open),
+    openLabel: formatTime(day.open),
+    kitchenLabel: formatTime(day.kitchenClose),
+    barLabel: formatTime(day.barClose),
+  };
+});
+
+const teasers = home.teaserItems
+  .map((name) => findMenuItem(name))
+  .filter((item): item is NonNullable<typeof item> => item !== undefined);
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[restaurant(routes.home, routes.menu, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero__media" aria-hidden="true">
+      <DemoImage
+        demo="fnb-full-service"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="16 / 9"
+        sizes="100vw"
+        widths={[900, 1400, 1920]}
+        eager
+        quiet
+        class="hero__shot"
+      />
+    </div>
+
+    <div class="wrap hero__in">
+      <p class="eyebrow">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <p class="hero__positioning">{home.heroPositioning}</p>
+
+      <p class="status" data-status hidden>
+        <span class="status__dot" aria-hidden="true"></span>
+        <span data-status-text>{serviceRail.loadingLabel}</span>
+      </p>
+
+      <div class="hero__ctas">
+        <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_hero">
+          {home.heroPrimaryCta}
+        </a>
+        <a class="btn btn--line" href={routes.menu} data-analytics-event="menu_view_hero">
+          {home.heroSecondaryCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Menu teaser, on the paper ground the menu lives on ──────────── -->
+  <section class="bay on-paper" aria-labelledby="teaser-h">
+    <div class="wrap">
+      <div class="teaser__head">
+        <div>
+          <h2 id="teaser-h" class="section-title">{home.teaserHeading}</h2>
+          <p class="dim teaser__note">{home.teaserNote}</p>
+        </div>
+        <a class="btn btn--line" href={routes.menu} data-analytics-event="menu_view_teaser">
+          {home.teaserCta}
+        </a>
+      </div>
+      <hr class="rule" />
+
+      <ul class="teaser__list">
+        {teasers.map((item) => (
+          <li class="teaser__item">
+            <div class="dish__line">
+              <h3 class="dish__name">{item.name}</h3>
+              <span class="dish__price">${formatPrice(item.price)}</span>
+            </div>
+            <p class="dish__desc">{item.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── The room ────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="room-h">
+    <div class="wrap room">
+      <div class="room__copy">
+        <h2 id="room-h" class="section-title">{home.roomHeading}</h2>
+        <hr class="rule" />
+        <p class="lede room__body">{home.roomBody}</p>
+      </div>
+      <DemoImage
+        demo="fnb-full-service"
+        file={home.roomPhoto.file}
+        subject={home.roomPhoto.subject}
+        alt={home.roomPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 900px) 46vw, 100vw"
+        widths={[560, 900, 1200]}
+      />
+    </div>
+  </section>
+
+  <!-- ── Location, and the signature: two clocks, one room ───────────── -->
+  <section class="bay location" aria-labelledby="loc-h">
+    <div class="wrap">
+      <h2 id="loc-h" class="section-title">{home.locationHeading}</h2>
+      <hr class="rule" />
+      <p class="lede location__body">{home.locationBody}</p>
+
+      <div class="location__grid">
+        <figure class="rail">
+          <figcaption class="rail__cap">
+            <h3 class="rail__title">{serviceRail.heading}</h3>
+            <p class="dim rail__note">{serviceRail.body}</p>
+          </figcaption>
+
+          <div class="rail__key" aria-hidden="true">
+            <span class="rail__key-item"><i class="swatch swatch--kitchen"></i>{serviceRail.kitchenLabel}</span>
+            <span class="rail__key-item"><i class="swatch swatch--bar"></i>{serviceRail.barLabel}</span>
+          </div>
+
+          <ul class="rail__rows">
+            {railRows.map((row) => (
+              <li class="rail__row" data-rail-day={row.key}>
+                <span class="rail__day">{row.short}</span>
+                <span class="rail__track" aria-hidden="true">
+                  <span class="rail__bar" style={`left:${row.left}%;width:${row.barWidth}%`}></span>
+                  <span class="rail__kitchen" style={`left:${row.left}%;width:${row.kitchenWidth}%`}></span>
+                  <span class="rail__now" data-rail-now hidden></span>
+                </span>
+                <span class="rail__times">
+                  {row.openLabel} – {row.barLabel}
+                  <span class="rail__kitchen-time">kitchen to {row.kitchenLabel}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </figure>
+
+        <div class="map" role="img" aria-label={home.mapLabel}>
+          <span class="map__label">{home.mapLabel}</span>
+          <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+            <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+            <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+          </svg>
+        </div>
+      </div>
+
+      <address class="location__address">
+        <span>{business.address.street}</span>
+        <span>{business.address.neighbourhood}, {business.address.city}, {business.address.region} {business.address.postalCode}</span>
+        <a href={business.phoneHref} data-analytics-event="phone_tap_home">{business.phone}</a>
+      </address>
+    </div>
+  </section>
+
+  <!-- ── Footer CTA ──────────────────────────────────────────────────── -->
+  <section class="closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{home.footerCtaHeading}</h2>
+        <p class="closer__body">{home.footerCtaBody}</p>
+      </div>
+      <a class="btn btn--fill closer__btn" href={routes.order} data-analytics-event="order_cta_footer">
+        {home.footerCtaButton}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // The live layer over the rail. Without it the page still shows the full
+  // week correctly; with it, today gets a marker and the hero gets a state.
+  import {
+    hours,
+    serviceRail,
+  } from '../../../../data/demos/fnb-full-service';
+
+  const KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
+
+  const toMinutes = (time: string): number => {
+    const [h = '0', m = '0'] = time.split(':');
+    return Number(h) * 60 + Number(m);
+  };
+
+  // Read the clock in the restaurant's timezone, not the visitor's — a demo
+  // opened from Vancouver should still say what Port Credit is doing.
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Toronto',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? '';
+  const weekday = get('weekday').toLowerCase().slice(0, 3);
+  let minutes = Number(get('hour')) * 60 + Number(get('minute'));
+  let dayIndex = KEYS.indexOf(weekday as (typeof KEYS)[number]);
+
+  // Before 4am the room is still working last night's service, so the active
+  // day is yesterday and the clock keeps counting past 24:00.
+  if (dayIndex >= 0 && minutes < 4 * 60) {
+    dayIndex = (dayIndex + 6) % 7;
+    minutes += 24 * 60;
+  }
+
+  const key = dayIndex >= 0 ? KEYS[dayIndex] : undefined;
+  const today = hours.find((day) => day.key === key);
+
+  if (today) {
+    const open = toMinutes(today.open);
+    const kitchenClose = toMinutes(today.kitchenClose);
+    const barClose = toMinutes(today.barClose);
+    const isOpen = minutes >= open && minutes < barClose;
+    const kitchenOpen = minutes >= open && minutes < kitchenClose;
+
+    const status = document.querySelector<HTMLElement>('[data-status]');
+    const statusText = document.querySelector<HTMLElement>('[data-status-text]');
+    if (status && statusText) {
+      statusText.textContent = !isOpen
+        ? serviceRail.closedLabel
+        : kitchenOpen
+          ? serviceRail.kitchenOpenLabel
+          : serviceRail.kitchenClosedLabel;
+      status.dataset.state = isOpen ? (kitchenOpen ? 'open' : 'bar') : 'closed';
+      status.hidden = false;
+    }
+
+    const row = document.querySelector<HTMLElement>(`[data-rail-day="${today.key}"]`);
+    const marker = row?.querySelector<HTMLElement>('[data-rail-now]');
+    if (row && marker) {
+      row.classList.add('is-today');
+      const railStart = Math.min(...hours.map((day) => toMinutes(day.open)));
+      const railEnd = Math.max(...hours.map((day) => toMinutes(day.barClose)));
+      if (minutes >= railStart && minutes <= railEnd) {
+        marker.style.left = `${((minutes - railStart) / (railEnd - railStart)) * 100}%`;
+        marker.title = serviceRail.nowLabel;
+        marker.hidden = false;
+      }
+    }
+  }
+</script>
+
+<style>
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(30rem, 78vh, 46rem);
+    overflow: hidden;
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero :global(.hero__shot) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Heavy enough that the placeholder's own labelling recedes behind the
+       headline while the slot is still empty, and that a real photograph
+       still carries WCAG AA under the display type once one lands. */
+    background: linear-gradient(
+      to top,
+      var(--ink) 10%,
+      color-mix(in srgb, var(--ink) 90%, transparent) 55%,
+      color-mix(in srgb, var(--ink) 72%, transparent) 100%
+    );
+  }
+  .hero__in {
+    padding-top: clamp(3rem, 10vh, 6rem);
+    padding-bottom: clamp(2.5rem, 7vh, 4.5rem);
+    width: 100%;
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 144;
+    max-width: 14ch;
+  }
+  .hero__positioning {
+    margin-top: 1.1rem;
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.45rem);
+    line-height: 1.45;
+    max-width: 38ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--on-ink) 25%, transparent);
+    background: color-mix(in srgb, var(--ink) 70%, transparent);
+  }
+  .status__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .status[data-state='open'] {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .status[data-state='bar'] {
+    color: var(--on-ink);
+  }
+  .status[data-state='closed'] {
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Shared section heads ─────────────────────────────────────────── */
+  .section-title {
+    font-size: var(--fs-title);
+  }
+
+  /* ── Menu teaser ──────────────────────────────────────────────────── */
+  .teaser__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .teaser__note {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+  }
+  .teaser__list {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 720px) {
+    .teaser__list {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .dish__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--paper-line);
+    padding-bottom: 0.5rem;
+  }
+  .dish__name {
+    font-size: var(--fs-dish);
+    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+  }
+  .dish__price {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: var(--fs-small);
+    color: var(--accent-paper);
+  }
+  .dish__desc {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── The room ─────────────────────────────────────────────────────── */
+  .room {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .room {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .room__body {
+    margin-top: 1.5rem;
+    max-width: 42ch;
+  }
+
+  /* ── Location + service rail ──────────────────────────────────────── */
+  .location {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .location__body {
+    margin-top: 1.5rem;
+    max-width: 46ch;
+  }
+  .location__grid {
+    margin-top: 3rem;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .location__grid {
+      grid-template-columns: 1.25fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+  }
+
+  .rail {
+    margin: 0;
+  }
+  .rail__title {
+    font-size: var(--fs-heading);
+  }
+  .rail__note {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    max-width: 44ch;
+  }
+  .rail__key {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .rail__key-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .swatch {
+    width: 14px;
+    height: 8px;
+    display: block;
+  }
+  .swatch--kitchen {
+    background: var(--accent);
+  }
+  .swatch--bar {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .rail__rows {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.1rem;
+  }
+  .rail__row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--on-ink) 8%, transparent);
+  }
+  @media (min-width: 620px) {
+    .rail__row {
+      grid-template-columns: 2.5rem 1fr 13rem;
+    }
+  }
+  .rail__day {
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .rail__row.is-today .rail__day {
+    color: var(--accent);
+  }
+  .rail__track {
+    position: relative;
+    display: block;
+    height: 14px;
+    background: color-mix(in srgb, var(--on-ink) 6%, transparent);
+  }
+  .rail__bar,
+  .rail__kitchen,
+  .rail__now {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+  /* `display: block` here would beat [hidden] and draw a marker on all seven
+     rows at once. Only the row the script unhides gets one. */
+  .rail__bar:not([hidden]),
+  .rail__kitchen:not([hidden]),
+  .rail__now:not([hidden]) {
+    display: block;
+  }
+  .rail__bar {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .rail__kitchen {
+    background: var(--accent);
+  }
+  .rail__now {
+    width: 2px;
+    background: var(--on-ink);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+  .rail__times {
+    font-size: var(--fs-label);
+    font-variant-numeric: tabular-nums;
+    color: var(--on-ink-dim);
+    grid-column: 2 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.6rem;
+  }
+  @media (min-width: 620px) {
+    .rail__times {
+      grid-column: auto;
+      justify-content: flex-end;
+      text-align: right;
+    }
+  }
+  .rail__kitchen-time {
+    color: color-mix(in srgb, var(--accent) 80%, var(--on-ink));
+  }
+
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    color: var(--accent);
+  }
+  .map__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .location__address {
+    font-style: normal;
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 0.2rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .location__address a {
+    color: var(--accent);
+    width: fit-content;
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer {
+    padding: var(--bay) 0;
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+  }
+  .closer__body {
+    margin-top: 0.75rem;
+    max-width: 42ch;
+    color: var(--on-ink-dim);
+  }
+  .closer__btn {
+    font-size: var(--fs-body);
+    padding: 1rem 2rem;
+  }
+</style>

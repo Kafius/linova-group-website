@@ -1,0 +1,475 @@
+---
+// Harbourview demo — contact. The form validates and shows a success state so
+// the interaction is demonstrable in a pitch, but it is a deliberate no-op:
+// nothing is posted anywhere and no mail provider is wired. See the handler.
+import DemoLayout from '../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../lib/demos/harbourviewChrome';
+import { demoBreadcrumbs } from '../../../../lib/demos/restaurantJsonld';
+import {
+  business,
+  contact,
+  formatTime,
+  hours,
+  pageMeta,
+} from '../../../../data/demos/fnb-full-service';
+
+const meta = pageMeta.contact;
+
+const hourRows = hours.map((day) => ({
+  day: day.day,
+  bar: `${formatTime(day.open)} – ${formatTime(day.barClose)}`,
+  kitchen: formatTime(day.kitchenClose),
+  note: day.note,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.contact}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.contact },
+    ]),
+  ]}
+>
+  <header class="bay contact-head">
+    <div class="wrap">
+      <p class="eyebrow">{contact.eyebrow}</p>
+      <h1 class="contact-title">{contact.heading}</h1>
+      <hr class="rule" />
+    </div>
+  </header>
+
+  <!-- ── Details + hours ─────────────────────────────────────────────── -->
+  <section class="wrap contact-grid">
+    <div class="details">
+      <div class="detail">
+        <h2 class="detail__h">{contact.addressHeading}</h2>
+        <address class="detail__address">
+          <span>{business.address.street}</span>
+          <span>{business.address.neighbourhood}, {business.address.city}</span>
+          <span>{business.address.region} {business.address.postalCode}</span>
+        </address>
+      </div>
+
+      <div class="detail">
+        <h2 class="detail__h">{contact.phoneHeading}</h2>
+        <a class="detail__link" href={business.phoneHref} data-analytics-event="phone_tap_contact">
+          {business.phone}
+        </a>
+      </div>
+
+      <div class="detail">
+        <h2 class="detail__h">{contact.emailHeading}</h2>
+        <a class="detail__link" href={business.emailHref}>{business.email}</a>
+      </div>
+    </div>
+
+    <div class="map" role="img" aria-label={contact.mapLabel}>
+      <span class="map__label">{contact.mapLabel}</span>
+      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="bay" aria-labelledby="hours-h">
+    <div class="wrap">
+      <h2 id="hours-h" class="section-title">{contact.hoursHeading}</h2>
+      <hr class="rule" />
+      <p class="dim hours__note">{contact.hoursNote}</p>
+
+      <table class="hours">
+        <thead>
+          <tr>
+            <th scope="col">{contact.hoursTable.day}</th>
+            <th scope="col">{contact.hoursTable.bar}</th>
+            <th scope="col">{contact.hoursTable.kitchenCloses}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {hourRows.map((row) => (
+            <tr>
+              <th scope="row">
+                {row.day}
+                {row.note && <span class="hours__tag">{row.note}</span>}
+              </th>
+              <td>{row.bar}</td>
+              <td>{row.kitchen}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Getting here ────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="here-h">
+    <div class="wrap">
+      <h2 id="here-h" class="section-title">{contact.gettingHereHeading}</h2>
+      <hr class="rule" />
+      <dl class="here">
+        {contact.gettingHere.map((entry) => (
+          <div class="here__item">
+            <dt class="here__t">{entry.title}</dt>
+            <dd class="here__d">{entry.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Form ────────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="form-h">
+    <div class="wrap form-wrap">
+      <h2 id="form-h" class="section-title">{contact.formHeading}</h2>
+      <hr class="rule" />
+      <p class="dim form__note">{contact.formNote}</p>
+
+      <form class="form" data-contact-form novalidate>
+        <div class="field">
+          <label class="field__label" for="cf-name">{contact.form.nameLabel}</label>
+          <input
+            class="field__input"
+            id="cf-name"
+            name="name"
+            type="text"
+            required
+            autocomplete="name"
+            placeholder={contact.form.namePlaceholder}
+            aria-describedby="cf-name-err"
+          />
+          <p class="field__err" id="cf-name-err" data-error hidden>{contact.form.nameError}</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="cf-email">{contact.form.emailLabel}</label>
+          <input
+            class="field__input"
+            id="cf-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder={contact.form.emailPlaceholder}
+            aria-describedby="cf-email-err"
+          />
+          <p class="field__err" id="cf-email-err" data-error hidden>{contact.form.emailError}</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="cf-message">{contact.form.messageLabel}</label>
+          <textarea
+            class="field__input field__input--area"
+            id="cf-message"
+            name="message"
+            rows="5"
+            required
+            placeholder={contact.form.messagePlaceholder}
+            aria-describedby="cf-message-err"></textarea>
+          <p class="field__err" id="cf-message-err" data-error hidden>{contact.form.messageError}</p>
+        </div>
+
+        <button
+          class="btn btn--fill form__submit"
+          type="submit"
+          data-analytics-event="form_submit_contact"
+          data-label-idle={contact.form.submit}
+          data-label-busy={contact.form.submitting}
+        >
+          {contact.form.submit}
+        </button>
+      </form>
+
+      <div class="form__ok" data-form-success hidden role="status">
+        <h3 class="form__ok-h">{contact.form.successHeading}</h3>
+        <p class="form__ok-b">{contact.form.successBody}</p>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // ── Contact form: validation and success state, no delivery ──────────
+  // NO-OP HANDLER. Nothing here posts anywhere. There is no endpoint, no
+  // fetch, and no mail provider — a sample site must never quietly swallow a
+  // real person's message. On a live build this submit handler is replaced
+  // with the client's actual form endpoint.
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const success = document.querySelector<HTMLElement>('[data-form-success]');
+
+  if (form && success) {
+    const fields = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('.field__input'));
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]');
+
+    const errorFor = (field: HTMLElement) => {
+      const id = field.getAttribute('aria-describedby');
+      return id ? document.getElementById(id) : null;
+    };
+
+    const validate = (field: HTMLInputElement | HTMLTextAreaElement): boolean => {
+      const valid = field.checkValidity();
+      const error = errorFor(field);
+      if (error) error.hidden = valid;
+      field.setAttribute('aria-invalid', String(!valid));
+      field.classList.toggle('is-invalid', !valid);
+      return valid;
+    };
+
+    // Only nag after a field has been left once, never while still typing.
+    fields.forEach((field) => {
+      field.addEventListener('blur', () => validate(field));
+      field.addEventListener('input', () => {
+        if (field.classList.contains('is-invalid')) validate(field);
+      });
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const results = fields.map(validate);
+      if (results.includes(false)) {
+        fields.find((field) => field.classList.contains('is-invalid'))?.focus();
+        return;
+      }
+
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = submit.dataset.labelBusy ?? '';
+      }
+
+      // Stands in for the round trip a wired form would make.
+      window.setTimeout(() => {
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+      }, 450);
+    });
+  }
+</script>
+
+<style>
+  .contact-head {
+    padding-bottom: 0;
+  }
+  .contact-title {
+    font-size: var(--fs-display);
+    font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 144;
+    max-width: 16ch;
+  }
+  .section-title {
+    font-size: var(--fs-title);
+  }
+
+  .contact-grid {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .details {
+    display: grid;
+    gap: 2rem;
+  }
+  .detail__h {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .detail__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.15rem;
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+  }
+  .detail__link {
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    text-underline-offset: 4px;
+  }
+
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    color: var(--accent);
+  }
+  .map__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Hours table ──────────────────────────────────────────────────── */
+  .hours__note {
+    margin-top: 1rem;
+    font-size: var(--fs-small);
+  }
+  .hours {
+    margin-top: 1.75rem;
+    width: 100%;
+    max-width: 40rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.7rem 0.75rem 0.7rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .hours thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .hours tbody th {
+    font-weight: 700;
+  }
+  .hours td {
+    color: var(--on-ink-dim);
+  }
+  .hours__tag {
+    display: block;
+    font-size: var(--fs-label);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ── Getting here ─────────────────────────────────────────────────── */
+  .here {
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 800px) {
+    .here {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .here__t {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .here__d {
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Form ─────────────────────────────────────────────────────────── */
+  .form-wrap {
+    max-width: 42rem;
+  }
+  .form__note {
+    margin-top: 1rem;
+    font-size: var(--fs-small);
+  }
+  .form {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.45rem;
+  }
+  .field__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .field__input {
+    font: inherit;
+    font-size: var(--fs-body);
+    color: var(--on-ink);
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    padding: 0.8rem 0.9rem;
+    width: 100%;
+  }
+  .field__input::placeholder {
+    color: color-mix(in srgb, var(--on-ink) 38%, transparent);
+  }
+  .field__input:focus {
+    border-color: var(--accent);
+  }
+  .field__input--area {
+    resize: vertical;
+    min-height: 8rem;
+  }
+  .field__input.is-invalid {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--ink-raised));
+  }
+  .field__err {
+    font-size: var(--fs-small);
+    color: var(--accent);
+  }
+  .form__submit {
+    justify-self: start;
+    border: 0;
+  }
+  .form__submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .form__ok {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+  .form__ok-h {
+    font-size: var(--fs-heading);
+    color: var(--accent);
+  }
+  .form__ok-b {
+    margin-top: 0.5rem;
+    color: var(--on-ink-dim);
+    font-size: var(--fs-small);
+  }
+</style>

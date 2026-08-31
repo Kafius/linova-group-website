@@ -1,0 +1,437 @@
+---
+// Harbourview demo — menu. Layout only: every dish, price and note comes
+// from src/data/demos/fnb-full-service.ts, which is also what feeds the
+// Menu/MenuSection JSON-LD, so the markup can never describe a different
+// menu than the one on the page.
+import DemoLayout from '../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../lib/demos/harbourviewChrome';
+import { restaurantMenu, demoBreadcrumbs } from '../../../../lib/demos/restaurantJsonld';
+import {
+  business,
+  dietaryLegend,
+  drinks,
+  menuPage,
+  formatPrice,
+  menu,
+  pageMeta,
+} from '../../../../data/demos/fnb-full-service';
+
+const meta = pageMeta.menu;
+
+const jumpTargets = [
+  ...menu.map((section) => ({ id: section.id, name: section.name })),
+  { id: menuPage.drinksAnchorId, name: menuPage.drinksAnchorLabel },
+];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.menu}
+  jsonLd={[
+    restaurantMenu(routes.menu),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.menu },
+    ]),
+  ]}
+>
+  <div class="on-paper menu-page">
+    <!-- ── Header ──────────────────────────────────────────────────── -->
+    <header class="wrap menu-head">
+      <p class="eyebrow">{business.address.neighbourhood}</p>
+      <h1 class="menu-title">{menuPage.heading}</h1>
+      <p class="lede menu-lede">{meta.description}</p>
+
+      <dl class="legend" aria-label={menuPage.legendLabel}>
+        {dietaryLegend.map((entry) => (
+          <div class="legend__pair">
+            <dt class="marker">{entry.marker}</dt>
+            <dd>{entry.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </header>
+
+    <!-- ── Jump nav ────────────────────────────────────────────────── -->
+    <nav class="jump no-print" aria-label={menuPage.jumpNavLabel} data-jump>
+      <div class="wrap jump__in">
+        <ul class="jump__list">
+          {jumpTargets.map((target) => (
+            <li>
+              <a class="jump__link" href={`#${target.id}`} data-jump-link={target.id}>
+                {target.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+
+    <!-- ── The menu ────────────────────────────────────────────────── -->
+    <div class="wrap">
+      {menu.map((section) => (
+        <section class="course" id={section.id} aria-labelledby={`${section.id}-h`}>
+          <div class="course__head">
+            <h2 class="course__name" id={`${section.id}-h`}>{section.name}</h2>
+            {section.note && <p class="course__note">{section.note}</p>}
+          </div>
+
+          <ul class="dishes">
+            {section.items.map((item) => (
+              <li class="dish">
+                <div class="dish__line">
+                  <h3 class="dish__name">
+                    {item.name}
+                    {item.dietary?.length ? (
+                      <span class="dish__markers">
+                        {item.dietary.map((marker) => (
+                          <abbr
+                            class="marker"
+                            title={dietaryLegend.find((entry) => entry.marker === marker)?.label}
+                          >{marker}</abbr>
+                        ))}
+                      </span>
+                    ) : null}
+                  </h3>
+                  <span class="dish__price">${formatPrice(item.price)}</span>
+                </div>
+                <p class="dish__desc">{item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      <!-- ── Drinks ────────────────────────────────────────────────── -->
+      <section class="course" id={menuPage.drinksAnchorId} aria-labelledby="drinks-h">
+        <div class="course__head">
+          <h2 class="course__name" id="drinks-h">{drinks.tapsHeading}</h2>
+          <p class="course__note">{drinks.tapsNote}</p>
+        </div>
+
+        <ul class="dishes">
+          {drinks.taps.map((tap) => (
+            <li class="dish">
+              <div class="dish__line">
+                <h3 class="dish__name">{tap.name}</h3>
+                <span class="dish__price">
+                  {tap.price === null ? 'Market' : `$${formatPrice(tap.price)}`}
+                </span>
+              </div>
+              <p class="dish__desc">
+                {tap.style} — {tap.origin}{tap.abv === null ? '' : ` — ${tap.abv}%`}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <div class="course__head course__head--sub">
+          <h2 class="course__name">{drinks.cocktailsHeading}</h2>
+          <p class="course__note">{drinks.cocktailsNote}</p>
+        </div>
+
+        <ul class="dishes">
+          {drinks.cocktails.map((cocktail) => (
+            <li class="dish">
+              <div class="dish__line">
+                <h3 class="dish__name">{cocktail.name}</h3>
+                <span class="dish__price">${formatPrice(cocktail.price)}</span>
+              </div>
+              <p class="dish__desc">{cocktail.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- ── Close ─────────────────────────────────────────────────── -->
+      <div class="menu-close no-print">
+        <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_menu">
+          {menuPage.orderCta}
+        </a>
+        <a class="btn btn--line" href={business.phoneHref} data-analytics-event="phone_tap_menu">
+          {business.phone}
+        </a>
+      </div>
+    </div>
+  </div>
+</DemoLayout>
+
+<script>
+  // Jump-nav behaviour. Two jobs: keep the sticky offsets honest without
+  // hard-coding the chrome's height, and mark the section you are actually
+  // looking at.
+  const chromeEl = document.querySelector<HTMLElement>('.chrome');
+  const jump = document.querySelector<HTMLElement>('[data-jump]');
+
+  const setOffsets = () => {
+    const chromeH = chromeEl?.offsetHeight ?? 0;
+    const jumpH = jump?.offsetHeight ?? 0;
+    document.documentElement.style.setProperty('--chrome-h', `${chromeH}px`);
+    document.documentElement.style.setProperty('--scroll-pad', `${chromeH + jumpH + 16}px`);
+  };
+
+  setOffsets();
+  window.addEventListener('resize', setOffsets);
+  // Late-loading webfonts change the chrome's height under us.
+  if (document.fonts?.ready) void document.fonts.ready.then(setOffsets);
+
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-jump-link]')
+  );
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.jumpLink ?? ''))
+    .filter((section): section is HTMLElement => section !== null);
+
+  if (sections.length) {
+    const setCurrent = (id: string) => {
+      links.forEach((link) => {
+        const on = link.dataset.jumpLink === id;
+        link.classList.toggle('is-current', on);
+        if (on) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) setCurrent(visible.target.id);
+      },
+      { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>
+
+<style>
+  .menu-page {
+    padding-bottom: var(--bay);
+  }
+
+  .menu-head {
+    padding-top: var(--bay);
+    padding-bottom: 2rem;
+  }
+  .menu-title {
+    font-size: var(--fs-display);
+    font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 144;
+  }
+  .menu-lede {
+    margin-top: 1rem;
+    max-width: 52ch;
+  }
+
+  .legend {
+    margin: 2rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--paper-line);
+  }
+  .legend__pair {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .legend__pair dd {
+    margin: 0;
+  }
+
+  .marker {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    line-height: 1;
+    padding: 0.25em 0.4em;
+    border: 1px solid color-mix(in srgb, var(--accent-paper) 45%, transparent);
+    color: var(--accent-paper);
+    text-decoration: none;
+    vertical-align: 0.14em;
+  }
+
+  /* ── Sticky jump nav. `top` comes from the measured chrome height, so a
+       ribbon that wraps to two lines on a phone never covers it. ─────── */
+  .jump {
+    position: sticky;
+    top: var(--chrome-h, 0px);
+    z-index: 40;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .jump__in {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .jump__in::-webkit-scrollbar {
+    display: none;
+  }
+  .jump__list {
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 0;
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    white-space: nowrap;
+  }
+  .jump__link {
+    text-decoration: none;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-paper-dim);
+    padding-bottom: 0.2rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .jump__link:hover {
+    color: var(--on-paper);
+  }
+  .jump__link.is-current {
+    color: var(--accent-paper);
+    border-bottom-color: var(--accent-paper);
+  }
+
+  /* ── Courses ──────────────────────────────────────────────────────── */
+  .course {
+    padding-top: clamp(2.75rem, 6vw, 4.5rem);
+    scroll-margin-top: var(--scroll-pad, 8rem);
+  }
+  .course__head {
+    max-width: 60ch;
+    margin-bottom: 2rem;
+  }
+  .course__head--sub {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .course__name {
+    font-size: var(--fs-title);
+    font-variation-settings: 'SOFT' 30, 'WONK' 1, 'opsz' 90;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-paper);
+    display: inline-block;
+  }
+  .course__note {
+    margin-top: 0.85rem;
+    color: var(--on-paper-dim);
+    font-size: var(--fs-small);
+    font-style: italic;
+  }
+
+  /* Two columns on wide screens, the way a folded menu falls. */
+  .dishes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.25rem) clamp(2rem, 5vw, 4.5rem);
+  }
+  @media (min-width: 860px) {
+    .dishes {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .dish__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .dish__name {
+    font-size: var(--fs-dish);
+    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+    font-weight: 600;
+  }
+  .dish__markers {
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-left: 0.5rem;
+  }
+  .dish__price {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: var(--fs-small);
+    color: var(--accent-paper);
+    flex: none;
+  }
+  .dish__desc {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-paper-dim);
+    max-width: 46ch;
+  }
+
+  .menu-close {
+    margin-top: clamp(3rem, 7vw, 5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--paper-line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Print: this is the page an owner will actually put on paper ──── */
+  @media print {
+    .menu-head {
+      padding-top: 0;
+    }
+    .menu-title {
+      font-size: 26pt;
+    }
+    .menu-lede {
+      display: none;
+    }
+    .legend {
+      margin-top: 0.75rem;
+      padding-top: 0.5rem;
+    }
+    .course {
+      padding-top: 1.25rem;
+      break-inside: avoid;
+    }
+    .course__name {
+      font-size: 15pt;
+      border-bottom-color: #000;
+    }
+    .course__note {
+      font-size: 9pt;
+    }
+    .dishes {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 2rem;
+    }
+    .dish {
+      break-inside: avoid;
+    }
+    .dish__name {
+      font-size: 11pt;
+    }
+    .dish__desc {
+      font-size: 8.75pt;
+      margin-top: 0.15rem;
+      color: #333;
+    }
+    .dish__price,
+    .marker {
+      color: #000;
+    }
+    .marker {
+      border-color: #666;
+    }
+  }
+</style>

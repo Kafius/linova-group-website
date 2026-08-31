@@ -54,6 +54,11 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/lp/') &&
         !page.includes('/studio') &&
+        // Sample client sites (/industries/<vertical>/preview/*) are fictional
+        // businesses with invented addresses and phone numbers. They are sales
+        // collateral, not pages that should rank under our domain, so they stay
+        // out of the sitemap and carry noindex in DemoLayout.
+        !page.includes('/preview') &&
         !page.includes('/work/section/') &&
         !page.includes('/industries/category/') &&
         !page.includes('/thank-you-') &&

@@ -1,0 +1,240 @@
+---
+// Harbourview demo — order online. This page is the E-Commerce line item made
+// visible: a correctly proportioned slot where the real Clover Online
+// Ordering iframe drops in, and an honest explanation of what runs it.
+//
+// Deliberately NOT built: a fake cart, a fake checkout, a fake total. A
+// pretend basket that cannot take money is worse than an empty slot, because
+// the prospect will click it.
+import DemoLayout from '../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../lib/demos/harbourviewChrome';
+import { demoBreadcrumbs } from '../../../../lib/demos/restaurantJsonld';
+import { business, order, pageMeta } from '../../../../data/demos/fnb-full-service';
+
+const meta = pageMeta.order;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.order}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.order },
+    ]),
+  ]}
+>
+  <!-- ── Header ──────────────────────────────────────────────────────── -->
+  <header class="bay order-head">
+    <div class="wrap">
+      <p class="eyebrow">{order.eyebrow}</p>
+      <h1 class="order-title">{order.heading}</h1>
+      <hr class="rule" />
+      <p class="lede order-intro">{order.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The integration slot ────────────────────────────────────────── -->
+  <section class="wrap" aria-label={order.embedLabel}>
+    <div class="embed">
+      <div class="embed__frame">
+        <span class="embed__corner" aria-hidden="true"></span>
+        <div class="embed__center">
+          <p class="embed__label">{order.embedLabel}</p>
+          <p class="embed__note">{order.embedNote}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── What runs it ────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="clover-h">
+    <div class="wrap order-grid">
+      <div>
+        <h2 id="clover-h" class="section-title">{order.explainerHeading}</h2>
+        <hr class="rule" />
+        <p class="order-body">{order.explainerBody}</p>
+      </div>
+
+      <div>
+        <h2 class="section-title">{order.stepsHeading}</h2>
+        <hr class="rule" />
+        <ol class="steps">
+          {order.steps.map((step) => (
+            <li class="step">
+              <h3 class="step__title">{step.title}</h3>
+              <p class="step__detail">{step.detail}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Phone fallback ──────────────────────────────────────────────── -->
+  <section class="fallback">
+    <div class="wrap fallback__in">
+      <div>
+        <h2 class="fallback__title">{order.fallbackHeading}</h2>
+        <p class="fallback__body">{order.fallbackBody}</p>
+      </div>
+      <a
+        class="btn btn--fill fallback__btn"
+        href={business.phoneHref}
+        data-analytics-event="phone_tap_order"
+      >
+        {order.fallbackCta} — {business.phone}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .order-head {
+    padding-bottom: 0;
+  }
+  .order-title {
+    font-size: var(--fs-display);
+    font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 144;
+    max-width: 16ch;
+  }
+  .order-intro {
+    margin-top: 1.5rem;
+    max-width: 48ch;
+  }
+
+  /* ── The slot. Proportioned like the real Clover ordering iframe: full
+       content width, tall enough for a category rail and a few items, with
+       a real border rather than a dashed "missing asset" look. ────────── */
+  .embed {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+  .embed__frame {
+    position: relative;
+    min-height: 32rem;
+    height: clamp(32rem, 68vh, 46rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 14px,
+        color-mix(in srgb, var(--accent) 4%, transparent) 14px 15px
+      ),
+      var(--ink-raised);
+  }
+  .embed__corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+  }
+  .embed__center {
+    max-width: 34ch;
+  }
+  .embed__label {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.3rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.45;
+  }
+  .embed__note {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Explainer + steps ────────────────────────────────────────────── */
+  .order-grid {
+    display: grid;
+    gap: 2.75rem;
+  }
+  @media (min-width: 900px) {
+    .order-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .section-title {
+    font-size: var(--fs-heading);
+  }
+  .order-body {
+    margin-top: 1.5rem;
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+  }
+
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .step {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.25rem 1rem;
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    grid-row: 1 / span 2;
+    font-family: var(--font-display);
+    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+  }
+  .step__title {
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    font-weight: 700;
+  }
+  .step__detail {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 40ch;
+  }
+
+  /* ── Fallback ─────────────────────────────────────────────────────── */
+  .fallback {
+    border-top: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+    padding: var(--bay) 0;
+  }
+  .fallback__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .fallback__title {
+    font-size: var(--fs-heading);
+  }
+  .fallback__body {
+    margin-top: 0.6rem;
+    max-width: 40ch;
+    color: var(--on-ink-dim);
+    font-size: var(--fs-small);
+  }
+  .fallback__btn {
+    white-space: nowrap;
+  }
+</style>
