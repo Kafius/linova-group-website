@@ -4,10 +4,15 @@
 export const site = {
   name: 'The Linova Group',
   shortName: 'Linova',
-  url: 'https://thelinovagroup.com',
+  // Vercel serves www and 301s the apex to it, so this is the canonical host.
+  // Canonicals, og:url and JSON-LD are all built from it (BaseLayout,
+  // lib/jsonld). If the apex is ever made primary in Vercel, change this and
+  // `site` in astro.config.mjs together — they must always agree with what is
+  // actually served, or every canonical points at a redirect.
+  url: 'https://www.thelinovagroup.com',
   tagline: 'Machine-fast delivery. Human-real marketing.',
   description:
-    'The Linova Group is a web design, development, and digital marketing studio — an AI-implemented build system plus a human marketing team, serving small and mid-sized businesses across the GTA, Canada, and the US.',
+    'Web design, development, and marketing for small and mid-sized businesses across the GTA, Canada, and the US — a fast build system plus a human marketing team.',
   founder: 'Dennis De Leon',
   region: 'ON',
   country: 'CA',

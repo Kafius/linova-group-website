@@ -626,7 +626,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Websites for janitorial & cleaning companies | The Linova Group',
-      description: 'Cleaning company websites that quote before the phone rings: commercial and residential split properly, insurance and bonding up front, and recurring plans sold online. Built in the GTA.'
+      description: 'Cleaning company websites that quote before the phone rings: commercial and residential split properly, insurance and bonding up front, recurring plans sold online.'
     }
   },
   {
@@ -696,7 +696,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Clinic websites that fill the schedule | The Linova Group',
-      description: 'Websites for clinics and practices: online booking wired to your practice software, a page per condition you treat, direct billing answered up front, and copy that stays inside college advertising rules.'
+      description: 'Websites for clinics: booking wired to the software you already run, a page per condition you treat, direct billing answered up front, copy that stays in the rules.'
     }
   },
   {
@@ -766,7 +766,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Websites for herbal & natural health shops | The Linova Group',
-      description: 'Ecommerce and sites for herbal and natural health retailers: claims anchored to the licensed NPN wording, practitioner pricing behind a login, and channels that survive ad restrictions.'
+      description: 'Ecommerce for herbal and natural health retailers: claims anchored to the licensed NPN wording, practitioner pricing behind a login, channels that survive ad limits.'
     }
   },
   {
@@ -836,7 +836,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Auto shop websites that get the phone answered | The Linova Group',
-      description: 'Websites for auto repair shops: today\'s availability up front, common jobs priced, photo estimates by text, and a Google profile built to win "mechanic near me open now."'
+      description: 'Websites for auto repair shops: today\'s availability up front, common jobs priced, photo estimates by text, and a Google profile built for mechanic-near-me.'
     }
   },
   {
@@ -905,8 +905,8 @@ export const industries: Industry[] = [
       alt: 'The front of a car covered in wash foam'
     },
     seo: {
-      title: 'Car wash & detailing websites that sell memberships | The Linova Group',
-      description: 'Sites for car washes and detailers: unlimited memberships sold and managed online, detailing booked with deposits, and the before-and-afters that actually sell paint correction.'
+      title: 'Websites that sell car wash memberships | The Linova Group',
+      description: 'Sites for car washes and detailers: memberships sold and managed online, detailing booked with deposits, and the before-and-afters that sell paint correction.'
     }
   },
   {
@@ -976,7 +976,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Websites for tailors & alteration shops | The Linova Group',
-      description: 'Sites for tailoring and alterations: a published price and turnaround list, ready-for-pickup texts instead of Thursday phone calls, and proper pages for bridal and suiting work.'
+      description: 'Sites for tailoring and alterations: a published price and turnaround list, ready-for-pickup texts instead of Thursday phone calls, real bridal pages.'
     }
   },
   {
@@ -1046,7 +1046,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Event venue websites that fill the calendar | The Linova Group',
-      description: 'Websites for event venues: availability and price bands up front, rooms shown set rather than empty, downloadable floor plans, and an enquiry flow that books the tour.'
+      description: 'Websites for event venues: availability and price bands up front, rooms shown set not empty, floor plans to download, and an enquiry that books the tour.'
     }
   }
 ];

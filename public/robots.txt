@@ -3,4 +3,4 @@ Disallow: /lp/
 Disallow: /studio
 Allow: /
 
-Sitemap: https://thelinovagroup.com/sitemap-index.xml
+Sitemap: https://www.thelinovagroup.com/sitemap-index.xml

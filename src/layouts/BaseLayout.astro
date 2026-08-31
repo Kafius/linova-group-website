@@ -70,6 +70,12 @@ const blocks = [
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
+    <!-- gtag.js and its beacons cost 360ms of connection setup on mobile
+         (Lighthouse). Preconnect only; it changes nothing about what is sent,
+         which stays governed by Consent Mode below. -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" crossorigin />
+
     <!-- Display face only — §14: preload the display face, swap the rest -->
     <link
       rel="preload"

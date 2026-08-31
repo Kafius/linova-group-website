@@ -27,7 +27,9 @@ const sanityIntegrations = sanityProjectId
   : [];
 
 export default defineConfig({
-  site: 'https://thelinovagroup.com',
+  // The host Vercel serves; the apex 301s here. Keep in step with
+  // `url` in src/data/site.ts, which drives canonicals and JSON-LD.
+  site: 'https://www.thelinovagroup.com',
   output: 'static',
   adapter: vercel(),
   redirects: {

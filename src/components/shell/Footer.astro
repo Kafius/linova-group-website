@@ -74,7 +74,7 @@ const socialIcons: Record<string, string> = {
               <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
             </svg>
           </a>
-          <a href="/contact" class="text-caption text-film-dim transition-colors hover:text-film">Send a message</a>
+          <a href="/contact" class="inline-block py-1.5 text-caption text-film-dim transition-colors hover:text-film">Send a message</a>
         </div>
 
         {(contact.email || contact.phone) && (
@@ -114,9 +114,11 @@ const socialIcons: Record<string, string> = {
       <p class="text-[0.75rem] text-film-dim/70">
         © {year} Linova Group. All rights reserved.
       </p>
-      <p class="flex gap-5 text-[0.75rem]">
-        <a href="/privacy" class="text-film-dim/70 transition-colors hover:text-film">Privacy</a>
-        <a href="/terms" class="text-film-dim/70 transition-colors hover:text-film">Terms</a>
+      <!-- -my-1.5 keeps the row's height where it was while py-1.5 lifts the
+           tap targets to 24px+ (WCAG 2.2 2.5.8). -->
+      <p class="-my-1.5 flex gap-5 text-[0.75rem]">
+        <a href="/privacy" class="inline-block py-1.5 text-film-dim/70 transition-colors hover:text-film">Privacy</a>
+        <a href="/terms" class="inline-block py-1.5 text-film-dim/70 transition-colors hover:text-film">Terms</a>
       </p>
     </div>
 

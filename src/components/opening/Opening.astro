@@ -130,21 +130,26 @@ const cycleData = industries.map((i) => ({
   }
 
   /* Intro: chrome fades in AROUND the sentence; the sentence itself paints
-     immediately and never animates (LCP law). */
-  html.is-intro .intro-chrome,
-  html.is-intro .motif-stage {
+     immediately and never animates (LCP law).
+     
+     The photo stage is deliberately NOT in here. Law 7 assumed the sentence
+     would be the LCP element, but on a phone the picture is the larger box,
+     so Lighthouse measures it — and holding it at opacity 0 until
+     `intro-done` put LCP behind the 1300ms boot sequence, then a 900ms
+     transition delay, then a 500ms fade. Measured render delay: 3,983ms
+     against a 798ms TTFB. It is dimmed to 0.6 and masked on the text side
+     anyway, so painting it with the first frame costs the intro nothing. */
+  html.is-intro .intro-chrome {
     opacity: 0;
     transition: opacity 0.5s ease 0.9s;
   }
-  html.is-intro.intro-done .intro-chrome,
-  html.is-intro.intro-done .motif-stage {
+  html.is-intro.intro-done .intro-chrome {
     opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .motif-slide,
-    html.is-intro .intro-chrome,
-    html.is-intro .motif-stage {
+    html.is-intro .intro-chrome {
       transition: none;
       opacity: 1;
     }

@@ -35,7 +35,7 @@ const photo = match?.[1].default;
 
 const sizes = '(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw';
 const rendered = photo
-  ? await getImage({ src: photo, widths: [400, 640, 900], sizes, format: 'webp' })
+  ? await getImage({ src: photo, widths: [400, 560, 720, 900], sizes, format: 'webp' })
   : null;
 ---
 
