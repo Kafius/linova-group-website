@@ -133,9 +133,14 @@ const category = getCategory(industry.category);
               ? "No client yet. Here's the spec work."
               : `What we'd build for ${industry.cycleWord}`}
           </h2>
-          <span class="label-mono hidden shrink-0 sm:block" style="color: var(--vx)">
-            {leadDemo ? 'built' : 'spec build'}
-          </span>
+          {/* Only the spec-work case is labelled. A built sample site is the
+              expected state and saying "built" over it was noise; the copy
+              underneath already says it is the finished one. */}
+          {!leadDemo && (
+            <span class="label-mono hidden shrink-0 sm:block" style="color: var(--vx)">
+              spec build
+            </span>
+          )}
         </div>
         <hr class="rule-gold mt-3" />
         <p class="mt-6 max-w-[58ch] text-body text-film-dim">

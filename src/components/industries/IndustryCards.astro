@@ -1,31 +1,26 @@
 ---
-// The playbooks as a card grid, three up: photograph, index number, the
-// vertical in its own accent, the pain line, and the trades it covers. Cards
+// The playbooks as a card grid, three up: photograph, the vertical in its own
+// accent, the pain line, and the trades it covers. Cards
 // stretch to a common height per row, so a long headline never leaves its
 // neighbours short.
 import Covers from './Covers.astro';
 import IndustryPhoto from './IndustryPhoto.astro';
 import { type Industry } from '../../data/industries';
+import { embeddableDemosFor } from '../../data/playbooks';
 
 interface Props {
   items: Industry[];
-  /** how many cards the page already printed above this block */
-  start?: number;
-  /** the denominator — the page's whole roster, not just this block */
-  total?: number;
 }
 
-const { items, start = 0, total = items.length } = Astro.props;
-
-// Numbered in reading order down the page. Grouping breaks the roster's own
-// order, and 03 / 08 / 02 running across a page reads as a bug rather than as
-// an index.
-const pad = (n: number) => String(n).padStart(2, '0');
-const denominator = pad(total);
+// The cards used to carry a running index — 01/19, 02/19 — which meant this
+// component had to be told how many cards the page had already printed and how
+// long the whole roster was. With the numbering gone, so are `start` and
+// `total`; the grid only needs the items it is drawing.
+const { items } = Astro.props;
 ---
 
 <ul class="industry-grid m-0 mx-auto grid max-w-[1200px] list-none gap-x-6 gap-y-8 px-6 p-0">
-  {items.map((industry, i) => (
+  {items.map((industry) => (
     <li class="flex">
       <a
         href={`/industries/${industry.slug}`}
@@ -46,13 +41,20 @@ const denominator = pad(total);
         </span>
 
         <span class="flex flex-1 flex-col p-5">
-          <span class="flex items-baseline justify-between gap-3">
-            <span class="label-mono">{pad(start + i + 1)}/{denominator}</span>
+          {/* Only a caveat or a credential earns a line here. A vertical with
+              a paying client says so; one with neither client nor sample site
+              is marked concept so the spec work is never mistaken for a job.
+              A vertical whose sample site is built says nothing — that is the
+              expected state, and labelling it was noise. */}
+          {/* The row is always present, even when it holds nothing. Only some
+              cards carry a badge, and letting it collapse dropped the heading
+              of every unbadged card ~20px above its neighbours in the row. */}
+          <span class="card-badge flex items-baseline justify-end">
             {industry.status === 'live' && industry.proof ? (
               <span class="label-mono normal-case tracking-normal">proof: {industry.proof.client}</span>
-            ) : (
+            ) : embeddableDemosFor(industry.slug).length === 0 ? (
               <span class="label-mono rounded-chip border border-grid/50 px-2 py-0.5">concept</span>
-            )}
+            ) : null}
           </span>
 
           <span
@@ -76,7 +78,11 @@ const denominator = pad(total);
 
 <style>
   .industry-grid {
-    grid-template-columns: 1fr;
+    /* minmax(0, 1fr), not 1fr. A bare fr track takes its minimum from the
+       content, so one long cover string — "private event catering truck" —
+       widens the column past the viewport at 320px and the whole page scrolls
+       sideways. The two wider breakpoints already guard against this. */
+    grid-template-columns: minmax(0, 1fr);
   }
   @media (min-width: 640px) {
     .industry-grid {
@@ -87,6 +93,13 @@ const denominator = pad(total);
     .industry-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+
+  /* Matches the chip's own height — label line-height plus its vertical
+     padding — so a badged and an unbadged card start their heading on the
+     same line. */
+  .card-badge {
+    min-height: 1.5rem;
   }
 
   .industry-card {

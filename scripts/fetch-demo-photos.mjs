@@ -41,10 +41,17 @@ const credits = existsSync(CREDITS_FILE) ? JSON.parse(readFileSync(CREDITS_FILE,
  * good search terms. Unsplash matches short noun phrases, not sentences.
  */
 const OVERRIDES = {
-  // Auto-derived queries that matched nothing, usually because a stray word
-  // from the art direction ("crop", "north") narrows the search to zero.
+  // Auto-derived queries that matched nothing. Unsplash narrows hard as terms
+  // are added, so a five-word phrase off the art direction can return zero
+  // even when each word is reasonable on its own.
   'fnb-bakery-pre-order/hero-counter': 'bakery counter pastries display',
   'multi-service-spa-salon/cat-hair': 'hair salon interior styling chairs',
+  'retail-catalogue-wholesale/oven': 'bakery bread oven',
+  'retail-grocery-order-ahead/dept-dairy': 'dairy refrigerated case',
+  'retail-grocery-order-ahead/hero-counter': 'butcher shop counter',
+  'retail-large-catalogue/hero-showroom': 'furniture showroom',
+  'trades-lead-generation/ajax-before': 'old wooden kitchen cabinets',
+  'trades-lead-generation/pickering-before': 'empty office corridor',
 };
 
 const STOP = new Set(
@@ -65,7 +72,9 @@ const query = (slot) => {
   // For a named individual, keep the craft words and add framing that steers
   // away from a recognisable face.
   if (isNamedPerson(slot)) return `${words.slice(0, 3).join(' ')} ${FRAMING}`;
-  return words.slice(0, 5).join(' ');
+  // Four words, not five. Unsplash narrows sharply as terms are added, and at
+  // five a fair number of these returned no results at all.
+  return words.slice(0, 4).join(' ');
 };
 
 /**
@@ -156,8 +165,21 @@ for (const slot of SLOTS) {
 
     // Ask for roughly twice the largest box the layout gives it, capped.
     const want = Math.min(Math.max(slot.maxWidth * 2, 900), 2400);
-    const img = await fetch(`${hit.urls.raw}&w=${want}&q=80&fm=jpg&fit=max`);
-    if (!img.ok) throw new Error(`image fetch ${img.status}`);
+
+    // The image CDN throttles separately from the API, and abandoning the slot
+    // on a 429 wastes the two API calls already spent on it — a whole window
+    // once went on searches whose downloads all 429'd, and produced nothing.
+    // So the download retries with backoff before the slot is given up.
+    let img = null;
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      img = await fetch(`${hit.urls.raw}&w=${want}&q=80&fm=jpg&fit=max`);
+      if (img.ok) break;
+      if (img.status !== 429 && img.status < 500) break;
+      const wait = 2000 * 2 ** attempt;
+      console.log(`        ${slot.file}: image ${img.status}, retrying in ${wait / 1000}s`);
+      await new Promise((r) => setTimeout(r, wait));
+    }
+    if (!img || !img.ok) throw new Error(`image fetch ${img ? img.status : 'failed'}`);
 
     mkdirSync(dir, { recursive: true });
     writeFileSync(out, Buffer.from(await img.arrayBuffer()));
@@ -174,6 +196,9 @@ for (const slot of SLOTS) {
     const kb = Math.round(readFileSync(out).length / 1024);
     console.log(`  ok    ${slot.demo}/${slot.file}  ${want}px ${kb}KB  "${q}"  — ${hit.user.name}  (${remaining} left)`);
     done += 1;
+    // Paced deliberately. Downloading as fast as the loop allows is what
+    // tripped the CDN's own throttle in the first place.
+    await new Promise((r) => setTimeout(r, 1200));
   } catch (err) {
     console.error(`  FAIL  ${slot.demo}/${slot.file}: ${err.message}`);
     if (String(err.message).includes('rate limited')) break;

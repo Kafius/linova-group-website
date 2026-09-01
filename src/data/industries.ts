@@ -201,6 +201,336 @@ export const industries: Industry[] = [
     }
   },
   {
+    slug: 'quick-service',
+    name: 'Quick service & takeout',
+    cycleWord: 'takeout counters',
+    railWord: 'takeout',
+    category: 'food',
+    covers: [
+      'shawarma & grill',
+      'pizza & wings',
+      'burgers',
+      'noodle & rice bowls',
+      'fried chicken',
+      'ghost kitchen'
+    ],
+    headline: 'The apps take the order and keep the customer',
+    problem: 'A counter kitchen lives or dies on volume, and the delivery apps have made themselves the cheapest way to get it — at twenty to thirty percent of every ticket. The app owns the listing, the customer, and the review, and the site that could take the order directly is usually a single page with a phone number on it. The food is already the reason people come back. The ordering path is the part that keeps giving the margin away.',
+    approach: [
+      {
+        title: 'One page that does the whole job',
+        detail: 'Menu, prices, hours, ordering and the door, on one screen of scrolling. A counter kitchen does not need eight pages; it needs the four things a hungry person wants, without a single tap that leads nowhere.'
+      },
+      {
+        title: 'Direct ordering in front of the apps',
+        detail: 'Your own ordering link sits first and is marked as the one with no app fee. The apps stay listed as the fallback, because plenty of customers only order that way — they just stop being the default.'
+      },
+      {
+        title: 'Prices that are actually current',
+        detail: 'Every item is typed data, not a picture of a menu. Change a price once and it is right on the page, in search results and in the structured data the same minute.'
+      },
+      {
+        title: 'Built for the phone in a lineup',
+        detail: 'The whole page is a fraction of a megabyte and legible on cell data outside the shop. A menu that takes eight seconds to open has already lost to the app tab beside it.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Google Business Profile',
+        angle: 'Most takeout decisions happen in the Maps pane, not on a website. We keep hours, the menu link and the photos current there, so the profile sells at the moment somebody is standing on the sidewalk deciding.'
+      },
+      {
+        channel: 'Instagram Reels',
+        angle: 'The spit, the fryer basket, the wrap being cut — counter food is built for short video. We plan the clips around what you actually sell and post them when people are choosing dinner.'
+      },
+      {
+        channel: 'Geo-targeted Meta ads',
+        angle: 'Your market is a fifteen-minute radius, not a city. Paid social runs inside that radius on a lunch or late-night offer and lands on a page that repeats it, rather than the homepage.'
+      },
+      {
+        channel: 'Delivery app profile hygiene',
+        angle: 'If a third of your tickets come through the apps, the listing there deserves the same attention as the site: real photos, accurate modifiers, and a description that reads like a business rather than a category.'
+      }
+    ],
+    status: 'live',
+    motif: 'barcode-stack',
+    accent: '#FFB020',
+    accentName: 'Counter Amber',
+    heroPhoto: {
+      subject:
+        'A counter at the busy end of the evening, order tickets clipped in a row and a wrap being cut on the board. Shot from the customer side, warm light, motion in the background.',
+      alt: 'A takeout counter with order tickets clipped above the pass and food being wrapped'
+    },
+    seo: {
+      title: 'Takeout & quick service website design | The Linova Group',
+      description: 'Websites for takeout counters and quick-service kitchens: one-page menus that load on cell data, and direct ordering placed ahead of app commissions.'
+    }
+  },
+  {
+    slug: 'cafes',
+    name: 'Cafés & bubble tea',
+    cycleWord: 'cafés',
+    railWord: 'café',
+    category: 'food',
+    covers: [
+      'espresso bar',
+      'bubble tea',
+      'roastery',
+      'juice & smoothies',
+      'dessert café',
+      'study café'
+    ],
+    headline: 'Two counters, one room, and a website that only knows about one',
+    problem: 'A café is rarely just a café any more. There is an espresso side and a boba side, or a bakery case, or a kitchen that stops at two — and they are different menus, different customers, often different hours. Most café sites flatten all of that into one page of prose and a photo of a latte, so the person searching for bubble tea at nine at night cannot tell whether you are open or whether you make it at all.',
+    approach: [
+      {
+        title: 'Each line gets its own colour',
+        detail: 'Where a room runs two products, they are separated everywhere they appear — the menu, the jump links, the ordering. A customer looking for one of them never has to read past the other.'
+      },
+      {
+        title: 'Order ahead that matches the queue',
+        detail: 'Pickup windows, not delivery promises. The ordering slot is framed around a drink that is made in three minutes and collected at the end of the bar.'
+      },
+      {
+        title: 'Hours people can trust at 9pm',
+        detail: 'Kitchen close and bar close are usually different, and the website is where that gets lost. Both are published, both feed the structured data, and both are one edit away.'
+      },
+      {
+        title: 'The room, photographed honestly',
+        detail: 'Laptops, light, the seat by the window. People choose a café to sit in as much as to drink at, and the pictures are the only part of that decision the site controls.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Instagram',
+        angle: 'A café\'s grid is its interior and its cups, and it is the first thing a new customer checks. We plan posts around the drinks you want to sell rather than whatever got photographed that week.'
+      },
+      {
+        channel: 'Google Business Profile',
+        angle: 'Café searches skew hard to "open now" and "near me". Accurate hours and current photos are worth more than any amount of copy on the website itself.'
+      },
+      {
+        channel: 'Student and campus targeting',
+        angle: 'If you are near a campus, term dates matter more than seasons. Paid social timed to reading weeks and exam periods reaches a market that appears and vanishes on a schedule.'
+      },
+      {
+        channel: 'Seasonal menu launches',
+        angle: 'A new drink is a reason to appear in feeds and inboxes without discounting. We treat each launch as a small campaign — photos, a page, a post, a story — instead of a chalkboard nobody outside sees.'
+      }
+    ],
+    status: 'live',
+    motif: 'leaf-vein',
+    accent: '#D9A05B',
+    accentName: 'Crema',
+    heroPhoto: {
+      subject:
+        'An espresso bar from the customer side at mid-morning: portafilter locked in, cups on the warmer, someone waiting. Warm window light, the room legible behind the counter.',
+      alt: 'An espresso bar with cups on the machine and a customer waiting at the counter'
+    },
+    seo: {
+      title: 'Café & bubble tea website design | The Linova Group',
+      description: 'Websites for cafés and bubble tea shops: two menus kept separate, order-ahead built around pickup windows, and hours a customer can trust at 9pm.'
+    }
+  },
+  {
+    slug: 'food-trucks',
+    name: 'Food trucks',
+    cycleWord: 'food trucks',
+    railWord: 'food truck',
+    category: 'food',
+    covers: [
+      'street food truck',
+      'coffee trailer',
+      'dessert cart',
+      'festival vendor',
+      'private event catering truck',
+      'pop-up kitchen'
+    ],
+    headline: 'The only question is where you are today',
+    problem: 'A truck has one piece of information that changes constantly and matters more than everything else combined: where it is parked this week. That information usually lives in an Instagram story that expires, so anyone who checks on a Tuesday afternoon finds a grid of food and no address. The website, if there is one, was built once and lists a schedule from two summers ago — which is worse than having none.',
+    approach: [
+      {
+        title: 'The schedule is the homepage',
+        detail: 'Where you are, this week, above everything else. Not a calendar widget and not a buried page — the first thing on the screen, because it is the only thing most visitors came for.'
+      },
+      {
+        title: 'Built to be edited on a phone on Sunday night',
+        detail: 'One block of the site changes weekly and everything else stays put. If updating the schedule is harder than posting a story, the schedule will go stale and the site stops being worth visiting.'
+      },
+      {
+        title: 'Deliberately small',
+        detail: 'A truck does not need a blog, a booking engine or a content system. It needs a page that loads instantly on a phone at a festival with bad signal, and a phone number that gets answered.'
+      },
+      {
+        title: 'A number for the private bookings',
+        detail: 'The tickets that pay for the season are weddings, staff parties and film sets. Those come by phone or email from someone who needs an answer today, so the contact route is a call, not a form that waits.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Instagram Stories',
+        angle: 'The daily location post is the whole channel for most trucks. We make the website the permanent version of it, so the story drives to something that still answers the question tomorrow.'
+      },
+      {
+        channel: 'Event and festival listings',
+        angle: 'Being on the organiser\'s vendor page is free reach at exactly the moment someone is planning their day. We make sure the listing points somewhere current.'
+      },
+      {
+        channel: 'Local Facebook groups',
+        angle: 'Neighbourhood and food-truck-following groups are where a stop gets shared. One post with the corner and the hours does more than a week of general posting.'
+      },
+      {
+        channel: 'Private booking outreach',
+        angle: 'Corporate lunches and wedding season are booked months ahead by people searching once. A simple page that names what you do for private events is enough to be found for it.'
+      }
+    ],
+    status: 'live',
+    motif: 'route-polyline',
+    accent: '#7FD4FF',
+    accentName: 'Curbside Blue',
+    heroPhoto: {
+      subject:
+        'A truck with the service window open on a street corner at golden hour, a short line of people, the menu board legible. Shot from across the street so the whole vehicle reads.',
+      alt: 'A food truck parked on a street with its service window open and customers queuing'
+    },
+    seo: {
+      title: 'Food truck website design | The Linova Group',
+      description: 'Websites for food trucks: this week\'s locations first, edited from a phone in a minute, and a page small enough to load on festival signal.'
+    }
+  },
+  {
+    slug: 'bakeries',
+    name: 'Bakeries',
+    cycleWord: 'bakeries',
+    railWord: 'bakery',
+    category: 'food',
+    covers: [
+      'sourdough & bread',
+      'viennoiserie',
+      'custom cakes',
+      'wholesale bakehouse',
+      'doughnuts & pastry',
+      'gluten-free bakery'
+    ],
+    headline: 'You sell out by eleven and the website never says so',
+    problem: 'A bakery sells a time as much as a product. Bread comes out at seven, the good pastry is gone by eleven, the cake somebody wants for Saturday has to be ordered by Wednesday — and none of that is on most bakery websites, which show a photo of a croissant and an address. The result is a phone that rings all morning with questions the page should have answered, and cake enquiries that arrive too late to take.',
+    approach: [
+      {
+        title: 'Pre-order framed as a deadline',
+        detail: 'Ordering ahead is built around cut-offs and pickup windows, because that is how a bakery actually sells. What is available for Saturday, and by when, is stated rather than implied.'
+      },
+      {
+        title: 'Custom cakes as an enquiry, not a cart',
+        detail: 'A cake gets quoted, not checked out. The form asks the questions you would ask on the phone — date, size, flavour, writing, allergies — so the reply can be a price instead of another round of questions.'
+      },
+      {
+        title: 'A wholesale side that stays separate',
+        detail: 'Where a bakehouse supplies cafés and grocers, that audience wants case sizes, order deadlines and an account application — not shelf prices. It gets its own path from the top of the site.'
+      },
+      {
+        title: 'The daily bake, without a content system',
+        detail: 'What is baked today changes; the ordering rules do not. Only the part that actually churns is editable, which keeps the site cheap to run and impossible to leave stale.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Instagram',
+        angle: 'Bakery photography sells itself, and mornings are when the audience is deciding. We plan around the bake schedule rather than posting whatever was photographed at closing.'
+      },
+      {
+        channel: 'Google Business Profile',
+        angle: '"Bakery near me open now" is most of the demand, and hours are the whole answer. Holiday hours in particular are worth more than any campaign — that is when a bakery makes its year.'
+      },
+      {
+        channel: 'Seasonal pre-order pushes',
+        angle: 'Christmas, Easter and Mother\'s Day are pre-order businesses with hard deadlines. A page and a short campaign timed to the cut-off beats a general post every time.'
+      },
+      {
+        channel: 'Wholesale outreach',
+        angle: 'Cafés and grocers buy from bakehouses they can find and evaluate quickly. A page with case sizes, lead times and a real account process does the qualifying before the first call.'
+      }
+    ],
+    status: 'live',
+    motif: 'dimension-lines',
+    accent: '#F0C8A0',
+    accentName: 'Proof Gold',
+    heroPhoto: {
+      subject:
+        'Loaves coming out of a deck oven onto a rack, early morning, flour on the bench and the room still quiet. Warm light from one side, no styling.',
+      alt: 'A baker sliding loaves out of a deck oven onto a cooling rack'
+    },
+    seo: {
+      title: 'Bakery website design | The Linova Group',
+      description: 'Websites for bakeries: pre-order built around cut-offs and pickup windows, custom cakes as a real enquiry, and a wholesale side that stays separate.'
+    }
+  },
+  {
+    slug: 'caterers',
+    name: 'Caterers',
+    cycleWord: 'caterers',
+    railWord: 'catering',
+    category: 'food',
+    covers: [
+      'corporate catering',
+      'wedding catering',
+      'drop-off & trays',
+      'private chef',
+      'event kitchen',
+      'staff lunch programs'
+    ],
+    headline: 'A $14 lunch and a wedding are not the same enquiry',
+    problem: 'Catering businesses usually run two things at once: a counter or a drop-off menu that people order like takeout, and a full-service side that starts with a conversation about a date. Most sites treat both as one contact form, so the wedding enquiry arrives with as little information as the sandwich order and the quote takes three emails to start. The work is the same either way; the website decides how much of it happens before you pick up the phone.',
+    approach: [
+      {
+        title: 'Two audiences, two mechanisms',
+        detail: 'Takeout is a transaction and runs through ordering. Catering is a conversation and runs through a consultation booking that asks the date, the headcount and the room before anyone replies.'
+      },
+      {
+        title: 'Per-head pricing published',
+        detail: 'Ranges, minimums and what is included, in writing. Publishing the numbers loses the enquiries that were never going to convert and starts the rest at a realistic place.'
+      },
+      {
+        title: 'Enquiries that arrive qualified',
+        detail: 'Date, guest count, service style, dietary requirements and venue, captured up front and attached to the enquiry. That is the difference between a lead you can price and a name you have to chase.'
+      },
+      {
+        title: 'Dietary handled properly',
+        detail: 'Halal, kosher, vegan, allergen — for a caterer these are not footnotes, they are the first question. They belong in the menu data and in the enquiry, not in a note at the bottom of a PDF.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'LinkedIn and corporate outreach',
+        angle: 'Staff lunches and office events are booked by office managers and executive assistants who order repeatedly once they trust you. That is a relationship channel, not a discount one.'
+      },
+      {
+        channel: 'Wedding directories and venues',
+        angle: 'Most wedding catering comes through the venue\'s preferred list. Being on it, with a page that answers the venue\'s questions, outperforms advertising to couples directly.'
+      },
+      {
+        channel: 'Google search for the specific ask',
+        angle: 'People search "halal catering", "vegan wedding catering", "office lunch delivery" — narrow terms with real intent. Pages written for those exact asks convert far better than one catering page.'
+      },
+      {
+        channel: 'Seasonal corporate campaigns',
+        angle: 'Holiday parties and year-end events are planned on a predictable calendar. A short campaign timed to when those budgets are set is worth more than steady spend all year.'
+      }
+    ],
+    status: 'live',
+    motif: 'stage-arch',
+    accent: '#E86FA8',
+    accentName: 'Service Rose',
+    heroPhoto: {
+      subject:
+        'A catering kitchen at the plating stage: trays lined up on a steel bench, hands portioning, chafing dishes stacked ready to load. Working light, not an event photo.',
+      alt: 'Catering trays being portioned on a steel bench in a commercial kitchen'
+    },
+    seo: {
+      title: 'Catering website design | The Linova Group',
+      description: 'Websites for caterers: takeout and full-service kept separate, per-head pricing published, and enquiries that arrive with the date and headcount attached.'
+    }
+  },
+  {
     slug: 'contractors',
     name: 'Contractors',
     cycleWord: 'contractors',

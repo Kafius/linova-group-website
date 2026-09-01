@@ -251,7 +251,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 5 ── 6 clients · $26,040 */
   {
     slug: 'fnb-quick-service-launch',
-    industrySlug: 'restaurants',
+    industrySlug: 'quick-service',
     name: 'F&B — Quick Service Launch',
     category: 'Food & Beverage',
     businessTypes: [
@@ -386,7 +386,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 10 ── 2 clients · $10,180 */
   {
     slug: 'fnb-cafe-order-ahead',
-    industrySlug: 'restaurants',
+    industrySlug: 'cafes',
     name: 'F&B — Cafe / Order Ahead',
     category: 'Food & Beverage',
     businessTypes: ['Cafe', 'Cafe & bubble tea'],
@@ -473,7 +473,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 13 ── 1 client · $3,740 — the only playbook with no SEO setup */
   {
     slug: 'fnb-food-truck-lite',
-    industrySlug: 'restaurants',
+    industrySlug: 'food-trucks',
     name: 'F&B — Food Truck Lite',
     category: 'Food & Beverage',
     businessTypes: ['Food truck'],
@@ -497,7 +497,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 14 ── 1 client · $6,091 */
   {
     slug: 'retail-catalogue-wholesale',
-    industrySlug: 'restaurants',
+    industrySlug: 'bakeries',
     name: 'Retail — Catalogue + Wholesale',
     category: 'Retail',
     businessTypes: ['Bakery & pastry (wholesale + retail)'],
@@ -557,7 +557,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 16 ── 1 client · $5,290 */
   {
     slug: 'fnb-catering-events',
-    industrySlug: 'restaurants',
+    industrySlug: 'caterers',
     name: 'F&B — Catering & Events',
     category: 'Food & Beverage',
     businessTypes: ['Takeout & catering'],
@@ -666,7 +666,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 20 ── 1 client · $5,090 */
   {
     slug: 'fnb-bakery-pre-order',
-    industrySlug: 'restaurants',
+    industrySlug: 'bakeries',
     name: 'F&B — Bakery / Pre-Order',
     category: 'Food & Beverage',
     businessTypes: ['Bakery & pastry'],

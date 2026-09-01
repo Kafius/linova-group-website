@@ -58,11 +58,7 @@ const railItems = [
           </div>
           <p class="mt-2 max-w-[64ch] text-caption text-film-dim">{category.blurb}</p>
         </div>
-        <IndustryCards
-          items={industriesIn(category.slug)}
-          start={menu.slice(0, i).reduce((n, c) => n + c.count, 0)}
-          total={industries.length}
-        />
+        <IndustryCards items={industriesIn(category.slug)} />
       </section>
     ))}
 
