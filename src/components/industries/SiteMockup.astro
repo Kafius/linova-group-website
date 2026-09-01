@@ -17,9 +17,13 @@ interface Props {
   mockup: IndustryMockup;
   /** used to scope the instance's ids so two mockups can share a page */
   slug: string;
+  /** the vertical's accent — OUR chrome's colour, picked to clear AA on the
+   *  dark ground. Never the mockup palette's accent, which belongs to the
+   *  fictional client and is tuned for the light page inside the frame. */
+  accent: string;
 }
 
-const { mockup, slug } = Astro.props;
+const { mockup, slug, accent } = Astro.props;
 const { palette: p } = mockup;
 
 // A hero title line wrapped in {braces} renders in the client's accent.
@@ -42,7 +46,18 @@ const s = {
 const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
 ---
 
-<div class="mockup" data-mockup={slug} style={`--mk-accent:${p.accent}; --mk-line:${p.line}; --mk-bg:${p.bg}`}>
+{/* --mk-accent drives OUR chrome — the device toggle and the page tabs —
+    so it takes the vertical's accent, which is picked to clear AA on the
+    dark ground these controls sit on. It must not take the mockup palette's
+    accent: that is the fictional client's brand colour, tuned for the light
+    page inside the frame, and on our ground it measured 2.66:1. The interior
+    still uses p.accent everywhere, so Plotter & Marker still stops at the
+    frame. */}
+<div
+  class="mockup"
+  data-mockup={slug}
+  style={`--mk-accent:${accent}; --mk-line:${p.line}; --mk-bg:${p.bg}`}
+>
   <!-- ── Above the frame: the premise, and the device toggle ───────── -->
   <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <p class="m-0 max-w-[54ch] text-caption text-film-dim">{mockup.premise}</p>
@@ -261,13 +276,8 @@ const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
               if (block.kind === 'reviews') {
                 return (
                   <div class="mk-section mk-reviews" data-key={key}>
-                    <span class="mk-stars" style={s.accent} aria-hidden="true">★★★★★</span>
-                    <span class="mk-rating">
-                      <strong>{block.rating}</strong>
-                      <span style={s.muted}> · {block.count}</span>
-                    </span>
-                    <p class="mk-quote">“{block.quote}”</p>
-                    <p class="mk-note" style={s.muted}>{block.author}</p>
+                    <span class="mk-stars" style={s.muted} aria-hidden="true">★★★★★</span>
+                    <p class="mk-rating" style={s.muted}>{block.caption}</p>
                   </div>
                 );
               }
@@ -594,15 +604,10 @@ const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
     letter-spacing: 0.14em;
   }
   .mk-rating {
-    display: block;
-    margin-top: 4px;
-    font-size: 12.5px;
-  }
-  .mk-quote {
-    margin: 12px auto 0;
+    margin: 4px auto 0;
     max-width: 44ch;
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12.5px;
+    line-height: 1.55;
   }
 
   .mk-band {

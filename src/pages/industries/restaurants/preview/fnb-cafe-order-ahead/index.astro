@@ -300,6 +300,9 @@ const cards = lines.map((line) => ({ ...line, count: itemsIn(line.id).length }))
     color: var(--on-paper-dim);
   }
   .boba__cta {
+    /* 24px minimum tap target (WCAG 2.2 AA 2.5.8) */
+    display: inline-block;
+    padding-block: 0.25rem;
     display: inline-block;
     margin-top: 1.25rem;
     font-weight: 700;
@@ -323,5 +326,15 @@ const cards = lines.map((line) => ({ ...line, count: itemsIn(line.id).length }))
   .closer {
     border-top: 2px solid var(--ink-line);
     background: var(--ink-raised);
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Lift on hover is decoration; hold it still for anyone who asks. */
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
   }
 </style>

@@ -623,6 +623,8 @@ const teasers = home.teaserItems
   .location__address a {
     color: var(--accent);
     width: fit-content;
+    /* 24px minimum tap target (WCAG 2.2 AA 2.5.8) */
+    padding-block: 0.25rem;
   }
 
   /* ── Closer ───────────────────────────────────────────────────────── */

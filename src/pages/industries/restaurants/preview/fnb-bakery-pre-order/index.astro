@@ -245,6 +245,9 @@ const wayRoutes: Record<string, string> = {
     color: var(--on-ink-dim);
   }
   .way__cta {
+    /* 24px minimum tap target (WCAG 2.2 AA 2.5.8) */
+    display: inline-block;
+    padding-block: 0.25rem;
     margin-top: 1.25rem;
     justify-self: start;
     font-size: var(--fs-small);

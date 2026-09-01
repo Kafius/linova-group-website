@@ -101,7 +101,7 @@ const rendered = photo
     gap: 1rem;
     padding: clamp(0.9rem, 2vw, 1.4rem);
     border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
-    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
   }
   .shot__slot--quiet {
     opacity: 0.32;
@@ -118,7 +118,8 @@ const rendered = photo
     text-transform: none;
     letter-spacing: 0.02em;
     font-weight: 400;
-    opacity: 0.75;
+    /* No opacity here: the path is small text and has to clear AA on its own.
+       Weight and letter-spacing already separate it from the tag above. */
     word-break: break-all;
   }
   .shot__subject {

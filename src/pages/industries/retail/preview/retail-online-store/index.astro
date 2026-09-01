@@ -347,4 +347,14 @@ const categoryCards = categories.map((category) => ({
     flex-wrap: wrap;
     gap: 0.75rem;
   }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Lift on hover is decoration; hold it still for anyone who asks. */
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
 </style>

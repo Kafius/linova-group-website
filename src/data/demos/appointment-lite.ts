@@ -1,5 +1,5 @@
 // Pin & Press Tailoring — the sample site for the Appointment Lite playbook.
-// A fictional alterations and custom tailoring shop in Thornhill, Ontario;
+// A fictional alterations and custom tailoring shop in Oakville, Ontario;
 // nothing here is a real business, and the demo ribbon says so.
 //
 // EVERY string the preview renders lives in this file.
@@ -99,12 +99,12 @@ export const fonts = [
 export const business: DemoBusiness = {
   name: 'Pin & Press Tailoring',
   shortName: 'Pin & Press',
-  positioning: 'Alterations and custom tailoring in Thornhill. Suits, bridal, leather.',
+  positioning: 'Alterations and custom tailoring in Oakville. Suits, bridal, leather.',
   address: {
     street: '14 Kirkham Lane, Unit 2',
-    city: 'Thornhill',
+    city: 'Oakville',
     region: 'ON',
-    postalCode: 'L4J 3M4',
+    postalCode: 'L6J 2X8',
     country: 'CA',
   },
   /** 555-01xx is the reserved fictional block — this number cannot ring anyone */
@@ -246,16 +246,16 @@ export const footer: DemoFooter = {
 
 export const pageMeta: Record<'home', DemoPageMeta> = {
   home: {
-    title: 'Pin & Press Tailoring — Alterations and Custom Tailoring, Thornhill',
+    title: 'Pin & Press Tailoring — Alterations and Custom Tailoring, Oakville',
     description:
-      'Alterations and made-to-measure tailoring in Thornhill: suits, dresses, bridal and leather. Price ranges published, same-week turnaround, fittings booked online.',
+      'Alterations and made-to-measure tailoring in Oakville: suits, dresses, bridal and leather. Price ranges published, same-week turnaround, fittings booked online.',
     ogImage: '/og/default.png',
     breadcrumb: 'Home',
   },
 };
 
 export const home = {
-  heroEyebrow: 'Kirkham Lane, Thornhill',
+  heroEyebrow: 'Kirkham Lane, Oakville',
   heroTitle: 'Made to fit, or made from scratch',
   heroBody:
     'Alterations on anything you already own, and suits and shirts cut here from a pattern drafted to you. Prices are on this page because you should not have to ring to find out.',
@@ -291,7 +291,7 @@ export const home = {
   contactHeading: 'Contact',
   contactNote:
     'The workroom is one room, so the phone is not always answered on the first ring. Leaving a message works; so does the form above.',
-  mapLabel: 'Map — 14 Kirkham Lane, Thornhill',
+  mapLabel: 'Map — 14 Kirkham Lane, Oakville',
 };
 
 /** The booking form. Four questions on one screen, which is the whole

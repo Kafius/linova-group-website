@@ -13,6 +13,8 @@
 // ribbon and offsetting the nav by a hard-coded height breaks the moment the
 // ribbon wraps to two lines on a narrow screen; sticking them together makes
 // overlap structurally impossible at every width.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { site } from '../data/site';
 
 export interface DemoTheme {
@@ -157,6 +159,36 @@ const {
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
 
+// ── The demo's own logo, if one has been supplied ──────────────────────
+// Found by filename rather than passed down: every demo page lives at
+// /industries/<vertical>/preview/<playbook-slug>/…, so the layout can work
+// out which demo it is rendering and look for a matching file. Dropping
+// src/assets/demos/logos/<slug>.png into the repo is therefore the whole
+// change — no page, chrome module or prop has to be touched.
+//
+// Missing is the normal case, not an error: a demo with no file keeps the
+// text wordmark it has now, so the two can coexist while the set is filled in.
+const demoSlug = Astro.url.pathname.match(/\/preview\/([^/]+)/)?.[1];
+const logoFiles = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/demos/logos/*.{png,webp,avif,svg}',
+  { eager: true }
+);
+const logoMatch = demoSlug
+  ? Object.entries(logoFiles).find(([path]) =>
+      path.replace(/\.[^.]+$/, '').endsWith(`/${demoSlug}`)
+    )
+  : undefined;
+const logoSrc = logoMatch?.[1].default;
+// SVG goes through untouched; a raster is re-encoded to webp, which keeps the
+// alpha and is a fraction of the PNG. 96 tall covers the 34px header slot at
+// 2x with room to spare.
+const logo =
+  logoSrc && !logoMatch?.[0].endsWith('.svg')
+    ? await getImage({ src: logoSrc, height: 96, format: 'webp' })
+    : logoSrc
+      ? { src: logoSrc.src, attributes: {} }
+      : null;
+
 // A real client site has its own mark in the tab. Drawn from the demo's own
 // palette and initial so no image file has to exist for the next demo either.
 const favicon = `data:image/svg+xml,${encodeURIComponent(
@@ -292,7 +324,18 @@ const themeVars = [
         <header class="nav">
           <div class="nav__in">
             <a class="nav__brand" href={brandHref ?? navLinks[0]?.href ?? '/'}>
-              <span class="nav__brand-name">{brand}</span>
+              {logo ? (
+                <img
+                  class="nav__brand-logo"
+                  src={logo.src}
+                  alt={brand}
+                  width={logo.attributes.width}
+                  height={logo.attributes.height}
+                  decoding="async"
+                />
+              ) : (
+                <span class="nav__brand-name">{brand}</span>
+              )}
               <span class="nav__brand-tag">{tagline}</span>
             </a>
 
@@ -528,6 +571,10 @@ const themeVars = [
         line-height: 1.35;
       }
       .ribbon__link {
+        /* inline-block + block padding so the tap target clears 24px; the
+           ribbon row is centred so this does not shift anything. */
+        display: inline-block;
+        padding-block: 0.28rem;
         font-size: var(--fs-label);
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -554,6 +601,23 @@ const themeVars = [
         text-decoration: none;
         display: grid;
         gap: 0.1rem;
+      }
+      .nav__brand-logo {
+        /* Height-driven so wide and stacked lockups both sit on the same
+           baseline as the wordmark they replace. justify-self keeps it left
+           in the grid instead of stretching to the tagline's width. */
+        display: block;
+        height: 34px;
+        width: auto;
+        max-width: min(240px, 46vw);
+        object-fit: contain;
+        object-position: left center;
+        justify-self: start;
+      }
+      @media (min-width: 900px) {
+        .nav__brand-logo {
+          height: 38px;
+        }
       }
       .nav__brand-name {
         font-family: var(--font-display);
@@ -858,6 +922,8 @@ const themeVars = [
       }
       .foot__link {
         display: block;
+        /* 23px without this — one pixel under the 24px minimum. */
+        padding-block: 0.1rem;
         font-size: var(--fs-small);
         text-underline-offset: 3px;
       }

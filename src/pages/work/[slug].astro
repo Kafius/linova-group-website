@@ -17,10 +17,18 @@ interface Props {
 
 const { study } = Astro.props;
 const industry = study.industrySlug ? getIndustry(study.industrySlug) : undefined;
+
+// The brand suffix is what pushes a long case-study headline past the ~60
+// characters a search result shows, and the headline is the better half to
+// keep — it is the editorial line the page is built around. So the suffix is
+// appended only when it fits, rather than shortening the H1 to make room.
+const SUFFIX = ' — The Linova Group';
+const seoTitle =
+  study.title.length + SUFFIX.length <= 60 ? `${study.title}${SUFFIX}` : study.title;
 ---
 
 <BaseLayout
-  title={`${study.title} — The Linova Group`}
+  title={seoTitle}
   description={study.seoDescription}
   jsonLd={[
     breadcrumbs([
@@ -50,12 +58,12 @@ const industry = study.industrySlug ? getIndustry(study.industrySlug) : undefine
         <h1 class="mt-6 max-w-[18ch] font-display text-display text-film">{study.title}</h1>
         <div class="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2">
           {industry && (
-            <a href={`/industries/${industry.slug}`} class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+            <a href={`/industries/${industry.slug}`} class="label-mono inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
               {industry.name.toLowerCase()}
             </a>
           )}
           {study.liveUrl && (
-            <a href={study.liveUrl} target="_blank" rel="noopener" class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+            <a href={study.liveUrl} target="_blank" rel="noopener" class="label-mono inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
               visit the live site ↗
             </a>
           )}

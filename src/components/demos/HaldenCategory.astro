@@ -239,6 +239,14 @@ const filterCss = [
     color: var(--on-ink-dim);
     padding-bottom: 0.25rem;
     border-bottom: 2px solid transparent;
+    /* The radio behind this is 1x1 and clipped, so the label IS the target
+       and has to carry the 24px minimum itself (WCAG 2.2 AA 2.5.8). "All"
+       is short enough to fall under it on width without the min-width. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    min-height: 24px;
   }
   .facet__label:hover {
     color: var(--on-ink);

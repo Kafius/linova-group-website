@@ -44,15 +44,17 @@ export interface PlaybookPricing {
   yearOneValue: number;
 }
 
-/** What the browser frame on /industries/<vertical> needs in order to embed
- *  the real sample site instead of a drawn mockup: an address bar, a set of
- *  page tabs, and the line that sits above the frame. */
+/** What the frame on /industries/<vertical> needs in order to show the
+ *  real sample site instead of a drawn mockup: an address bar, the line that
+ *  sits above the frame, and the button that opens the build itself. */
 export interface PlaybookDemo {
   /** the fictional business's own domain, shown in the frame's address bar */
   displayUrl: string;
   /** the one-line pitch above the frame */
   premise: string;
-  /** the tabs across the frame. First entry is what loads. */
+  /** every page of the built demo, in nav order. Not rendered on the
+   *  industry page since the frame became a still; kept as the record of
+   *  what each build actually contains. */
   pages: { id: string; label: string; path: string }[];
 }
 
@@ -144,7 +146,7 @@ export const playbooks: PackagePlaybook[] = [
     demo: {
       displayUrl: 'harbourviewbargrill.ca',
       premise:
-        'Click through the pages and flip it to a phone. Every control works, because this is the site rather than a picture of one.',
+        'The full-service build, and the one the rest are measured against: five pages, a menu that reads on a phone at the door, and deliberately no booking engine.',
       pages: [
         { id: 'home', label: 'home', path: '/industries/restaurants/preview/fnb-full-service/' },
         { id: 'menu', label: 'menu', path: '/industries/restaurants/preview/fnb-full-service/menu' },
@@ -268,7 +270,7 @@ export const playbooks: PackagePlaybook[] = [
     demo: {
       displayUrl: 'sumacstreet.ca',
       premise:
-        'One page, and the argument for the tier: everything a hungry person needs without it reading as cut short. The tabs below are anchors, not pages.',
+        'One page, and the argument for the tier: everything a hungry person needs without it reading as cut short. Its nav is anchors down a single document, not links to other pages.',
       pages: [
         { id: 'top', label: 'the page', path: '/industries/restaurants/preview/fnb-quick-service-launch/' },
       ],
@@ -398,7 +400,7 @@ export const playbooks: PackagePlaybook[] = [
     demo: {
       displayUrl: 'fernrockcoffee.ca',
       premise:
-        'Two businesses under one roof, so the bubble tea line carries its own colour everywhere it appears — the menu, the jump links, the online order. Same package as the grocery build, a room away from the other two restaurants in this switcher.',
+        'Two businesses under one roof, so the bubble tea line carries its own colour everywhere it appears — the menu, the jump links, the online order. Same package as the grocery build, a room away from the other restaurants in this switcher.',
       pages: [
         { id: 'home', label: 'home', path: '/industries/restaurants/preview/fnb-cafe-order-ahead/' },
         { id: 'menu', label: 'menu', path: '/industries/restaurants/preview/fnb-cafe-order-ahead/menu' },

@@ -81,7 +81,13 @@ export type MockupBlock =
       submit: string;
       note?: string;
     }
-  | { kind: 'reviews'; rating: string; count: string; quote: string; author: string }
+  /** The review widget as an empty slot. It carries no rating, count, quote
+   *  or author on purpose: a drawn mockup that invents "4.9 from 204 reviews"
+   *  and signs it with a person's name is a fabricated testimonial, and the
+   *  built demos are held to the opposite standard — the aggregateRating slot
+   *  on Bright Line is written and deliberately returns nothing. The caption
+   *  says where the content comes from instead of pretending to be it. */
+  | { kind: 'reviews'; caption: string }
   | { kind: 'band'; text: string; cta: string };
 
 export interface MockupPage {
@@ -145,7 +151,7 @@ export const industryMockups: Record<string, IndustryMockup> = {
               { title: 'Dee', meta: 'next slot · tomorrow 10:00' },
             ],
           },
-          { kind: 'reviews', rating: '4.9', count: '312 Google reviews', quote: 'Booked from their Instagram in about ten seconds. Best fade on the strip.', author: 'A. Okonkwo · last week' },
+          { kind: 'reviews', caption: 'Live Google rating and recent reviews, pulled from the business profile.' },
         ],
       },
       {
@@ -337,7 +343,7 @@ export const industryMockups: Record<string, IndustryMockup> = {
             secondary: 'See finished jobs',
             wash: 'accent',
           },
-          { kind: 'stats', items: [{ value: '18 yrs', label: 'in the trade' }, { value: '340+', label: 'jobs finished' }, { value: '4.8★', label: 'Google, 96 reviews' }] },
+          { kind: 'stats', items: [{ value: '18 yrs', label: 'in the trade' }, { value: '340+', label: 'jobs finished' }, { value: '2 yr', label: 'workmanship warranty' }] },
           {
             kind: 'gallery',
             title: 'Recent work',
@@ -442,7 +448,7 @@ export const industryMockups: Record<string, IndustryMockup> = {
               { title: 'Teens & adults', meta: 'ages 13+ · 60 min' },
             ],
           },
-          { kind: 'reviews', rating: '5.0', count: '148 Google reviews', quote: 'Booked a trial on my phone at 10pm. She tested for yellow belt eight weeks later.', author: 'Parent of a Junior · March' },
+          { kind: 'reviews', caption: 'Live Google rating and recent reviews, pulled from the business profile.' },
         ],
       },
       {
@@ -681,7 +687,7 @@ export const industryMockups: Record<string, IndustryMockup> = {
               { label: 'Holiday hours', value: 'Dec 24 · 10 – 3' },
             ],
           },
-          { kind: 'reviews', rating: '4.9', count: '87 Google reviews', quote: 'Checked the hours on my phone from the streetcar and it was right. Rare.', author: 'M. Byrne · two weeks ago' },
+          { kind: 'reviews', caption: 'Live Google rating and recent reviews, pulled from the business profile.' },
         ],
       },
     ],
@@ -698,7 +704,7 @@ export const industryMockups: Record<string, IndustryMockup> = {
       surface: '#ffffff',
       line: 'rgba(12,42,39,0.14)',
       text: '#0c2a27',
-      muted: 'rgba(12,42,39,0.62)',
+      muted: 'rgba(12,42,39,0.70)',
       accent: '#12796d',
       onAccent: '#ffffff',
     },
@@ -726,7 +732,7 @@ export const industryMockups: Record<string, IndustryMockup> = {
               { title: 'Insurance', meta: '$5M commercial liability' },
             ],
           },
-          { kind: 'reviews', rating: '4.9', count: '204 Google reviews', quote: 'The driver waited through my father\'s dialysis and helped him back inside. That is not a taxi.', author: 'R. Sandhu · last month' },
+          { kind: 'reviews', caption: 'Live Google rating and recent reviews, pulled from the business profile.' },
         ],
       },
       {

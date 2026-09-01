@@ -151,7 +151,7 @@ const category = getCategory(industry.category);
           {leadDemo ? (
             <SiteEmbed playbooks={builtDemos} slug={industry.slug} accent={industry.accent} />
           ) : (
-            mockup && <SiteMockup mockup={mockup} slug={industry.slug} />
+            mockup && <SiteMockup mockup={mockup} slug={industry.slug} accent={industry.accent} />
           )}
         </div>
       </section>
@@ -177,7 +177,7 @@ const category = getCategory(industry.category);
                 href={industry.proof?.url}
                 target="_blank"
                 rel="noopener"
-                class="label-mono mt-6 inline-block normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
+                class="label-mono mt-6 inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
               >
                 visit {industry.proof?.client} ↗
               </a>

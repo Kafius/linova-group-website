@@ -27,6 +27,15 @@ export const caseStudy = defineType({
       description: 'The dek on /work — two short sentences, ~25 words. It is read, not scanned past.',
       validation: (r) => r.max(260),
     }),
+    defineField({
+      name: 'seoDescription',
+      title: 'Search description',
+      type: 'text',
+      rows: 2,
+      description:
+        'The meta description, 70–160 characters. Leave it empty and the summary is used, which is usually too long and gets cut off mid-word in results.',
+      validation: (r) => r.max(160),
+    }),
     defineField({ name: 'challenge', type: 'text', rows: 5 }),
     defineField({
       name: 'approach',

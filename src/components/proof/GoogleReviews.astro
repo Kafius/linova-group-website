@@ -14,7 +14,7 @@ const data = await fetchGoogleReviews();
         <h2 class="m-0 font-display text-title text-film">
           {data.rating.toFixed(1)} on Google
         </h2>
-        <a href={data.url} target="_blank" rel="noopener" class="label-mono normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+        <a href={data.url} target="_blank" rel="noopener" class="label-mono inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
           {data.count} reviews · powered by Google
         </a>
       </div>

@@ -193,6 +193,9 @@ const hourRows = counterHours.map((day) => ({
     color: var(--accent-paper);
   }
   .card__mail {
+    /* 24px minimum tap target (WCAG 2.2 AA 2.5.8) */
+    display: inline-block;
+    padding-block: 0.25rem;
     display: inline-block;
     margin-top: 0.5rem;
     font-size: var(--fs-small);

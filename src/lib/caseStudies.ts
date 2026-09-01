@@ -48,6 +48,7 @@ const CASE_STUDIES_QUERY = `*[_type == "caseStudy" && defined(slug.current)] | o
   client,
   industrySlug,
   summary,
+  seoDescription,
   challenge,
   approach,
   results,
@@ -69,6 +70,7 @@ interface SanityCaseStudy {
   client: string;
   industrySlug?: string;
   summary?: string;
+  seoDescription?: string;
   challenge?: string;
   approach?: SanityBlock[];
   results?: { metric?: string; value?: string; context?: string }[];
@@ -84,6 +86,37 @@ const blocksToParagraphs = (blocks: SanityBlock[] = []): string[] =>
     .filter((b) => b._type === 'block')
     .map((b) => (b.children ?? []).map((c) => c.text ?? '').join(''))
     .filter(Boolean);
+
+/**
+ * The meta description for a case study.
+ *
+ * Prefers the field written for the job. Falls back to the summary, which is
+ * the dek on /work and is written to be read rather than to fit a search
+ * result — three of them ran 181-225 characters, well past the ~160 Google
+ * shows. Rather than publish a sentence that gets cut off mid-word, the
+ * fallback trims to the last sentence that fits, and only word-trims with an
+ * ellipsis when even the first sentence is too long.
+ */
+const LIMIT = 160;
+const metaDescription = (written?: string, summary?: string): string => {
+  const preferred = (written ?? '').trim();
+  if (preferred) return preferred;
+
+  const text = (summary ?? '').trim();
+  if (text.length <= LIMIT) return text;
+
+  const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [];
+  let built = '';
+  for (const s of sentences) {
+    if ((built + s).trim().length > LIMIT) break;
+    built += s;
+  }
+  built = built.trim();
+  if (built.length >= 70) return built;
+
+  const cut = text.slice(0, LIMIT - 1);
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:—-]$/, '') + '…';
+};
 
 /** Dateline furniture — honest enough at 200wpm, never below a minute. */
 const readMinutes = (...parts: string[]): number => {
@@ -129,7 +162,7 @@ export async function fetchCaseStudies(): Promise<CaseStudyView[]> {
       liveUrl: doc.liveUrl,
       featured: doc.featured ?? false,
       publishedAt: doc.publishedAt ?? '',
-      seoDescription: doc.summary ?? '',
+      seoDescription: metaDescription(doc.seoDescription, doc.summary),
       readMinutes: readMinutes(doc.challenge ?? '', ...approach),
       imageUrl: doc.heroImage
         ? builder.image(doc.heroImage).width(1600).auto('format').url()

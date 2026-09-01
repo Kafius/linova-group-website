@@ -36,7 +36,7 @@ const calendlyUrl = `https://calendly.com/${calendlyEvent}`;
         <div
           class="calendly-host border border-grid/40 bg-film"
           data-calendly-url={calendlyUrl}
-          style="min-width: 320px; height: 760px;"
+          style="min-width: min(320px, 100%); height: 760px;"
         >
           <p class="p-6 text-caption text-navy">Loading the calendar…</p>
         </div>

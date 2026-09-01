@@ -625,8 +625,8 @@ export const industries: Industry[] = [
       alt: 'A cleaner pushing a mop and bucket along the outside of a glass office building'
     },
     seo: {
-      title: 'Websites for janitorial & cleaning companies | The Linova Group',
-      description: 'Cleaning company websites that quote before the phone rings: commercial and residential split properly, insurance and bonding up front, recurring plans sold online.'
+      title: 'Cleaning company websites | The Linova Group',
+      description: 'Cleaning company websites that quote before the phone rings: commercial and residential split properly, insurance and bonding up front.'
     }
   },
   {
@@ -696,7 +696,7 @@ export const industries: Industry[] = [
     },
     seo: {
       title: 'Clinic websites that fill the schedule | The Linova Group',
-      description: 'Websites for clinics: booking wired to the software you already run, a page per condition you treat, direct billing answered up front, copy that stays in the rules.'
+      description: 'Websites for clinics: booking wired to the software you already run, a page per condition you treat, and copy that stays inside the rules.'
     }
   },
   {
@@ -765,8 +765,8 @@ export const industries: Industry[] = [
       alt: 'Amber bottles and open jars of dried herbs on an apothecary table'
     },
     seo: {
-      title: 'Websites for herbal & natural health shops | The Linova Group',
-      description: 'Ecommerce for herbal and natural health retailers: claims anchored to the licensed NPN wording, practitioner pricing behind a login, channels that survive ad limits.'
+      title: 'Herbal & natural health ecommerce | The Linova Group',
+      description: 'Ecommerce for herbal and natural health retailers: claims anchored to the licensed NPN wording, practitioner pricing behind a login.'
     }
   },
   {
@@ -835,7 +835,7 @@ export const industries: Industry[] = [
       alt: 'A mechanic\'s hand turning a wrench on a car engine'
     },
     seo: {
-      title: 'Auto shop websites that get the phone answered | The Linova Group',
+      title: 'Auto shop websites that get calls | The Linova Group',
       description: 'Websites for auto repair shops: today\'s availability up front, common jobs priced, photo estimates by text, and a Google profile built for mechanic-near-me.'
     }
   },
@@ -1045,7 +1045,7 @@ export const industries: Industry[] = [
       alt: 'Guests raising glasses at a long table under strings of lights'
     },
     seo: {
-      title: 'Event venue websites that fill the calendar | The Linova Group',
+      title: 'Event venue websites | The Linova Group',
       description: 'Websites for event venues: availability and price bands up front, rooms shown set not empty, floor plans to download, and an enquiry that books the tour.'
     }
   }

@@ -1,6 +1,10 @@
 User-agent: *
-Disallow: /lp/
-Disallow: /studio
 Allow: /
+
+# /lp/* and /studio are kept out of the index by X-Robots-Tag and by a
+# noindex meta on the landing pages — not by Disallow. A crawler told not to
+# fetch a URL never reads the noindex on it, so a disallowed page can still be
+# indexed from inbound links alone. Letting them fetch is what makes the
+# noindex work.
 
 Sitemap: https://www.thelinovagroup.com/sitemap-index.xml

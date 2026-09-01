@@ -189,6 +189,9 @@ const meta = pageMeta.services;
     color: var(--on-ink-dim);
   }
   .row__book {
+    /* 24px minimum tap target (WCAG 2.2 AA 2.5.8) */
+    display: inline-block;
+    padding-block: 0.25rem;
     font-size: var(--fs-label);
     letter-spacing: 0.12em;
     text-transform: uppercase;

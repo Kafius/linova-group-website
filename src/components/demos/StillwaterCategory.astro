@@ -211,6 +211,9 @@ const people = practitionersIn(category);
     color: var(--on-ink-dim);
   }
   .entry__book {
+    /* inline-block + block padding to clear the 24px target minimum */
+    display: inline-block;
+    padding-block: 0.2rem;
     font-size: var(--fs-label);
     letter-spacing: 0.16em;
     text-transform: uppercase;
