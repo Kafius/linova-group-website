@@ -9,12 +9,14 @@ import { industries, categoryMenu, industriesIn } from '../../data/industries';
 import { breadcrumbs } from '../../lib/jsonld';
 
 const menu = categoryMenu();
+// The symbol id is the category slug; "all" carries its own glyph.
 const railItems = [
-  { label: 'all', href: '/industries', count: industries.length },
+  { label: 'all', href: '/industries', count: industries.length, symbol: 'all' },
   ...menu.map((category) => ({
     label: category.name,
     href: `/industries/category/${category.slug}`,
     count: category.count,
+    symbol: category.slug,
   })),
 ];
 ---

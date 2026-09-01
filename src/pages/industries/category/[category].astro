@@ -34,12 +34,14 @@ interface Props {
 
 const { category, menu, items } = Astro.props;
 
+// The symbol id is the category slug; "all" carries its own glyph.
 const railItems = [
-  { label: 'all', href: '/industries', count: industries.length },
+  { label: 'all', href: '/industries', count: industries.length, symbol: 'all' },
   ...menu.map((entry) => ({
     label: entry.name,
     href: `/industries/category/${entry.slug}`,
     count: entry.count,
+    symbol: entry.slug,
   })),
 ];
 ---

@@ -3,7 +3,7 @@
 // verticals show real proof; concept verticals show the honest spec piece.
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Motif from '../../components/motifs/Motif.astro';
+import IndustryPhoto from '../../components/industries/IndustryPhoto.astro';
 import SiteMockup from '../../components/industries/SiteMockup.astro';
 import Covers from '../../components/industries/Covers.astro';
 import PlaybookPanel from '../../components/industries/PlaybookPanel.astro';
@@ -52,8 +52,22 @@ const category = getCategory(industry.category);
   <article style={`--vx: ${industry.accent}`}>
     <!-- Hero -->
     <header class="plot-grid relative overflow-hidden">
-      <div class="pointer-events-none absolute inset-y-0 right-[3vw] hidden w-[34%] max-w-[460px] items-center lg:flex" style="color: var(--vx)" aria-hidden="true">
-        <Motif id={industry.motif} class="w-full opacity-25" />
+      {/* The vertical's own photograph, the same one the directory card uses,
+          rather than the plotted motif. It is the real subject beside the
+          headline instead of a decoration, so it carries its alt text and is
+          not aria-hidden. Still absolute and still hidden below lg: the
+          headline owns the fold on a phone. */}
+      <div class="pointer-events-none absolute inset-y-0 right-[3vw] hidden w-[34%] max-w-[460px] items-center lg:flex">
+        <IndustryPhoto
+          slug={industry.slug}
+          name={industry.name}
+          subject={industry.heroPhoto.subject}
+          alt={industry.heroPhoto.alt}
+          sizes="(min-width: 1024px) 460px, 34vw"
+          widths={[460, 700, 920]}
+          eager
+          class="aspect-[3/2] w-full"
+        />
       </div>
       <div class="relative mx-auto max-w-[1200px] px-6 pb-16 pt-24">
         <nav class="label-mono" aria-label="Breadcrumb">
@@ -68,7 +82,6 @@ const category = getCategory(industry.category);
           )}
           <span aria-hidden="true"> / </span>
           <span style="color: var(--vx)">{industry.name.toLowerCase()}</span>
-          {isConcept && <span class="ml-3 rounded-chip border border-grid/50 px-2.5 py-1">concept</span>}
         </nav>
         <h1 class="mt-6 max-w-[16ch] font-display text-display text-film">
           {industry.headline}
@@ -87,10 +100,7 @@ const category = getCategory(industry.category);
 
     <!-- Approach -->
     <section class="mx-auto max-w-[1200px] px-6 py-20" aria-label="What we do differently">
-      <div class="flex items-baseline justify-between gap-4">
-        <h2 class="font-display text-title text-film">What we do differently</h2>
-        <span class="label-mono hidden sm:block" style="color: var(--vx)">{industry.accentName}</span>
-      </div>
+      <h2 class="font-display text-title text-film">What we do differently</h2>
       <hr class="rule-gold mt-3" />
       <dl class="m-0 grid gap-x-12 gap-y-10 pt-10 md:grid-cols-2">
         {industry.approach.map((item) => (

@@ -465,6 +465,270 @@ export const industries: Industry[] = [
     }
   },
   {
+    slug: 'grocery',
+    name: 'Grocers & butchers',
+    cycleWord: 'grocers',
+    railWord: 'grocery',
+    category: 'shops',
+    covers: [
+      'independent grocery',
+      'halal butcher',
+      'international foods',
+      'produce market',
+      'deli counter',
+      'fishmonger'
+    ],
+    headline: 'The counter is the business and the website never mentions it',
+    problem: 'An independent grocer competes with a chain on price and loses, then competes on the butcher counter and wins — except almost no grocery website says the counter exists. What is usually online is an address, a stock photo of vegetables and a Facebook page with a weekly flyer somebody photographed on a phone. Meanwhile the customer deciding where to buy meat for the weekend is checking whether you cut it fresh, whether it is halal, and whether they can order ahead.',
+    approach: [
+      {
+        title: 'The counter framed as the reason',
+        detail: 'Cut, weight, and a pickup window — the questions somebody actually asks at a butcher counter, answered on the page and built into the ordering. The counter is what a chain cannot copy, so it leads.'
+      },
+      {
+        title: 'Weekly specials somebody can change on a Monday',
+        detail: 'One dated block, edited in a minute, that does not require a designer or a new flyer. Stale specials do more damage than none, so the cost of updating them has to be near zero.'
+      },
+      {
+        title: 'Departments a shopper can scan',
+        detail: 'Produce, meat, dairy, dry goods, the international aisles — laid out the way the store is, so somebody looking for one thing can see in five seconds whether you carry it.'
+      },
+      {
+        title: 'Order ahead without a full cart',
+        detail: 'For most independents the win is a pre-order collected in store, not a delivery operation with a fleet. The ordering slot is scoped to that and nothing heavier.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Google Business Profile',
+        angle: 'Grocery search is almost entirely "near me" and "open now", and the profile answers both before anyone reaches the site. Hours over a long weekend are worth more than any campaign.'
+      },
+      {
+        channel: 'Facebook community groups',
+        angle: 'Neighbourhood and diaspora food groups are where an independent grocer gets recommended. A weekly specials post in the right group outperforms broad paid reach.'
+      },
+      {
+        channel: 'Seasonal and religious calendars',
+        angle: 'Ramadan, Diwali, Easter, Lunar New Year — for a grocer these are the year\'s peaks, planned weeks ahead. Campaigns timed to them beat steady spend.'
+      },
+      {
+        channel: 'Instagram for the counter',
+        angle: 'A tray of cut meat or a delivery of produce that morning is the most persuasive thing a grocer posts. It is proof of freshness, which is the entire argument against the chain.'
+      }
+    ],
+    status: 'live',
+    motif: 'barcode-stack',
+    accent: '#9FE0A8',
+    accentName: 'Produce Green',
+    heroPhoto: {
+      subject:
+        'A butcher counter mid-morning: trays laid out behind glass, a butcher working at the block behind. Clean light, the case legible, no styling.',
+      alt: 'A butcher working behind a full service counter in an independent grocery store'
+    },
+    seo: {
+      title: 'Grocery & butcher website design | The Linova Group',
+      description: 'Websites for independent grocers and halal butchers: the counter framed as the reason to come, weekly specials that are easy to change, and order-ahead for pickup.'
+    }
+  },
+  {
+    slug: 'furniture',
+    name: 'Furniture & appliances',
+    cycleWord: 'furniture stores',
+    railWord: 'furniture',
+    category: 'shops',
+    covers: [
+      'furniture showroom',
+      'major appliances',
+      'mattress retail',
+      'lighting & decor',
+      'outdoor furniture',
+      'kitchen & bath'
+    ],
+    headline: 'Nobody buys a $3,450 sofa through a web cart',
+    problem: 'Big-ticket retail is the case where a normal online store is the wrong shape. The catalogue runs to hundreds of items, the customer needs to filter it before they will look at anything, and at the end of it they want a delivery date and a person — not a checkout button. Most furniture sites either hide the range behind a contact form or drop a full e-commerce cart onto a purchase nobody completes online.',
+    approach: [
+      {
+        title: 'Filtering that survives a hundred products',
+        detail: 'Category, price band, and the one or two facets that actually narrow a room — built to work without JavaScript, so the catalogue is indexable and instant. A range this size is unusable without it.'
+      },
+      {
+        title: 'A deposit, not a checkout',
+        detail: 'The commerce slot is framed around reserving a piece or paying a deposit, because that is the transaction that happens. Pretending otherwise loses the sale and the data about it.'
+      },
+      {
+        title: 'Delivery and assembly stated plainly',
+        detail: 'Who carries it up the stairs, what it costs, how long it takes, and what happens to the old one. These are the questions that stall a big purchase, and they belong on the page rather than in a phone call.'
+      },
+      {
+        title: 'A showroom worth visiting',
+        detail: 'Most of these sales still close in the room. The site\'s job is to get somebody into it with a shortlist already in their head, so the showroom page is treated as a destination, not a footer address.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Google Shopping and search',
+        angle: 'Furniture buyers search specific — "3 seater fabric sofa grey" — and compare for weeks. Product pages that answer dimensions, materials and lead time are what get shortlisted.'
+      },
+      {
+        channel: 'Meta retargeting',
+        angle: 'A considered purchase takes multiple visits. Retargeting the pieces somebody actually looked at, rather than the brand generally, is the difference between reminding and nagging.'
+      },
+      {
+        channel: 'Local delivery radius targeting',
+        angle: 'Your market ends where your trucks stop. Paid social confined to that radius stops paying for clicks from people you cannot deliver to.'
+      },
+      {
+        channel: 'Seasonal clearance events',
+        angle: 'Floor models, end-of-line and long-weekend sales are the calendar this trade runs on. Each deserves a page and a short campaign rather than a banner on the homepage.'
+      }
+    ],
+    status: 'live',
+    motif: 'dimension-lines',
+    accent: '#D9B8E8',
+    accentName: 'Showroom Lilac',
+    heroPhoto: {
+      subject:
+        'A furniture showroom floor from standing height: sofas staged in room settings, warm lighting, depth down the aisle. Empty of people, shot before opening.',
+      alt: 'A furniture showroom floor with sofas arranged in staged room settings'
+    },
+    seo: {
+      title: 'Furniture & appliance website design | The Linova Group',
+      description: 'Websites for furniture and appliance retailers: catalogue filtering that scales past a hundred products, deposits instead of checkouts, and delivery answered up front.'
+    }
+  },
+  {
+    slug: 'spas-salons',
+    name: 'Spas & multi-service salons',
+    cycleWord: 'spas',
+    railWord: 'spa',
+    category: 'personal',
+    covers: [
+      'day spa',
+      'hair & nail salon',
+      'esthetics & skin',
+      'massage therapy',
+      'lash & brow studio',
+      'medi-spa'
+    ],
+    headline: 'Six services, nine staff, and one booking link that knows none of it',
+    problem: 'A single-chair shop and a salon running hair, nails and treatment rooms are not the same business, and the same website will not do for both. A multi-service room has practitioners with different specialisms, rooms that constrain what can be booked when, and a price list that moves seasonally. Most salon sites answer that with a flat list of services and a booking button that starts by asking the customer to work out which of nine people they need.',
+    approach: [
+      {
+        title: 'Booking that narrows as it goes',
+        detail: 'Service first, then the room, then the practitioners who actually work in it. The customer never sees a list of names they have no way to choose between.'
+      },
+      {
+        title: 'A price list built to be repriced',
+        detail: 'Services and durations live in a content system because this trade reprices seasonally. Anything that makes a price change a developer ticket will go out of date.'
+      },
+      {
+        title: 'Each service line reads as its own',
+        detail: 'Hair, nails and treatments have different customers and often different regulars. They get their own pages and their own photography rather than sharing one grid.'
+      },
+      {
+        title: 'Practitioners as a reason to book',
+        detail: 'People book a person as much as a service. Each practitioner gets a real profile — what they do, what they are known for — because that is what converts a browse into a name in the calendar.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Instagram',
+        angle: 'Results are the portfolio in this trade — colour, nails, brows. We plan around the services you want more of rather than whatever got photographed that week.'
+      },
+      {
+        channel: 'Google Business Profile',
+        angle: 'Salon search is local and immediate, and the profile carries hours, photos and reviews before anyone opens the site. Review replies matter here more than most trades.'
+      },
+      {
+        channel: 'Rebooking and reminder flows',
+        angle: 'The economics of a salon are repeat visits on a cycle. A reminder at the right interval is worth more than a new-customer campaign, and costs almost nothing to run.'
+      },
+      {
+        channel: 'Seasonal packages',
+        angle: 'Wedding season, holidays and back-to-school are when packages sell. Each is a short campaign with its own page rather than a note at the bottom of the price list.'
+      }
+    ],
+    status: 'live',
+    motif: 'pole-helix',
+    accent: '#E8C9D8',
+    accentName: 'Treatment Blush',
+    heroPhoto: {
+      subject:
+        'A treatment room made up and empty: table dressed in fresh linen, low lamp, towels folded. Quiet and still, shot between appointments.',
+      alt: 'A made-up treatment room in a spa with fresh linen and low lighting'
+    },
+    seo: {
+      title: 'Spa & salon website design | The Linova Group',
+      description: 'Websites for spas and multi-service salons: booking that narrows service to room to practitioner, a price list you can reprice, and each service line given its own page.'
+    }
+  },
+  {
+    slug: 'wholesale-bakehouse',
+    name: 'Wholesale bakehouses',
+    cycleWord: 'bakehouses',
+    railWord: 'wholesale bakery',
+    category: 'food',
+    covers: [
+      'wholesale bakery',
+      'commissary kitchen',
+      'café supply',
+      'grocery supply',
+      'restaurant bread program',
+      'private label baking'
+    ],
+    headline: 'Two customers who want opposite things from the same page',
+    problem: 'A bakehouse that supplies cafés and grocers and also sells over a counter is running two businesses through one website. The retail customer wants opening hours and a shelf price; the wholesale buyer wants case sizes, order deadlines, lead times and an account. Put both on one page and each has to read past the other — and the wholesale enquiry, which is worth twenty times the walk-in, is usually the one that gives up.',
+    approach: [
+      {
+        title: 'The split made at the top',
+        detail: 'Retail and wholesale separate at the first screen and never blend again. Two audiences, two paths, two sets of language — because a case price on a retail page is noise and a shelf price on a wholesale page is worse.'
+      },
+      {
+        title: 'Order deadlines published',
+        detail: 'What has to be ordered by when, for delivery on which days. A wholesale buyer is planning a week ahead and needs the cut-off before anything else, including the price.'
+      },
+      {
+        title: 'A real account application',
+        detail: 'Business number, delivery address, trade references — the record that actually opens an account, captured properly rather than arriving as a name and a note in an inbox.'
+      },
+      {
+        title: 'A catalogue without a cart',
+        detail: 'Wholesale ranges are quoted, not checked out. The catalogue shows case sizes and specifications and routes to an account, which is how the trade actually buys.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Direct outreach to cafés and grocers',
+        angle: 'Wholesale accounts are won one buyer at a time, and the website\'s job is to make the first meeting shorter. A page with case sizes and lead times does the qualifying before the call.'
+      },
+      {
+        channel: 'Trade search',
+        angle: 'Buyers search "wholesale sourdough supplier" and similar narrow terms with real intent. Pages written for those exact asks are worth more than any amount of brand content.'
+      },
+      {
+        channel: 'Local food and hospitality networks',
+        angle: 'Chefs and café owners recommend suppliers to each other constantly. Being easy to describe and easy to find is most of what turns that into an account.'
+      },
+      {
+        channel: 'Retail counter as the shop window',
+        angle: 'The counter is where a future wholesale buyer tastes the product. Retail marketing has a second job here, and the site should let somebody cross from one side to the other.'
+      }
+    ],
+    status: 'live',
+    motif: 'barcode-stack',
+    accent: '#E0C088',
+    accentName: 'Bakehouse Wheat',
+    heroPhoto: {
+      subject:
+        'A wholesale bakehouse at the loading end: racks of bread in trays ready to go out, a van door open beyond. Early, working light, nothing styled.',
+      alt: 'Racks of bread in trays waiting by the loading door of a wholesale bakery'
+    },
+    seo: {
+      title: 'Wholesale bakery website design | The Linova Group',
+      description: 'Websites for wholesale bakehouses: retail and trade split at the top, order deadlines published, and an account application that captures a real credit record.'
+    }
+  },
+  {
     slug: 'caterers',
     name: 'Caterers',
     cycleWord: 'caterers',
@@ -544,7 +808,7 @@ export const industries: Industry[] = [
       'roofing & exteriors',
       'HVAC, electrical & plumbing'
     ],
-    headline: 'Your best work is trapped in your camera roll',
+    headline: 'Your work should speak for itself',
     problem: 'A homeowner getting three bids checks three websites before a single callback happens. Most contractor sites give them a logo, a stock handshake, and a form that goes nowhere — while the real proof, the before-and-afters from every finished job, sits on a phone. So the comparison collapses to price, and the cheapest bid wins. Word of mouth got you this far, but it only travels as far as your last client\'s street.',
     approach: [
       {

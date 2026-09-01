@@ -296,7 +296,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 7 ── 4 clients · $20,360 */
   {
     slug: 'retail-grocery-order-ahead',
-    industrySlug: 'retail',
+    industrySlug: 'grocery',
     name: 'Retail — Grocery Order Ahead',
     category: 'Retail',
     businessTypes: ['Grocery', 'Grocery & butcher (halal)'],
@@ -324,7 +324,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 8 ── 4 clients · $23,164 */
   {
     slug: 'multi-service-spa-salon',
-    industrySlug: 'barbershops',
+    industrySlug: 'spas-salons',
     name: 'Multi-Service Spa / Salon',
     category: 'Beauty & Personal Care',
     businessTypes: ['Hair salon & spa', 'Nail salon & spa', 'Spa'],
@@ -497,7 +497,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 14 ── 1 client · $6,091 */
   {
     slug: 'retail-catalogue-wholesale',
-    industrySlug: 'bakeries',
+    industrySlug: 'wholesale-bakehouse',
     name: 'Retail — Catalogue + Wholesale',
     category: 'Retail',
     businessTypes: ['Bakery & pastry (wholesale + retail)'],
@@ -526,7 +526,7 @@ export const playbooks: PackagePlaybook[] = [
   /* 15 ── 1 client · $6,091 — largest catalogue in the set */
   {
     slug: 'retail-large-catalogue',
-    industrySlug: 'retail',
+    industrySlug: 'furniture',
     name: 'Retail — Large Catalogue',
     category: 'Retail',
     businessTypes: ['Furniture & appliances'],

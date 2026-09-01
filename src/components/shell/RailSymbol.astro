@@ -1,0 +1,120 @@
+---
+// A small mark for one entry in the section rail.
+//
+// Deliberately not the vertical motifs from src/components/motifs — those are
+// drawn for a 460px panel and turn to mush at 14px. These are seven glyphs
+// built for this size: one stroke weight, geometric, no detail that vanishes
+// under a label. They sit in the same Plotter & Marker register as the rest of
+// the chrome rather than reading as an icon set borrowed from elsewhere.
+//
+// Decorative — the label beside each one already names the group — so every
+// glyph is aria-hidden and the rail's accessible name is unchanged.
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: klass } = Astro.props;
+
+// The glyphs are drawn in a 16-unit space and rendered at 14px. Seven of them
+// plus their gaps cost the rail the single line at 1440 that its padding was
+// tuned to buy; two pixels each and a tighter gap give most of that back
+// without the marks turning to mush. Shrinking the viewBox instead of the
+// rendered size would simply crop them.
+const VIEW = 16;
+const SIZE = 14;
+---
+
+<svg
+  class:list={['rail-symbol', klass]}
+  viewBox={`0 0 ${VIEW} ${VIEW}`}
+  width={SIZE}
+  height={SIZE}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.3"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {id === 'all' && (
+    <>
+      <rect x="2.5" y="2.5" width="4.5" height="4.5" />
+      <rect x="9" y="2.5" width="4.5" height="4.5" />
+      <rect x="2.5" y="9" width="4.5" height="4.5" />
+      <rect x="9" y="9" width="4.5" height="4.5" />
+    </>
+  )}
+
+  {/* Trades — a roof pitch over its span. */}
+  {id === 'trades' && (
+    <>
+      <path d="M2 9.5 L8 3.5 L14 9.5" />
+      <path d="M2 13 L14 13" />
+    </>
+  )}
+
+  {/* Food — a plate seen from above, on the pass. */}
+  {id === 'food' && (
+    <>
+      <circle cx="8" cy="8" r="5.5" />
+      <circle cx="8" cy="8" r="2" />
+    </>
+  )}
+
+  {/* Health — the cross, the one glyph in this set nobody has to decode. */}
+  {id === 'health' && (
+    <>
+      <path d="M8 3 L8 13" />
+      <path d="M3 8 L13 8" />
+    </>
+  )}
+
+  {/* Personal care — a comb's teeth over the line of the chair. */}
+  {id === 'personal' && (
+    <>
+      <path d="M3 4.5 L13 4.5" />
+      <path d="M5 4.5 L5 8" />
+      <path d="M8 4.5 L8 8" />
+      <path d="M11 4.5 L11 8" />
+      <path d="M3 12 L13 12" />
+    </>
+  )}
+
+  {/* Vehicles — two wheels on the road. */}
+  {id === 'vehicles' && (
+    <>
+      <circle cx="4.75" cy="10.5" r="2.25" />
+      <circle cx="11.25" cy="10.5" r="2.25" />
+      <path d="M2 5.5 L14 5.5" />
+    </>
+  )}
+
+  {/* Shops — an awning over the shopfront. */}
+  {id === 'shops' && (
+    <>
+      <path d="M2.5 6.5 L4.5 3 L11.5 3 L13.5 6.5 Z" />
+      <path d="M3.5 6.5 L3.5 13" />
+      <path d="M12.5 6.5 L12.5 13" />
+    </>
+  )}
+</svg>
+
+<style>
+  .rail-symbol {
+    /* The rail aligns its links on the baseline, which drops a bare svg below
+       the text. Nudging it up sits the glyph on the same optical line as the
+       label without changing the rail's own alignment. */
+    flex: none;
+    translate: 0 2px;
+    opacity: 0.75;
+    /* The rail's own 0.6ch gap sits between every child. A glyph does not need
+       as much air from its label as the label needs from the count. */
+    margin-right: -0.15ch;
+  }
+  a:hover > .rail-symbol,
+  a[aria-current='page'] > .rail-symbol {
+    opacity: 1;
+  }
+</style>

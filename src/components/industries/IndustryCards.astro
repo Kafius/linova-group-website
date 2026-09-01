@@ -1,12 +1,10 @@
 ---
 // The playbooks as a card grid, three up: photograph, the vertical in its own
-// accent, the pain line, and the trades it covers. Cards
-// stretch to a common height per row, so a long headline never leaves its
-// neighbours short.
+// accent, the pain line, and the trades it covers. Cards stretch to a common
+// height per row, so a long headline never leaves its neighbours short.
 import Covers from './Covers.astro';
 import IndustryPhoto from './IndustryPhoto.astro';
 import { type Industry } from '../../data/industries';
-import { embeddableDemosFor } from '../../data/playbooks';
 
 interface Props {
   items: Industry[];
@@ -41,24 +39,8 @@ const { items } = Astro.props;
         </span>
 
         <span class="flex flex-1 flex-col p-5">
-          {/* Only a caveat or a credential earns a line here. A vertical with
-              a paying client says so; one with neither client nor sample site
-              is marked concept so the spec work is never mistaken for a job.
-              A vertical whose sample site is built says nothing — that is the
-              expected state, and labelling it was noise. */}
-          {/* The row is always present, even when it holds nothing. Only some
-              cards carry a badge, and letting it collapse dropped the heading
-              of every unbadged card ~20px above its neighbours in the row. */}
-          <span class="card-badge flex items-baseline justify-end">
-            {industry.status === 'live' && industry.proof ? (
-              <span class="label-mono normal-case tracking-normal">proof: {industry.proof.client}</span>
-            ) : embeddableDemosFor(industry.slug).length === 0 ? (
-              <span class="label-mono rounded-chip border border-grid/50 px-2 py-0.5">concept</span>
-            ) : null}
-          </span>
-
           <span
-            class="mt-3 block font-display text-heading font-semibold leading-tight"
+            class="block font-display text-heading font-semibold leading-tight"
             style="color: var(--vx)"
           >
             {industry.name}
@@ -93,13 +75,6 @@ const { items } = Astro.props;
     .industry-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-  }
-
-  /* Matches the chip's own height — label line-height plus its vertical
-     padding — so a badged and an unbadged card start their heading on the
-     same line. */
-  .card-badge {
-    min-height: 1.5rem;
   }
 
   .industry-card {
