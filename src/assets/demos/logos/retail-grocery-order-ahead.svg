@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="77 72 635 156" width="635" height="156">
+  <defs>
+    <style>
+      
+      
+      .brand-title {
+        font-family: 'Newsreader', 'Georgia', 'Times New Roman', serif;
+        font-weight: 700;
+        font-size: 58px;
+        fill: #0F3D2E;
+        letter-spacing: 5px;
+      }
+      
+      .brand-subtitle {
+        font-family: 'Newsreader', 'Georgia', 'Times New Roman', serif;
+        font-style: italic;
+        font-weight: 500;
+        font-size: 24px;
+        fill: #B5281F;
+        letter-spacing: 1px;
+      }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  
+
+  <!-- Logo Group (Centered Horizontal 3:1 Layout) -->
+  <g transform="translate(65, 0)">
+    
+    <!-- Icon Container (Left) -->
+    <g transform="translate(90, 150)">
+      <!-- Outer Framing Rings -->
+      <circle cx="0" cy="0" r="72" fill="none" stroke="#0F3D2E" stroke-width="2.5"/>
+      <circle cx="0" cy="0" r="65" fill="none" stroke="#B5281F" stroke-width="1.5" stroke-dasharray="5 4"/>
+      
+      <!-- Halal Crescent Moon -->
+      <path d="M 22 -54 A 58 58 0 1 0 56 18 A 48 48 0 1 1 -4 -49 A 55 55 0 0 0 22 -54 Z" fill="#B5281F"/>
+
+      <!-- Stylized Cedar Tree -->
+      <g fill="#0F3D2E" transform="translate(-10, -5)">
+        <polygon points="0,-48 -18,-24 18,-24"/>
+        <polygon points="0,-28 -26,-2 26,-2"/>
+        <polygon points="0,-6 -34,24 34,24"/>
+        <rect x="-5" y="24" rx="1"/>
+      </g>
+    </g>
+
+    <!-- Wordmark Container (Right) -->
+    <g transform="translate(210, 0)">
+      <text x="0" y="142" class="brand-title">CEDARVIEW</text>
+      <text x="4" y="182" class="brand-subtitle">Halal Grocery &amp; Butcher</text>
+    </g>
+
+  </g>
+</svg>

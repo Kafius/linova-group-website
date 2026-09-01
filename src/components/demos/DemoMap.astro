@@ -1,0 +1,228 @@
+---
+// A drawn street map for a demo's contact page.
+//
+// WHY IT IS DRAWN RATHER THAN EMBEDDED
+// ------------------------------------
+// Every one of these businesses is fictional, so there is nothing to embed. A
+// real Google Maps iframe for "14 Kirkham Lane, Oakville" would either fail to
+// geocode or drop a pin on somebody's actual house, and it would pull a
+// third-party script into a demo whose pitch is that it fetches nothing from
+// anyone. What used to sit here was a crossed box saying "Map — <address>",
+// which was honest but read as an unfinished page.
+//
+// So the map is generated: a schematic street grid in the demo's own palette,
+// deterministic from the slug so it is the same map on every build. It is
+// deliberately diagrammatic — no terrain, no real geography, no logos — so it
+// reads as an illustration of a location rather than a claim about one, and
+// the caption says so.
+import { hashSeed, mulberry32 } from '../../lib/demos/seed';
+
+interface Props {
+  /** the aria-label and caption, e.g. "Map — 14 Kirkham Lane, Oakville" */
+  label: string;
+  /** stable per demo, so the same streets are drawn every build */
+  seed: string;
+  /** matches whatever box the page reserved for the old placeholder */
+  ratio?: string;
+  class?: string;
+}
+
+const { label, seed, ratio = '4 / 3', class: klass } = Astro.props;
+
+// The street and town come out of the label rather than being passed in.
+// The nineteen contact pages hold that address under six different variable
+// names and four of them do not import the business record at all, so reading
+// the one string they all already have keeps this a one-line change per page.
+//
+//   "Map — 218 Ironwood Row, Hamilton"        -> Ironwood Row / Hamilton
+//   "Map — Unit 12, 4180 Kestrel Court, Brampton" -> Kestrel Court / Brampton
+const parts = label
+  .replace(/^\s*map\s*[—–-]\s*/i, '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+const locality = parts.length > 1 ? parts[parts.length - 1] : '';
+// Second to last is the street; drop a leading building number, and ignore a
+// unit prefix, so the road carries a name rather than a postal address.
+const street = (parts.length > 1 ? parts[parts.length - 2] : parts[0] || '')
+  .replace(/^unit\s+\S+\s*/i, '')
+  .replace(/^[\d-]+\s+/, '');
+
+const W = 800;
+const H = 600;
+const rand = mulberry32(hashSeed(seed));
+const between = (lo: number, hi: number) => lo + rand() * (hi - lo);
+
+// Roads on a jittered grid. Two runs each way, plus one wider through-road
+// that carries the street name — the one a customer is looking for.
+const verticals = [0.22, 0.52, 0.8].map((x) => W * (x + between(-0.04, 0.04)));
+const horizontals = [0.26, 0.58, 0.85].map((y) => H * (y + between(-0.04, 0.04)));
+
+// The business sits on the main road, which is the middle horizontal.
+const mainY = horizontals[1];
+const pinX = verticals[1] + between(-40, 40);
+
+// A green block and a water edge, placed in whichever quadrant is emptiest.
+const parkOnLeft = rand() > 0.5;
+const park = {
+  x: parkOnLeft ? between(20, 60) : W - between(200, 250),
+  y: between(30, 70),
+  w: between(150, 200),
+  h: between(90, 130),
+};
+const hasWater = rand() > 0.45;
+const waterY = H - between(20, 50);
+
+// Building footprints, kept off the roads so the grid stays readable.
+const blocks = Array.from({ length: 14 }, () => {
+  const w = between(28, 70);
+  const h = between(22, 52);
+  return { x: between(30, W - w - 30), y: between(30, H - h - 60), w, h, r: rand() > 0.8 };
+}).filter(
+  (b) =>
+    !horizontals.some((y) => Math.abs(b.y + b.h / 2 - y) < 34) &&
+    !verticals.some((x) => Math.abs(b.x + b.w / 2 - x) < 34)
+);
+---
+
+<figure class:list={['map', klass]} style={`--map-ratio:${ratio}`}>
+  <svg
+    class="map__svg"
+    viewBox={`0 0 ${W} ${H}`}
+    role="img"
+    aria-label={label}
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <rect width={W} height={H} class="map__ground" />
+
+    {hasWater && (
+      <path
+        class="map__water"
+        d={`M0 ${waterY} Q ${W * 0.25} ${waterY - 26} ${W * 0.5} ${waterY} T ${W} ${waterY - 8} L ${W} ${H} L 0 ${H} Z`}
+      />
+    )}
+
+    <rect class="map__park" x={park.x} y={park.y} width={park.w} height={park.h} rx="6" />
+
+    {blocks.map((b) => (
+      <rect
+        class="map__block"
+        x={b.x}
+        y={b.y}
+        width={b.w}
+        height={b.h}
+        rx={b.r ? 3 : 0}
+      />
+    ))}
+
+    {verticals.map((x) => <line class="map__road" x1={x} y1="0" x2={x} y2={H} />)}
+    {horizontals.map((y, i) =>
+      i === 1 ? null : <line class="map__road" x1="0" y1={y} x2={W} y2={y} />
+    )}
+
+    {/* The through-road, drawn last so it sits over the grid. */}
+    <line class="map__road map__road--main" x1="0" y1={mainY} x2={W} y2={mainY} />
+    <text class="map__street" x={W * 0.06} y={mainY - 14}>{street}</text>
+    <text class="map__area" x={W * 0.06} y={H * 0.14}>{locality}</text>
+
+    {/* The pin. A disc and a stem rather than a teardrop glyph, so it reads
+        at the size a contact panel actually gives this. */}
+    <g class="map__pin" transform={`translate(${pinX} ${mainY})`}>
+      <path class="map__pin-stem" d="M0 -6 L0 -30" />
+      <circle class="map__pin-halo" cx="0" cy="-38" r="17" />
+      <circle class="map__pin-dot" cx="0" cy="-38" r="9" />
+      <circle class="map__pin-base" cx="0" cy="0" r="4" />
+    </g>
+  </svg>
+  <figcaption class="map__caption">{label} — illustrative, not to scale</figcaption>
+</figure>
+
+<style>
+  /* The map has to work on both grounds. Sections carrying .on-paper flip the
+     palette, and .on-paper only swaps `color` — an SVG setting explicit fills
+     from the ink tokens keeps painting light-on-light and lands at 1.06:1.
+     So every colour goes through a local variable that the paper ground
+     redefines, and nothing below references an ink or paper token directly. */
+  .map {
+    --map-ground: var(--ink-raised);
+    --map-ink: var(--on-ink);
+    --map-ink-dim: var(--on-ink-dim);
+    --map-line: var(--ink-line);
+    --map-accent: var(--accent);
+
+    margin: 0;
+    position: relative;
+  }
+  :global(.on-paper) .map {
+    --map-ground: var(--paper-raised);
+    --map-ink: var(--on-paper);
+    --map-ink-dim: var(--on-paper-dim);
+    --map-line: var(--paper-line);
+    --map-accent: var(--accent-paper);
+  }
+
+  .map__svg {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--map-ratio, 4 / 3);
+    border: 1px solid var(--map-line);
+    background: var(--map-ground);
+  }
+
+  .map__ground {
+    fill: var(--map-ground);
+  }
+  .map__water {
+    fill: color-mix(in srgb, var(--map-accent) 16%, var(--map-ground));
+  }
+  .map__park {
+    fill: color-mix(in srgb, var(--map-accent) 10%, var(--map-ground));
+  }
+  .map__block {
+    fill: color-mix(in srgb, var(--map-ink) 8%, transparent);
+  }
+  .map__road {
+    stroke: color-mix(in srgb, var(--map-ink) 16%, transparent);
+    stroke-width: 9;
+    stroke-linecap: square;
+  }
+  .map__road--main {
+    stroke: color-mix(in srgb, var(--map-ink) 26%, transparent);
+    stroke-width: 15;
+  }
+
+  .map__street,
+  .map__area {
+    fill: var(--map-ink-dim);
+    font-family: var(--font-body);
+    font-size: 19px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .map__area {
+    font-size: 16px;
+    /* Was 40% of the ink, which is decorative-faint and failed AA outright.
+       The dim token is the one the rest of the demos already clear with. */
+    fill: var(--map-ink-dim);
+  }
+
+  .map__pin-stem {
+    stroke: var(--map-accent);
+    stroke-width: 3;
+  }
+  .map__pin-halo {
+    fill: color-mix(in srgb, var(--map-accent) 28%, transparent);
+  }
+  .map__pin-dot,
+  .map__pin-base {
+    fill: var(--map-accent);
+  }
+
+  .map__caption {
+    margin-top: 0.6rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--map-ink-dim);
+  }
+</style>

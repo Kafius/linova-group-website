@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="19 15 287 76" width="287" height="76">
+  <!-- Icon: Tailor's Pin, Needle, and Thread Loop -->
+  <g transform="translate(15, 15)" fill="none" stroke="#A81E32" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Crossed Pin and Needle -->
+    <line x1="18" y1="62" x2="58" y2="18" stroke-width="3"/> <!-- Pin shaft -->
+    <circle cx="14" cy="66" r="4" fill="#A81E32"/> <!-- Pin head -->
+    
+    <line x1="22" y1="18" x2="62" y2="62" stroke-width="3"/> <!-- Needle shaft -->
+    <ellipse cx="24" cy="20" rx="1" ry="2" fill="none" stroke="#F2F1EE" stroke-width="1"/> <!-- Eye -->
+    
+    <!-- Swooping Thread Line -->
+    <path d="M24 20 C 10 5, 5 35, 30 42 C 50 48, 65 30, 52 14" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="0"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="105" y="49" font-family="'EB Garamond', 'Garamond', 'Georgia', serif" font-size="27" font-weight="700" fill="#1F1F22" letter-spacing="3">PIN &amp; PRESS</text>
+  <text x="106" y="73" font-family="'EB Garamond', 'Garamond', 'Georgia', serif" font-size="13" font-weight="600" fill="#A81E32" letter-spacing="5">TAILORING</text>
+</svg>

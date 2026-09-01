@@ -11,6 +11,7 @@
 // Client JS is the jump nav only. The sticky order bar is CSS.
 import DemoLayout from '../../../../../layouts/DemoLayout.astro';
 import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
 import { chrome } from '../../../../../lib/demos/sumacChrome';
 import { fastFood } from '../../../../../lib/demos/sumacJsonld';
 import {
@@ -70,18 +71,10 @@ const hourRows = hours.map((day) => ({
     </div>
   </section>
 
-  <!-- ── Jump nav ────────────────────────────────────────────────────── -->
-  <nav class="jump no-print" aria-label={page.jumpLabel} data-jump>
-    <div class="wrap jump__in">
-      <ul class="jump__list">
-        {page.jump.map((target) => (
-          <li>
-            <a class="jump__link" href={`#${target.id}`} data-jump-link={target.id}>{target.label}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </nav>
+  <!-- The jump nav that used to sit here was a second sticky bar directly
+       under the masthead, carrying the same anchors the masthead already
+       carries. Two navigation bars stacked on screen is a fault however
+       nicely each is built, so the anchors live in the masthead alone. -->
 
   <!-- ── Menu ────────────────────────────────────────────────────────── -->
   <section class="bay on-paper" id="menu" aria-labelledby="menu-h">
@@ -192,13 +185,7 @@ const hourRows = hours.map((day) => ({
           <p class="hours__note">{page.hoursNote}</p>
         </div>
 
-        <div class="map" role="img" aria-label={page.mapLabel}>
-          <span class="map__label">{page.mapLabel}</span>
-          <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
-            <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-            <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-          </svg>
-        </div>
+        <DemoMap label={page.mapLabel} seed="fnb-quick-service-launch" />
       </div>
     </div>
   </section>
@@ -247,30 +234,34 @@ const hourRows = hours.map((day) => ({
 </DemoLayout>
 
 <script>
-  // The only script on this page: keep the jump nav's sticky offset honest
+  // The only script on this page: keep the anchor scroll offset honest
   // without hard-coding the chrome height, and mark the section in view.
+  //
+  // The section marking used to drive a second sticky bar under the masthead.
+  // That bar is gone — two navigation rows carrying the same anchors is a
+  // fault — so it now marks the masthead's own anchor links instead, which is
+  // where the navigation lives on this one-pager.
   const chromeEl = document.querySelector<HTMLElement>('.chrome');
-  const jump = document.querySelector<HTMLElement>('[data-jump]');
 
   const setOffsets = () => {
     const chromeH = chromeEl?.offsetHeight ?? 0;
-    const jumpH = jump?.offsetHeight ?? 0;
-    document.documentElement.style.setProperty('--chrome-h', `${chromeH}px`);
-    document.documentElement.style.setProperty('--scroll-pad', `${chromeH + jumpH + 16}px`);
+    document.documentElement.style.setProperty('--scroll-pad', `${chromeH + 16}px`);
   };
   setOffsets();
   window.addEventListener('resize', setOffsets);
   if (document.fonts?.ready) void document.fonts.ready.then(setOffsets);
 
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-jump-link]'));
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('.nav__link[href^="#"]')
+  );
   const sections = links
-    .map((link) => document.getElementById(link.dataset.jumpLink ?? ''))
+    .map((link) => document.getElementById(link.getAttribute('href')?.slice(1) ?? ''))
     .filter((section): section is HTMLElement => section !== null);
 
   if (sections.length) {
     const setCurrent = (id: string) => {
       links.forEach((link) => {
-        const on = link.dataset.jumpLink === id;
+        const on = link.getAttribute('href') === `#${id}`;
         link.classList.toggle('is-current', on);
         if (on) link.setAttribute('aria-current', 'true');
         else link.removeAttribute('aria-current');
@@ -328,11 +319,15 @@ const hourRows = hours.map((day) => ({
     position: absolute;
     inset: 0;
     z-index: -1;
+    /* The top stop carries the eyebrow, which is small accent-coloured text.
+       At 70% the photograph came through hard enough to drop it to 4.35:1
+       against the actual pixels — a colour-only check cannot see that, since
+       the eyebrow's computed background is the section, not the picture. */
     background: linear-gradient(
       to top,
       var(--ink) 10%,
       color-mix(in srgb, var(--ink) 88%, transparent) 55%,
-      color-mix(in srgb, var(--ink) 70%, transparent) 100%
+      color-mix(in srgb, var(--ink) 82%, transparent) 100%
     );
   }
   .hero__in {
@@ -359,51 +354,7 @@ const hourRows = hours.map((day) => ({
     gap: 0.7rem;
   }
 
-  /* ── Jump nav ─────────────────────────────────────────────────────── */
-  .jump {
-    position: sticky;
-    top: var(--chrome-h, 0px);
-    z-index: 40;
-    background: color-mix(in srgb, var(--ink) 94%, transparent);
-    backdrop-filter: blur(6px);
-    border-top: 1px solid var(--ink-line);
-    border-bottom: 1px solid var(--ink-line);
-  }
-  .jump__in {
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .jump__in::-webkit-scrollbar {
-    display: none;
-  }
-  .jump__list {
-    list-style: none;
-    margin: 0;
-    padding: 0.7rem 0;
-    display: flex;
-    gap: clamp(1rem, 3vw, 2rem);
-    white-space: nowrap;
-  }
-  .jump__link {
-    text-decoration: none;
-    font-size: var(--fs-label);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--on-ink-dim);
-    padding-bottom: 0.2rem;
-    border-bottom: 2px solid transparent;
-    transition: color 0.18s ease, border-color 0.18s ease;
-  }
-  .jump__link:hover {
-    color: var(--on-ink);
-  }
-  .jump__link.is-current {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  /* ── Sections get a scroll offset for the two sticky bars ─────────── */
+  /* ── Sections get a scroll offset for the sticky masthead ─────────── */
   #menu,
   #order,
   #find,
@@ -659,33 +610,6 @@ const hourRows = hours.map((day) => ({
     margin-top: 1rem;
     font-size: var(--fs-small);
     color: var(--on-paper-dim);
-  }
-  .map {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--accent-paper) 45%, transparent);
-    border-radius: var(--radius);
-    background: color-mix(in srgb, var(--accent-paper) 6%, transparent);
-    color: var(--accent-paper);
-  }
-  .map__label {
-    font-size: var(--fs-label);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 700;
-    max-width: 22ch;
-    line-height: 1.5;
-  }
-  .map__cross {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
   }
 
   /* ── Contact ──────────────────────────────────────────────────────── */

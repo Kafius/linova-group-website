@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="17 14 285 79" width="285" height="79">
+  <!-- Icon: Geometric Compass & Precision Grid -->
+  <g transform="translate(15, 15)">
+    <polygon points="40,8 72,40 40,72 8,40" fill="none" stroke="#1B4DAF" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="40" y1="8" x2="40" y2="72" stroke="#1B4DAF" stroke-width="2" stroke-dasharray="4 3"/>
+    <line x1="8" y1="40" x2="72" y2="40" stroke="#1B4DAF" stroke-width="2" stroke-dasharray="4 3"/>
+    <!-- North Arrow Accent -->
+    <polygon points="40,12 48,36 40,30 32,36" fill="#1B4DAF"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="105" y="49" font-family="'IBM Plex Sans', 'Helvetica Neue', sans-serif" font-size="28" font-weight="700" fill="#16202E" letter-spacing="2">NORTHLINE</text>
+  <text x="106" y="73" font-family="'IBM Plex Sans', 'Helvetica Neue', sans-serif" font-size="13" font-weight="600" fill="#1B4DAF" letter-spacing="4">FACILITY SERVICES</text>
+</svg>

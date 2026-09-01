@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="21 21 298 69" width="298" height="69">
+  <!-- Icon: Almond Oval crossed with Rye Ear -->
+  <g transform="translate(15, 15)">
+    <!-- Almond Silhouette -->
+    <path d="M20 40 C20 18 45 10 60 28 C70 42 62 65 40 68 C22 70 20 52 20 40 Z" fill="none" stroke="#A32B54" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Rye Awns & Stem -->
+    <path d="M12 68 L58 12" stroke="#A32B54" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M38 32 L48 24 M44 26 L56 20 M30 40 L38 34" stroke="#A32B54" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="102" y="49" font-family="'Petrona', 'Georgia', serif" font-size="25" font-weight="700" fill="#2B211C" letter-spacing="2">ALMOND &amp; RYE</text>
+  <text x="103" y="73" font-family="'Petrona', 'Georgia', serif" font-size="15" font-weight="400" font-style="italic" fill="#A32B54" letter-spacing="3">Bakery</text>
+</svg>

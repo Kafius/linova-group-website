@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="27 17 327 73" width="327" height="73">
+  <!-- Icon: Spine Arc Interlocking with Lake Waves -->
+  <g fill="none" stroke="#0B565E" stroke-linecap="round" stroke-linejoin="round" transform="translate(15, 15)">
+    <!-- Vertebrae / Spine curvature -->
+    <path d="M22 15 C28 28 28 52 22 65" stroke-width="3.5"/>
+    <circle cx="22" cy="15" r="3.5" fill="#0B565E"/>
+    <circle cx="26" cy="28" r="3.5" fill="#0B565E"/>
+    <circle cx="27" cy="40" r="3.5" fill="#0B565E"/>
+    <circle cx="26" cy="52" r="3.5" fill="#0B565E"/>
+    <circle cx="22" cy="65" r="3.5" fill="#0B565E"/>
+    
+    <!-- Fluid wave lines -->
+    <path d="M26 28 C38 24 50 32 66 26" stroke-width="3"/>
+    <path d="M27 40 C41 36 52 44 68 38" stroke-width="3"/>
+    <path d="M26 52 C38 48 50 56 66 50" stroke-width="3"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="105" y="49" font-family="'Source Serif 4', 'Georgia', serif" font-size="25" font-weight="700" fill="#1A1F1E" letter-spacing="2">LAKESHORE</text>
+  <text x="106" y="73" font-family="'Source Serif 4', 'Georgia', serif" font-size="12" font-weight="600" fill="#0B565E" letter-spacing="3">CHIROPRACTIC &amp; WELLNESS</text>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -4 367 115" width="367" height="115">
+  <!-- Recomposed as a horizontal lockup. As supplied this was a portrait
+       stack — gauge above the wordmark — which a masthead sizes by height,
+       so at 38px tall it rendered 30px wide and "AUTO SERVICE" disappeared
+       entirely. Same elements, same colours, laid side by side.
+       Montserrat is not loaded on this demo; Space Grotesk is its display
+       face and is already on the page. -->
+
+  <g transform="translate(72, 70) scale(0.62)">
+    <!-- Speedometer / Tachometer Redline Arc -->
+    <path d="M -70 40 A 80 80 0 1 1 40 -69" fill="none" stroke="#3A3F47" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 40 -69 A 80 80 0 0 1 70 40" fill="none" stroke="#E53E3E" stroke-width="10" stroke-linecap="round"/>
+
+    <!-- Redline Needle -->
+    <polygon points="0,0 55,-55 45,-45" fill="#E53E3E"/>
+    <circle cx="0" cy="0" r="10" fill="#F7FAFC"/>
+    <circle cx="0" cy="0" r="5" fill="#1C2024"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="150" y="72" text-anchor="start" fill="#F7FAFC" font-family="'Space Grotesk', 'Arial Black', sans-serif" font-weight="700" font-size="34" letter-spacing="6">REDLINE</text>
+  <text x="152" y="101" text-anchor="start" fill="#E53E3E" font-family="'Space Grotesk', 'Arial', sans-serif" font-weight="500" font-size="14" letter-spacing="9.5">AUTO SERVICE</text>
+</svg>

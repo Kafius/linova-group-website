@@ -161,6 +161,9 @@ export const navigation: DemoNavigation = {
     { href: '#menu', label: 'Menu' },
     { href: '#order', label: 'Order' },
     { href: '#find', label: 'Find us' },
+    // Contact used to live only in a second sticky bar below this one. That
+    // bar is gone, so the anchor set is complete here.
+    { href: '#contact', label: 'Contact' },
   ],
   cta: { href: '#order', label: 'Order online', event: 'order_cta_nav' },
   menuToggleOpen: 'Open menu',
@@ -189,15 +192,6 @@ export const pageMeta = {
 };
 
 export const page = {
-  /** the in-page nav, which is the whole navigation on a one-pager */
-  jump: [
-    { id: 'menu', label: 'Menu' },
-    { id: 'order', label: 'Order' },
-    { id: 'find', label: 'Find us' },
-    { id: 'contact', label: 'Contact' },
-  ],
-  jumpLabel: 'On this page',
-
   heroEyebrow: 'Scarborough · Halal · Open late',
   heroTitle: 'Off the spit until 3am',
   heroBody: 'Chicken and beef turning all day, hand-minced kafta, falafel fried to order. Counter service, no table to wait for.',

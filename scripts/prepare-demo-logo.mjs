@@ -18,7 +18,7 @@
 // as an opaque cream-tinted pixel. That is what removes the halo while
 // keeping the anti-aliasing.
 import sharp from 'sharp';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 
 const [, , file, slug, ...flags] = process.argv;
@@ -71,6 +71,122 @@ const BADGE = !flags.includes('--no-badge');
  */
 const insetFlag = flags.find((f) => f.startsWith('--inset='));
 const INSET = insetFlag ? Number(insetFlag.split('=')[1]) : 3;
+
+// ── SVG input ───────────────────────────────────────────────────────────
+// Vector beats anything recoverable from a raster, so an SVG stays an SVG.
+// Only one thing has to be stripped: the full-bleed background rect it was
+// composed on, which would paint an opaque slab across the masthead.
+//
+// Fonts are handled by the layout rather than here. An SVG loaded through
+// <img> cannot fetch anything, so a font-family naming a webfont silently
+// falls back — Bricolage Grotesque becomes Arial Black. Embedding the woff2
+// as a data URI fixes that but costs 100KB and duplicates a font the page has
+// already downloaded for its own headings. So DemoLayout inlines the markup
+// instead, where it resolves against the demo's own @font-face for free.
+if (file.toLowerCase().endsWith('.svg')) {
+  let svg = readFileSync(file, 'utf-8');
+
+  const box = svg.match(/viewBox\s*=\s*"([^"]+)"/);
+  const [, , vbW, vbH] = box ? box[1].trim().split(/\s+/).map(Number) : [0, 0, 0, 0];
+
+  // Drop any rect that covers the whole canvas.
+  let dropped = 0;
+  svg = svg.replace(/<rect\b[^>]*\/?>(?:<\/rect>)?/g, (tag) => {
+    const w = tag.match(/\bwidth\s*=\s*"([^"]+)"/)?.[1];
+    const h = tag.match(/\bheight\s*=\s*"([^"]+)"/)?.[1];
+    const full = (v, ref) => v === '100%' || (ref && Math.abs(parseFloat(v) - ref) < 1);
+    if (w && h && full(w, vbW) && full(h, vbH) && !/\btransform\s*=/.test(tag)) {
+      dropped += 1;
+      return '';
+    }
+    return tag;
+  });
+  if (dropped) console.log(`  ${slug}: removed ${dropped} full-bleed background rect(s)`);
+
+  // Repoint any font the page does not actually load. Inlined, the SVG can
+  // only use faces this demo already declares; anything else falls through to
+  // whatever the OS has, so a mark specified in Montserrat quietly renders in
+  // Arial Black. The demo's own display face is a better answer than that, and
+  // makes the mark look native to the site rather than pasted onto it.
+  const demoModule = `src/data/demos/${slug}.ts`;
+  let displayFamily = null;
+  if (existsSync(demoModule)) {
+    const src = readFileSync(demoModule, 'utf-8');
+    displayFamily = src.match(/displayFont:\s*'"([^"]+)"/)?.[1] ?? null;
+  }
+  const hosted = existsSync('public/fonts/demos') ? readdirSync('public/fonts/demos') : [];
+  const isHosted = (family) => {
+    const stem = family.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return hosted.some((f) => f.startsWith(stem) && f.endsWith('.woff2'));
+  };
+
+  // Strip webfont imports. These demos self-host every face on purpose — part
+  // of the pitch is that they fetch nothing from a third-party CDN, and no
+  // demo page currently does. Inlined, an @import in the mark would make one.
+  // The families named are already on the page, so the rule is pure cost.
+  const imports = svg.match(/@import\s+url\([^)]*\)\s*;?/g) ?? [];
+  if (imports.length) {
+    svg = svg.replace(/@import\s+url\([^)]*\)\s*;?/g, '');
+    console.log(`  ${slug}: removed ${imports.length} webfont @import — the page self-hosts these`);
+  }
+
+  const repoint = (stack) => {
+    const first = stack.split(',')[0].trim().replace(/^['"]|['"]$/g, '');
+    if (!first || isHosted(first)) return null;
+    if (!displayFamily) {
+      console.log(`  ${slug}: NOTE "${first}" is not loaded by this demo and will fall back`);
+      return null;
+    }
+    console.log(`  ${slug}: "${first}" is not loaded here, using "${displayFamily}" instead`);
+    return `'${displayFamily}', ${stack}`;
+  };
+
+  // Presentation attributes...
+  svg = svg.replace(/font-family\s*=\s*"([^"]+)"/g, (whole, stack) => {
+    const next = repoint(stack);
+    return next ? `font-family="${next}"` : whole;
+  });
+  // ...and CSS declarations, which a <style> block uses instead.
+  svg = svg.replace(/font-family\s*:\s*([^;}]+)/g, (whole, stack) => {
+    const next = repoint(stack.trim());
+    return next ? `font-family: ${next}` : whole;
+  });
+
+  // A loose viewBox is the other silent failure. The masthead sizes the logo
+  // by height, so empty canvas above and below shrinks the artwork to nothing
+  // — the first Bramble & Bone SVG drew inside 800x500 but only occupied the
+  // middle, and rendered 61px wide with an illegible wordmark. Rasterise and
+  // measure the real content so the gap gets reported rather than shipped.
+  try {
+    const probe = await sharp(Buffer.from(svg), { density: 150 })
+      .trim({ threshold: 1 })
+      .toBuffer({ resolveWithObject: true });
+    const full = await sharp(Buffer.from(svg), { density: 150 }).metadata();
+    const fill = (probe.info.width * probe.info.height) / (full.width * full.height);
+    if (fill < 0.6) {
+      console.log('');
+      console.log(`  NOTE  the artwork fills only ${Math.round(fill * 100)}% of the viewBox.`);
+      console.log(`        Sized by height in the masthead, the empty margin shrinks it.`);
+      console.log(`        Tighten the viewBox to the content bounds and keep matching`);
+      console.log(`        width/height attributes — an inline <svg> with only a ratio`);
+      console.log(`        resolves width:auto to 100% and collapses to zero.`);
+    }
+  } catch {
+    // librsvg substitutes fonts, so this is advisory only — never fatal.
+  }
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  const svgOut = path.join(OUT_DIR, `${slug}.svg`);
+  writeFileSync(svgOut, svg);
+  // A raster of the same slug would win the glob and shadow this.
+  const stale = path.join(OUT_DIR, `${slug}.png`);
+  if (existsSync(stale)) {
+    unlinkSync(stale);
+    console.log(`  ${slug}: removed the superseded PNG`);
+  }
+  console.log(`  ${slug}: ${Math.round(svg.length / 1024)} KB  ->  ${svgOut}`);
+  process.exit(0);
+}
 
 let src = readFileSync(file);
 let meta = await sharp(src).metadata();

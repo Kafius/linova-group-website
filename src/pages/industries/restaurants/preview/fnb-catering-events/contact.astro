@@ -2,6 +2,7 @@
 // Saffron Table demo — Contact. Two contact blocks and no form: takeout goes
 // through the counter or the Clover slot, and catering goes through the
 // consultation booking, which already asks the right four questions.
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
 import DemoLayout from '../../../../../layouts/DemoLayout.astro';
 import { chrome, routes } from '../../../../../lib/demos/saffronChrome';
 import { demoBreadcrumbs } from '../../../../../lib/demos/saffronJsonld';
@@ -70,13 +71,7 @@ const hourRows = counterHours.map((day) => ({
       </div>
     </div>
 
-    <div class="map" role="img" aria-label={contactPage.mapLabel}>
-      <span class="map__label">{contactPage.mapLabel}</span>
-      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.25" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.25" />
-      </svg>
-    </div>
+    <DemoMap label={contactPage.mapLabel} seed="fnb-catering-events" />
   </section>
 
   <section class="bay" aria-labelledby="hours-h">
@@ -225,33 +220,6 @@ const hourRows = counterHours.map((day) => ({
     font-size: 1.05rem;
   }
 
-  .map {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
-    border-radius: var(--radius);
-    background: color-mix(in srgb, var(--accent) 7%, transparent);
-    color: var(--accent);
-  }
-  .map__label {
-    font-size: var(--fs-label);
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    max-width: 24ch;
-    line-height: 1.6;
-  }
-  .map__cross {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
 
   .hours-grid {
     display: grid;

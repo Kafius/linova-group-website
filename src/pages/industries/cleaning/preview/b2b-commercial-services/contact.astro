@@ -2,6 +2,7 @@
 // Northline demo — contact. No second enquiry form: the quote page already
 // takes new business with the qualifying fields attached, and a duplicate
 // form here would send the same lead in with less information.
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
 import DemoLayout from '../../../../../layouts/DemoLayout.astro';
 import { chrome, routes } from '../../../../../lib/demos/northlineChrome';
 import { demoBreadcrumbs } from '../../../../../lib/demos/northlineJsonld';
@@ -67,13 +68,7 @@ const hourRows = officeHours.map((day) => ({
       </a>
     </div>
 
-    <div class="map" role="img" aria-label={contactPage.mapLabel}>
-      <span class="map__label">{contactPage.mapLabel}</span>
-      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-      </svg>
-    </div>
+    <DemoMap label={contactPage.mapLabel} seed="b2b-commercial-services" />
   </section>
 
   <!-- ── Hours: office on the left, crews on the right ───────────────── -->
@@ -216,33 +211,6 @@ const hourRows = officeHours.map((day) => ({
     text-underline-offset: 4px;
   }
 
-  .map {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-    color: var(--accent);
-  }
-  .map__label {
-    font-family: var(--font-mono);
-    font-size: var(--fs-label);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 600;
-    max-width: 24ch;
-    line-height: 1.6;
-  }
-  .map__cross {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
 
   /* ── Hours ────────────────────────────────────────────────────────── */
   .hours-grid {

@@ -6,6 +6,7 @@
 // This is a plain contact form, not a CRM capture. CRM is FALSE on this
 // playbook: there are no qualifying fields, no lead scoring and no handoff
 // stub anywhere in this demo.
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
 import DemoLayout from '../../../../../layouts/DemoLayout.astro';
 import { chrome, routes } from '../../../../../lib/demos/brambleChrome';
 import { demoBreadcrumbs } from '../../../../../lib/demos/brambleJsonld';
@@ -62,13 +63,7 @@ const hourRows = hours.map((day) => ({
       </div>
     </div>
 
-    <div class="map" role="img" aria-label={contact.mapLabel}>
-      <span class="map__label">{contact.mapLabel}</span>
-      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-      </svg>
-    </div>
+    <DemoMap label={contact.mapLabel} seed="retail-online-store" />
   </section>
 
   <!-- ── Hours ───────────────────────────────────────────────────────── -->
@@ -269,33 +264,6 @@ const hourRows = hours.map((day) => ({
     text-underline-offset: 4px;
   }
 
-  .map {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
-    border-radius: 20px;
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
-    color: var(--accent);
-  }
-  .map__label {
-    font-size: var(--fs-label);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 700;
-    max-width: 22ch;
-    line-height: 1.5;
-  }
-  .map__cross {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
 
   .hours {
     margin-top: 1.75rem;

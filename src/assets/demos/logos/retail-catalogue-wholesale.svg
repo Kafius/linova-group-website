@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="24 15 341 76" width="341" height="76">
+  <!-- Icon: Wheat Grain & Arch Motif -->
+  <g transform="translate(15, 15)" fill="none" stroke="#1F3D7A" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 68 V38 A25 25 0 0 1 65 38 V68" stroke-width="3"/>
+    <!-- Central Wheat Stem -->
+    <path d="M40 70 V20" stroke-width="2.5"/>
+    <!-- Wheat Grains -->
+    <path d="M40 42 C32 38 27 28 32 24 C37 28 40 35 40 42 Z" fill="#1F3D7A" stroke-width="1"/>
+    <path d="M40 42 C48 38 53 28 48 24 C43 28 40 35 40 42 Z" fill="#1F3D7A" stroke-width="1"/>
+    <path d="M40 30 C34 26 31 18 35 14 C39 18 40 24 40 30 Z" fill="#1F3D7A" stroke-width="1"/>
+    <path d="M40 30 C46 26 49 18 45 14 C41 18 40 24 40 30 Z" fill="#1F3D7A" stroke-width="1"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="105" y="49" font-family="'Spectral', 'Georgia', serif" font-size="26" font-weight="700" fill="#24201A" letter-spacing="2">VERNON STREET</text>
+  <text x="106" y="73" font-family="'Spectral', 'Georgia', serif" font-size="14" font-weight="500" fill="#1F3D7A" letter-spacing="4">BAKEHOUSE</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="25 8 282 81" width="282" height="81">
+  <!-- Icon: Monogram 'H' + Chair Line Art -->
+  <g transform="translate(15, 15)" stroke="#6B2440" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Outer structural frame -->
+    <path d="M16 12 V68" stroke-width="4"/>
+    <path d="M64 12 V68" stroke-width="4"/>
+    <!-- Chair seat & crossbar -->
+    <path d="M16 44 H64" stroke-width="4"/>
+    <!-- Modern chair backrest arc -->
+    <path d="M28 20 H52 A8 8 0 0 1 60 28 V44 H20 V28 A8 8 0 0 1 28 20 Z" stroke-width="2.5" fill="#6B2440" fill-opacity="0.1"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="105" y="50" font-family="'Literata', 'Georgia', serif" font-size="30" font-weight="700" fill="#241F1A" letter-spacing="3">HALDEN</text>
+  <text x="106" y="74" font-family="'Literata', 'Georgia', serif" font-size="12" font-weight="600" fill="#6B2440" letter-spacing="4">HOME FURNISHINGS</text>
+</svg>

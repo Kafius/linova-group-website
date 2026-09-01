@@ -1,0 +1,869 @@
+[
+ {
+  "demo": "appointment-business",
+  "file": "barber-dez",
+  "subject": "Barber in his forties at the chair, clippers in hand, mirror and bottles behind, hard side light",
+  "ratio": 0.75,
+  "maxWidth": 320,
+  "pages": [
+   "/industries/barbershops/preview/appointment-business/",
+   "/industries/barbershops/preview/appointment-business/barbers/"
+  ]
+ },
+ {
+  "demo": "appointment-business",
+  "file": "barber-mikey",
+  "subject": "Barber shaping a beard with a trimmer, client in cape, close crop",
+  "ratio": 0.75,
+  "maxWidth": 320,
+  "pages": [
+   "/industries/barbershops/preview/appointment-business/",
+   "/industries/barbershops/preview/appointment-business/barbers/"
+  ]
+ },
+ {
+  "demo": "appointment-business",
+  "file": "barber-sione",
+  "subject": "Barber crouching to talk to a child in the barber chair, both laughing",
+  "ratio": 0.75,
+  "maxWidth": 320,
+  "pages": [
+   "/industries/barbershops/preview/appointment-business/",
+   "/industries/barbershops/preview/appointment-business/barbers/"
+  ]
+ },
+ {
+  "demo": "appointment-business",
+  "file": "barber-tomas",
+  "subject": "Barber mid-scissor-cut, comb and shears raised, focused, warm shop light",
+  "ratio": 0.75,
+  "maxWidth": 320,
+  "pages": [
+   "/industries/barbershops/preview/appointment-business/",
+   "/industries/barbershops/preview/appointment-business/barbers/"
+  ]
+ },
+ {
+  "demo": "appointment-business",
+  "file": "hero-shop",
+  "subject": "Four barber chairs in a row down a narrow shop, mirrors, tiled floor, low warm light",
+  "ratio": 1.925,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/barbershops/preview/appointment-business/"
+  ]
+ },
+ {
+  "demo": "automotive-book-a-bay",
+  "file": "hero-bays",
+  "subject": "Six-bay workshop from the forecourt, doors up, cars on hoists, morning light across the concrete",
+  "ratio": 2.043,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/auto/preview/automotive-book-a-bay/"
+  ]
+ },
+ {
+  "demo": "automotive-book-a-bay",
+  "file": "technician",
+  "subject": "Technician under a raised car with a work light, reading a measurement, hands and tools in focus",
+  "ratio": 0.8,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/auto/preview/automotive-book-a-bay/why-us/"
+  ]
+ },
+ {
+  "demo": "b2b-commercial-services",
+  "file": "hero-lobby",
+  "subject": "Empty commercial office lobby at night, polished floor, one crew member with a cart at the far end, cool overhead light",
+  "ratio": 1.335,
+  "maxWidth": 486,
+  "pages": [
+   "/industries/cleaning/preview/b2b-commercial-services/"
+  ]
+ },
+ {
+  "demo": "clinic-practitioner",
+  "file": "hero-clinic",
+  "subject": "Clinic reception and waiting area, plain and bright, chairs and a plant, nobody in frame",
+  "ratio": 1.333,
+  "maxWidth": 485,
+  "pages": [
+   "/industries/clinic/preview/clinic-practitioner/"
+  ]
+ },
+ {
+  "demo": "clinic-practitioner",
+  "file": "staff-barakat",
+  "subject": "Chiropractor at a desk reviewing a gait assessment printout, natural light",
+  "ratio": 0.8,
+  "maxWidth": 288,
+  "pages": [
+   "/industries/clinic/preview/clinic-practitioner/practitioners/"
+  ]
+ },
+ {
+  "demo": "clinic-practitioner",
+  "file": "staff-sandhu",
+  "subject": "Chiropractor in clinic attire beside a treatment table, calm daylight, no equipment in use",
+  "ratio": 0.8,
+  "maxWidth": 288,
+  "pages": [
+   "/industries/clinic/preview/clinic-practitioner/practitioners/"
+  ]
+ },
+ {
+  "demo": "clinic-practitioner",
+  "file": "staff-sorensen",
+  "subject": "Massage therapist setting linens on a table in a quiet treatment room",
+  "ratio": 0.8,
+  "maxWidth": 288,
+  "pages": [
+   "/industries/clinic/preview/clinic-practitioner/practitioners/"
+  ]
+ },
+ {
+  "demo": "fnb-bakery-pre-order",
+  "file": "hero-counter",
+  "subject": "Close crop of a bakery counter at opening — croissants in a wooden tray, a loaf on a board, morning light across flour dust",
+  "ratio": 1.333,
+  "maxWidth": 514,
+  "pages": [
+   "/industries/restaurants/preview/fnb-bakery-pre-order/"
+  ]
+ },
+ {
+  "demo": "fnb-cafe-order-ahead",
+  "file": "beans",
+  "subject": "Hand tipping beans from a bag into a grinder hopper, close, warm morning light",
+  "ratio": 1.333,
+  "maxWidth": 514,
+  "pages": [
+   "/industries/restaurants/preview/fnb-cafe-order-ahead/coffee/"
+  ]
+ },
+ {
+  "demo": "fnb-cafe-order-ahead",
+  "file": "hero-bar",
+  "subject": "Cafe counter from the customer side, espresso machine and boba station both in frame, bright daylight",
+  "ratio": 1.333,
+  "maxWidth": 514,
+  "pages": [
+   "/industries/restaurants/preview/fnb-cafe-order-ahead/"
+  ]
+ },
+ {
+  "demo": "fnb-cafe-order-ahead",
+  "file": "syrups",
+  "subject": "Three labelled syrup bottles on a back counter, handwritten tape labels, soft light",
+  "ratio": 1.333,
+  "maxWidth": 514,
+  "pages": [
+   "/industries/restaurants/preview/fnb-cafe-order-ahead/coffee/"
+  ]
+ },
+ {
+  "demo": "fnb-cafe-order-ahead",
+  "file": "tapioca",
+  "subject": "Tapioca pearls being lifted from a pot with a strainer, steam rising, close crop",
+  "ratio": 1.333,
+  "maxWidth": 514,
+  "pages": [
+   "/industries/restaurants/preview/fnb-cafe-order-ahead/coffee/"
+  ]
+ },
+ {
+  "demo": "fnb-catering-events",
+  "file": "hero-counter",
+  "subject": "Catering kitchen pass with chafing trays of curries and rice, steam rising, warm overhead light, cooks plating in the background",
+  "ratio": 1.335,
+  "maxWidth": 486,
+  "pages": [
+   "/industries/restaurants/preview/fnb-catering-events/"
+  ]
+ },
+ {
+  "demo": "fnb-food-truck-lite",
+  "file": "hero-truck",
+  "subject": "Bright food truck service window at dusk with string lights, hand-painted signage, a short queue on the pavement",
+  "ratio": 1.339,
+  "maxWidth": 508,
+  "pages": [
+   "/industries/restaurants/preview/fnb-food-truck-lite/"
+  ]
+ },
+ {
+  "demo": "fnb-full-service",
+  "file": "hero-room",
+  "subject": "Wide shot of the dining room at dusk, lake through the windows, warm lamps on, tables mid-service",
+  "ratio": 1.823,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/restaurants/preview/fnb-full-service/"
+  ]
+ },
+ {
+  "demo": "fnb-full-service",
+  "file": "room-bar",
+  "subject": "The bar side at capacity, tap wall backlit, people at the rail, shot from the doorway",
+  "ratio": 1.333,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/restaurants/preview/fnb-full-service/"
+  ]
+ },
+ {
+  "demo": "fnb-full-service",
+  "file": "sourcing",
+  "subject": "Crates of Ontario produce on the loading step at open, morning light, hands unloading",
+  "ratio": 1.333,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/restaurants/preview/fnb-full-service/about/"
+  ]
+ },
+ {
+  "demo": "fnb-full-service",
+  "file": "staff-june",
+  "subject": "Bar manager behind the taps, backlit bottles, hand on a tap handle",
+  "ratio": 1,
+  "maxWidth": 340,
+  "pages": [
+   "/industries/restaurants/preview/fnb-full-service/about/"
+  ]
+ },
+ {
+  "demo": "fnb-full-service",
+  "file": "staff-marcus",
+  "subject": "Chef plating at the pass, hands in frame, steam and warm tungsten light",
+  "ratio": 1,
+  "maxWidth": 340,
+  "pages": [
+   "/industries/restaurants/preview/fnb-full-service/about/"
+  ]
+ },
+ {
+  "demo": "fnb-full-service",
+  "file": "staff-nadia",
+  "subject": "Owner mid-forties standing at the pass, warm low room light, candid not posed",
+  "ratio": 1,
+  "maxWidth": 340,
+  "pages": [
+   "/industries/restaurants/preview/fnb-full-service/about/"
+  ]
+ },
+ {
+  "demo": "fnb-quick-service-launch",
+  "file": "hero-spit",
+  "subject": "Two shawarma spits close up under the heat, meat carved mid-motion, warm red light",
+  "ratio": 2,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/restaurants/preview/fnb-quick-service-launch/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "cat-hair",
+  "subject": "Salon floor with three chairs, north window light, mirrors, plants, nobody in frame",
+  "ratio": 0.75,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/",
+   "/industries/barbershops/preview/multi-service-spa-salon/hair/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "cat-nails",
+  "subject": "Manicure station close up, hands mid-treatment, warm lamp, tidy tools laid out",
+  "ratio": 0.75,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/",
+   "/industries/barbershops/preview/multi-service-spa-salon/nails/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "cat-spa",
+  "subject": "Treatment room with a made table, folded linen, low warm light and a single plant",
+  "ratio": 0.75,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/",
+   "/industries/barbershops/preview/multi-service-spa-salon/spa/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "hero-room",
+  "subject": "Reception and waiting area, linen chairs, tall plant, soft daylight, deliberately empty",
+  "ratio": 0.8,
+  "maxWidth": 455,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-aiyana",
+  "subject": "Colourist painting balayage with a brush and board, close crop",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/hair/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-bea",
+  "subject": "Esthetician mapping a brow with a pencil, close and gentle",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/nails/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-colm",
+  "subject": "Stylist mid-cut with shears and comb, focused, soft light",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/hair/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-ines",
+  "subject": "Massage therapist adjusting linen on a table, warm low light",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/spa/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-nadege",
+  "subject": "Esthetician preparing a facial trolley in a treatment room",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/spa/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-renata",
+  "subject": "Stylist in her forties at the chair, natural window light, calm",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/hair/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-sofia",
+  "subject": "Nail technician at her station, hands and lamp in frame",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/nails/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "multi-service-spa-salon",
+  "file": "staff-theo",
+  "subject": "Massage therapist warming stones in a bath, hands in frame",
+  "ratio": 1,
+  "maxWidth": 247,
+  "pages": [
+   "/industries/barbershops/preview/multi-service-spa-salon/spa/",
+   "/industries/barbershops/preview/multi-service-spa-salon/team/"
+  ]
+ },
+ {
+  "demo": "retail-catalogue-wholesale",
+  "file": "bench",
+  "subject": "Baker's bench with proofed sourdough loaves in bannetons and a dusting of flour, morning light through a shopfront window",
+  "ratio": 0.749,
+  "maxWidth": 391,
+  "pages": [
+   "/industries/restaurants/preview/retail-catalogue-wholesale/"
+  ]
+ },
+ {
+  "demo": "retail-catalogue-wholesale",
+  "file": "oven",
+  "subject": "Baker loading loaves into a deck oven with a peel, early morning, flour dust in the air",
+  "ratio": 0.799,
+  "maxWidth": 421,
+  "pages": [
+   "/industries/restaurants/preview/retail-catalogue-wholesale/about/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "dept-bakery",
+  "subject": "Stacked warm flatbread in paper sleeves on a bakery shelf, steam still on the plastic",
+  "ratio": 1.333,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/",
+   "/industries/retail/preview/retail-grocery-order-ahead/departments/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "dept-butcher",
+  "subject": "Butcher counter with a butcher trimming lamb behind the glass, bright clean light",
+  "ratio": 1.333,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/",
+   "/industries/retail/preview/retail-grocery-order-ahead/departments/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "dept-dairy",
+  "subject": "Dairy case shot straight on, tubs of labneh and yoghurt lined up, cold cabinet light",
+  "ratio": 1.333,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/departments/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "dept-frozen",
+  "subject": "Freezer aisle with the door open, hand reaching for a box of samosas, cold blue light",
+  "ratio": 1.333,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/departments/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "dept-pantry",
+  "subject": "Spice wall of labelled jars and open sacks of pulses, warm overhead light",
+  "ratio": 1.333,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/departments/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "dept-produce",
+  "subject": "Produce aisle from low angle, crates of herbs and peppers, water misting the greens",
+  "ratio": 1.333,
+  "maxWidth": 352,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/",
+   "/industries/retail/preview/retail-grocery-order-ahead/departments/"
+  ]
+ },
+ {
+  "demo": "retail-grocery-order-ahead",
+  "file": "hero-counter",
+  "subject": "Butcher counter along the back wall, cases full, butcher in white mid-cut, bright shop light",
+  "ratio": 1.25,
+  "maxWidth": 514,
+  "pages": [
+   "/industries/retail/preview/retail-grocery-order-ahead/"
+  ]
+ },
+ {
+  "demo": "retail-large-catalogue",
+  "file": "hero-showroom",
+  "subject": "Bright furniture showroom with a sofa, oak coffee table and rug arranged as a room set, tall windows, pale floor",
+  "ratio": 2.333,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/retail/preview/retail-large-catalogue/"
+  ]
+ },
+ {
+  "demo": "retail-large-catalogue",
+  "file": "warehouse",
+  "subject": "Warehouse racking behind a furniture showroom with wrapped sofas and boxed appliances, a delivery truck backed to the bay",
+  "ratio": 0.799,
+  "maxWidth": 414,
+  "pages": [
+   "/industries/retail/preview/retail-large-catalogue/about/"
+  ]
+ },
+ {
+  "demo": "retail-online-store",
+  "file": "hero-shop",
+  "subject": "Wide interior of a small pet shop, timber shelving, chest freezer, dog waiting by the counter",
+  "ratio": 1.25,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/retail/preview/retail-online-store/"
+  ]
+ },
+ {
+  "demo": "retail-online-store",
+  "file": "kitchen",
+  "subject": "Trays of dehydrated treats coming out of a rack oven in a small back kitchen, hands in frame",
+  "ratio": 1.333,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/retail/preview/retail-online-store/"
+  ]
+ },
+ {
+  "demo": "retail-online-store",
+  "file": "sourcing",
+  "subject": "Waxed canvas leads and brass collars hanging on a timber peg rail, close and shallow focus",
+  "ratio": 1.333,
+  "maxWidth": 510,
+  "pages": [
+   "/industries/retail/preview/retail-online-store/about/"
+  ]
+ },
+ {
+  "demo": "retail-online-store",
+  "file": "staff-devon",
+  "subject": "Person in an apron loading dehydrator trays in a small back kitchen, warm light",
+  "ratio": 1,
+  "maxWidth": 348,
+  "pages": [
+   "/industries/retail/preview/retail-online-store/about/"
+  ]
+ },
+ {
+  "demo": "retail-online-store",
+  "file": "staff-priya",
+  "subject": "Owner in her forties behind a shop counter, aprons and shelving behind her, natural window light",
+  "ratio": 1,
+  "maxWidth": 348,
+  "pages": [
+   "/industries/retail/preview/retail-online-store/about/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "ajax-after",
+  "subject": "The same kitchen with cabinets sprayed off-white, grain filled smooth, new matt black handles",
+  "ratio": 1.333,
+  "maxWidth": 343,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/",
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "ajax-before",
+  "subject": "Dated honey oak kitchen cabinets with visible grain and brass handles",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "ajax-stucco-after",
+  "subject": "The same elevation in warm white masonry paint with charcoal garage doors",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "ajax-stucco-before",
+  "subject": "House front with chalky beige stucco and orange-toned brick, faded garage doors",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "brooklin-after",
+  "subject": "The same century home repainted in a deep green with white trim, clean lines at the soffit",
+  "ratio": 1.333,
+  "maxWidth": 343,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/",
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "brooklin-before",
+  "subject": "Weathered cedar-sided century home with peeling paint on the front elevation, overcast day",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "hero-crew",
+  "subject": "Painter cutting in along a ceiling line in a bright empty living room, drop sheets down, ladder to one side",
+  "ratio": 1.333,
+  "maxWidth": 488,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "oshawa-after",
+  "subject": "The same stairwell in a soft white with crisp repainted spindles and a clean ceiling line",
+  "ratio": 1.333,
+  "maxWidth": 343,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/",
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "oshawa-before",
+  "subject": "Tall stairwell with scuffed beige walls and yellowed white spindles",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "pickering-after",
+  "subject": "The same corridor repainted in a calm grey-green with clean door frames",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "pickering-before",
+  "subject": "Clinical corridor with marked and scuffed pale walls under fluorescent light",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "whitby-after",
+  "subject": "The same empty living room in a uniform warm white with sharp trim lines",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "trades-lead-generation",
+  "file": "whitby-before",
+  "subject": "Empty living room with patched drywall and mismatched wall colours",
+  "ratio": 1.333,
+  "maxWidth": 279,
+  "pages": [
+   "/industries/contractors/preview/trades-lead-generation/work/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "annex",
+  "subject": "Small brick room with a large mirror, a clothing rail and a window, soft natural light, minimal furniture",
+  "ratio": 1.333,
+  "maxWidth": 736,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/space/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-annex",
+  "subject": "Small brick room with a large mirror, dresses on a rail and daylight through one window",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-bar",
+  "subject": "Two bartenders working a long service bar built into a brick alcove, warm light, bottles on shelves",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-conference",
+  "subject": "Industrial hall set theatre style with rows of chairs facing a large projection screen, blackout blinds",
+  "ratio": 0.75,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/",
+   "/industries/venue/preview/venue-event-space/corporate/",
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-film",
+  "subject": "Film crew and lighting stands in a blacked-out industrial hall, cables run along a concrete floor",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-hall-rounds",
+  "subject": "Large industrial hall set with round tables and chairs, warm uplighting on brick walls, evening",
+  "ratio": 0.75,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/",
+   "/industries/venue/preview/venue-event-space/gallery/",
+   "/industries/venue/preview/venue-event-space/weddings/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-holiday",
+  "subject": "Long trestle tables running the length of an industrial hall set for dinner, pendant lights lowered",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-launch",
+  "subject": "Crowded standing reception in a brick industrial hall, festoon lighting, people with drinks",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-mezz-speeches",
+  "subject": "A person speaking at a microphone on an industrial mezzanine above a seated crowd, warm light",
+  "ratio": 0.75,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/",
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-stills",
+  "subject": "A photographer working with a subject against a bare brick wall lit only by a tall window",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-truss",
+  "subject": "Close view upward at riveted steel roof trusses against a dark ceiling with hanging pendant lights",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-yard-ceremony",
+  "subject": "Rows of chairs in a gravelled industrial courtyard set for an outdoor ceremony, brick walls, afternoon",
+  "ratio": 0.75,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/",
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "gallery-yard-cocktails",
+  "subject": "People standing with drinks in a gravelled courtyard under festoon lights at dusk",
+  "ratio": 1.5,
+  "maxWidth": 426,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/gallery/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "hero-hall",
+  "subject": "Wide view of an empty converted foundry hall at dusk, exposed brick, steel trusses, pendant lights, concrete floor",
+  "ratio": 2.333,
+  "maxWidth": 1280,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "main-hall",
+  "subject": "Empty converted industrial hall, exposed brick walls, steel roof trusses, tall north-facing windows, late afternoon light across a concrete floor",
+  "ratio": 1.333,
+  "maxWidth": 736,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/space/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "mezzanine",
+  "subject": "Industrial mezzanine gallery with original steel railing overlooking a large empty hall below, warm evening light",
+  "ratio": 1.333,
+  "maxWidth": 544,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/space/"
+  ]
+ },
+ {
+  "demo": "venue-event-space",
+  "file": "yard",
+  "subject": "Gravelled industrial courtyard with festoon lights strung overhead between brick walls, dusk",
+  "ratio": 1.333,
+  "maxWidth": 544,
+  "pages": [
+   "/industries/venue/preview/venue-event-space/space/"
+  ]
+ }
+]

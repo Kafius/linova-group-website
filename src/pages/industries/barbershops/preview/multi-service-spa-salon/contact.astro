@@ -1,6 +1,7 @@
 ---
 // Stillwater demo — contact and hours. No contact form: booking is the
 // enquiry path on this playbook, and the desk answers the phone.
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
 import DemoLayout from '../../../../../layouts/DemoLayout.astro';
 import { chrome, routes } from '../../../../../lib/demos/stillwaterChrome';
 import { demoBreadcrumbs } from '../../../../../lib/demos/stillwaterJsonld';
@@ -60,13 +61,7 @@ const hourRows = hours.map((day) => ({
       </a>
     </div>
 
-    <div class="map" role="img" aria-label={contact.mapLabel}>
-      <span class="map__label">{contact.mapLabel}</span>
-      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
-      </svg>
-    </div>
+    <DemoMap label={contact.mapLabel} seed="multi-service-spa-salon" />
   </section>
 
   <section class="bay" aria-labelledby="hours-h">
@@ -175,32 +170,6 @@ const hourRows = hours.map((day) => ({
     text-underline-offset: 5px;
   }
 
-  .map {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--accent) 40%, transparent);
-    border-radius: var(--radius);
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-    color: var(--accent);
-  }
-  .map__label {
-    font-size: var(--fs-label);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    max-width: 22ch;
-    line-height: 1.6;
-  }
-  .map__cross {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
 
   .hours {
     margin-top: 2rem;

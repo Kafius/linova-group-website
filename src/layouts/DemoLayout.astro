@@ -178,16 +178,53 @@ const logoMatch = demoSlug
       path.replace(/\.[^.]+$/, '').endsWith(`/${demoSlug}`)
     )
   : undefined;
+
+// An SVG is inlined rather than pointed at with <img>. Inside an <img> an SVG
+// is its own isolated document and cannot fetch anything, so a font-family
+// naming one of the demo's webfaces falls back to a system font — the mark
+// silently changes typeface. Inlined, it resolves against the @font-face this
+// page already declares, at no extra bytes.
+const logoSvgFiles = import.meta.glob<string>('/src/assets/demos/logos/*.svg', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+const logoSvg = demoSlug
+  ? Object.entries(logoSvgFiles).find(([path]) =>
+      path.replace(/\.svg$/, '').endsWith(`/${demoSlug}`)
+    )?.[1]
+  : undefined;
+
+// ── Photo attribution ─────────────────────────────────────────────────
+// The Unsplash API Guidelines require crediting the photographer and Unsplash
+// wherever a photo is used. The credits go on the footer's legal line, which
+// is the one place a demo already drops the fiction to say it is a sample
+// site — so attribution costs nothing that line was not already spending.
+//
+// Globbed rather than imported directly so the build still works before any
+// photo has been fetched, when the file does not exist yet.
+const creditFiles = import.meta.glob<Record<string, { photographer: string; profile: string }>>(
+  '/src/data/demos/photo-credits.json',
+  { eager: true, import: 'default' }
+);
+const allCredits = Object.values(creditFiles)[0] ?? {};
+const photographers = demoSlug
+  ? [
+      ...new Map(
+        Object.entries(allCredits)
+          .filter(([key]) => key.startsWith(`${demoSlug}/`))
+          .map(([, c]) => [c.photographer, c])
+      ).values(),
+    ]
+  : [];
+
+// A raster is re-encoded to webp, which keeps the alpha and is a fraction of
+// the PNG. 96 tall covers the 34px header slot at 2x with room to spare.
 const logoSrc = logoMatch?.[1].default;
-// SVG goes through untouched; a raster is re-encoded to webp, which keeps the
-// alpha and is a fraction of the PNG. 96 tall covers the 34px header slot at
-// 2x with room to spare.
 const logo =
   logoSrc && !logoMatch?.[0].endsWith('.svg')
     ? await getImage({ src: logoSrc, height: 96, format: 'webp' })
-    : logoSrc
-      ? { src: logoSrc.src, attributes: {} }
-      : null;
+    : null;
 
 // A real client site has its own mark in the tab. Drawn from the demo's own
 // palette and initial so no image file has to exist for the next demo either.
@@ -324,7 +361,9 @@ const themeVars = [
         <header class="nav">
           <div class="nav__in">
             <a class="nav__brand" href={brandHref ?? navLinks[0]?.href ?? '/'}>
-              {logo ? (
+              {logoSvg ? (
+                <span class="nav__brand-logo nav__brand-logo--svg" role="img" aria-label={brand} set:html={logoSvg} />
+              ) : logo ? (
                 <img
                   class="nav__brand-logo"
                   src={logo.src}
@@ -336,7 +375,6 @@ const themeVars = [
               ) : (
                 <span class="nav__brand-name">{brand}</span>
               )}
-              <span class="nav__brand-tag">{tagline}</span>
             </a>
 
             <button
@@ -410,6 +448,23 @@ const themeVars = [
           </div>
         </div>
         <p class="foot__legal">{footerLegal}</p>
+        {photographers.length > 0 && (
+          <p class="foot__credit">
+            Photography by{' '}
+            {photographers.map((c, i) => (
+              <>
+                {i > 0 && (i === photographers.length - 1 ? ' and ' : ', ')}
+                <a href={c.profile} target="_blank" rel="noopener noreferrer">{c.photographer}</a>
+              </>
+            ))}
+            {' '}on{' '}
+            <a
+              href="https://unsplash.com/?utm_source=linova_demos&utm_medium=referral"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Unsplash</a>.
+          </p>
+        )}
       </footer>
     </div>
 
@@ -619,6 +674,26 @@ const themeVars = [
           height: 38px;
         }
       }
+      /* The height goes on the svg, not the wrapper. A tightened SVG has only
+         a viewBox — no width/height attributes — so it has an aspect ratio but
+         no intrinsic size; sizing the wrapper and asking the svg for width:auto
+         makes each depend on the other and the box collapses to zero. */
+      .nav__brand-logo--svg {
+        display: block;
+        line-height: 0;
+        height: auto;
+      }
+      .nav__brand-logo--svg > svg {
+        display: block;
+        height: 34px;
+        width: auto;
+        max-width: min(240px, 46vw);
+      }
+      @media (min-width: 900px) {
+        .nav__brand-logo--svg > svg {
+          height: 38px;
+        }
+      }
       .nav__brand-name {
         font-family: var(--font-display);
         font-variation-settings: var(--display-axes, normal);
@@ -629,13 +704,6 @@ const themeVars = [
         letter-spacing: -0.01em;
         white-space: nowrap;
       }
-      .nav__brand-tag {
-        font-size: var(--fs-label);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--on-ink-dim);
-      }
-
       .nav__toggle {
         display: inline-flex;
         align-items: center;
@@ -706,15 +774,6 @@ const themeVars = [
       }
       .nav__cta:hover {
         background: color-mix(in srgb, var(--accent) 85%, white);
-      }
-
-      /* The tagline repeats what the hero says a moment later. Below 1024 it
-         is the thing that pushes the nav to two and three lines, so it comes
-         out of the sticky block rather than costing that much of the fold. */
-      @media (max-width: 1023px) {
-        .nav__brand-tag {
-          display: none;
-        }
       }
 
       /* Mobile: menu collapses behind the toggle */
@@ -950,11 +1009,28 @@ const themeVars = [
       .foot__legal {
         max-width: var(--wrap);
         margin: 0 auto;
-        padding: 1.25rem var(--gutter) 2.5rem;
+        padding: 1.25rem var(--gutter) 0.4rem;
         border-top: 1px solid var(--ink-line);
         font-size: var(--fs-label);
         letter-spacing: 0.04em;
         color: var(--on-ink-dim);
+      }
+      /* Attribution sits under the legal line and shares its register. The
+         bottom padding moved here so the pair reads as one block. */
+      .foot__credit {
+        max-width: var(--wrap);
+        margin: 0 auto;
+        padding: 0 var(--gutter) 2.5rem;
+        font-size: var(--fs-label);
+        letter-spacing: 0.04em;
+        color: var(--on-ink-dim);
+      }
+      .foot__credit a {
+        color: inherit;
+        text-underline-offset: 0.2em;
+      }
+      .foot__credit a:hover {
+        color: var(--on-ink);
       }
 
       @media (prefers-reduced-motion: reduce) {

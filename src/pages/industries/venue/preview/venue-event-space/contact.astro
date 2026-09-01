@@ -2,6 +2,7 @@
 // The Foundry demo — Contact and viewings. No enquiry form here: Check a Date
 // already takes an enquiry with the dates attached, and a second form on this
 // page would arrive with less information and the same amount of work.
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
 import DemoLayout from '../../../../../layouts/DemoLayout.astro';
 import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
 import { demoBreadcrumbs } from '../../../../../lib/demos/foundryJsonld';
@@ -62,13 +63,7 @@ const hourRows = viewingHours.map((day) => ({
       </div>
     </div>
 
-    <div class="map" role="img" aria-label={contactPage.mapLabel}>
-      <span class="map__label">{contactPage.mapLabel}</span>
-      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.25" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.25" />
-      </svg>
-    </div>
+    <DemoMap label={contactPage.mapLabel} seed="venue-event-space" />
   </section>
 
   <!-- ── Viewings ────────────────────────────────────────────────────── -->
@@ -193,31 +188,6 @@ const hourRows = viewingHours.map((day) => ({
     text-underline-offset: 5px;
   }
 
-  .map {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
-    text-align: center;
-    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
-    background: var(--ink-raised);
-    color: var(--accent);
-  }
-  .map__label {
-    font-size: var(--fs-label);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    max-width: 24ch;
-    line-height: 1.7;
-  }
-  .map__cross {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
 
   /* ── Viewing hours ────────────────────────────────────────────────── */
   .hours {
