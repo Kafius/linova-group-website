@@ -1,0 +1,759 @@
+---
+// Gravel Road Tacos — the whole site. One page, four anchors.
+//
+// ── NO SEO SETUP ─────────────────────────────────────────────────────────
+// This is the only demo in the catalogue that passes seo={false}. The head
+// drops to title, charset and viewport: no meta description, no canonical, no
+// Open Graph, no Twitter card, no JSON-LD. Nothing here imports a jsonld
+// module because there is not one to import.
+//
+// That is not an oversight, it is the line item. Open view-source on this page
+// and on Sumac Street — same tier, same vertical, plus SEO Setup — and the
+// difference between the two heads is what the SEO line buys.
+//
+// Analytics IS flagged, so every conversion action below still carries a
+// data-analytics-event attribute for the GA4 slot in DemoLayout to read.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/gravelRoadChrome';
+import {
+  business,
+  dietaryLegend,
+  formatPrice,
+  home,
+  menu,
+  pageMeta,
+  schedule,
+  statusLabels,
+  weekOf,
+} from '../../../../../data/demos/fnb-food-truck-lite';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.home;
+const stops = schedule.map((stop) => ({
+  ...stop,
+  hours: stop.from ? `${formatTime(stop.from)} – ${formatTime(stop.until)}` : null,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  seo={false}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap">
+      <p class="sticker sticker--tilt">{home.heroSticker}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <div class="hero__in">
+        <div>
+          <p class="hero__body">{home.heroBody}</p>
+          <div class="hero__ctas">
+            <a class="btn btn--fill" href="#where" data-analytics-event="schedule_view_hero">
+              {home.heroPrimaryCta}
+            </a>
+            <a class="btn btn--line" href="#menu" data-analytics-event="menu_view_hero">
+              {home.heroSecondaryCta}
+            </a>
+          </div>
+        </div>
+        <DemoImage
+          demo="fnb-food-truck-lite"
+          file={home.heroPhoto.file}
+          subject={home.heroPhoto.subject}
+          alt={home.heroPhoto.alt}
+          ratio="4 / 3"
+          sizes="(min-width: 900px) 46vw, 100vw"
+          widths={[600, 900, 1200]}
+          eager
+          class="hero__shot"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The schedule. The reason this site exists. ──────────────────── -->
+  <section class="bay where" id="where" aria-labelledby="where-h">
+    <div class="wrap">
+      <p class="sticker sticker--tilt-l">{home.whereSticker}</p>
+      <div class="where__head">
+        <div>
+          <h2 id="where-h" class="section-title">{home.whereHeading}</h2>
+          <p class="section-body">{home.whereBody}</p>
+        </div>
+        <p class="weekof">{weekOf}</p>
+      </div>
+
+      <ul class="stops">
+        {stops.map((stop) => (
+          <li class:list={['stop', !stop.hours && 'stop--closed']}>
+            <div class="stop__when">
+              <span class="stop__day">{stop.day}</span>
+              <span class="stop__date">{stop.date}</span>
+            </div>
+            <div class="stop__where">
+              <h3 class="stop__place">{stop.place}</h3>
+              <p class="stop__addr">
+                {stop.address}{stop.city && <span class="stop__city">{stop.city}</span>}
+              </p>
+              <p class="stop__note">{stop.note}</p>
+            </div>
+            <div class="stop__time">
+              {stop.hours ? (
+                <span class="stop__hours">{stop.hours}</span>
+              ) : (
+                <span class="stop__hours stop__hours--closed">{home.whereClosedLabel}</span>
+              )}
+              {stop.hours && <span class:list={['tag', `tag--${stop.status}`]}>{statusLabels[stop.status]}</span>}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="legend-row">
+        <div>
+          <h3 class="legend__h">{home.whereLegendHeading}</h3>
+          <ul class="legend">
+            {home.whereLegend.map((entry) => (
+              <li class="legend__item">
+                <span class:list={['tag', `tag--${entry.status}`]}>{statusLabels[entry.status]}</span>
+                <span class="legend__detail">{entry.detail}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_schedule">
+          {home.whereCallCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Menu, on the chilli band ────────────────────────────────────── -->
+  <section class="bay on-paper menu-bay" id="menu" aria-labelledby="menu-h">
+    <div class="wrap">
+      <p class="sticker sticker--paper sticker--tilt">{home.menuSticker}</p>
+      <h2 id="menu-h" class="section-title">{home.menuHeading}</h2>
+      <p class="section-body section-body--paper">{home.menuBody}</p>
+
+      <dl class="legend legend--paper" aria-label={home.menuLegendLabel}>
+        {dietaryLegend.map((entry) => (
+          <div class="legend__pair">
+            <dt class="marker">{entry.marker}</dt>
+            <dd>{entry.label}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <ul class="items">
+        {menu.map((item) => (
+          <li class="item">
+            {item.flag && <span class="item__flag">{item.flag}</span>}
+            <div class="item__line">
+              <h3 class="item__name">
+                {item.name}
+                {item.dietary?.length ? (
+                  <span class="item__markers">
+                    {item.dietary.map((marker) => (
+                      <abbr class="marker" title={dietaryLegend.find((e) => e.marker === marker)?.label}>
+                        {marker}
+                      </abbr>
+                    ))}
+                  </span>
+                ) : null}
+              </h3>
+              <span class="item__price">${formatPrice(item.price)}</span>
+            </div>
+            <p class="item__desc">{item.description}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="menu__note">{home.menuSoldOutNote}</p>
+    </div>
+  </section>
+
+  <!-- ── Catering. No form: booking and CRM are both false. ──────────── -->
+  <section class="bay catering" id="catering" aria-labelledby="cat-h">
+    <div class="wrap">
+      <p class="sticker sticker--tilt-l">{home.cateringSticker}</p>
+      <h2 id="cat-h" class="section-title">{home.cateringHeading}</h2>
+      <p class="section-body">{home.cateringBody}</p>
+
+      <div class="cat-grid">
+        <div class="card">
+          <h3 class="card__h">{home.cateringWhatHeading}</h3>
+          <ol class="four">
+            {home.cateringWhat.map((line) => <li class="four__item">{line}</li>)}
+          </ol>
+        </div>
+        <div class="card card--terms">
+          <dl class="terms">
+            {home.cateringTerms.map((term) => (
+              <div class="term">
+                <dt class="term__k">{term.label}</dt>
+                <dd class="term__v">{term.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+      <div class="cat-ctas">
+        <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_catering">
+          {home.cateringCallCta} — {business.phone}
+        </a>
+        <a class="btn btn--line" href={business.emailHref} data-analytics-event="email_tap_catering">
+          {home.cateringEmailCta}
+        </a>
+      </div>
+      <p class="cat-note">{home.cateringNoFormNote}</p>
+    </div>
+  </section>
+
+  <!-- ── Follow ──────────────────────────────────────────────────────── -->
+  <section class="bay follow" id="follow" aria-labelledby="follow-h">
+    <div class="wrap">
+      <p class="sticker sticker--tilt">{home.followSticker}</p>
+      <h2 id="follow-h" class="section-title">{home.followHeading}</h2>
+      <p class="section-body">{home.followBody}</p>
+      <ul class="socials">
+        {home.followLinks.map((link) => (
+          <li class="social">
+            <h3 class="social__name">{link.name}</h3>
+            <p class="social__handle">{link.handle}</p>
+            <p class="social__detail">{link.detail}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="follow__note">{home.followNote}</p>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  /* ── Shared furniture ─────────────────────────────────────────────── */
+  .section-title {
+    font-size: var(--fs-title);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1.1rem;
+    max-width: 50ch;
+    font-weight: 500;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+
+  /* The sticker: a hard black outline, a hard offset shadow, set on a tilt.
+     It is the one shape this demo repeats, and it is why the page reads as
+     hand-made rather than laid out. */
+  .sticker {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    padding: 0.45rem 0.9rem;
+    background: var(--accent);
+    color: var(--on-accent);
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: 4px 4px 0 var(--ink-line);
+    font-size: var(--fs-label);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .sticker--tilt {
+    transform: rotate(-2.5deg);
+  }
+  .sticker--tilt-l {
+    transform: rotate(2deg);
+  }
+  .sticker--paper {
+    background: var(--accent-paper);
+    color: var(--paper-line);
+    box-shadow: 4px 4px 0 var(--paper-line);
+    border-color: var(--paper-line);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sticker--tilt,
+    .sticker--tilt-l {
+      transform: none;
+    }
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  /* The headline spans the full wrap and the two columns sit under it. Boxed
+     into a half-width column, Alfa Slab One at the display clamp broke into
+     six lines of eight characters and its descenders landed on the caps
+     below — the face is wide and deep, and it needs the whole measure. */
+  .hero__in {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    max-width: 22ch;
+  }
+  .hero__body {
+    margin-top: 0;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.25rem);
+    font-weight: 500;
+    max-width: 42ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .hero__in :global(.hero__shot) {
+    border: 3px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: 8px 8px 0 var(--ink-line);
+  }
+
+  /* ── Schedule ─────────────────────────────────────────────────────── */
+  .where {
+    background: var(--ink-raised);
+    border-top: 3px solid var(--ink-line);
+    border-bottom: 3px solid var(--ink-line);
+  }
+  .where__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+  }
+  .weekof {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.5rem);
+    padding: 0.4rem 0.9rem;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    white-space: nowrap;
+  }
+
+  .stops {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .stop {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.25rem;
+    background: var(--ink);
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: 5px 5px 0 var(--ink-line);
+  }
+  @media (min-width: 800px) {
+    .stop {
+      grid-template-columns: 8rem 1fr auto;
+      gap: 1.75rem;
+      align-items: start;
+    }
+  }
+  .stop--closed {
+    box-shadow: none;
+    background: transparent;
+    border-style: dashed;
+  }
+  .stop__when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  @media (min-width: 800px) {
+    .stop__when {
+      display: grid;
+      gap: 0.2rem;
+    }
+  }
+  .stop__day {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .stop__date {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .stop__place {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1.15;
+  }
+  .stop__addr {
+    margin-top: 0.35rem;
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+  .stop__city::before {
+    content: ' · ';
+  }
+  .stop__note {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 48ch;
+  }
+  .stop__time {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  @media (min-width: 800px) {
+    .stop__time {
+      display: grid;
+      justify-items: end;
+      gap: 0.5rem;
+      text-align: right;
+    }
+  }
+  .stop__hours {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+  .stop__hours--closed {
+    color: var(--on-ink-dim);
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .tag--confirmed {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .tag--festival {
+    background: var(--paper);
+    color: var(--on-paper);
+  }
+  .tag--weather {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  .legend-row {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .legend__h {
+    font-size: var(--fs-label);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .legend {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .legend__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .legend__detail {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Menu ─────────────────────────────────────────────────────────── */
+  .menu-bay {
+    border-bottom: 3px solid var(--ink-line);
+  }
+  .legend--paper {
+    margin: 2rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+  .legend__pair {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .legend__pair dd {
+    margin: 0;
+  }
+  .marker {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    padding: 0.3em 0.45em;
+    border: 2px solid var(--accent-paper);
+    border-radius: var(--radius);
+    color: var(--accent-paper);
+    text-decoration: none;
+    vertical-align: 0.12em;
+  }
+  .items {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 760px) {
+    .items {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem 3rem;
+    }
+  }
+  .item {
+    position: relative;
+  }
+  .item__flag {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    background: var(--accent-paper);
+    color: var(--paper-line);
+    border: 2px solid var(--paper-line);
+    border-radius: var(--radius);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .item__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 2px dotted var(--accent-paper);
+    padding-bottom: 0.35rem;
+  }
+  .item__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+  .item__markers {
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-left: 0.45rem;
+  }
+  .item__price {
+    flex: none;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--accent-paper);
+  }
+  .item__desc {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+    max-width: 44ch;
+  }
+  .menu__note {
+    margin-top: 2.25rem;
+    max-width: 54ch;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--on-paper);
+  }
+
+  /* ── Catering ─────────────────────────────────────────────────────── */
+  .cat-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 820px) {
+    .cat-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      align-items: start;
+    }
+  }
+  .card {
+    padding: 1.5rem;
+    background: var(--ink-raised);
+    border: 3px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: 6px 6px 0 var(--ink-line);
+  }
+  .card--terms {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .card__h {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.15;
+  }
+  .four {
+    list-style: none;
+    counter-reset: four;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .four__item {
+    counter-increment: four;
+    position: relative;
+    padding-left: 2.25rem;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .four__item::before {
+    content: counter(four);
+    position: absolute;
+    left: 0;
+    top: -0.1em;
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--on-accent);
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+  }
+  .terms {
+    margin: 0;
+    display: grid;
+    gap: 0;
+  }
+  .term {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 2px solid color-mix(in srgb, var(--on-accent) 30%, transparent);
+  }
+  .term:last-child {
+    border-bottom: 0;
+  }
+  .term__k {
+    font-size: var(--fs-label);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .term__v {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+  }
+  .cat-ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .cat-note {
+    margin-top: 1.5rem;
+    max-width: 54ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Follow ───────────────────────────────────────────────────────── */
+  .follow {
+    background: var(--ink-raised);
+    border-top: 3px solid var(--ink-line);
+  }
+  .socials {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 820px) {
+    .socials {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .social {
+    padding: 1.4rem;
+    background: var(--ink);
+    border: 3px solid var(--ink-line);
+    border-radius: var(--radius);
+    box-shadow: 6px 6px 0 var(--ink-line);
+  }
+  .social__name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.15;
+  }
+  .social__handle {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .social__detail {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+  .follow__note {
+    margin-top: 1.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+</style>

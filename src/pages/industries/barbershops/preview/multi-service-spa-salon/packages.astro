@@ -1,0 +1,222 @@
+---
+// Stillwater demo — packages. Named bundles with the time the day actually
+// takes, which is not always the services added up: the couples' room runs two
+// treatments in parallel.
+//
+// CMS-DRIVEN: renders the `servicePackage` collection modelled in the .cms.ts
+// stub, resolving its `includes` references against the service menu.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/stillwaterChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/stillwaterJsonld';
+import {
+  business,
+  findService,
+  packages,
+  packagesPage,
+  pageMeta,
+} from '../../../../../data/demos/multi-service-spa-salon';
+
+const meta = pageMeta.packages;
+const rows = packages.map((pkg) => ({
+  ...pkg,
+  services: pkg.includes
+    .map((id) => findService(id))
+    .filter((s): s is NonNullable<typeof s> => s !== undefined),
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.packages}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.packages },
+    ]),
+  ]}
+>
+  <header class="bay pkg-head">
+    <div class="wrap">
+      <p class="eyebrow">{packagesPage.eyebrow}</p>
+      <h1 class="pkg-title">{packagesPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede pkg-lede">{packagesPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={packagesPage.heading}>
+    <div class="wrap">
+      <ul class="pkgs">
+        {rows.map((pkg) => (
+          <li class="pkg">
+            <div class="pkg__main">
+              <h2 class="pkg__name">{pkg.name}</h2>
+              <p class="pkg__desc">{pkg.description}</p>
+
+              <h3 class="pkg__label">{packagesPage.includesLabel}</h3>
+              <ul class="pkg__list">
+                {pkg.services.map((service) => (
+                  <li>
+                    <span class="pkg__service">{service.name}</span>
+                    <span class="pkg__mins">{service.minutes} {packagesPage.minutesLabel}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {pkg.note && <p class="pkg__note">{pkg.note}</p>}
+            </div>
+
+            <div class="pkg__side">
+              <p class="pkg__allow">
+                <span class="pkg__allow-label">{packagesPage.durationLabel}</span>
+                {pkg.minutes} {packagesPage.minutesLabel}
+              </p>
+              <p class="pkg__price">${pkg.price}</p>
+              {pkg.saves !== null && (
+                <p class="pkg__saves">{packagesPage.savesLabel} ${pkg.saves}</p>
+              )}
+              <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_package">
+                {packagesPage.bookCta}
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .pkg-head {
+    padding-bottom: 0;
+  }
+  .pkg-title {
+    font-size: var(--fs-display);
+    letter-spacing: 0.01em;
+    max-width: 16ch;
+  }
+  .pkg-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+
+  .pkgs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .pkg {
+    display: grid;
+    gap: 2rem;
+    padding: clamp(2rem, 4vw, 3rem) 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .pkg:first-child {
+    border-top: 1px solid var(--accent);
+  }
+  @media (min-width: 860px) {
+    .pkg {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+  .pkg__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .pkg__desc {
+    margin-top: 0.75rem;
+    max-width: 52ch;
+    line-height: 1.75;
+    color: var(--on-ink-dim);
+  }
+  .pkg__label {
+    margin-top: 1.75rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pkg__list {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    max-width: 30rem;
+  }
+  .pkg__list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .pkg__mins {
+    color: var(--on-ink-dim);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .pkg__note {
+    margin-top: 1.5rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--accent);
+    max-width: 48ch;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-ink-dim);
+  }
+
+  .pkg__side {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+    align-content: start;
+    padding-top: 0.5rem;
+  }
+  @media (min-width: 860px) {
+    .pkg__side {
+      justify-items: end;
+      text-align: right;
+    }
+  }
+  .pkg__allow {
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .pkg__allow-label {
+    display: block;
+    color: var(--accent);
+  }
+  .pkg__price {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 1.8rem + 1.8vw, 3.2rem);
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .pkg__saves {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .pkg__side .btn {
+    margin-top: 1rem;
+  }
+</style>

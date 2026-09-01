@@ -1,0 +1,27 @@
+---
+// Stillwater demo — the Nails & Esthetics room. Its own file so it can be edited on its
+// own; the shared body lives in StillwaterCategory.astro.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import StillwaterCategory from '../../../../../components/demos/StillwaterCategory.astro';
+import { chrome, routes } from '../../../../../lib/demos/stillwaterChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/stillwaterJsonld';
+import { business, pageMeta } from '../../../../../data/demos/multi-service-spa-salon';
+
+const meta = pageMeta.nails;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.nails}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.nails },
+    ]),
+  ]}
+>
+  <StillwaterCategory category="nails" bookHref={routes.book} teamHref={routes.team} />
+</DemoLayout>

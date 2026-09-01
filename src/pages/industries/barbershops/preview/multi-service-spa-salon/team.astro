@@ -1,0 +1,150 @@
+---
+// Stillwater demo — the team. Eight practitioners with the rooms they take
+// bookings in, which is the same field the booking flow filters on.
+//
+// CMS-DRIVEN: renders the `practitioner` collection from the .cms.ts stub.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/stillwaterChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/stillwaterJsonld';
+import {
+  business,
+  findCategory,
+  pageMeta,
+  practitioners,
+  teamPage,
+} from '../../../../../data/demos/multi-service-spa-salon';
+
+const meta = pageMeta.team;
+const people = practitioners.map((person) => ({
+  ...person,
+  rooms: person.categories
+    .map((id) => findCategory(id)?.name)
+    .filter((name): name is string => Boolean(name)),
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.team}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.team },
+    ]),
+  ]}
+>
+  <header class="bay team-head">
+    <div class="wrap">
+      <p class="eyebrow">{teamPage.eyebrow}</p>
+      <h1 class="team-title">{teamPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede team-lede">{teamPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={teamPage.heading}>
+    <div class="wrap">
+      <ul class="people">
+        {people.map((person) => (
+          <li class="person">
+            <DemoImage
+              demo="multi-service-spa-salon"
+              file={person.photo.file}
+              subject={person.photo.subject}
+              alt={person.photo.alt}
+              ratio="4 / 5"
+              sizes="(min-width: 900px) 24vw, 45vw"
+              widths={[300, 460, 620]}
+              class="person__shot"
+            />
+            <h2 class="person__name">{person.name}</h2>
+            <p class="person__role">{person.role}</p>
+            <p class="person__bio">{person.bio}</p>
+            <p class="person__rooms">
+              <span class="person__rooms-label">{teamPage.takesLabel}</span>
+              {person.rooms.join(' · ')}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <a class="btn btn--fill team__cta" href={routes.book} data-analytics-event="booking_cta_team">
+        {teamPage.bookWith} {business.shortName}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .team-head {
+    padding-bottom: 0;
+  }
+  .team-title {
+    font-size: var(--fs-display);
+    letter-spacing: 0.01em;
+    max-width: 14ch;
+  }
+  .team-lede {
+    margin-top: 1.5rem;
+    max-width: 50ch;
+  }
+
+  .people {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 900px) {
+    .people {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem 2rem;
+    }
+  }
+  .person :global(.person__shot) {
+    border-radius: var(--radius);
+  }
+  .person__name {
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.6rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .person__role {
+    margin-top: 0.3rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .person__bio {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-ink-dim);
+  }
+  .person__rooms {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .person__rooms-label {
+    display: block;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    margin-bottom: 0.3rem;
+  }
+  .team__cta {
+    margin-top: 3rem;
+  }
+</style>

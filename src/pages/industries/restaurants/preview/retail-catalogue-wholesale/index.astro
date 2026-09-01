@@ -1,0 +1,405 @@
+---
+// Vernon Street demo — home.
+//
+// The fork is the page. Two cards, two readers, two destinations, and after
+// the fork nothing on this site is written for both of them at once. The
+// retail card carries shelf prices and counter hours; the wholesale card
+// carries an order deadline, payment terms and a minimum. Neither mentions
+// the other's numbers.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/vernonChrome';
+import { bakery } from '../../../../../lib/demos/vernonJsonld';
+import {
+  aboutPage,
+  cakes,
+  home,
+  pageMeta,
+  shelfCategories,
+} from '../../../../../data/demos/retail-catalogue-wholesale';
+
+const meta = pageMeta.home;
+const forkRoutes: Record<string, string> = { shop: routes.shop, wholesale: routes.wholesale };
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[bakery(routes.home, routes.shop, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap">
+      <p class="eyebrow">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <p class="lede hero__body">{home.heroBody}</p>
+    </div>
+  </section>
+
+  <!-- ── The fork ────────────────────────────────────────────────────── -->
+  <section class="bay fork-bay" aria-labelledby="fork-h">
+    <div class="wrap">
+      <h2 id="fork-h" class="rule-h">{home.forkHeading}</h2>
+      <ul class="fork">
+        {home.fork.map((path) => (
+          <li class:list={['path', `path--${path.id}`]}>
+            <p class="path__kicker">{path.kicker}</p>
+            <h3 class="path__title">{path.title}</h3>
+            <p class="path__body">{path.body}</p>
+            <ul class="path__points">
+              {path.points.map((point) => <li class="path__point">{point}</li>)}
+            </ul>
+            <a
+              class:list={['btn', path.id === 'retail' ? 'btn--fill' : 'btn--line']}
+              href={forkRoutes[path.href]}
+              data-analytics-event={`${path.id}_path_home`}
+            >
+              {path.cta}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── What is in the oven ─────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="bake-h">
+    <div class="wrap bake">
+      <div>
+        <h2 id="bake-h" class="section-title">{home.bakeHeading}</h2>
+        <p class="section-body">{home.bakeBody}</p>
+        <ul class="shelves">
+          {shelfCategories.map((category) => (
+            <li class="shelf">
+              <h3 class="shelf__name">{category.name}</h3>
+              <p class="shelf__blurb">{category.blurb}</p>
+            </li>
+          ))}
+        </ul>
+        <a class="btn btn--line" href={routes.shop} data-analytics-event="shop_view_home">
+          {home.bakeCta}
+        </a>
+      </div>
+      <DemoImage
+        demo="retail-catalogue-wholesale"
+        file="bench"
+        subject="Baker's bench with proofed sourdough loaves in bannetons and a dusting of flour, morning light through a shopfront window"
+        alt="Proofed loaves on the bench at Vernon Street Bakehouse"
+        ratio="3 / 4"
+        sizes="(min-width: 940px) 36vw, 100vw"
+        widths={[440, 660, 880]}
+        eager
+        class="bake__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Cakes, on the ink-blue band ─────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="cakes-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="cakes-h" class="section-title">{home.cakesHeading}</h2>
+          <p class="section-body section-body--paper">{home.cakesBody}</p>
+        </div>
+        <a class="btn btn--line" href={routes.cakes} data-analytics-event="cakes_view_home">
+          {home.cakesCta}
+        </a>
+      </div>
+      <ul class="cakes">
+        {cakes.map((cake) => (
+          <li class="cake">
+            <h3 class="cake__name">{cake.name}</h3>
+            <p class="cake__season">{cake.season}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── About ───────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap about">
+      <div>
+        <h2 class="section-title">{home.aboutHeading}</h2>
+        <p class="section-body">{home.aboutBody}</p>
+        <a class="btn btn--line" href={routes.about} data-analytics-event="about_view_home">
+          {home.aboutCta}
+        </a>
+      </div>
+      <dl class="facts">
+        {aboutPage.facts.map((fact) => (
+          <div class="fact">
+            <dt class="fact__value">{fact.value}</dt>
+            <dd class="fact__label">{fact.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+  /* A heading with a rule running off it to the right — the letterpress
+     device this demo repeats instead of a card shadow. */
+  .rule-h {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rule-h::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-line);
+  }
+
+  .hero {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .hero__title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+    max-width: 15ch;
+  }
+  .hero__body {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+
+  /* ── The fork ─────────────────────────────────────────────────────── */
+  .fork-bay {
+    padding-top: 0;
+  }
+  .fork {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 860px) {
+    .fork {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+  .path {
+    display: grid;
+    align-content: start;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--ink-line);
+  }
+  .path--retail {
+    background: var(--ink-raised);
+  }
+  .path--wholesale {
+    background: var(--ink);
+    border-color: var(--accent);
+  }
+  .path__kicker {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .path__title {
+    margin-top: 0.9rem;
+    font-size: clamp(1.7rem, 1.4rem + 1.3vw, 2.3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .path__body {
+    margin-top: 1rem;
+    color: var(--on-ink-dim);
+    max-width: 42ch;
+  }
+  .path__points {
+    list-style: none;
+    margin: 1.5rem 0 2rem;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+    padding-block: 1.1rem;
+  }
+  .path__point {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+  }
+  .path__point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.8rem;
+    height: 1px;
+    background: var(--accent);
+  }
+  .path .btn {
+    justify-self: start;
+  }
+
+  /* ── The bake ─────────────────────────────────────────────────────── */
+  .bake {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 940px) {
+    .bake {
+      grid-template-columns: 1fr 0.62fr;
+      gap: 3.5rem;
+    }
+  }
+  .bake :global(.bake__shot) {
+    border: 1px solid var(--ink-line);
+  }
+  .shelves {
+    list-style: none;
+    margin: 2rem 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .shelf {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 620px) {
+    .shelf {
+      grid-template-columns: 14rem 1fr;
+      gap: 1.5rem;
+      align-items: baseline;
+    }
+  }
+  .shelf__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .shelf__blurb {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+    max-width: 50ch;
+  }
+
+  /* ── Cakes ────────────────────────────────────────────────────────── */
+  .cakes {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--paper-line);
+    border: 1px solid var(--paper-line);
+  }
+  @media (min-width: 700px) {
+    .cakes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .cakes {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .cake {
+    padding: 1.5rem 1.4rem;
+    background: var(--paper);
+  }
+  .cake__name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .cake__season {
+    margin-top: 0.7rem;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+  }
+
+  /* ── About ────────────────────────────────────────────────────────── */
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .about {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .about {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+  }
+  .about .btn {
+    margin-top: 1.75rem;
+  }
+  .facts {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem 1.5rem;
+  }
+  .fact__value {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.6rem + 1.9vw, 2.8rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .fact__label {
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+</style>

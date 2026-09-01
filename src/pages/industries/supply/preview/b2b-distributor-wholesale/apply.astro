@@ -1,0 +1,686 @@
+---
+// Grandview demo — Become a Customer. This page is the CRM line item, and it
+// is the second CRM build in the catalogue after Northline.
+//
+// ── CRM HANDOFF ──────────────────────────────────────────────────────────
+// This is heavier than an enquiry: a business number, two trade references
+// and a volume band make it a credit application. On a live build the submit
+// handler POSTs it to the client's CRM, which is where the difference between
+// this playbook and a contact form actually shows up — the application has to
+// be owned, chased through a three-to-five day credit check, and still be
+// findable in eighteen months when the account goes on stop:
+//
+//   await fetch(CRM_ENDPOINT, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({
+//       source: 'website/become-a-customer',
+//       stage: 'credit-application',
+//       business: { operatingName, legalName, businessNumber, category, volume },
+//       delivery: { address, city, accessNotes },
+//       references: [{ name: ref1Name, phone: ref1Phone },
+//                    { name: ref2Name, phone: ref2Phone }],
+//       contact: { name, role, email, phone, notes },
+//     }),
+//   });
+//
+// CRM_ENDPOINT is an environment variable, never a literal in the bundle.
+// Nothing on this preview posts anywhere: it is a sample site.
+//
+// The business number and the reference phone numbers are exactly the fields
+// that must not sit in an inbox, which is the argument for the line item.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/grandviewChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/grandviewJsonld';
+import {
+  applyPage,
+  business,
+  deliveryAreas,
+  pageMeta,
+} from '../../../../../data/demos/b2b-distributor-wholesale';
+
+const meta = pageMeta.apply;
+const f = applyPage.fields;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.apply}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.apply },
+    ]),
+  ]}
+>
+  <header class="bay ap-head">
+    <div class="wrap">
+      <p class="kicker">{applyPage.eyebrow}</p>
+      <h1 class="ap-title">{applyPage.heading}</h1>
+      <p class="lede ap-lede">{applyPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay ap-bay">
+    <div class="wrap ap-grid">
+      <div>
+        <form class="form" id="apply-form" novalidate>
+          <p class="required-note">{applyPage.requiredNote}</p>
+
+          <div class="errors" id="error-summary" role="alert" tabindex="-1" hidden>
+            <h2 class="errors__h">{applyPage.errorSummaryHeading}</h2>
+            <ul class="errors__list" id="error-list"></ul>
+          </div>
+
+          <!-- ── The business ───────────────────────────────────────── -->
+          <fieldset class="block">
+            <legend class="block__h">{applyPage.sections.businessHeading}</legend>
+            <div class="fields">
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="business-name">
+                    {f.businessName.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control" type="text" id="business-name" name="businessName"
+                    autocomplete="organization" data-required data-error={f.businessName.error} />
+                  <span class="field__error" id="business-name-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="legal-name">
+                    {f.legalName.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <span class="field__hint" id="legal-name-hint">{f.legalName.hint}</span>
+                  <input class="control" type="text" id="legal-name" name="legalName"
+                    aria-describedby="legal-name-hint" data-required data-error={f.legalName.error} />
+                  <span class="field__error" id="legal-name-error"></span>
+                </p>
+              </div>
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="business-number">
+                    {f.businessNumber.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <span class="field__hint" id="business-number-hint">{f.businessNumber.hint}</span>
+                  <input class="control control--mono" type="text" id="business-number" name="businessNumber"
+                    inputmode="numeric" aria-describedby="business-number-hint"
+                    data-required data-error={f.businessNumber.error} />
+                  <span class="field__error" id="business-number-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="category">
+                    {f.category.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <select class="control" id="category" name="category" data-required data-error={f.category.error}>
+                    <option value=""></option>
+                    {f.category.options.map((option) => <option value={option}>{option}</option>)}
+                  </select>
+                  <span class="field__error" id="category-error"></span>
+                </p>
+              </div>
+              <p class="field">
+                <label class="field__label" for="volume">
+                  {f.volume.label}<span class="req" aria-hidden="true">*</span>
+                </label>
+                <span class="field__hint" id="volume-hint">{f.volume.hint}</span>
+                <select class="control" id="volume" name="volume" aria-describedby="volume-hint"
+                  data-required data-error={f.volume.error}>
+                  <option value=""></option>
+                  {f.volume.options.map((option) => <option value={option}>{option}</option>)}
+                </select>
+                <span class="field__error" id="volume-error"></span>
+              </p>
+            </div>
+          </fieldset>
+
+          <!-- ── Delivery ───────────────────────────────────────────── -->
+          <fieldset class="block">
+            <legend class="block__h">{applyPage.sections.deliveryHeading}</legend>
+            <div class="fields">
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="delivery-address">
+                    {f.deliveryAddress.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control" type="text" id="delivery-address" name="deliveryAddress"
+                    autocomplete="street-address" data-required data-error={f.deliveryAddress.error} />
+                  <span class="field__error" id="delivery-address-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="delivery-city">
+                    {f.deliveryCity.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <span class="field__hint" id="delivery-city-hint">{f.deliveryCity.hint}</span>
+                  <select class="control" id="delivery-city" name="deliveryCity"
+                    aria-describedby="delivery-city-hint" data-required data-error={f.deliveryCity.error}>
+                    <option value=""></option>
+                    {deliveryAreas.map((area) => <option value={area}>{area}</option>)}
+                  </select>
+                  <span class="field__error" id="delivery-city-error"></span>
+                </p>
+              </div>
+              <p class="field">
+                <label class="field__label" for="access-notes">{f.accessNotes.label}</label>
+                <span class="field__hint" id="access-notes-hint">{f.accessNotes.hint}</span>
+                <textarea class="control control--area" id="access-notes" name="accessNotes" rows="3"
+                  aria-describedby="access-notes-hint"></textarea>
+              </p>
+            </div>
+          </fieldset>
+
+          <!-- ── References ─────────────────────────────────────────── -->
+          <fieldset class="block">
+            <legend class="block__h">{applyPage.sections.referencesHeading}</legend>
+            <p class="block__note">{applyPage.sections.referencesNote}</p>
+            <div class="fields">
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="ref1-name">
+                    {f.ref1Name.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control" type="text" id="ref1-name" name="ref1Name"
+                    data-required data-error={f.ref1Name.error} />
+                  <span class="field__error" id="ref1-name-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="ref1-phone">
+                    {f.ref1Phone.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control control--mono" type="tel" id="ref1-phone" name="ref1Phone"
+                    data-required data-error={f.ref1Phone.error} />
+                  <span class="field__error" id="ref1-phone-error"></span>
+                </p>
+              </div>
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="ref2-name">
+                    {f.ref2Name.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control" type="text" id="ref2-name" name="ref2Name"
+                    data-required data-error={f.ref2Name.error} />
+                  <span class="field__error" id="ref2-name-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="ref2-phone">
+                    {f.ref2Phone.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control control--mono" type="tel" id="ref2-phone" name="ref2Phone"
+                    data-required data-error={f.ref2Phone.error} />
+                  <span class="field__error" id="ref2-phone-error"></span>
+                </p>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── Contact ────────────────────────────────────────────── -->
+          <fieldset class="block">
+            <legend class="block__h">{applyPage.sections.contactHeading}</legend>
+            <div class="fields">
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="contact-name">
+                    {f.contactName.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control" type="text" id="contact-name" name="contactName"
+                    autocomplete="name" data-required data-error={f.contactName.error} />
+                  <span class="field__error" id="contact-name-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="contact-role">
+                    {f.contactRole.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <span class="field__hint" id="contact-role-hint">{f.contactRole.hint}</span>
+                  <input class="control" type="text" id="contact-role" name="contactRole"
+                    aria-describedby="contact-role-hint" data-required data-error={f.contactRole.error} />
+                  <span class="field__error" id="contact-role-error"></span>
+                </p>
+              </div>
+              <div class="split">
+                <p class="field">
+                  <label class="field__label" for="email">
+                    {f.email.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control" type="email" id="email" name="email"
+                    autocomplete="email" data-required data-error={f.email.error} />
+                  <span class="field__error" id="email-error"></span>
+                </p>
+                <p class="field">
+                  <label class="field__label" for="phone">
+                    {f.phone.label}<span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input class="control control--mono" type="tel" id="phone" name="phone"
+                    autocomplete="tel" data-required data-error={f.phone.error} />
+                  <span class="field__error" id="phone-error"></span>
+                </p>
+              </div>
+              <p class="field">
+                <label class="field__label" for="notes">{f.notes.label}</label>
+                <span class="field__hint" id="notes-hint">{f.notes.hint}</span>
+                <textarea class="control control--area" id="notes" name="notes" rows="3"
+                  aria-describedby="notes-hint"></textarea>
+              </p>
+            </div>
+          </fieldset>
+
+          <button class="btn btn--fill submit" type="submit" data-analytics-event="apply_submit">
+            {applyPage.submitLabel}
+          </button>
+        </form>
+
+        <div class="done" id="apply-done" role="status" tabindex="-1" hidden>
+          <h2 class="done__h">{applyPage.confirmation.heading}</h2>
+          <p class="done__b">{applyPage.confirmation.body}</p>
+          <h3 class="done__sub">{applyPage.confirmation.detailsHeading}</h3>
+          <dl class="summary" id="apply-summary"></dl>
+          <p class="done__note">{applyPage.confirmation.note}</p>
+          <div class="done__actions">
+            <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_apply">
+              {applyPage.confirmation.callLabel} — {business.phone}
+            </a>
+            <button class="btn btn--line" type="button" id="apply-reset">
+              {applyPage.confirmation.resetLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side" aria-label={applyPage.sidebarHeading}>
+        <h2 class="side__h">{applyPage.sidebarHeading}</h2>
+        <ol class="timeline">
+          {applyPage.sidebarSteps.map((step) => (
+            <li class="tl">
+              <span class="tl__when">{step.when}</span>
+              <span class="tl__what">{step.what}</span>
+            </li>
+          ))}
+        </ol>
+      </aside>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // Validation only — no network. The CRM POST goes where the comment at the
+  // top of this file says it goes.
+  const form = document.getElementById('apply-form') as HTMLFormElement | null;
+  const done = document.getElementById('apply-done');
+  const summary = document.getElementById('apply-summary');
+  const errorBox = document.getElementById('error-summary');
+  const errorList = document.getElementById('error-list');
+  const resetButton = document.getElementById('apply-reset');
+
+  if (form && done && summary && errorBox && errorList && resetButton) {
+    type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    const required = [...form.querySelectorAll<Control>('[data-required]')];
+
+    const emailLooksReal = (v: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    const labelText = (control: Control): string =>
+      (form.querySelector(`label[for="${control.id}"]`)?.textContent || control.name).replace(/\*$/, '').trim();
+    const slotFor = (control: Control) => document.getElementById(`${control.id}-error`);
+
+    const clearError = (control: Control): void => {
+      control.removeAttribute('aria-invalid');
+      const slot = slotFor(control);
+      if (slot) slot.textContent = '';
+    };
+
+    required.forEach((control) => {
+      control.addEventListener('change', () => {
+        if (control.value.trim()) clearError(control);
+      });
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const failed: Control[] = [];
+      required.forEach((control) => {
+        clearError(control);
+        const value = control.value.trim();
+        const badEmail = control.getAttribute('type') === 'email' && !emailLooksReal(value);
+        if (!value || badEmail) {
+          control.setAttribute('aria-invalid', 'true');
+          const slot = slotFor(control);
+          if (slot) slot.textContent = control.dataset.error || '';
+          failed.push(control);
+        }
+      });
+
+      if (failed.length) {
+        errorList.innerHTML = '';
+        failed.forEach((control) => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `#${control.id}`;
+          link.textContent = `${labelText(control)} — ${control.dataset.error || ''}`;
+          link.addEventListener('click', (clickEvent) => {
+            clickEvent.preventDefault();
+            control.focus();
+          });
+          item.appendChild(link);
+          errorList.appendChild(item);
+        });
+        errorBox.hidden = false;
+        errorBox.focus();
+        return;
+      }
+
+      errorBox.hidden = true;
+      const data = new FormData(form);
+      summary.innerHTML = '';
+      form.querySelectorAll<Control>('[name]').forEach((control) => {
+        const value = String(data.get(control.name) || '').trim();
+        if (!value) return;
+        const row = document.createElement('div');
+        row.className = 'summary__row';
+        const key = document.createElement('dt');
+        key.className = 'summary__k';
+        key.textContent = labelText(control);
+        const val = document.createElement('dd');
+        val.className = 'summary__v';
+        val.textContent = value;
+        row.append(key, val);
+        summary.appendChild(row);
+      });
+
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+      done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      required.forEach(clearError);
+      done.hidden = true;
+      form.hidden = false;
+      errorBox.hidden = true;
+      form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ap-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ap-title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+    max-width: 18ch;
+  }
+  .ap-lede {
+    margin-top: 1.35rem;
+    max-width: 54ch;
+  }
+  .ap-bay {
+    padding-top: 0;
+  }
+  .ap-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1000px) {
+    .ap-grid {
+      grid-template-columns: 1fr 18rem;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .required-note {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .block {
+    border: 0;
+    padding: 0;
+    margin: 2rem 0 0;
+    min-width: 0;
+  }
+  .block__h {
+    padding: 0;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--ink-line);
+    padding-bottom: 0.6rem;
+  }
+  .block__note {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 54ch;
+  }
+  .fields {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .split {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 660px) {
+    .split {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+  }
+  .field__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .req {
+    color: var(--accent);
+    margin-left: 0.2rem;
+  }
+  .field__hint {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+  }
+  .control {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .control--mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .control--area {
+    resize: vertical;
+    min-height: 4.5rem;
+  }
+  .control:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .control[aria-invalid='true'] {
+    border-color: var(--accent);
+    border-left-width: 3px;
+  }
+  /* The error line is reserved whether or not it holds an error, so clearing
+     one on blur cannot move the submit button out from under a cursor. */
+  .field__error {
+    display: block;
+    min-height: 1.25em;
+    font-size: 0.76rem;
+    line-height: 1.25;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .errors {
+    margin-top: 1.5rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    background: var(--ink-raised);
+  }
+  .errors:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .errors__h {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .errors__list {
+    margin: 0.7rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--fs-small);
+  }
+  .submit {
+    margin-top: 2rem;
+  }
+
+  .done {
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    background: var(--ink-raised);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .done:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .done__h {
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .done__b {
+    margin-top: 0.9rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .done__sub {
+    margin-top: 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .summary {
+    margin: 0.9rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary :global(.summary__row) {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 560px) {
+    .summary :global(.summary__row) {
+      grid-template-columns: 13rem 1fr;
+    }
+  }
+  .summary :global(.summary__k) {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .summary :global(.summary__v) {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .done__note {
+    margin-top: 1.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 54ch;
+  }
+  .done__actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .side {
+    border: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+    padding: 1.5rem 1.4rem;
+    align-self: start;
+  }
+  .side__h {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .timeline {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .tl {
+    display: grid;
+    gap: 0.3rem;
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--accent);
+  }
+  .tl__when {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tl__what {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+</style>

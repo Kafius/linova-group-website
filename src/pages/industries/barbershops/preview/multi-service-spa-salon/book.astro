@@ -1,0 +1,790 @@
+---
+// Stillwater demo — booking. Six steps: room, service, practitioner, day,
+// time, details. The practitioner list narrows to whoever works in the room
+// you picked, which is the thing a multi-service salon actually needs.
+//
+// NO LIVE CALENDAR and NO PAYMENT. Slots render from `slots` with the taken
+// ones stated, because a sample site has no calendar to read. Nothing is
+// submitted anywhere. On a live build the confirm handler is the calendar
+// handoff — see the note in the script. Deposits and the final bill go through
+// the Clover terminal at the desk, which is why there are no card fields.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/stillwaterChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/stillwaterJsonld';
+import {
+  bookPage,
+  business,
+  categories,
+  pageMeta,
+  practitioners,
+  services,
+  slots,
+} from '../../../../../data/demos/multi-service-spa-salon';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.book;
+const stepCount = bookPage.steps.length;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.book}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.book },
+    ]),
+  ]}
+>
+  <header class="bay book-head">
+    <div class="wrap">
+      <p class="eyebrow">{bookPage.eyebrow}</p>
+      <h1 class="book-title">{bookPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede book-lede">{bookPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay book-bay">
+    <div class="wrap book-grid">
+      <div class="booker" data-booker>
+        <p class="progress" aria-live="polite">
+          {bookPage.stepLabel} <span data-step-now>{1}</span> {bookPage.ofLabel} {stepCount}
+        </p>
+        <ol class="ticks" aria-hidden="true">
+          {bookPage.steps.map((step, i) => (
+            <li class="tick" data-tick={i} data-on={i === 0 ? 'true' : 'false'}></li>
+          ))}
+        </ol>
+
+        <form class="book-form" data-book-form novalidate>
+          <!-- ── 1: room ──────────────────────────────────────────── -->
+          <fieldset class="step" data-step="0">
+            <legend class="step__legend">{bookPage.steps[0]?.title}</legend>
+            <p class="step__hint">{bookPage.steps[0]?.hint}</p>
+            <div class="choices choices--three">
+              {categories.map((category) => (
+                <label class="choice">
+                  <input class="choice__input" type="radio" name="category"
+                    value={category.id} data-label={category.name} />
+                  <span class="choice__body">
+                    <span class="choice__name">{category.name}</span>
+                    <span class="choice__desc">{category.blurb}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p class="step__err" data-err="category" hidden>{bookPage.errors.category}</p>
+          </fieldset>
+
+          <!-- ── 2: service. Filtered to the chosen room by CSS. ──── -->
+          <fieldset class="step" data-step="1" hidden>
+            <legend class="step__legend">{bookPage.steps[1]?.title}</legend>
+            <p class="step__hint">{bookPage.steps[1]?.hint}</p>
+            <div class="choices">
+              {services.map((service) => (
+                <label class="choice" data-cat={service.category}>
+                  <input class="choice__input" type="radio" name="service"
+                    value={service.id}
+                    data-cat={service.category}
+                    data-price={service.price}
+                    data-from={service.from ? 'true' : 'false'}
+                    data-label={service.name} />
+                  <span class="choice__body">
+                    <span class="choice__name">{service.name}</span>
+                    <span class="choice__meta">
+                      {service.minutes} min · {service.from ? 'from ' : ''}${service.price}
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p class="step__err" data-err="service" hidden>{bookPage.errors.service}</p>
+          </fieldset>
+
+          <!-- ── 3: practitioner, narrowed to the room ────────────── -->
+          <fieldset class="step" data-step="2" hidden>
+            <legend class="step__legend">{bookPage.steps[2]?.title}</legend>
+            <p class="step__hint">{bookPage.steps[2]?.hint}</p>
+            <div class="choices">
+              <label class="choice" data-cat="any">
+                <input class="choice__input" type="radio" name="practitioner"
+                  value={bookPage.anyPractitioner.id} data-cat="any"
+                  data-label={bookPage.anyPractitioner.name} />
+                <span class="choice__body">
+                  <span class="choice__name">{bookPage.anyPractitioner.name}</span>
+                  <span class="choice__meta">{bookPage.anyPractitioner.role}</span>
+                  <span class="choice__desc">{bookPage.anyPractitioner.detail}</span>
+                </span>
+              </label>
+              {practitioners.map((person) => (
+                <label class="choice" data-cat={person.categories.join(' ')}>
+                  <input class="choice__input" type="radio" name="practitioner"
+                    value={person.id} data-cat={person.categories.join(' ')}
+                    data-label={person.name} />
+                  <span class="choice__body">
+                    <span class="choice__name">{person.name}</span>
+                    <span class="choice__meta">{person.role}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p class="step__err" data-err="practitioner" hidden>{bookPage.errors.practitioner}</p>
+          </fieldset>
+
+          <!-- ── 4: day ───────────────────────────────────────────── -->
+          <fieldset class="step" data-step="3" hidden>
+            <legend class="step__legend">{bookPage.steps[3]?.title}</legend>
+            <p class="step__hint">{bookPage.steps[3]?.hint}</p>
+            <label class="date-field">
+              <span class="field__label">{bookPage.dateLabel}</span>
+              <input class="field__input" type="date" name="date" data-date />
+            </label>
+            <p class="step__err" data-err="date" hidden>{bookPage.errors.date}</p>
+          </fieldset>
+
+          <!-- ── 5: time ──────────────────────────────────────────── -->
+          <fieldset class="step" data-step="4" hidden>
+            <legend class="step__legend">{bookPage.steps[4]?.title}</legend>
+            <p class="step__hint">{bookPage.steps[4]?.hint}</p>
+            <div class="slots" role="group" aria-label={bookPage.timeLabel}>
+              {slots.times.map((time) => {
+                const taken = slots.taken.includes(time);
+                return (
+                  <label class:list={['slot', taken && 'slot--taken']}>
+                    <input class="slot__input" type="radio" name="time" value={time}
+                      disabled={taken} data-label={formatTime(time)} />
+                    <span class="slot__label">{formatTime(time)}</span>
+                    {taken && <span class="slot__taken">{slots.takenLabel}</span>}
+                  </label>
+                );
+              })}
+            </div>
+            <p class="step__err" data-err="time" hidden>{bookPage.errors.time}</p>
+          </fieldset>
+
+          <!-- ── 6: details ───────────────────────────────────────── -->
+          <fieldset class="step" data-step="5" hidden>
+            <legend class="step__legend">{bookPage.steps[5]?.title}</legend>
+            <p class="step__hint">{bookPage.steps[5]?.hint}</p>
+            <div class="fields">
+              <div class="field">
+                <label class="field__label" for="bk-name">{bookPage.form.nameLabel}</label>
+                <input class="field__input" id="bk-name" name="name" type="text" required
+                  autocomplete="name" placeholder={bookPage.form.namePlaceholder}
+                  aria-describedby="bk-name-err" />
+                <p class="field__err" id="bk-name-err" hidden>{bookPage.form.nameError}</p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="bk-phone">{bookPage.form.phoneLabel}</label>
+                <input class="field__input" id="bk-phone" name="phone" type="tel" required
+                  autocomplete="tel" placeholder={bookPage.form.phonePlaceholder}
+                  aria-describedby="bk-phone-err" />
+                <p class="field__err" id="bk-phone-err" hidden>{bookPage.form.phoneError}</p>
+              </div>
+              <div class="field field--wide">
+                <label class="field__label" for="bk-email">{bookPage.form.emailLabel}</label>
+                <input class="field__input" id="bk-email" name="email" type="email" required
+                  autocomplete="email" placeholder={bookPage.form.emailPlaceholder}
+                  aria-describedby="bk-email-err" />
+                <p class="field__err" id="bk-email-err" hidden>{bookPage.form.emailError}</p>
+              </div>
+              <div class="field field--wide">
+                <label class="field__label" for="bk-notes">{bookPage.form.notesLabel}</label>
+                <textarea class="field__input field__input--area" id="bk-notes" name="notes" rows="3"
+                  placeholder={bookPage.form.notesPlaceholder}></textarea>
+              </div>
+            </div>
+
+            <div class="summary">
+              <h2 class="summary__h">{bookPage.summaryHeading}</h2>
+              <dl class="summary__list">
+                <div><dt>{bookPage.categoryLabel}</dt><dd data-sum="category">—</dd></div>
+                <div><dt>{bookPage.serviceLabel}</dt><dd data-sum="service">—</dd></div>
+                <div><dt>{bookPage.practitionerLabel}</dt><dd data-sum="practitioner">—</dd></div>
+                <div><dt>{bookPage.dateLabel}</dt><dd data-sum="date">—</dd></div>
+                <div><dt>{bookPage.timeLabel}</dt><dd data-sum="time">—</dd></div>
+                <div class="summary__total"><dt>{bookPage.totalLabel}</dt><dd data-sum="total">—</dd></div>
+              </dl>
+            </div>
+          </fieldset>
+
+          <div class="controls">
+            <button class="btn btn--line" type="button" data-back hidden>{bookPage.backLabel}</button>
+            <button class="btn btn--fill" type="button" data-next>{bookPage.nextLabel}</button>
+            <button class="btn btn--fill" type="submit" data-confirm hidden
+              data-analytics-event="booking_confirm">{bookPage.confirmLabel}</button>
+          </div>
+        </form>
+
+        <div class="done" data-done hidden tabindex="-1">
+          <h2 class="done__h">{bookPage.successHeading}</h2>
+          <dl class="summary__list done__list">
+            <div><dt>{bookPage.serviceLabel}</dt><dd data-done-sum="service">—</dd></div>
+            <div><dt>{bookPage.practitionerLabel}</dt><dd data-done-sum="practitioner">—</dd></div>
+            <div><dt>{bookPage.dateLabel}</dt><dd data-done-sum="date">—</dd></div>
+            <div><dt>{bookPage.timeLabel}</dt><dd data-done-sum="time">—</dd></div>
+            <div class="summary__total"><dt>{bookPage.totalLabel}</dt><dd data-done-sum="total">—</dd></div>
+          </dl>
+          <p class="done__body">{bookPage.successBody}</p>
+          <button class="btn btn--line" type="button" data-again>{bookPage.successAgain}</button>
+        </div>
+      </div>
+
+      <aside class="aside">
+        <p>{bookPage.phoneNote}</p>
+        <a class="aside__link" href={business.phoneHref} data-analytics-event="phone_tap_book">
+          {business.phone}
+        </a>
+      </aside>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // ── Booking flow ─────────────────────────────────────────────────────
+  // Six steps. The one thing this flow does that the others do not: choosing
+  // a room filters both the service list and the practitioner list, so you
+  // cannot book a colourist for a massage.
+  //
+  // CALENDAR HANDOFF: on a live build the confirm handler POSTs to the salon's
+  // scheduling system (Clover Appointments, Booksy, Fresha) and the slot grid
+  // is populated from the chosen practitioner's real availability instead of
+  // the stated `taken` list. No payment is involved — the desk takes it on the
+  // Clover terminal, which is why there are no card fields here.
+  const root = document.querySelector<HTMLElement>('[data-booker]');
+  const form = root?.querySelector<HTMLFormElement>('[data-book-form]');
+
+  if (root && form) {
+    const steps = [...form.querySelectorAll<HTMLElement>('[data-step]')];
+    const ticks = [...root.querySelectorAll<HTMLElement>('[data-tick]')];
+    const stepNow = root.querySelector<HTMLElement>('[data-step-now]');
+    const back = form.querySelector<HTMLButtonElement>('[data-back]');
+    const next = form.querySelector<HTMLButtonElement>('[data-next]');
+    const confirm = form.querySelector<HTMLButtonElement>('[data-confirm]');
+    const done = root.querySelector<HTMLElement>('[data-done]');
+    const again = root.querySelector<HTMLButtonElement>('[data-again]');
+    const dateInput = form.querySelector<HTMLInputElement>('[data-date]');
+
+    let current = 0;
+
+    if (dateInput) {
+      const today = new Date();
+      dateInput.min = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 10);
+    }
+
+    const checked = (name: string) =>
+      form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+    const showError = (key: string, on: boolean) => {
+      const el = form.querySelector<HTMLElement>(`[data-err="${key}"]`);
+      if (el) el.hidden = !on;
+    };
+
+    /** Narrow the service and practitioner lists to the chosen room, and
+     *  clear any selection that no longer belongs to it. */
+    const applyRoom = () => {
+      const room = checked('category')?.value;
+      if (!room) return;
+      form.querySelectorAll<HTMLElement>('[data-step="1"] .choice, [data-step="2"] .choice').forEach((choice) => {
+        const cats = (choice.dataset.cat ?? '').split(' ');
+        const show = cats.includes(room) || cats.includes('any');
+        choice.hidden = !show;
+        const input = choice.querySelector<HTMLInputElement>('input');
+        if (input && !show && input.checked) input.checked = false;
+      });
+    };
+
+    const readableDate = (value: string) => {
+      if (!value) return '—';
+      const [y, m, d] = value.split('-').map(Number);
+      if (!y || !m || !d) return '—';
+      return new Date(y, m - 1, d).toLocaleDateString('en-CA', {
+        weekday: 'long', month: 'long', day: 'numeric',
+      });
+    };
+
+    const summarise = () => {
+      const service = checked('service');
+      const values: Record<string, string> = {
+        category: checked('category')?.dataset.label ?? '—',
+        service: service?.dataset.label ?? '—',
+        practitioner: checked('practitioner')?.dataset.label ?? '—',
+        date: readableDate(dateInput?.value ?? ''),
+        time: checked('time')?.dataset.label ?? '—',
+        total: service
+          ? `${service.dataset.from === 'true' ? 'from ' : ''}$${service.dataset.price}`
+          : '—',
+      };
+      root.querySelectorAll<HTMLElement>('[data-sum]').forEach((el) => {
+        el.textContent = values[el.dataset.sum ?? ''] ?? '—';
+      });
+      root.querySelectorAll<HTMLElement>('[data-done-sum]').forEach((el) => {
+        el.textContent = values[el.dataset.doneSum ?? ''] ?? '—';
+      });
+    };
+
+    const validateStep = (index: number): boolean => {
+      const byIndex = ['category', 'service', 'practitioner'];
+      if (index < 3) {
+        const key = byIndex[index]!;
+        const ok = !!checked(key);
+        showError(key, !ok);
+        return ok;
+      }
+      if (index === 3) {
+        const ok = !!dateInput?.value;
+        showError('date', !ok);
+        return ok;
+      }
+      if (index === 4) {
+        const ok = !!checked('time');
+        showError('time', !ok);
+        return ok;
+      }
+      const fields = [...steps[5]!.querySelectorAll<HTMLInputElement>('.field__input')];
+      let valid = true;
+      fields.forEach((field) => {
+        if (!field.required) return;
+        const ok = field.checkValidity() && field.value.trim() !== '';
+        const errId = field.getAttribute('aria-describedby');
+        const err = errId ? document.getElementById(errId) : null;
+        if (err) err.hidden = ok;
+        field.setAttribute('aria-invalid', String(!ok));
+        field.classList.toggle('is-invalid', !ok);
+        if (!ok) valid = false;
+      });
+      if (!valid) fields.find((f) => f.classList.contains('is-invalid'))?.focus();
+      return valid;
+    };
+
+    const render = () => {
+      steps.forEach((step, i) => (step.hidden = i !== current));
+      ticks.forEach((tick, i) => (tick.dataset.on = String(i <= current)));
+      if (stepNow) stepNow.textContent = String(current + 1);
+      if (back) back.hidden = current === 0;
+      const last = current === steps.length - 1;
+      if (next) next.hidden = last;
+      if (confirm) confirm.hidden = !last;
+      if (last) summarise();
+      steps[current]?.querySelector<HTMLElement>('legend')?.scrollIntoView({ block: 'nearest' });
+    };
+
+    next?.addEventListener('click', () => {
+      if (!validateStep(current)) return;
+      if (current === 0) applyRoom();
+      current = Math.min(current + 1, steps.length - 1);
+      render();
+    });
+    back?.addEventListener('click', () => {
+      current = Math.max(current - 1, 0);
+      render();
+    });
+
+    form.addEventListener('change', (event) => {
+      const target = event.target as HTMLInputElement | null;
+      if (target?.name) showError(target.name, false);
+      if (target?.name === 'category') applyRoom();
+      summarise();
+    });
+    form.addEventListener('input', (event) => {
+      const target = event.target as HTMLInputElement | null;
+      if (target?.classList.contains('is-invalid') && target.checkValidity() && target.value.trim() !== '') {
+        target.classList.remove('is-invalid');
+        target.setAttribute('aria-invalid', 'false');
+        const errId = target.getAttribute('aria-describedby');
+        const err = errId ? document.getElementById(errId) : null;
+        if (err) err.hidden = true;
+      }
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!validateStep(current)) return;
+      summarise();
+      form.hidden = true;
+      if (done) {
+        done.hidden = false;
+        done.focus();
+      }
+    });
+
+    again?.addEventListener('click', () => {
+      form.reset();
+      current = 0;
+      form.hidden = false;
+      if (done) done.hidden = true;
+      form.querySelectorAll<HTMLElement>('[data-err]').forEach((el) => (el.hidden = true));
+      form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+      form.querySelectorAll<HTMLElement>('.choice').forEach((c) => (c.hidden = false));
+      render();
+    });
+
+    render();
+  }
+</script>
+
+<style>
+  .book-head {
+    padding-bottom: 0;
+  }
+  .book-title {
+    font-size: var(--fs-display);
+    letter-spacing: 0.01em;
+  }
+  .book-lede {
+    margin-top: 1.5rem;
+    max-width: 48ch;
+  }
+  .book-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1000px) {
+    .book-grid {
+      grid-template-columns: minmax(0, 1fr) 16rem;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .booker {
+    border: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+    border-radius: var(--radius);
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  }
+  .progress {
+    font-size: var(--fs-label);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ticks {
+    list-style: none;
+    display: flex;
+    gap: 0.4rem;
+    margin: 0.9rem 0 2.5rem;
+    padding: 0;
+  }
+  .tick {
+    height: 1px;
+    flex: 1;
+    background: var(--ink-line);
+  }
+  .tick[data-on='true'] {
+    background: var(--accent);
+  }
+
+  .step {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .step__legend {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.4rem + 1.4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0;
+  }
+  .step__hint {
+    margin-top: 0.65rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 50ch;
+  }
+  .step__err {
+    margin-top: 1.25rem;
+    font-size: var(--fs-small);
+    color: var(--accent);
+  }
+
+  .choices {
+    margin-top: 2rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  @media (min-width: 680px) {
+    .choices {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .choices--three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .choice {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .choice[hidden] {
+    display: none;
+  }
+  .choice__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .choice__body {
+    display: grid;
+    gap: 0.25rem;
+    height: 100%;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    transition: border-color 0.2s ease;
+  }
+  .choice:hover .choice__body {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .choice__input:checked + .choice__body {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--ink));
+  }
+  .choice__input:focus-visible + .choice__body {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .choice__name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .choice__meta {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .choice__desc {
+    margin-top: 0.35rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+
+  .date-field {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    max-width: 16rem;
+  }
+  .slots {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: 0.5rem;
+  }
+  .slot {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .slot--taken {
+    cursor: not-allowed;
+  }
+  .slot__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+  .slot__label {
+    display: block;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    font-size: var(--fs-small);
+    font-variant-numeric: tabular-nums;
+    transition: border-color 0.2s ease;
+  }
+  .slot:not(.slot--taken):hover .slot__label {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .slot__input:checked + .slot__label {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .slot__input:focus-visible + .slot__label {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .slot--taken .slot__label {
+    color: color-mix(in srgb, var(--on-ink) 55%, transparent);
+    border-style: dashed;
+  }
+  .slot__taken {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    color: color-mix(in srgb, var(--on-ink) 55%, transparent);
+  }
+
+  .fields {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 680px) {
+    .fields {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .field__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .field__input {
+    font: inherit;
+    font-size: var(--fs-body);
+    color: var(--on-ink);
+    background: var(--ink);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    width: 100%;
+  }
+  .field__input::placeholder {
+    color: color-mix(in srgb, var(--on-ink) 55%, transparent);
+  }
+  .field__input:focus {
+    border-color: var(--accent);
+  }
+  .field__input--area {
+    resize: vertical;
+    min-height: 5.5rem;
+  }
+  .field__input.is-invalid {
+    border-color: var(--accent);
+  }
+  .field__err {
+    font-size: var(--fs-small);
+    color: var(--accent);
+  }
+
+  .summary {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--accent);
+  }
+  .summary__h {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .summary__list {
+    margin: 1.25rem 0 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .summary__list div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--fs-small);
+  }
+  .summary__list dt {
+    color: var(--on-ink-dim);
+    letter-spacing: 0.04em;
+  }
+  .summary__list dd {
+    margin: 0;
+    text-align: right;
+  }
+  .summary__total {
+    margin-top: 0.5rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary__total dd {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .controls {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .done {
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  }
+  .done__h {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.7rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--accent);
+  }
+  .done__list {
+    margin-top: 1.5rem;
+    max-width: 28rem;
+  }
+  .done__body {
+    margin-top: 1.75rem;
+    max-width: 46ch;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-ink-dim);
+  }
+  .done .btn {
+    margin-top: 1.75rem;
+  }
+
+  .aside {
+    border-top: 1px solid var(--accent);
+    padding-top: 1.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-ink-dim);
+  }
+  .aside__link {
+    display: block;
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+</style>

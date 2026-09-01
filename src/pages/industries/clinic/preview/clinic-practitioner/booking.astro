@@ -1,0 +1,751 @@
+---
+// Lakeshore demo — booking. Five steps: appointment, practitioner, day, time,
+// details. The practitioner list narrows to whoever provides the service you
+// picked, so you cannot request a massage with a chiropractor.
+//
+// NO LIVE CALENDAR, NO PAYMENT, NO HEALTH INFORMATION. This form takes a name,
+// a phone number, an email and a first-visit tick — nothing clinical. The
+// reason for the visit belongs on the intake form, and payment stays on the
+// Clover terminal at the desk, which is the whole point of this playbook:
+// patient payment data never touches the website.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/lakeshoreChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/lakeshoreJsonld';
+import {
+  bookableServices,
+  bookingPage,
+  business,
+  pageMeta,
+  practitioners,
+  slots,
+} from '../../../../../data/demos/clinic-practitioner';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.booking;
+const stepCount = bookingPage.steps.length;
+const list = bookableServices();
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.booking}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.booking },
+    ]),
+  ]}
+>
+  <header class="bay bk-head">
+    <div class="wrap">
+      <p class="eyebrow">{bookingPage.eyebrow}</p>
+      <h1 class="bk-title">{bookingPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede bk-lede">{bookingPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay">
+    <div class="wrap bk-grid">
+      <div class="booker" data-booker>
+        <p class="progress" aria-live="polite">
+          {bookingPage.stepLabel} <span data-step-now>{1}</span> {bookingPage.ofLabel} {stepCount}
+        </p>
+        <ol class="ticks" aria-hidden="true">
+          {bookingPage.steps.map((step, i) => (
+            <li class="tick" data-tick={i} data-on={i === 0 ? 'true' : 'false'}></li>
+          ))}
+        </ol>
+
+        <form class="book-form" data-book-form novalidate>
+          <fieldset class="step" data-step="0">
+            <legend class="step__legend">{bookingPage.steps[0]?.title}</legend>
+            <p class="step__hint">{bookingPage.steps[0]?.hint}</p>
+            <div class="choices">
+              {list.map((service) => (
+                <label class="choice">
+                  <input class="choice__input" type="radio" name="service" value={service.id}
+                    data-group={service.group} data-price={service.price}
+                    data-label={service.name} />
+                  <span class="choice__body">
+                    <span class="choice__name">{service.name}</span>
+                    <span class="choice__meta">{service.minutes} min · ${service.price}</span>
+                    {service.requires && <span class="choice__req">{service.requires}</span>}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p class="step__err" data-err="service" hidden>{bookingPage.errors.service}</p>
+          </fieldset>
+
+          <fieldset class="step" data-step="1" hidden>
+            <legend class="step__legend">{bookingPage.steps[1]?.title}</legend>
+            <p class="step__hint">{bookingPage.steps[1]?.hint}</p>
+            <div class="choices">
+              <label class="choice" data-group="any">
+                <input class="choice__input" type="radio" name="practitioner"
+                  value={bookingPage.anyPractitioner.id} data-group="any"
+                  data-label={bookingPage.anyPractitioner.name} />
+                <span class="choice__body">
+                  <span class="choice__name">{bookingPage.anyPractitioner.name}</span>
+                  <span class="choice__meta">{bookingPage.anyPractitioner.role}</span>
+                </span>
+              </label>
+              {practitioners.map((person) => (
+                <label class="choice" data-group={person.groups.join(' ')}>
+                  <input class="choice__input" type="radio" name="practitioner" value={person.id}
+                    data-group={person.groups.join(' ')}
+                    data-label={`${person.name}, ${person.designation}`} />
+                  <span class="choice__body">
+                    <span class="choice__name">{person.name}, {person.designation}</span>
+                    <span class="choice__meta">{person.role}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p class="step__err" data-err="practitioner" hidden>{bookingPage.errors.practitioner}</p>
+          </fieldset>
+
+          <fieldset class="step" data-step="2" hidden>
+            <legend class="step__legend">{bookingPage.steps[2]?.title}</legend>
+            <p class="step__hint">{bookingPage.steps[2]?.hint}</p>
+            <label class="date-field">
+              <span class="field__label">{bookingPage.dateLabel}</span>
+              <input class="field__input" type="date" name="date" data-date />
+            </label>
+            <p class="step__err" data-err="date" hidden>{bookingPage.errors.date}</p>
+          </fieldset>
+
+          <fieldset class="step" data-step="3" hidden>
+            <legend class="step__legend">{bookingPage.steps[3]?.title}</legend>
+            <p class="step__hint">{bookingPage.steps[3]?.hint}</p>
+            <div class="slots" role="group" aria-label={bookingPage.timeLabel}>
+              {slots.times.map((time) => {
+                const taken = slots.taken.includes(time);
+                return (
+                  <label class:list={['slot', taken && 'slot--taken']}>
+                    <input class="slot__input" type="radio" name="time" value={time}
+                      disabled={taken} data-label={formatTime(time)} />
+                    <span class="slot__label">{formatTime(time)}</span>
+                    {taken && <span class="slot__taken">{slots.takenLabel}</span>}
+                  </label>
+                );
+              })}
+            </div>
+            <p class="step__err" data-err="time" hidden>{bookingPage.errors.time}</p>
+          </fieldset>
+
+          <fieldset class="step" data-step="4" hidden>
+            <legend class="step__legend">{bookingPage.steps[4]?.title}</legend>
+            <p class="step__hint">{bookingPage.steps[4]?.hint}</p>
+            <div class="fields">
+              <div class="field">
+                <label class="field__label" for="bk-name">{bookingPage.form.nameLabel}</label>
+                <input class="field__input" id="bk-name" name="name" type="text" required
+                  autocomplete="name" placeholder={bookingPage.form.namePlaceholder}
+                  aria-describedby="bk-name-err" />
+                <p class="field__err" id="bk-name-err" hidden>{bookingPage.form.nameError}</p>
+              </div>
+              <div class="field">
+                <label class="field__label" for="bk-phone">{bookingPage.form.phoneLabel}</label>
+                <input class="field__input" id="bk-phone" name="phone" type="tel" required
+                  autocomplete="tel" placeholder={bookingPage.form.phonePlaceholder}
+                  aria-describedby="bk-phone-err" />
+                <p class="field__err" id="bk-phone-err" hidden>{bookingPage.form.phoneError}</p>
+              </div>
+              <div class="field field--wide">
+                <label class="field__label" for="bk-email">{bookingPage.form.emailLabel}</label>
+                <input class="field__input" id="bk-email" name="email" type="email" required
+                  autocomplete="email" placeholder={bookingPage.form.emailPlaceholder}
+                  aria-describedby="bk-email-err" />
+                <p class="field__err" id="bk-email-err" hidden>{bookingPage.form.emailError}</p>
+              </div>
+              <div class="field field--wide">
+                <label class="tickbox" for="bk-new">
+                  <input class="tickbox__input" id="bk-new" name="newPatient" type="checkbox" />
+                  <span>{bookingPage.form.newPatientLabel}</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="summary">
+              <h2 class="summary__h">{bookingPage.summaryHeading}</h2>
+              <dl class="summary__list">
+                <div><dt>{bookingPage.serviceLabel}</dt><dd data-sum="service">—</dd></div>
+                <div><dt>{bookingPage.practitionerLabel}</dt><dd data-sum="practitioner">—</dd></div>
+                <div><dt>{bookingPage.dateLabel}</dt><dd data-sum="date">—</dd></div>
+                <div><dt>{bookingPage.timeLabel}</dt><dd data-sum="time">—</dd></div>
+                <div class="summary__total"><dt>{bookingPage.feeLabel}</dt><dd data-sum="fee">—</dd></div>
+              </dl>
+            </div>
+          </fieldset>
+
+          <div class="controls">
+            <button class="btn btn--line" type="button" data-back hidden>{bookingPage.backLabel}</button>
+            <button class="btn btn--fill" type="button" data-next>{bookingPage.nextLabel}</button>
+            <button class="btn btn--fill" type="submit" data-confirm hidden
+              data-analytics-event="booking_confirm">{bookingPage.confirmLabel}</button>
+          </div>
+        </form>
+
+        <div class="done" data-done hidden tabindex="-1">
+          <h2 class="done__h">{bookingPage.successHeading}</h2>
+          <dl class="summary__list done__list">
+            <div><dt>{bookingPage.serviceLabel}</dt><dd data-done-sum="service">—</dd></div>
+            <div><dt>{bookingPage.practitionerLabel}</dt><dd data-done-sum="practitioner">—</dd></div>
+            <div><dt>{bookingPage.dateLabel}</dt><dd data-done-sum="date">—</dd></div>
+            <div><dt>{bookingPage.timeLabel}</dt><dd data-done-sum="time">—</dd></div>
+          </dl>
+          <p class="done__body">{bookingPage.successBody}</p>
+          <div class="done__actions">
+            <a class="btn btn--fill" href={routes.newPatients} data-analytics-event="intake_view_booking">
+              {bookingPage.successIntakeCta}
+            </a>
+            <button class="btn btn--line" type="button" data-again>{bookingPage.successAgain}</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="aside">
+        <p>{bookingPage.phoneNote}</p>
+        <a class="aside__link" href={business.phoneHref} data-analytics-event="phone_tap_booking">
+          {business.phone}
+        </a>
+      </aside>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // ── Booking flow ─────────────────────────────────────────────────────
+  // CALENDAR HANDOFF: on a live build the confirm handler POSTs to the
+  // clinic's practice-management system and the slot grid comes from the
+  // chosen practitioner's real availability instead of the stated `taken`
+  // list. No payment and no clinical detail passes through here.
+  const root = document.querySelector<HTMLElement>('[data-booker]');
+  const form = root?.querySelector<HTMLFormElement>('[data-book-form]');
+
+  if (root && form) {
+    const steps = [...form.querySelectorAll<HTMLElement>('[data-step]')];
+    const ticks = [...root.querySelectorAll<HTMLElement>('[data-tick]')];
+    const stepNow = root.querySelector<HTMLElement>('[data-step-now]');
+    const back = form.querySelector<HTMLButtonElement>('[data-back]');
+    const next = form.querySelector<HTMLButtonElement>('[data-next]');
+    const confirm = form.querySelector<HTMLButtonElement>('[data-confirm]');
+    const done = root.querySelector<HTMLElement>('[data-done]');
+    const again = root.querySelector<HTMLButtonElement>('[data-again]');
+    const dateInput = form.querySelector<HTMLInputElement>('[data-date]');
+
+    let current = 0;
+
+    if (dateInput) {
+      const today = new Date();
+      dateInput.min = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+        .toISOString().slice(0, 10);
+    }
+
+    const checked = (name: string) =>
+      form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+    const showError = (key: string, on: boolean) => {
+      const el = form.querySelector<HTMLElement>(`[data-err="${key}"]`);
+      if (el) el.hidden = !on;
+    };
+
+    /** Narrow the practitioner list to whoever provides the chosen service. */
+    const applyGroup = () => {
+      const group = checked('service')?.dataset.group;
+      if (!group) return;
+      form.querySelectorAll<HTMLElement>('[data-step="1"] .choice').forEach((choice) => {
+        const groups = (choice.dataset.group ?? '').split(' ');
+        const show = groups.includes(group) || groups.includes('any');
+        choice.hidden = !show;
+        const input = choice.querySelector<HTMLInputElement>('input');
+        if (input && !show && input.checked) input.checked = false;
+      });
+    };
+
+    const readableDate = (value: string) => {
+      if (!value) return '—';
+      const [y, m, d] = value.split('-').map(Number);
+      if (!y || !m || !d) return '—';
+      return new Date(y, m - 1, d).toLocaleDateString('en-CA', {
+        weekday: 'long', month: 'long', day: 'numeric',
+      });
+    };
+
+    const summarise = () => {
+      const service = checked('service');
+      const values: Record<string, string> = {
+        service: service?.dataset.label ?? '—',
+        practitioner: checked('practitioner')?.dataset.label ?? '—',
+        date: readableDate(dateInput?.value ?? ''),
+        time: checked('time')?.dataset.label ?? '—',
+        fee: service ? `$${service.dataset.price}` : '—',
+      };
+      root.querySelectorAll<HTMLElement>('[data-sum]').forEach((el) => {
+        el.textContent = values[el.dataset.sum ?? ''] ?? '—';
+      });
+      root.querySelectorAll<HTMLElement>('[data-done-sum]').forEach((el) => {
+        el.textContent = values[el.dataset.doneSum ?? ''] ?? '—';
+      });
+    };
+
+    const validateStep = (index: number): boolean => {
+      const keys = ['service', 'practitioner'];
+      if (index < 2) {
+        const key = keys[index]!;
+        const ok = !!checked(key);
+        showError(key, !ok);
+        return ok;
+      }
+      if (index === 2) {
+        const ok = !!dateInput?.value;
+        showError('date', !ok);
+        return ok;
+      }
+      if (index === 3) {
+        const ok = !!checked('time');
+        showError('time', !ok);
+        return ok;
+      }
+      const fields = [...steps[4]!.querySelectorAll<HTMLInputElement>('.field__input')];
+      let valid = true;
+      fields.forEach((field) => {
+        if (!field.required) return;
+        const ok = field.checkValidity() && field.value.trim() !== '';
+        const errId = field.getAttribute('aria-describedby');
+        const err = errId ? document.getElementById(errId) : null;
+        if (err) err.hidden = ok;
+        field.setAttribute('aria-invalid', String(!ok));
+        field.classList.toggle('is-invalid', !ok);
+        if (!ok) valid = false;
+      });
+      if (!valid) fields.find((f) => f.classList.contains('is-invalid'))?.focus();
+      return valid;
+    };
+
+    const render = () => {
+      steps.forEach((step, i) => (step.hidden = i !== current));
+      ticks.forEach((tick, i) => (tick.dataset.on = String(i <= current)));
+      if (stepNow) stepNow.textContent = String(current + 1);
+      if (back) back.hidden = current === 0;
+      const last = current === steps.length - 1;
+      if (next) next.hidden = last;
+      if (confirm) confirm.hidden = !last;
+      if (last) summarise();
+      steps[current]?.querySelector<HTMLElement>('legend')?.scrollIntoView({ block: 'nearest' });
+    };
+
+    next?.addEventListener('click', () => {
+      if (!validateStep(current)) return;
+      if (current === 0) applyGroup();
+      current = Math.min(current + 1, steps.length - 1);
+      render();
+    });
+    back?.addEventListener('click', () => {
+      current = Math.max(current - 1, 0);
+      render();
+    });
+
+    form.addEventListener('change', (event) => {
+      const target = event.target as HTMLInputElement | null;
+      if (target?.name) showError(target.name, false);
+      if (target?.name === 'service') applyGroup();
+      summarise();
+    });
+    form.addEventListener('input', (event) => {
+      const target = event.target as HTMLInputElement | null;
+      if (target?.classList.contains('is-invalid') && target.checkValidity() && target.value.trim() !== '') {
+        target.classList.remove('is-invalid');
+        target.setAttribute('aria-invalid', 'false');
+        const errId = target.getAttribute('aria-describedby');
+        const err = errId ? document.getElementById(errId) : null;
+        if (err) err.hidden = true;
+      }
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!validateStep(current)) return;
+      summarise();
+      form.hidden = true;
+      if (done) {
+        done.hidden = false;
+        done.focus();
+      }
+    });
+
+    again?.addEventListener('click', () => {
+      form.reset();
+      current = 0;
+      form.hidden = false;
+      if (done) done.hidden = true;
+      form.querySelectorAll<HTMLElement>('[data-err]').forEach((el) => (el.hidden = true));
+      form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+      form.querySelectorAll<HTMLElement>('.choice').forEach((c) => (c.hidden = false));
+      render();
+    });
+
+    render();
+  }
+</script>
+
+<style>
+  .bk-head {
+    padding-bottom: 0;
+  }
+  .bk-title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .bk-lede {
+    margin-top: 1.5rem;
+    max-width: 50ch;
+  }
+  .bk-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1000px) {
+    .bk-grid {
+      grid-template-columns: minmax(0, 1fr) 16rem;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .booker {
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+    padding: clamp(1.5rem, 3.5vw, 2.5rem);
+  }
+  .progress {
+    font-weight: 700;
+    font-size: var(--fs-small);
+    color: var(--accent);
+  }
+  .ticks {
+    list-style: none;
+    display: flex;
+    gap: 0.4rem;
+    margin: 0.85rem 0 2.25rem;
+    padding: 0;
+  }
+  .tick {
+    height: 4px;
+    flex: 1;
+    border-radius: 2px;
+    background: var(--ink-line);
+  }
+  .tick[data-on='true'] {
+    background: var(--accent);
+  }
+
+  .step {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .step__legend {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.35rem + 1.3vw, 2.3rem);
+    font-weight: 600;
+    padding: 0;
+  }
+  .step__hint {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 52ch;
+  }
+  .step__err {
+    margin-top: 1.25rem;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .choices {
+    margin-top: 2rem;
+    display: grid;
+    gap: 0.7rem;
+  }
+  @media (min-width: 680px) {
+    .choices {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .choice {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .choice[hidden] {
+    display: none;
+  }
+  .choice__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .choice__body {
+    display: grid;
+    gap: 0.3rem;
+    height: 100%;
+    padding: 1.1rem 1.25rem;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+  }
+  .choice:hover .choice__body {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .choice__input:checked + .choice__body {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--ink));
+  }
+  .choice__input:focus-visible + .choice__body {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .choice__name {
+    font-weight: 700;
+  }
+  .choice__meta {
+    font-size: var(--fs-small);
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .choice__req {
+    margin-top: 0.3rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .date-field {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    max-width: 17rem;
+  }
+  .slots {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    gap: 0.6rem;
+  }
+  .slot {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .slot--taken {
+    cursor: not-allowed;
+  }
+  .slot__input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+  .slot__label {
+    display: block;
+    padding: 0.85rem 0.5rem;
+    text-align: center;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    font-weight: 700;
+    font-size: var(--fs-small);
+    font-variant-numeric: tabular-nums;
+  }
+  .slot:not(.slot--taken):hover .slot__label {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .slot__input:checked + .slot__label {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .slot__input:focus-visible + .slot__label {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .slot--taken .slot__label {
+    color: color-mix(in srgb, var(--on-ink) 62%, transparent);
+    border-style: dashed;
+  }
+  .slot__taken {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.72rem;
+    text-align: center;
+    color: color-mix(in srgb, var(--on-ink) 62%, transparent);
+  }
+
+  .fields {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 680px) {
+    .fields {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .field__label {
+    font-weight: 700;
+    font-size: var(--fs-small);
+  }
+  .field__input {
+    font: inherit;
+    font-size: var(--fs-body);
+    color: var(--on-ink);
+    background: var(--ink);
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    width: 100%;
+  }
+  .field__input::placeholder {
+    color: color-mix(in srgb, var(--on-ink) 60%, transparent);
+  }
+  .field__input:focus {
+    border-color: var(--accent);
+  }
+  .field__input.is-invalid {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, var(--ink));
+  }
+  .field__err {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .tickbox {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    gap: 0.9rem;
+    align-items: center;
+    cursor: pointer;
+  }
+  .tickbox__input {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .summary {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 2px solid var(--accent);
+  }
+  .summary__h {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 600;
+  }
+  .summary__list {
+    margin: 1.25rem 0 0;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .summary__list div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: var(--fs-small);
+  }
+  .summary__list dt {
+    color: var(--on-ink-dim);
+  }
+  .summary__list dd {
+    margin: 0;
+    font-weight: 700;
+    text-align: right;
+  }
+  .summary__total {
+    margin-top: 0.4rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary__total dd {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .controls {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .done {
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    padding: clamp(1.5rem, 3.5vw, 2.25rem);
+  }
+  .done__h {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.4rem + 1.4vw, 2.4rem);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .done__list {
+    margin-top: 1.5rem;
+    max-width: 28rem;
+  }
+  .done__body {
+    margin-top: 1.75rem;
+    max-width: 48ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .done__actions {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .aside {
+    border-top: 2px solid var(--accent);
+    padding-top: 1.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .aside__link {
+    display: block;
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

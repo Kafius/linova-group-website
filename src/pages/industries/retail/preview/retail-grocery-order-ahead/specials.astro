@@ -1,0 +1,214 @@
+---
+// Cedarview demo — weekly specials. One dated block, replaced on a Monday.
+//
+// This page is the argument for why the playbook has NO CMS: the only thing
+// that changes weekly is six rows in `specials`, and swapping those is a
+// two-minute edit rather than a content system somebody has to log into.
+// Prints cleanly, because people bring the list in with them.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/cedarviewChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/cedarviewJsonld';
+import {
+  business,
+  formatMoney,
+  pageMeta,
+  specials,
+  specialsPage,
+} from '../../../../../data/demos/retail-grocery-order-ahead';
+
+const meta = pageMeta.specials;
+const rows = specials.items.map((special) => ({
+  ...special,
+  save: Math.round((special.was - special.now) * 100) / 100,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.specials}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.specials },
+    ]),
+  ]}
+>
+  <header class="bay spec-head">
+    <div class="wrap">
+      <p class="eyebrow">{specialsPage.eyebrow}</p>
+      <h1 class="spec-title">{specialsPage.heading}</h1>
+      <hr class="rule" />
+      <p class="dates">
+        {specialsPage.weekLabel} <strong>{specials.weekOf}</strong>
+        {specialsPage.throughLabel} <strong>{specials.through}</strong>
+      </p>
+      <p class="note">{specials.note}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={specialsPage.heading}>
+    <div class="wrap">
+      <ul class="specials">
+        {rows.map((row) => (
+          <li class="special">
+            <div class="special__main">
+              <h2 class="special__item">{row.item}</h2>
+              <p class="special__detail">{row.detail}</p>
+            </div>
+            <div class="special__pricing">
+              <span class="special__was">{specialsPage.wasLabel} ${formatMoney(row.was)}{row.unit}</span>
+              <span class="special__now">
+                ${formatMoney(row.now)}<span class="special__unit">{row.unit}</span>
+              </span>
+              <span class="special__save">{specialsPage.saveLabel} ${formatMoney(row.save)}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="spec-close no-print">
+        <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_specials">
+          {specialsPage.orderCta}
+        </a>
+        <p class="print-note">{specialsPage.printNote}</p>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .spec-head {
+    padding-bottom: 0;
+  }
+  .spec-title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .dates {
+    margin-top: 1.25rem;
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+  }
+  .note {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .specials {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 2px solid var(--accent);
+  }
+  .special {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 720px) {
+    .special {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 2.5rem;
+    }
+  }
+  .special__item {
+    font-size: clamp(1.3rem, 1.15rem + 0.7vw, 1.75rem);
+  }
+  .special__detail {
+    margin-top: 0.35rem;
+    max-width: 52ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .special__pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  @media (min-width: 720px) {
+    .special__pricing {
+      justify-content: flex-end;
+      min-width: 20rem;
+    }
+  }
+  .special__was {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+  }
+  .special__now {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.4rem + 0.9vw, 2.1rem);
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .special__unit {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--on-ink-dim);
+    margin-left: 0.1rem;
+  }
+  .special__save {
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-accent);
+    background: var(--accent);
+    padding: 0.25rem 0.55rem;
+    border-radius: var(--radius);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .spec-close {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .print-note {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* People bring this list into the shop, so it has to print. */
+  @media print {
+    .spec-head {
+      padding-top: 0;
+    }
+    .spec-title {
+      font-size: 24pt;
+    }
+    .special {
+      break-inside: avoid;
+      padding: 0.6rem 0;
+    }
+    .special__item {
+      font-size: 13pt;
+    }
+    .special__detail {
+      font-size: 9pt;
+      color: #333;
+    }
+    .special__now,
+    .special__was {
+      color: #000;
+    }
+    .special__save {
+      background: none;
+      color: #000;
+      border: 1px solid #666;
+    }
+  }
+</style>

@@ -1,0 +1,396 @@
+---
+// Cedarview demo — order ahead. The E-Commerce line item, framed for a
+// butcher counter rather than a shelf: the Clover Online Store slot, then how
+// a pre-order works, the pickup windows, and the counter's price list.
+//
+// Deliberately NOT built: a cart, a checkout, a weight calculator that
+// pretends to know what a cut will weigh. The counter list is content the
+// search engines can read; the transaction happens inside Clover.
+//
+// The cut filter is pure CSS — radio inputs plus :has() on the wrapper.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/cedarviewChrome';
+import { butcherCatalogue, demoBreadcrumbs } from '../../../../../lib/demos/cedarviewJsonld';
+import {
+  business,
+  cutKinds,
+  cuts,
+  formatMoney,
+  orderPage,
+  pageMeta,
+} from '../../../../../data/demos/retail-grocery-order-ahead';
+
+const meta = pageMeta.order;
+const kinds = cutKinds();
+const filters = [{ id: 'all', label: orderPage.filterAll }, ...kinds.map((k) => ({ id: k.toLowerCase(), label: k }))];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.order}
+  jsonLd={[
+    butcherCatalogue(routes.order),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.order },
+    ]),
+  ]}
+>
+  <header class="bay order-head">
+    <div class="wrap">
+      <p class="eyebrow">{orderPage.eyebrow}</p>
+      <h1 class="order-title">{orderPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede order-lede">{orderPage.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The integration slot ────────────────────────────────────────── -->
+  <section class="wrap" aria-label={orderPage.embedLabel}>
+    <div class="embed">
+      <span class="embed__corner" aria-hidden="true"></span>
+      <div class="embed__center">
+        <p class="embed__label">{orderPage.embedLabel}</p>
+        <p class="embed__note">{orderPage.embedNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How a pre-order works ───────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="how-h">
+    <div class="wrap">
+      <h2 id="how-h" class="section-title">{orderPage.howHeading}</h2>
+      <hr class="rule" />
+      <ol class="steps">
+        {orderPage.howSteps.map((step) => (
+          <li class="step">
+            <h3 class="step__title">{step.title}</h3>
+            <p class="step__detail">{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Windows and the Clover explainer, on the green band ─────────── -->
+  <section class="bay on-paper" aria-labelledby="windows-h">
+    <div class="wrap windows-grid">
+      <div>
+        <h2 id="windows-h" class="section-title">{orderPage.windowsHeading}</h2>
+        <hr class="rule" />
+        <ul class="windows">
+          {orderPage.windows.map((slot) => <li class="window">{slot}</li>)}
+        </ul>
+        <p class="windows__note">{orderPage.windowsNote}</p>
+      </div>
+      <div>
+        <h2 class="section-title">{orderPage.explainerHeading}</h2>
+        <hr class="rule" />
+        <p class="explainer">{orderPage.explainerBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The counter list ────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="cuts-h">
+    <div class="wrap">
+      <h2 id="cuts-h" class="section-title">{orderPage.cutsHeading}</h2>
+      <hr class="rule" />
+      <p class="note">{orderPage.cutsNote}</p>
+
+      <div class="counter">
+        <fieldset class="filters">
+          <legend class="filters__legend">{orderPage.filterLabel}</legend>
+          {filters.map((filter, i) => (
+            <>
+              <input
+                class="filters__input"
+                type="radio"
+                name="kind"
+                id={`kind-${filter.id}`}
+                value={filter.id}
+                checked={i === 0}
+              />
+              <label class="filters__label" for={`kind-${filter.id}`}>{filter.label}</label>
+            </>
+          ))}
+        </fieldset>
+
+        <ul class="cuts">
+          {cuts.map((cut) => (
+            <li class="cut" data-kind={cut.kind.toLowerCase()}>
+              <div class="cut__line">
+                <h3 class="cut__name">{cut.name}</h3>
+                <span class="cut__price">
+                  ${formatMoney(cut.pricePerKg)}<span class="cut__unit">{orderPage.perKgLabel}</span>
+                </span>
+              </div>
+              <p class="cut__desc">{cut.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .order-head {
+    padding-bottom: 0;
+  }
+  .order-title {
+    font-size: var(--fs-display);
+    max-width: 18ch;
+  }
+  .order-lede {
+    margin-top: 1.25rem;
+    max-width: 50ch;
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 54ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── The slot ─────────────────────────────────────────────────────── */
+  .embed {
+    position: relative;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    min-height: 28rem;
+    height: clamp(28rem, 58vh, 40rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--radius);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 14px,
+        color-mix(in srgb, var(--accent) 4%, transparent) 14px 15px
+      ),
+      var(--ink-raised);
+  }
+  .embed__corner {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+  }
+  .embed__center {
+    max-width: 34ch;
+  }
+  .embed__label {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.3rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.45;
+  }
+  .embed__note {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Steps ────────────────────────────────────────────────────────── */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 800px) {
+    .steps {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+  }
+  .step {
+    counter-increment: step;
+    padding-top: 1rem;
+    border-top: 2px solid var(--accent);
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .step__title {
+    font-size: var(--fs-heading);
+  }
+  .step__detail {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Windows ──────────────────────────────────────────────────────── */
+  .windows-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .windows-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .windows {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  @media (min-width: 520px) {
+    .windows {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .window {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--paper-line);
+    border-left: 3px solid var(--accent-paper);
+    border-radius: var(--radius);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .windows__note {
+    margin-top: 1.25rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+    max-width: 40ch;
+  }
+  .explainer {
+    margin-top: 1.5rem;
+    max-width: 48ch;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Counter list ─────────────────────────────────────────────────── */
+  .counter {
+    margin-top: 2rem;
+  }
+  .filters {
+    border: 0;
+    margin: 0 0 2rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .filters__legend {
+    width: 100%;
+    padding: 0 0 0.75rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  /* Kept in the accessibility tree rather than display:none, so the labels
+     stay keyboard-reachable. */
+  .filters__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .filters__label {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--on-ink-dim);
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  }
+  .filters__label:hover {
+    color: var(--on-ink);
+    border-color: var(--accent);
+  }
+  .filters__input:checked + .filters__label {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+  }
+  .filters__input:focus-visible + .filters__label {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .cuts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .cut {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .cut__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .cut__name {
+    font-size: var(--fs-dish);
+  }
+  .cut__price {
+    flex: none;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .cut__unit {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--on-ink-dim);
+  }
+  .cut__desc {
+    margin-top: 0.3rem;
+    max-width: 56ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* The filter itself: no JavaScript, just :has() on the wrapper. */
+  .counter:has(#kind-lamb:checked) .cut:not([data-kind='lamb']),
+  .counter:has(#kind-beef:checked) .cut:not([data-kind='beef']),
+  .counter:has(#kind-chicken:checked) .cut:not([data-kind='chicken']),
+  .counter:has(#kind-veal:checked) .cut:not([data-kind='veal']),
+  .counter:has(#kind-goat:checked) .cut:not([data-kind='goat']) {
+    display: none;
+  }
+</style>

@@ -1,0 +1,269 @@
+---
+// The Foundry demo — Corporate and Film. One hall, six configurations, and the
+// electrical spec a location manager actually asks for on the first call.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/foundryJsonld';
+import {
+  business,
+  corporatePage,
+  gallery,
+  included,
+  pageMeta,
+} from '../../../../../data/demos/venue-event-space';
+
+const meta = pageMeta.corporate;
+const shot = gallery.find((item) => item.id === 'conference-theatre') ?? gallery[0];
+const av = included.find((entry) => entry.title === 'In-house AV');
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.corporate}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.corporate },
+    ]),
+  ]}
+>
+  <header class="bay cp-head">
+    <div class="wrap">
+      <p class="eyebrow">{corporatePage.eyebrow}</p>
+      <h1 class="cp-title">{corporatePage.heading}</h1>
+      <p class="lede cp-lede">{corporatePage.intro}</p>
+    </div>
+  </header>
+
+  <div class="bleed">
+    <DemoImage
+      demo="venue-event-space"
+      file={shot.photo.file}
+      subject={shot.photo.subject}
+      alt={shot.photo.alt}
+      ratio="21 / 9"
+      sizes="100vw"
+      widths={[900, 1400, 1920]}
+      eager
+    />
+  </div>
+
+  <!-- ── Configurations ──────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="fmt-h">
+    <div class="wrap">
+      <h2 id="fmt-h" class="section-title">{corporatePage.formatsHeading}</h2>
+      <hr class="rule" />
+      <ul class="formats">
+        {corporatePage.formats.map((format) => (
+          <li class="format">
+            <span class="format__cap">{format.capacity}</span>
+            <h3 class="format__name">{format.name}</h3>
+            <p class="format__detail">{format.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── AV, on the brick band ───────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="av-h">
+    <div class="wrap av">
+      <div>
+        <h2 id="av-h" class="section-title">{corporatePage.avHeading}</h2>
+        <hr class="rule" />
+        <p class="section-body section-body--paper">{corporatePage.avBody}</p>
+      </div>
+      {av && (
+        <div class="av__spec">
+          <h3 class="av__spec-h">{av.title}</h3>
+          <p class="av__spec-b">{av.detail}</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ── Film ────────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="film-h">
+    <div class="wrap film">
+      <div>
+        <h2 id="film-h" class="section-title">{corporatePage.filmHeading}</h2>
+        <hr class="rule" />
+        <p class="section-body">{corporatePage.filmBody}</p>
+      </div>
+      <ul class="film__points">
+        {corporatePage.filmPoints.map((point) => <li class="film__point">{point}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{corporatePage.closerHeading}</h2>
+        <p class="section-body">{corporatePage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.checkADate} data-analytics-event="date_cta_corporate">
+        {corporatePage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .cp-head {
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .cp-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    max-width: 16ch;
+  }
+  .cp-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+
+  .bleed {
+    width: 100%;
+  }
+  .bleed :global(img),
+  .bleed :global(picture) {
+    display: block;
+    width: 100%;
+  }
+
+  /* ── Configurations ───────────────────────────────────────────────── */
+  .formats {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2.25rem;
+  }
+  @media (min-width: 760px) {
+    .formats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem 3rem;
+    }
+  }
+  @media (min-width: 1120px) {
+    .formats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .format {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.35rem;
+  }
+  .format__cap {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .format__name {
+    margin-top: 0.85rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .format__detail {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-ink-dim);
+    max-width: 40ch;
+  }
+
+  /* ── AV ───────────────────────────────────────────────────────────── */
+  .av {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .av {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .av__spec {
+    border: 1px solid var(--paper-line);
+    padding: 1.75rem;
+  }
+  .av__spec-h {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--accent-paper);
+  }
+  .av__spec-b {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Film ─────────────────────────────────────────────────────────── */
+  .film {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .film {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .film__points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .film__point {
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+    line-height: 1.6;
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+</style>

@@ -1,0 +1,236 @@
+---
+// Vernon Street demo — About. The bake schedule is the page: it explains why
+// the counter is shut on a Monday, which is the single most common question
+// a bakery with a wholesale line gets asked.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/vernonChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/vernonJsonld';
+import { aboutPage, business, pageMeta } from '../../../../../data/demos/retail-catalogue-wholesale';
+
+const meta = pageMeta.about;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.about}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.about },
+    ]),
+  ]}
+>
+  <header class="bay ab-head">
+    <div class="wrap">
+      <p class="eyebrow">{aboutPage.eyebrow}</p>
+      <h1 class="ab-title">{aboutPage.heading}</h1>
+      <p class="lede ab-lede">{aboutPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay ab-facts" aria-labelledby="facts-h">
+    <div class="wrap">
+      <h2 id="facts-h" class="rule-h">{aboutPage.factsHeading}</h2>
+      <dl class="facts">
+        {aboutPage.facts.map((fact) => (
+          <div class="fact">
+            <dt class="fact__value">{fact.value}</dt>
+            <dd class="fact__label">{fact.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── The week ────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="week-h">
+    <div class="wrap">
+      <h2 id="week-h" class="section-title">{aboutPage.weekHeading}</h2>
+      <dl class="week">
+        {aboutPage.week.map((entry) => (
+          <div class="day">
+            <dt class="day__k">{entry.day}</dt>
+            <dd class="day__v">{entry.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Flour and people ────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="flour-h">
+    <div class="wrap story">
+      <div>
+        <h2 id="flour-h" class="section-title">{aboutPage.flourHeading}</h2>
+        <p class="section-body">{aboutPage.flourBody}</p>
+        <h2 class="section-title story__second">{aboutPage.peopleHeading}</h2>
+        <p class="section-body">{aboutPage.peopleBody}</p>
+      </div>
+      <DemoImage
+        demo="retail-catalogue-wholesale"
+        file="oven"
+        subject="Baker loading loaves into a deck oven with a peel, early morning, flour dust in the air"
+        alt="Loaves going into the deck oven at Vernon Street Bakehouse"
+        ratio="4 / 5"
+        sizes="(min-width: 940px) 40vw, 100vw"
+        widths={[480, 720, 960]}
+        class="story__shot"
+      />
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{aboutPage.ctaHeading}</h2>
+        <p class="section-body">{aboutPage.ctaBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.contact} data-analytics-event="contact_view_about">
+        {aboutPage.ctaLabel}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .on-paper .section-body {
+    color: var(--on-paper-dim);
+  }
+  .rule-h {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rule-h::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-line);
+  }
+  .ab-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ab-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+    max-width: 16ch;
+  }
+  .ab-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+
+  .ab-facts {
+    padding-top: 0;
+  }
+  .facts {
+    margin: 1.75rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem 1.5rem;
+  }
+  @media (min-width: 820px) {
+    .facts {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .fact__value {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 1.7rem + 2.2vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .fact__label {
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── The week ─────────────────────────────────────────────────────── */
+  .week {
+    margin: 2.25rem 0 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .day {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.05rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  @media (min-width: 700px) {
+    .day {
+      grid-template-columns: 9rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .day__k {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+  }
+  .day__v {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+    max-width: 58ch;
+  }
+
+  /* ── Story ────────────────────────────────────────────────────────── */
+  .story {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 940px) {
+    .story {
+      grid-template-columns: 1fr 0.7fr;
+      gap: 3.5rem;
+    }
+  }
+  .story__second {
+    margin-top: 2.5rem;
+  }
+  .story :global(.story__shot) {
+    border: 1px solid var(--ink-line);
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

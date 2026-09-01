@@ -1,0 +1,364 @@
+---
+// Saffron Table demo — Catering Packages. Five packages priced per head with
+// a minimum on every one, which is the pair of numbers a planner is actually
+// comparing between caterers.
+//
+// The allergen section is written the same way the bakery demo's is: this is
+// one kitchen, and the site says what it can and cannot guarantee rather than
+// implying a separate allergen-free line that does not exist.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/saffronChrome';
+import { cateringService, demoBreadcrumbs } from '../../../../../lib/demos/saffronJsonld';
+import {
+  business,
+  cateringPage,
+  formatPrice,
+  packages,
+  pageMeta,
+  traySizes,
+} from '../../../../../data/demos/fnb-catering-events';
+
+const meta = pageMeta.catering;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.catering}
+  jsonLd={[
+    cateringService(routes.catering, routes.home),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.catering },
+    ]),
+  ]}
+>
+  <header class="bay ct-head">
+    <div class="wrap">
+      <p class="eyebrow">{cateringPage.eyebrow}</p>
+      <h1 class="ct-title">{cateringPage.heading}</h1>
+      <p class="lede ct-lede">{cateringPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay ct-packs" aria-label={cateringPage.heading}>
+    <div class="wrap">
+      <ul class="packs">
+        {packages.map((pack) => (
+          <li class="pack" id={pack.id}>
+            <div class="pack__head">
+              <h2 class="pack__name">{pack.name}</h2>
+              <p class="pack__price">
+                <span class="pack__figure">${formatPrice(pack.perHead)}</span>
+                <span class="pack__per">{cateringPage.perHeadLabel}</span>
+              </p>
+            </div>
+            <p class="pack__summary">{pack.summary}</p>
+            <dl class="pack__spec">
+              <div>
+                <dt class="spec__k">{cateringPage.minimumLabel}</dt>
+                <dd class="spec__v">{pack.minimum} guests</dd>
+              </div>
+              <div>
+                <dt class="spec__k">{cateringPage.styleLabel}</dt>
+                <dd class="spec__v">{pack.serviceStyle}</dd>
+              </div>
+              <div>
+                <dt class="spec__k">{cateringPage.leadLabel}</dt>
+                <dd class="spec__v">{pack.leadTime}</dd>
+              </div>
+            </dl>
+            <h3 class="pack__sub">{cateringPage.includesLabel}</h3>
+            <ul class="pack__list">
+              {pack.includes.map((line) => <li class="pack__item">{line}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Trays, on the cream band ────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="trays-h">
+    <div class="wrap">
+      <h2 id="trays-h" class="section-title">{cateringPage.traysHeading}</h2>
+      <p class="section-body section-body--paper">{cateringPage.traysNote}</p>
+      <dl class="trays">
+        {traySizes.map((tray) => (
+          <div class="tray">
+            <dt class="tray__k">{tray.size}</dt>
+            <dd class="tray__v">
+              <span class="tray__serves">{cateringPage.servesLabel} {tray.serves}</span>
+              <span class="tray__note">{tray.note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Dietary and deposits ────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="diet-h">
+    <div class="wrap two">
+      <div>
+        <h2 id="diet-h" class="section-title">{cateringPage.dietaryHeading}</h2>
+        <p class="section-body">{cateringPage.dietaryBody}</p>
+      </div>
+      <div>
+        <h2 class="section-title">{cateringPage.depositHeading}</h2>
+        <p class="section-body">{cateringPage.depositBody}</p>
+        <dl class="terms">
+          {cateringPage.depositTerms.map((term) => (
+            <div class="term">
+              <dt class="term__k">{term.label}</dt>
+              <dd class="term__v">{term.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{cateringPage.closerHeading}</h2>
+        <p class="section-body">{cateringPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.consultation} data-analytics-event="consultation_cta_catering">
+        {cateringPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .ct-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ct-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 17ch;
+  }
+  .ct-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+  .ct-packs {
+    padding-top: 0;
+  }
+
+  /* ── Packages ─────────────────────────────────────────────────────── */
+  .packs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 840px) {
+    .packs {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+    }
+  }
+  .pack {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.5rem;
+    display: grid;
+    align-content: start;
+  }
+  .pack__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem 1.5rem;
+  }
+  .pack__name {
+    font-size: clamp(1.6rem, 1.35rem + 1.1vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .pack__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .pack__figure {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .pack__per {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .pack__summary {
+    margin-top: 1rem;
+    color: var(--on-ink-dim);
+    max-width: 44ch;
+  }
+  .pack__spec {
+    margin: 1.35rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    padding-block: 1.1rem;
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .spec__k {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .spec__v {
+    margin: 0.3rem 0 0;
+    font-size: var(--fs-small);
+    font-weight: 700;
+  }
+  .pack__sub {
+    margin-top: 1.5rem;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .pack__list {
+    list-style: none;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .pack__item {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+  .pack__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.8rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ── Trays ────────────────────────────────────────────────────────── */
+  .trays {
+    margin: 2rem 0 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .tray {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  @media (min-width: 720px) {
+    .tray {
+      grid-template-columns: 8rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .tray__k {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+  }
+  .tray__v {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.25rem;
+  }
+  .tray__serves {
+    font-weight: 700;
+    font-size: var(--fs-small);
+  }
+  .tray__note {
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Dietary and deposits ─────────────────────────────────────────── */
+  .two {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .two {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .terms {
+    margin: 1.75rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .term {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .term__k {
+    font-size: var(--fs-small);
+  }
+  .term__v {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+// Fernrock demo — order ahead. The E-Commerce line item.
+//
+// The argument specific to a cafe: the milk, sweetness and ice modifiers a
+// customer picks online are the SAME modifiers the till uses, so the ticket
+// prints complete and nobody at the bar has to call your name to ask.
+//
+// Deliberately NOT built: a fake cart, a fake modifier picker, a fake total.
+// The slot is where the real Clover ordering iframe goes.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/fernrockChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/fernrockJsonld';
+import {
+  business,
+  customisation,
+  orderPage,
+  pageMeta,
+} from '../../../../../data/demos/fnb-cafe-order-ahead';
+
+const meta = pageMeta.order;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.order}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.order },
+    ]),
+  ]}
+>
+  <header class="bay or-head">
+    <div class="wrap">
+      <p class="eyebrow">{orderPage.eyebrow}</p>
+      <h1 class="or-title">{orderPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede or-lede">{orderPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="wrap" aria-label={orderPage.embedLabel}>
+    <div class="embed">
+      <span class="embed__corner" aria-hidden="true"></span>
+      <div class="embed__center">
+        <p class="embed__label">{orderPage.embedLabel}</p>
+        <p class="embed__note">{orderPage.embedNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The modifiers, which is the cafe-specific argument ──────────── -->
+  <section class="bay on-paper" aria-labelledby="mod-h">
+    <div class="wrap">
+      <h2 id="mod-h" class="section-title">{orderPage.modifiersHeading}</h2>
+      <hr class="rule" />
+      <p class="mod__body">{orderPage.modifiersBody}</p>
+      <dl class="cust">
+        {customisation.groups.map((group) => (
+          <div class="cust__group">
+            <dt class="cust__label">{group.label}</dt>
+            <dd class="cust__options">
+              <ul>
+                {group.options.map((option) => <li class="chip">{option}</li>)}
+              </ul>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── What runs it, and pickup ────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="clover-h">
+    <div class="wrap or-grid">
+      <div>
+        <h2 id="clover-h" class="section-title">{orderPage.explainerHeading}</h2>
+        <hr class="rule" />
+        <p class="or__body">{orderPage.explainerBody}</p>
+      </div>
+      <div>
+        <h2 class="section-title">{orderPage.stepsHeading}</h2>
+        <hr class="rule" />
+        <ol class="steps">
+          {orderPage.steps.map((step) => (
+            <li class="step">
+              <h3 class="step__title">{step.title}</h3>
+              <p class="step__detail">{step.detail}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Phone fallback ──────────────────────────────────────────────── -->
+  <section class="bay fallback">
+    <div class="wrap fallback__in">
+      <div>
+        <h2 class="section-title">{orderPage.fallbackHeading}</h2>
+        <p class="fallback__body">{orderPage.fallbackBody}</p>
+      </div>
+      <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_order">
+        {orderPage.fallbackCta} — {business.phone}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+  .or-head {
+    padding-bottom: 0;
+  }
+  .or-title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    max-width: 16ch;
+  }
+  .or-lede {
+    margin-top: 1.35rem;
+    max-width: 48ch;
+  }
+
+  .embed {
+    position: relative;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    min-height: 28rem;
+    height: clamp(28rem, 58vh, 38rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    border: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--radius);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 16px,
+        color-mix(in srgb, var(--accent) 5%, transparent) 16px 17px
+      ),
+      var(--ink-raised);
+  }
+  .embed__corner {
+    position: absolute;
+    top: 1.1rem;
+    left: 1.1rem;
+    width: 2rem;
+    height: 2rem;
+    border-top: 3px solid var(--accent);
+    border-left: 3px solid var(--accent);
+    border-top-left-radius: 10px;
+  }
+  .embed__center {
+    max-width: 32ch;
+  }
+  .embed__label {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+    line-height: 1.4;
+  }
+  .embed__note {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .mod__body {
+    margin-top: 1.25rem;
+    max-width: 54ch;
+    color: var(--on-paper-dim);
+  }
+  .cust {
+    margin: 2.25rem 0 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 760px) {
+    .cust {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+  .cust__label {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--accent-paper);
+  }
+  .cust__options {
+    margin: 0.9rem 0 0;
+  }
+  .cust__options ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .chip {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    font-size: var(--fs-small);
+    color: var(--on-paper);
+  }
+
+  .or-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .or-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .or__body {
+    margin-top: 1.5rem;
+    max-width: 48ch;
+    color: var(--on-ink-dim);
+  }
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.4rem;
+  }
+  .step {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: 0.2rem 1rem;
+  }
+  .step::before {
+    content: counter(step);
+    grid-row: 1 / span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .step__title {
+    font-size: var(--fs-body);
+    font-weight: 700;
+    align-self: center;
+  }
+  .step__detail {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+    max-width: 38ch;
+  }
+
+  .fallback {
+    border-top: 2px solid var(--ink-line);
+    background: var(--ink-raised);
+  }
+  .fallback__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .fallback__body {
+    margin-top: 0.7rem;
+    max-width: 42ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+</style>

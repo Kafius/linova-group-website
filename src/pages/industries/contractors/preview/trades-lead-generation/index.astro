@@ -1,0 +1,440 @@
+---
+// Bright Line demo — home.
+//
+// The register is trades credibility: white, black, one bold orange, badges
+// above the fold and the phone number in the nav rather than behind a link.
+// Local SEO is the build, so the four towns appear in prose here, not just in
+// a footer list — the same four the schema areaServed names.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/brightLineChrome';
+import { housePainter } from '../../../../../lib/demos/brightLineJsonld';
+import {
+  business,
+  credentials,
+  home,
+  pageMeta,
+  projects,
+  serviceArea,
+  services,
+} from '../../../../../data/demos/trades-lead-generation';
+
+const meta = pageMeta.home;
+const featured = projects.slice(0, 3);
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[housePainter(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="lede hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.estimate} data-analytics-event="estimate_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="hero__call" href={business.phoneHref} data-analytics-event="phone_tap_hero">
+            <span class="hero__call-k">{home.callLabel}</span>
+            <span class="hero__call-v">{business.phone}</span>
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="trades-lead-generation"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 920px) 46vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Trust badges, on the black band ─────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="cred-h">
+    <div class="wrap">
+      <h2 id="cred-h" class="section-title">{home.credentialsHeading}</h2>
+      <p class="section-body section-body--paper">{home.credentialsBody}</p>
+      <ul class="creds">
+        {credentials.map((credential) => (
+          <li class="cred">
+            <h3 class="cred__name">{credential.name}</h3>
+            <p class="cred__detail">{credential.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Services ────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="svc-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="svc-h" class="section-title">{home.servicesHeading}</h2>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_home">
+          {home.servicesCta}
+        </a>
+      </div>
+      <ul class="svc-list">
+        {services.map((service) => (
+          <li>
+            <a class="svc" href={`${routes.services}#${service.id}`} data-analytics-event="service_view_home">
+              <span class="svc__name">{service.name}</span>
+              <span class="svc__summary">{service.summary}</span>
+              <span class="svc__price">{service.typical}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Work preview ────────────────────────────────────────────────── -->
+  <section class="bay work-bay" aria-labelledby="work-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="work-h" class="section-title">{home.workHeading}</h2>
+          <p class="section-body">{home.workBody}</p>
+        </div>
+        <a class="btn btn--line" href={routes.work} data-analytics-event="work_view_home">
+          {home.workCta}
+        </a>
+      </div>
+      <ul class="cards">
+        {featured.map((project) => (
+          <li class="card">
+            <DemoImage
+              demo="trades-lead-generation"
+              file={project.after.file}
+              subject={project.after.subject}
+              alt={project.after.alt}
+              ratio="4 / 3"
+              sizes="(min-width: 900px) 31vw, 100vw"
+              widths={[420, 640, 860]}
+              class="card__shot"
+            />
+            <h3 class="card__title">{project.title}</h3>
+            <p class="card__town">{project.town}</p>
+            <p class="card__scope">{project.scope}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Service area — the local SEO block ──────────────────────────── -->
+  <section class="bay" aria-labelledby="area-h">
+    <div class="wrap">
+      <h2 id="area-h" class="section-title">{home.areaHeading}</h2>
+      <p class="section-body">{home.areaBody}</p>
+      <dl class="areas">
+        {serviceArea.map((area) => (
+          <div class="area">
+            <dt class="area__town">{area.town}</dt>
+            <dd class="area__note">{area.note}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Warranty ────────────────────────────────────────────────────── -->
+  <section class="bay warranty" aria-labelledby="war-h">
+    <div class="wrap warranty__in">
+      <h2 id="war-h" class="section-title">{home.warrantyHeading}</h2>
+      <p class="warranty__body">{home.warrantyBody}</p>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="section-body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.estimate} data-analytics-event="estimate_cta_closer">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 920px) {
+    .hero__in {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    max-width: 15ch;
+  }
+  .hero__body {
+    margin-top: 1.35rem;
+    max-width: 46ch;
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+  }
+  .hero__call {
+    display: grid;
+    gap: 0.15rem;
+    text-decoration: none;
+  }
+  .hero__call-k {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .hero__call-v {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.15rem + 0.9vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .hero__in :global(.hero__shot) {
+    border-radius: var(--radius);
+  }
+
+  /* ── Credentials ──────────────────────────────────────────────────── */
+  .creds {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--paper-line);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  @media (min-width: 760px) {
+    .creds {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1120px) {
+    .creds {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .cred {
+    padding: 1.6rem 1.5rem;
+    background: var(--paper);
+  }
+  .cred__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .cred__detail {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Services ─────────────────────────────────────────────────────── */
+  .svc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 700px) {
+    .svc-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1120px) {
+    .svc-list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .svc {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+  .svc:hover {
+    border-color: var(--accent);
+  }
+  .svc__name {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .svc__summary {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+  .svc__price {
+    margin-top: 0.3rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ── Work ─────────────────────────────────────────────────────────── */
+  .work-bay {
+    background: var(--ink-raised);
+    border-block: 1px solid var(--ink-line);
+  }
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 900px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .card :global(.card__shot) {
+    border-radius: var(--radius);
+  }
+  .card__title {
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .card__town {
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .card__scope {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Service area ─────────────────────────────────────────────────── */
+  .areas {
+    margin: 2rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .area {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 720px) {
+    .area {
+      grid-template-columns: 10rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .area__town {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .area__note {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+    max-width: 62ch;
+  }
+
+  /* ── Warranty ─────────────────────────────────────────────────────── */
+  .warranty {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .warranty__in {
+    max-width: 68ch;
+  }
+  .warranty__body {
+    margin-top: 1rem;
+    font-size: clamp(1.02rem, 0.98rem + 0.35vw, 1.18rem);
+    color: var(--on-ink-dim);
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

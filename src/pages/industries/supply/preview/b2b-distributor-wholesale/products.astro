@@ -1,0 +1,283 @@
+---
+// Grandview demo — Product Categories.
+//
+// ── CMS-DRIVEN ───────────────────────────────────────────────────────────
+// Every category below is a `productCategory` document — see
+// b2b-distributor-wholesale.cms.ts. A buyer edits the line count, the pack
+// formats and the representative lines when the range moves.
+//
+// The model has NO price field, and this page has no price on it and no cart.
+// That is the e-commerce flag being false expressed as a design decision
+// rather than a missing feature, and the "why there are no prices here"
+// section says so to the customer in their own terms.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/grandviewChrome';
+import { catalogue, demoBreadcrumbs } from '../../../../../lib/demos/grandviewJsonld';
+import {
+  business,
+  categories,
+  formatNumber,
+  ordersDesk,
+  pageMeta,
+  productsPage,
+  storageLabels,
+  totalLines,
+} from '../../../../../data/demos/b2b-distributor-wholesale';
+
+const meta = pageMeta.products;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.products}
+  jsonLd={[
+    catalogue(routes.products),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.products },
+    ]),
+  ]}
+>
+  <header class="bay pr-head">
+    <div class="wrap">
+      <p class="kicker">{productsPage.eyebrow}</p>
+      <h1 class="pr-title">{productsPage.heading}</h1>
+      <p class="lede pr-lede">{productsPage.intro}</p>
+      <p class="pr-total">{formatNumber(totalLines())} {productsPage.linesLabel}</p>
+    </div>
+  </header>
+
+  <section class="bay pr-list" aria-label={productsPage.heading}>
+    <div class="wrap">
+      {categories.map((category) => (
+        <article class="cat" id={category.id} aria-labelledby={`h-${category.id}`}>
+          <div class="cat__head">
+            <h2 class="cat__name" id={`h-${category.id}`}>{category.name}</h2>
+            <p class="cat__blurb">{category.blurb}</p>
+            <dl class="cat__spec">
+              <div>
+                <dt class="spec__k">{productsPage.storageLabel}</dt>
+                <dd class="spec__v">{storageLabels[category.storage]}</dd>
+              </div>
+              <div>
+                <dt class="spec__k">{productsPage.linesLabel}</dt>
+                <dd class="spec__v">{formatNumber(category.lines)}</dd>
+              </div>
+              <div>
+                <dt class="spec__k">{productsPage.leadLabel}</dt>
+                <dd class="spec__v">{category.leadTime}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="cat__body">
+            <h3 class="cat__sub">{productsPage.packsLabel}</h3>
+            <ul class="packs">
+              {category.packs.map((pack) => <li class="pack">{pack}</li>)}
+            </ul>
+            <h3 class="cat__sub cat__sub--spaced">{productsPage.examplesLabel}</h3>
+            <ul class="examples">
+              {category.examples.map((example) => <li class="example">{example}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ── The honest answer about prices ──────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="np-h">
+    <div class="wrap np">
+      <h2 id="np-h" class="section-title">{productsPage.noPriceHeading}</h2>
+      <p class="np__body">{productsPage.noPriceBody}</p>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{productsPage.fullListHeading}</h2>
+        <p class="section-body">{productsPage.fullListBody}</p>
+        <a class="closer__phone" href={ordersDesk.phoneHref} data-analytics-event="phone_tap_products">
+          {ordersDesk.phone}
+        </a>
+      </div>
+      <a class="btn btn--fill" href={routes.apply} data-analytics-event="apply_cta_products">
+        {productsPage.applyCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: 56ch;
+    color: var(--on-ink-dim);
+  }
+  .pr-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .pr-title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+  }
+  .pr-lede {
+    margin-top: 1.35rem;
+    max-width: 54ch;
+  }
+  .pr-total {
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pr-list {
+    padding-top: 0;
+  }
+
+  .cat {
+    padding: clamp(1.75rem, 4vw, 2.5rem) 0;
+    border-top: 1px solid var(--ink-line);
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 940px) {
+    .cat {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .cat__name {
+    font-size: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .cat__blurb {
+    margin-top: 0.9rem;
+    color: var(--on-ink-dim);
+    max-width: 46ch;
+  }
+  .cat__spec {
+    margin: 1.35rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--ink-line);
+  }
+  .spec__k {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .spec__v {
+    margin: 0.3rem 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .cat__body {
+    margin-top: 1.75rem;
+  }
+  @media (min-width: 940px) {
+    .cat__body {
+      margin-top: 0;
+    }
+  }
+  .cat__sub {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .cat__sub--spaced {
+    margin-top: 1.75rem;
+  }
+  .packs {
+    list-style: none;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .pack {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+  .examples {
+    list-style: none;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .example {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .np {
+    max-width: 70ch;
+  }
+  .np__body {
+    margin-top: 1rem;
+    font-size: clamp(1.02rem, 0.98rem + 0.35vw, 1.16rem);
+    color: var(--on-paper-dim);
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__phone {
+    display: inline-block;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+</style>

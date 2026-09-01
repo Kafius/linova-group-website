@@ -1,0 +1,279 @@
+---
+// Almond & Rye demo — Daily Menu. The board, with the pre-order items marked,
+// which is the hook that sends somebody to the pre-order page rather than
+// turning up at ten for a loaf that was never going to be there.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/almondRyeChrome';
+import { boardMenu, demoBreadcrumbs } from '../../../../../lib/demos/almondRyeJsonld';
+import {
+  business,
+  dietaryLegend,
+  formatPrice,
+  itemsIn,
+  menuLines,
+  menuPage,
+  pageMeta,
+} from '../../../../../data/demos/fnb-bakery-pre-order';
+
+const meta = pageMeta.menu;
+const sections = menuLines.map((line) => ({ ...line, items: itemsIn(line.id) }));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.menu}
+  ogType="restaurant.restaurant"
+  jsonLd={[
+    boardMenu(routes.menu),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.menu },
+    ]),
+  ]}
+>
+  <header class="bay mn-head">
+    <div class="wrap">
+      <p class="eyebrow">{menuPage.eyebrow}</p>
+      <h1 class="mn-title">{menuPage.heading}</h1>
+      <p class="lede mn-lede">{menuPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay mn-list" aria-label={menuPage.heading}>
+    <div class="wrap">
+      <dl class="legend" aria-label={menuPage.legendLabel}>
+        {dietaryLegend.map((entry) => (
+          <div class="legend__pair">
+            <dt class="marker">{entry.marker}</dt>
+            <dd>{entry.label}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {sections.map((section) => (
+        <section class="line" aria-labelledby={`h-${section.id}`}>
+          <h2 class="line__name" id={`h-${section.id}`}>{section.name}</h2>
+          <p class="line__blurb">{section.blurb}</p>
+          <ul class="items">
+            {section.items.map((item) => (
+              <li class="item">
+                <div class="item__line">
+                  <h3 class="item__name">
+                    {item.name}
+                    {item.dietary?.length ? (
+                      <span class="item__markers">
+                        {item.dietary.map((marker) => (
+                          <abbr class="marker" title={dietaryLegend.find((e) => e.marker === marker)?.label}>
+                            {marker}
+                          </abbr>
+                        ))}
+                      </span>
+                    ) : null}
+                  </h3>
+                  <span class="item__price">${formatPrice(item.price)}</span>
+                </div>
+                <p class="item__desc">{item.description}</p>
+                <p class="item__meta">
+                  <span class="item__unit">
+                    <span class="item__k">{menuPage.unitLabel}</span> {item.unit}
+                  </span>
+                  {item.bakedOn && (
+                    <span class="item__baked">
+                      <span class="item__k">{menuPage.bakedLabel}</span> {item.bakedOn}
+                    </span>
+                  )}
+                </p>
+                {item.preOrderOnly && <p class="item__tag">{menuPage.preOrderTag}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+
+      <p class="mn-note">{menuPage.preOrderNote}</p>
+    </div>
+  </section>
+
+  <!-- ── When it is gone, on the berry band ──────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="out-h">
+    <div class="wrap out">
+      <div>
+        <h2 id="out-h" class="section-title">{menuPage.soldOutHeading}</h2>
+        <p class="section-body section-body--paper">{menuPage.soldOutBody}</p>
+      </div>
+      <a class="btn btn--line" href={routes.preOrder} data-analytics-event="order_cta_menu">
+        {menuPage.preOrderCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .mn-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .mn-title {
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+  .mn-lede {
+    margin-top: 1.35rem;
+    max-width: 52ch;
+  }
+  .mn-list {
+    padding-top: 0;
+  }
+
+  .legend {
+    margin: 0 0 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .legend__pair {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .legend__pair dd {
+    margin: 0;
+  }
+  .marker {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    padding: 0.3em 0.5em;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 999px;
+    color: var(--accent);
+    text-decoration: none;
+    vertical-align: 0.12em;
+  }
+
+  .line {
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .line__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.35rem + 1.2vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .line__blurb {
+    margin-top: 0.7rem;
+    max-width: 56ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .items {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 760px) {
+    .items {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem 3rem;
+    }
+  }
+  .item__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .item__name {
+    font-size: 1.08rem;
+    font-weight: 700;
+  }
+  .item__markers {
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-left: 0.45rem;
+  }
+  .item__price {
+    flex: none;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .item__desc {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-ink-dim);
+    max-width: 44ch;
+  }
+  .item__meta {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1.25rem;
+    font-size: 0.78rem;
+  }
+  .item__k {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    margin-right: 0.35rem;
+  }
+  .item__tag {
+    display: inline-block;
+    margin-top: 0.6rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .mn-note {
+    margin-top: 0.5rem;
+    max-width: 60ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .out {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

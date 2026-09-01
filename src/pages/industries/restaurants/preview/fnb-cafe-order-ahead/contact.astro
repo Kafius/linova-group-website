@@ -1,0 +1,284 @@
+---
+// Fernrock demo — contact and hours. No contact form: the order page takes
+// orders and the phone takes everything else, so a third inbox nobody watches
+// would help nobody.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/fernrockChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/fernrockJsonld';
+import {
+  business,
+  contact,
+  hours,
+  pageMeta,
+} from '../../../../../data/demos/fnb-cafe-order-ahead';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.contact;
+const hourRows = hours.map((day) => ({
+  day: day.day,
+  open: `${formatTime(day.open)} – ${formatTime(day.close)}`,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.contact}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.contact },
+    ]),
+  ]}
+>
+  <header class="bay ct-head">
+    <div class="wrap">
+      <p class="eyebrow">{contact.eyebrow}</p>
+      <h1 class="ct-title">{contact.heading}</h1>
+      <hr class="rule" />
+    </div>
+  </header>
+
+  <section class="wrap ct-grid">
+    <div class="details">
+      <div class="detail">
+        <h2 class="detail__h">{contact.addressHeading}</h2>
+        <address class="detail__address">
+          <span>{business.address.street}</span>
+          <span>{business.address.neighbourhood}</span>
+          <span>{business.address.city}, {business.address.region} {business.address.postalCode}</span>
+        </address>
+      </div>
+      <div class="detail">
+        <h2 class="detail__h">{contact.phoneHeading}</h2>
+        <a class="detail__phone" href={business.phoneHref} data-analytics-event="phone_tap_contact">
+          {business.phone}
+        </a>
+      </div>
+      <div class="detail">
+        <h2 class="detail__h">{contact.emailHeading}</h2>
+        <a class="detail__link" href={business.emailHref}>{business.email}</a>
+      </div>
+      <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_contact">
+        {contact.orderCta}
+      </a>
+    </div>
+
+    <div class="map" role="img" aria-label={contact.mapLabel}>
+      <span class="map__label">{contact.mapLabel}</span>
+      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="bay" aria-labelledby="hours-h">
+    <div class="wrap">
+      <h2 id="hours-h" class="section-title">{contact.hoursHeading}</h2>
+      <hr class="rule" />
+      <p class="note">{contact.hoursNote}</p>
+      <div class="hours-card">
+        <table class="hours">
+          <thead>
+            <tr>
+              <th scope="col">{contact.hoursTable.day}</th>
+              <th scope="col">{contact.hoursTable.open}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hourRows.map((row) => (
+              <tr>
+                <th scope="row">{row.day}</th>
+                <td>{row.open}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="bay on-paper" aria-labelledby="here-h">
+    <div class="wrap">
+      <h2 id="here-h" class="section-title">{contact.gettingHereHeading}</h2>
+      <hr class="rule" />
+      <dl class="here">
+        {contact.gettingHere.map((entry) => (
+          <div class="here__item">
+            <dt class="here__t">{entry.title}</dt>
+            <dd class="here__d">{entry.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+  .ct-head {
+    padding-bottom: 0;
+  }
+  .ct-title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    max-width: 16ch;
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 52ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .ct-grid {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .ct-grid {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .details {
+    display: grid;
+    gap: 2rem;
+    justify-items: start;
+  }
+  .detail__h {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .detail__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.15rem;
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+  }
+  .detail__phone {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.5rem + 1.3vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .detail__link {
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    text-underline-offset: 4px;
+  }
+
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 2px dashed color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    color: var(--accent);
+  }
+  .map__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* A rounded card rather than a bare rule-and-row table, which is the shape
+     the rest of this demo uses. */
+  .hours-card {
+    margin-top: 1.75rem;
+    max-width: 34rem;
+    padding: 0.5rem 1.4rem 0.75rem;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+  }
+  .hours {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .hours tbody tr:last-child th,
+  .hours tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .hours thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .hours tbody th {
+    font-weight: 500;
+  }
+  .hours td {
+    color: var(--on-ink-dim);
+    text-align: right;
+  }
+
+  .here {
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 800px) {
+    .here {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+    }
+  }
+  .here__item {
+    padding: 1.5rem;
+    border: 2px solid var(--paper-line);
+    border-radius: var(--radius);
+  }
+  .here__t {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .here__d {
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+</style>

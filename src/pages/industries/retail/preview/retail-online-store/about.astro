@@ -1,0 +1,209 @@
+---
+// Bramble & Bone demo — about. The nutrition consult is described and pointed
+// at the door and the phone, never at a form: booking is FALSE on this
+// playbook, so there is no calendar and no appointment flow anywhere here.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/brambleChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/brambleJsonld';
+import { about, business, pageMeta } from '../../../../../data/demos/retail-online-store';
+
+const meta = pageMeta.about;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.about}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.about },
+    ]),
+  ]}
+>
+  <header class="bay">
+    <div class="wrap">
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h1 class="about-title">{about.heading}</h1>
+      <hr class="rule" />
+      <div class="story">
+        {about.story.map((paragraph) => <p class="story__p">{paragraph}</p>)}
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Sourcing ────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="sourcing-h">
+    <div class="wrap sourcing">
+      <div>
+        <h2 id="sourcing-h" class="section-title">{about.sourcingHeading}</h2>
+        <hr class="rule" />
+        <p class="sourcing__body">{about.sourcingBody}</p>
+      </div>
+      <DemoImage
+        demo="retail-online-store"
+        file={about.sourcingPhoto.file}
+        subject={about.sourcingPhoto.subject}
+        alt={about.sourcingPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 900px) 44vw, 100vw"
+        widths={[560, 900, 1200]}
+        class="sourcing__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── The consult: no form, no calendar, on purpose ───────────────── -->
+  <section class="bay" aria-labelledby="consult-h">
+    <div class="wrap">
+      <div class="consult">
+        <h2 id="consult-h" class="section-title">{about.consultHeading}</h2>
+        <hr class="rule" />
+        <p class="consult__body">{about.consultBody}</p>
+        <p class="consult__note">{about.consultNote}</p>
+        <div class="consult__actions">
+          <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_consult">
+            {business.phone}
+          </a>
+          <a class="btn btn--line" href={routes.contact} data-analytics-event="contact_view_consult">
+            {about.consultDirectionsCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Behind the counter ──────────────────────────────────────────── -->
+  <section class="bay team-bay" aria-labelledby="team-h">
+    <div class="wrap">
+      <h2 id="team-h" class="section-title">{about.teamHeading}</h2>
+      <hr class="rule" />
+      <ul class="team">
+        {about.team.map((person) => (
+          <li class="person">
+            <DemoImage
+              demo="retail-online-store"
+              file={person.photo.file}
+              subject={person.photo.subject}
+              alt={person.photo.alt}
+              ratio="1 / 1"
+              sizes="(min-width: 760px) 40vw, 90vw"
+              widths={[400, 600, 800]}
+              class="person__shot"
+            />
+            <h3 class="person__name">{person.name}</h3>
+            <p class="person__role">{person.role}</p>
+            <p class="person__bio">{person.bio}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .about-title {
+    font-size: var(--fs-display);
+    max-width: 18ch;
+  }
+  .story {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.25rem;
+    max-width: 58ch;
+  }
+  .story__p {
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+
+  .sourcing {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .sourcing {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .sourcing__body {
+    margin-top: 1.5rem;
+    max-width: 44ch;
+    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+  .sourcing :global(.sourcing__shot) {
+    border-radius: 20px;
+  }
+
+  .consult {
+    max-width: 60ch;
+    padding: 2.25rem;
+    border: 1px solid var(--ink-line);
+    border-radius: 22px;
+    background: var(--ink-raised);
+  }
+  .consult__body {
+    margin-top: 1.5rem;
+    color: var(--on-ink-dim);
+  }
+  .consult__note {
+    margin-top: 1.25rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--accent);
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .consult__actions {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .team {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 760px) {
+    .team {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      max-width: 46rem;
+    }
+  }
+  .person :global(.person__shot) {
+    border-radius: 20px;
+  }
+  .person__name {
+    margin-top: 1.25rem;
+    font-size: var(--fs-heading);
+  }
+  .person__role {
+    margin-top: 0.3rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .person__bio {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+</style>

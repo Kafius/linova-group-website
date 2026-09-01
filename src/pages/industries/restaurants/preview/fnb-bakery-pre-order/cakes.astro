@@ -1,0 +1,690 @@
+---
+// Almond & Rye demo — Custom Cakes.
+//
+// ── AN ENQUIRY, NOT A CART ───────────────────────────────────────────────
+// E-commerce is TRUE on this playbook and the Clover slot is on the pre-order
+// page, one click away. It is deliberately NOT here. A custom cake is quoted:
+// the servings, the flavour and the decoration all move the price, and none
+// of them are settled at the point somebody fills this in. Putting a cake
+// behind a checkout would be taking money for something nobody has priced.
+//
+// So this is a form that ends in a quote, and the page says so twice.
+//
+// On a live build the submit handler emails the bakery:
+//
+//   const payload = new FormData(form);      // includes the reference photo
+//   await fetch(CAKE_ENDPOINT, { method: 'POST', body: payload });
+//
+// CAKE_ENDPOINT is an environment variable, never a literal in the bundle.
+// Nothing on this preview posts anywhere: it is a sample site.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/almondRyeChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/almondRyeJsonld';
+import {
+  business,
+  cakeFlavours,
+  cakeSizes,
+  cakesPage,
+  formatPrice,
+  pageMeta,
+} from '../../../../../data/demos/fnb-bakery-pre-order';
+
+const meta = pageMeta.cakes;
+const f = cakesPage.fields;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.cakes}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.cakes },
+    ]),
+  ]}
+>
+  <header class="bay ck-head">
+    <div class="wrap">
+      <p class="eyebrow">{cakesPage.eyebrow}</p>
+      <h1 class="ck-title">{cakesPage.heading}</h1>
+      <p class="lede ck-lede">{cakesPage.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── Sizes ───────────────────────────────────────────────────────── -->
+  <section class="bay ck-sizes" aria-labelledby="sz-h">
+    <div class="wrap">
+      <h2 id="sz-h" class="section-title">{cakesPage.sizesHeading}</h2>
+      <p class="section-body">{cakesPage.sizesNote}</p>
+      <table class="sizes">
+        <tbody>
+          {cakeSizes.map((size) => (
+            <tr>
+              <th scope="row" class="sizes__size">{size.size}</th>
+              <td class="sizes__serves">{cakesPage.servesLabel} {size.serves}</td>
+              <td class="sizes__price">
+                <span class="sizes__k">{cakesPage.fromLabel}</span>
+                <span class="sizes__v">${formatPrice(size.from)}</span>
+                <span class="sizes__k">{cakesPage.toLabel}</span>
+                <span class="sizes__v">${formatPrice(size.to)}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3 class="sub-h">{cakesPage.flavoursHeading}</h3>
+      <ul class="flavours">
+        {cakeFlavours.map((flavour) => <li class="flavour">{flavour}</li>)}
+      </ul>
+      <p class="note">{cakesPage.flavoursNote}</p>
+    </div>
+  </section>
+
+  <!-- ── Allergens and what we do not do, on the berry band ──────────── -->
+  <section class="bay on-paper" aria-labelledby="all-h">
+    <div class="wrap two">
+      <div>
+        <h2 id="all-h" class="section-title">{cakesPage.allergenHeading}</h2>
+        <p class="section-body section-body--paper">{cakesPage.allergenBody}</p>
+      </div>
+      <div>
+        <h2 class="section-title">{cakesPage.notHeading}</h2>
+        <p class="section-body section-body--paper">{cakesPage.notBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The enquiry ─────────────────────────────────────────────────── -->
+  <section class="bay ck-form" id="enquiry" aria-labelledby="fm-h">
+    <div class="wrap form-wrap">
+      <h2 id="fm-h" class="section-title">{cakesPage.formHeading}</h2>
+      <p class="section-body">{cakesPage.formIntro}</p>
+
+      <form class="form" id="cake-form" novalidate>
+        <p class="required-note">{cakesPage.requiredNote}</p>
+
+        <div class="errors" id="error-summary" role="alert" tabindex="-1" hidden>
+          <h3 class="errors__h">{cakesPage.errorSummaryHeading}</h3>
+          <ul class="errors__list" id="error-list"></ul>
+        </div>
+
+        <div class="fields">
+          <div class="split">
+            <p class="field">
+              <label class="field__label" for="occasion">{f.occasion.label}</label>
+              <select class="control" id="occasion" name="occasion" data-required data-error={f.occasion.error}>
+                <option value=""></option>
+                {f.occasion.options.map((option) => <option value={option}>{option}</option>)}
+              </select>
+              <span class="field__error" id="occasion-error"></span>
+            </p>
+            <p class="field">
+              <label class="field__label" for="servings">{f.servings.label}</label>
+              <span class="field__hint" id="servings-hint">{f.servings.hint}</span>
+              <select class="control" id="servings" name="servings" aria-describedby="servings-hint"
+                data-required data-error={f.servings.error}>
+                <option value=""></option>
+                {f.servings.options.map((option) => <option value={option}>{option}</option>)}
+              </select>
+              <span class="field__error" id="servings-error"></span>
+            </p>
+          </div>
+
+          <div class="split">
+            <p class="field">
+              <label class="field__label" for="flavour">{f.flavour.label}</label>
+              <span class="field__hint" id="flavour-hint">{f.flavour.hint}</span>
+              <select class="control" id="flavour" name="flavour" aria-describedby="flavour-hint"
+                data-required data-error={f.flavour.error}>
+                <option value=""></option>
+                {cakeFlavours.map((flavour) => <option value={flavour}>{flavour}</option>)}
+                <option value={f.flavour.undecided}>{f.flavour.undecided}</option>
+              </select>
+              <span class="field__error" id="flavour-error"></span>
+            </p>
+            <p class="field">
+              <label class="field__label" for="date">{f.date.label}</label>
+              <span class="field__hint" id="date-hint">{f.date.hint}</span>
+              <input class="control" type="date" id="date" name="date" aria-describedby="date-hint"
+                data-required data-error={f.date.error} />
+              <span class="field__error" id="date-error"></span>
+            </p>
+          </div>
+
+          <!-- ── Reference photo ─────────────────────────────────────── -->
+          <div class="field">
+            <span class="field__label" id="photo-label">{f.photo.label}</span>
+            <span class="field__hint" id="photo-hint">{f.photo.hint}</span>
+            <div class="photo">
+              <input class="photo__input" type="file" id="photo" name="photo" accept="image/*"
+                aria-labelledby="photo-label" aria-describedby="photo-hint" />
+              <label class="photo__button" for="photo">{f.photo.buttonLabel}</label>
+              <span class="photo__name" id="photo-name" data-chosen-label={f.photo.chosenLabel} aria-live="polite">
+                {f.photo.noneLabel}
+              </span>
+            </div>
+          </div>
+
+          <div class="split">
+            <p class="field">
+              <label class="field__label" for="name">{f.name.label}</label>
+              <input class="control" type="text" id="name" name="name" autocomplete="name"
+                data-required data-error={f.name.error} />
+              <span class="field__error" id="name-error"></span>
+            </p>
+            <p class="field">
+              <label class="field__label" for="email">{f.email.label}</label>
+              <span class="field__hint" id="email-hint">{f.email.hint}</span>
+              <input class="control" type="email" id="email" name="email" autocomplete="email"
+                aria-describedby="email-hint" data-required data-error={f.email.error} />
+              <span class="field__error" id="email-error"></span>
+            </p>
+          </div>
+
+          <p class="field">
+            <label class="field__label" for="phone">{f.phone.label}</label>
+            <span class="field__hint" id="phone-hint">{f.phone.hint}</span>
+            <input class="control" type="tel" id="phone" name="phone" autocomplete="tel" aria-describedby="phone-hint" />
+          </p>
+
+          <p class="field">
+            <label class="field__label" for="notes">{f.notes.label}</label>
+            <span class="field__hint" id="notes-hint">{f.notes.hint}</span>
+            <textarea class="control control--area" id="notes" name="notes" rows="3" aria-describedby="notes-hint"></textarea>
+          </p>
+        </div>
+
+        <button class="btn btn--fill submit" type="submit" data-analytics-event="cake_enquiry_submit">
+          {cakesPage.submitLabel}
+        </button>
+      </form>
+
+      <div class="done" id="cake-done" role="status" tabindex="-1" hidden>
+        <h3 class="done__h">{cakesPage.confirmation.heading}</h3>
+        <p class="done__b">{cakesPage.confirmation.body}</p>
+        <h4 class="done__sub">{cakesPage.confirmation.detailsHeading}</h4>
+        <dl class="summary" id="cake-summary" data-photo-label={cakesPage.confirmation.photoRow}></dl>
+        <p class="done__note">{cakesPage.confirmation.note}</p>
+        <div class="done__actions">
+          <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_cakes">
+            {cakesPage.confirmation.callLabel} — {business.phone}
+          </a>
+          <button class="btn btn--line" type="button" id="cake-reset">
+            {cakesPage.confirmation.resetLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // Validation and the photo name only — no network. See the handoff note at
+  // the top of this file.
+  const form = document.getElementById('cake-form') as HTMLFormElement | null;
+  const done = document.getElementById('cake-done');
+  const summary = document.getElementById('cake-summary');
+  const errorBox = document.getElementById('error-summary');
+  const errorList = document.getElementById('error-list');
+  const resetButton = document.getElementById('cake-reset');
+  const photo = document.getElementById('photo') as HTMLInputElement | null;
+  const photoName = document.getElementById('photo-name');
+
+  if (form && done && summary && errorBox && errorList && resetButton && photo && photoName) {
+    type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    const required = [...form.querySelectorAll<Control>('[data-required]')];
+    const noneLabel = photoName.textContent?.trim() || '';
+    const chosenLabel = photoName.dataset.chosenLabel || 'chosen';
+    const photoRowLabel = summary.dataset.photoLabel || 'Photo';
+
+    const emailLooksReal = (v: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    const labelText = (control: Control): string =>
+      (form.querySelector(`label[for="${control.id}"]`)?.textContent || control.name).trim();
+    const slotFor = (control: Control) => document.getElementById(`${control.id}-error`);
+
+    const clearError = (control: Control): void => {
+      control.removeAttribute('aria-invalid');
+      const slot = slotFor(control);
+      if (slot) slot.textContent = '';
+    };
+
+    required.forEach((control) => {
+      control.addEventListener('change', () => {
+        if (control.value.trim()) clearError(control);
+      });
+    });
+
+    const renderPhoto = (): void => {
+      const file = photo.files?.[0];
+      photoName.textContent = file ? `${file.name} ${chosenLabel}` : noneLabel;
+    };
+    photo.addEventListener('change', renderPhoto);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const failed: Control[] = [];
+      required.forEach((control) => {
+        clearError(control);
+        const value = control.value.trim();
+        const badEmail = control.getAttribute('type') === 'email' && !emailLooksReal(value);
+        if (!value || badEmail) {
+          control.setAttribute('aria-invalid', 'true');
+          const slot = slotFor(control);
+          if (slot) slot.textContent = control.dataset.error || '';
+          failed.push(control);
+        }
+      });
+
+      if (failed.length) {
+        errorList.innerHTML = '';
+        failed.forEach((control) => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `#${control.id}`;
+          link.textContent = `${labelText(control)} — ${control.dataset.error || ''}`;
+          link.addEventListener('click', (clickEvent) => {
+            clickEvent.preventDefault();
+            control.focus();
+          });
+          item.appendChild(link);
+          errorList.appendChild(item);
+        });
+        errorBox.hidden = false;
+        errorBox.focus();
+        return;
+      }
+
+      errorBox.hidden = true;
+      const data = new FormData(form);
+      summary.innerHTML = '';
+      const row = (key: string, value: string): void => {
+        const wrap = document.createElement('div');
+        wrap.className = 'summary__row';
+        const dt = document.createElement('dt');
+        dt.className = 'summary__k';
+        dt.textContent = key;
+        const dd = document.createElement('dd');
+        dd.className = 'summary__v';
+        dd.textContent = value;
+        wrap.append(dt, dd);
+        summary.appendChild(wrap);
+      };
+
+      form.querySelectorAll<Control>('[name]').forEach((control) => {
+        if (control.getAttribute('type') === 'file') return;
+        const value = String(data.get(control.name) || '').trim();
+        if (value) row(labelText(control), value);
+      });
+      const file = photo.files?.[0];
+      if (file) row(photoRowLabel, file.name);
+
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+      done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      required.forEach(clearError);
+      renderPhoto();
+      done.hidden = true;
+      form.hidden = false;
+      errorBox.hidden = true;
+      form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .sub-h {
+    margin-top: 2.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 58ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .ck-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ck-title {
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 18ch;
+  }
+  .ck-lede {
+    margin-top: 1.35rem;
+    max-width: 54ch;
+  }
+  .ck-sizes {
+    padding-top: 0;
+  }
+
+  .sizes {
+    margin-top: 1.75rem;
+    width: 100%;
+    max-width: 44rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .sizes th,
+  .sizes td {
+    text-align: left;
+    padding: 0.85rem 1rem 0.85rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    vertical-align: baseline;
+  }
+  .sizes tr:first-child th,
+  .sizes tr:first-child td {
+    border-top: 1px solid var(--ink-line);
+  }
+  .sizes__size {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: 7rem;
+  }
+  .sizes__serves {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .sizes__price {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .sizes__k {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    margin: 0 0.3rem;
+  }
+  .sizes__v {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .flavours {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .flavour {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--ink-line);
+    border-radius: 999px;
+    background: var(--ink-raised);
+    font-size: var(--fs-small);
+  }
+
+  .two {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .two {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  /* ── The enquiry ──────────────────────────────────────────────────── */
+  .ck-form {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .form-wrap {
+    max-width: 52rem;
+  }
+  .required-note {
+    margin-top: 1.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .fields {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 1.35rem;
+  }
+  .split {
+    display: grid;
+    gap: 1.35rem;
+  }
+  @media (min-width: 660px) {
+    .split {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+  }
+  .field__label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .field__hint {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--on-ink-dim);
+  }
+  .control {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .control--area {
+    resize: vertical;
+    min-height: 4.5rem;
+  }
+  .control:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .control[aria-invalid='true'] {
+    border-color: var(--accent);
+    border-left-width: 3px;
+  }
+  /* The error line is reserved whether or not it holds an error, so clearing
+     one on blur cannot move the submit button out from under a cursor. */
+  .field__error {
+    display: block;
+    min-height: 1.3em;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .photo {
+    margin-top: 0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  /* Visually hidden but focusable, so the label is the button and the ring
+     lands on it. */
+  .photo__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .photo__button {
+    display: inline-block;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--accent);
+    font-size: var(--fs-small);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .photo__button:hover {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .photo__input:focus-visible + .photo__button {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .photo__name {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    word-break: break-word;
+  }
+
+  .errors {
+    margin-top: 1.25rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: var(--radius);
+    background: var(--ink);
+  }
+  .errors:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .errors__h {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .errors__list {
+    margin: 0.7rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--fs-small);
+  }
+  .submit {
+    margin-top: 1.75rem;
+  }
+
+  .done {
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--ink);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .done:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .done__h {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 600;
+  }
+  .done__b {
+    margin-top: 0.9rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .done__sub {
+    margin-top: 1.75rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .summary {
+    margin: 0.9rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary :global(.summary__row) {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 560px) {
+    .summary :global(.summary__row) {
+      grid-template-columns: 11rem 1fr;
+    }
+  }
+  .summary :global(.summary__k) {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .summary :global(.summary__v) {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .done__note {
+    margin-top: 1.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 52ch;
+  }
+  .done__actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

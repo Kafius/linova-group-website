@@ -1,0 +1,223 @@
+---
+// Redline demo — why us. The trust page an independent shop lives on: how
+// estimates work, what they will tell you not to fix, and the licences.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/redlineChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/redlineJsonld';
+import { business, pageMeta, whyUs } from '../../../../../data/demos/automotive-book-a-bay';
+
+const meta = pageMeta.whyUs;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.whyUs}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.whyUs },
+    ]),
+  ]}
+>
+  <header class="bay why-head">
+    <div class="wrap">
+      <p class="eyebrow">{whyUs.eyebrow}</p>
+      <h1 class="why-title">{whyUs.heading}</h1>
+      <hr class="rule" />
+      <p class="lede why-lede">{whyUs.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The four commitments ────────────────────────────────────────── -->
+  <section class="bay" aria-label={whyUs.heading}>
+    <div class="wrap">
+      <ol class="pillars">
+        {whyUs.pillars.map((pillar, i) => (
+          <li class="pillar">
+            <span class="pillar__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h2 class="pillar__title">{pillar.title}</h2>
+              <p class="pillar__detail">{pillar.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Licences ────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="credits-h">
+    <div class="wrap credits-grid">
+      <div>
+        <h2 id="credits-h" class="section-title">{whyUs.creditHeading}</h2>
+        <hr class="rule" />
+        <dl class="credits">
+          {whyUs.credits.map((credit) => (
+            <div class="credit">
+              <dt class="credit__label">{credit.label}</dt>
+              <dd class="credit__detail">{credit.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <DemoImage
+        demo="automotive-book-a-bay"
+        file={whyUs.photo.file}
+        subject={whyUs.photo.subject}
+        alt={whyUs.photo.alt}
+        ratio="4 / 5"
+        sizes="(min-width: 900px) 38vw, 100vw"
+        widths={[480, 720, 960]}
+      />
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{whyUs.closerHeading}</h2>
+        <p class="closer__body">{whyUs.closerBody}</p>
+      </div>
+      <div class="closer__actions">
+        <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_whyus">
+          {whyUs.closerCta}
+        </a>
+        <a class="btn btn--line" href={business.phoneHref} data-analytics-event="phone_tap_whyus">
+          {business.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+  }
+  .why-head {
+    padding-bottom: 0;
+  }
+  .why-title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    max-width: 14ch;
+  }
+  .why-lede {
+    margin-top: 1.25rem;
+    max-width: 52ch;
+  }
+
+  .pillars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .pillar {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .pillar:first-child {
+    border-top: 1px solid var(--ink-line);
+  }
+  @media (min-width: 760px) {
+    .pillar {
+      grid-template-columns: 5rem minmax(0, 1fr);
+      gap: 2.5rem;
+      padding: 2.25rem 0;
+    }
+  }
+  .pillar__num {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .pillar__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .pillar__detail {
+    margin-top: 0.65rem;
+    max-width: 58ch;
+    color: var(--on-ink-dim);
+  }
+
+  .credits-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .credits-grid {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      gap: 3.5rem;
+    }
+  }
+  .credits {
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 620px) {
+    .credits {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+  .credit {
+    padding-left: 1rem;
+    border-left: 3px solid var(--accent-paper);
+  }
+  .credit__label {
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .credit__detail {
+    margin: 0.4rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-paper-dim);
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+  }
+  .closer__body {
+    margin-top: 0.6rem;
+    max-width: 44ch;
+    color: var(--on-ink-dim);
+  }
+  .closer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

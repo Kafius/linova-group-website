@@ -1,0 +1,357 @@
+---
+// Saffron Table demo — home. The fork sends a hungry person and an event
+// planner different ways, and the two cards are written so that each one is
+// obviously not for the other reader.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/saffronChrome';
+import { foodEstablishment } from '../../../../../lib/demos/saffronJsonld';
+import {
+  home,
+  pageMeta,
+  serviceArea,
+  traySizes,
+} from '../../../../../data/demos/fnb-catering-events';
+
+const meta = pageMeta.home;
+const forkRoutes: Record<string, string> = { menu: routes.menu, catering: routes.catering };
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  ogType="restaurant.restaurant"
+  jsonLd={[foodEstablishment(routes.home, routes.menu, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="lede hero__body">{home.heroBody}</p>
+      </div>
+      <DemoImage
+        demo="fnb-catering-events"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 920px) 46vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── The fork ────────────────────────────────────────────────────── -->
+  <section class="bay fork-bay" aria-labelledby="fork-h">
+    <div class="wrap">
+      <h2 id="fork-h" class="rule-h">{home.forkHeading}</h2>
+      <ul class="fork">
+        {home.fork.map((path) => (
+          <li class:list={['path', `path--${path.id}`]}>
+            <p class="path__kicker">{path.kicker}</p>
+            <h3 class="path__title">{path.title}</h3>
+            <p class="path__body">{path.body}</p>
+            <ul class="path__points">
+              {path.points.map((point) => <li class="path__point">{point}</li>)}
+            </ul>
+            <a
+              class:list={['btn', path.id === 'takeout' ? 'btn--fill' : 'btn--line']}
+              href={forkRoutes[path.href]}
+              data-analytics-event={`${path.id}_path_home`}
+            >
+              {path.cta}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Range and trays, on the cream band ──────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="range-h">
+    <div class="wrap">
+      <h2 id="range-h" class="section-title">{home.rangeHeading}</h2>
+      <p class="section-body section-body--paper">{home.rangeBody}</p>
+      <h3 class="sub-h">{home.raysHeading}</h3>
+      <dl class="trays">
+        {traySizes.map((tray) => (
+          <div class="tray">
+            <dt class="tray__k">{tray.size}</dt>
+            <dd class="tray__v">
+              <span class="tray__serves">{tray.serves}</span>
+              <span class="tray__note">{tray.note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Service area ────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="area-h">
+    <div class="wrap area">
+      <div>
+        <h2 id="area-h" class="section-title">{home.areaHeading}</h2>
+        <p class="section-body">{home.areaBody}</p>
+      </div>
+      <ul class="area__list">
+        {serviceArea.map((city) => <li class="area__city">{city}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="section-body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.consultation} data-analytics-event="consultation_cta_home">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .sub-h {
+    margin-top: 2.5rem;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+  }
+  /* A heading with a gold hairline running off it — the device this demo
+     repeats instead of a border or a shadow. */
+  .rule-h {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rule-h::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-line);
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 920px) {
+    .hero__in {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 16ch;
+  }
+  .hero__body {
+    margin-top: 1.5rem;
+    max-width: 46ch;
+  }
+  .hero__in :global(.hero__shot) {
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+  }
+
+  /* ── The fork ─────────────────────────────────────────────────────── */
+  .fork-bay {
+    padding-top: 0;
+  }
+  .fork {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 860px) {
+    .fork {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+  .path {
+    display: grid;
+    align-content: start;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+  }
+  .path--takeout {
+    background: var(--ink-raised);
+  }
+  .path--catering {
+    border-color: var(--accent);
+  }
+  .path__kicker {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .path__title {
+    margin-top: 0.9rem;
+    font-size: clamp(1.8rem, 1.5rem + 1.3vw, 2.4rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .path__body {
+    margin-top: 1rem;
+    color: var(--on-ink-dim);
+    max-width: 40ch;
+  }
+  .path__points {
+    list-style: none;
+    margin: 1.5rem 0 2rem;
+    padding-block: 1.1rem;
+    padding-inline: 0;
+    display: grid;
+    gap: 0.5rem;
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .path__point {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+  }
+  .path__point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.8rem;
+    height: 1px;
+    background: var(--accent);
+  }
+  .path .btn {
+    justify-self: start;
+  }
+
+  /* ── Trays ────────────────────────────────────────────────────────── */
+  .trays {
+    margin: 1.5rem 0 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .tray {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  @media (min-width: 720px) {
+    .tray {
+      grid-template-columns: 8rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .tray__k {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+  }
+  .tray__v {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.25rem;
+  }
+  .tray__serves {
+    font-weight: 700;
+    font-size: var(--fs-small);
+  }
+  .tray__note {
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Area ─────────────────────────────────────────────────────────── */
+  .area {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .area {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+  }
+  .area__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  @media (min-width: 560px) {
+    .area__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .area__city {
+    padding: 1rem;
+    background: var(--ink);
+    font-size: var(--fs-small);
+    font-weight: 700;
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

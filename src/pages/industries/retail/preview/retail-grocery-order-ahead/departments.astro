@@ -1,0 +1,165 @@
+---
+// Cedarview demo — departments. Photo-forward tiles, one per counter, each
+// anchored so the home page and the schema's `department` URLs can point at it.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/cedarviewChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/cedarviewJsonld';
+import {
+  business,
+  departments,
+  departmentsPage,
+  pageMeta,
+} from '../../../../../data/demos/retail-grocery-order-ahead';
+
+const meta = pageMeta.departments;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.departments}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.departments },
+    ]),
+  ]}
+>
+  <header class="bay dept-head">
+    <div class="wrap">
+      <p class="eyebrow">{departmentsPage.eyebrow}</p>
+      <h1 class="dept-title">{departmentsPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede dept-lede">{departmentsPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={departmentsPage.heading}>
+    <div class="wrap">
+      <ul class="depts">
+        {departments.map((dept) => (
+          <li class="dept" id={dept.id}>
+            <DemoImage
+              demo="retail-grocery-order-ahead"
+              file={dept.photo.file}
+              subject={dept.photo.subject}
+              alt={dept.photo.alt}
+              ratio="4 / 3"
+              sizes="(min-width: 900px) 44vw, 100vw"
+              widths={[520, 800, 1100]}
+              class="dept__shot"
+            />
+            <div class="dept__body">
+              <h2 class="dept__name">{dept.name}</h2>
+              <p class="dept__desc">{dept.description}</p>
+              <h3 class="dept__label">{departmentsPage.highlightsLabel}</h3>
+              <ul class="dept__list">
+                {dept.highlights.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <a class="btn btn--fill depts__cta" href={routes.order} data-analytics-event="order_cta_departments">
+        {departmentsPage.orderCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .dept-head {
+    padding-bottom: 0;
+  }
+  .dept-title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .dept-lede {
+    margin-top: 1.25rem;
+    max-width: 52ch;
+  }
+
+  .depts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .dept {
+    display: grid;
+    gap: 1.5rem;
+    padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
+    border-bottom: 1px solid var(--ink-line);
+    scroll-margin-top: 8rem;
+  }
+  .dept:last-of-type {
+    border-bottom: 0;
+  }
+  @media (min-width: 820px) {
+    .dept {
+      grid-template-columns: 22rem minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+    /* Alternate the photo side so six blocks do not read as a spreadsheet. */
+    .dept:nth-child(even) {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+    }
+    .dept:nth-child(even) :global(.dept__shot) {
+      order: 2;
+    }
+  }
+  .dept :global(.dept__shot) {
+    border-radius: var(--radius);
+  }
+  .dept__name {
+    font-size: var(--fs-title);
+  }
+  .dept__desc {
+    margin-top: 0.85rem;
+    max-width: 52ch;
+    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+  .dept__label {
+    margin-top: 1.5rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .dept__list {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .dept__list li {
+    padding-left: 1.4rem;
+    position: relative;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .dept__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.7rem;
+    height: 2px;
+    background: var(--accent);
+  }
+  .depts__cta {
+    margin-top: 3rem;
+  }
+</style>

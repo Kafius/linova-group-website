@@ -24,6 +24,11 @@ export interface DemoTheme {
   paperLine: string;
   accent: string;
   accentOnPaper: string;
+  /** an optional second accent, for a demo that genuinely has two product
+   *  lines to separate. Falls back to the first accent when absent. */
+  accentAlt?: string;
+  accentAltOnPaper?: string;
+  onAccentAlt?: string;
   onInk: string;
   onInkDim: string;
   onPaper: string;
@@ -31,11 +36,43 @@ export interface DemoTheme {
   onAccent: string;
   displayFont: string;
   bodyFont: string;
+  /** an optional mono face for demos whose register sets figures apart.
+   *  Falls back to the system mono stack. */
+  monoFont?: string;
+  /** font-variation-settings for the display face, e.g. "'SOFT' 30, 'WONK' 1".
+   *  Omit on a face with no useful axes. */
+  displayAxes?: string;
+  /** corner radius on buttons and inputs. Geometry is as much of a demo's
+   *  identity as its palette — sharp for an editorial room, pill for a shop. */
+  radius?: string;
+  /** body line-height. Raise it where the brief asks for roomier reading. */
+  leading?: string;
+  /** replaces the default body-size clamp outright, for demos that need a
+   *  larger base than 1rem-1.1rem. */
+  bodySize?: string;
 }
 
 export interface DemoNavLink {
   href: string;
   label: string;
+  /** analytics event for this link. Only the nav CTA sets one; it was
+   *  hardcoded to order_cta_nav here, which was wrong on the nine demos
+   *  whose CTA is not an order. */
+  event?: string;
+}
+
+/** A self-hosted face for one demo. Latin-subset woff2 under
+ *  public/fonts/demos/, downloaded at build-prep time rather than fetched
+ *  from a third-party CDN — the demos are partly a speed argument. */
+export interface DemoFont {
+  /** the family name the theme's font stacks refer to */
+  family: string;
+  /** filename under /fonts/demos/ */
+  file: string;
+  /** variable range ('400 700') or a single static weight ('700'). A range
+   *  loads as woff2-variations; a single weight as plain woff2, because
+   *  declaring a static file as variations makes some browsers refuse it. */
+  weight: string;
 }
 
 interface Props {
@@ -47,9 +84,14 @@ interface Props {
   tagline: string;
   navLinks: DemoNavLink[];
   navCta: DemoNavLink;
+  /** where the wordmark points. Defaults to the first nav link, which is
+   *  wrong on a one-pager whose nav is all in-page anchors. */
+  brandHref?: string;
   navToggleOpen: string;
   navToggleClose: string;
   skipLabel: string;
+  /** the demo's own faces. First one is preloaded. */
+  fonts: DemoFont[];
   ribbon: { text: string; linkLabel: string; linkHref: string };
   footerHoursHeading: string;
   footerFindHeading: string;
@@ -58,8 +100,27 @@ interface Props {
   footerPhone: { label: string; href: string };
   footerEmail: { label: string; href: string };
   footerHours: { label: string; value: string }[];
+  /** Open Graph type. Written for Harbourview originally and left hardcoded
+   *  as restaurant.restaurant, which was wrong on a clinic. Defaults to the
+   *  generic 'website'; a demo passes something more specific if it wants. */
+  ogType?: string;
   /** schema.org blocks for this page */
   jsonLd?: Record<string, unknown>[];
+  /** Whether this demo's playbook carries the SEO Setup flag. When false the
+   *  head drops to the framework default — title, charset, viewport — and the
+   *  description, canonical, Open Graph, Twitter and JSON-LD blocks are not
+   *  emitted at all. One playbook in the catalogue has no SEO line item, and
+   *  the absence has to be visible in view-source next to a demo that does.
+   *  noindex stays either way: that is Linova's rule about previews, not a
+   *  feature of the package. */
+  seo?: boolean;
+  /** Whether this demo's playbook carries the Analytics flag. When false the
+   *  layout emits no data-analytics-event attributes at all — not on the nav
+   *  CTA, not on the footer phone — and neither should the page. One playbook
+   *  in the catalogue has no Analytics line item, and "there is nothing for a
+   *  tag manager to read here" is a thing to be able to show in view-source.
+   *  The commented GA4 slot below is inert on every demo either way. */
+  analytics?: boolean;
   /** marks the current nav item */
   current: string;
 }
@@ -73,9 +134,11 @@ const {
   tagline,
   navLinks,
   navCta,
+  brandHref,
   navToggleOpen,
   navToggleClose,
   skipLabel,
+  fonts,
   ribbon,
   footerHoursHeading,
   footerFindHeading,
@@ -84,7 +147,10 @@ const {
   footerPhone,
   footerEmail,
   footerHours,
+  ogType = 'website',
   jsonLd = [],
+  seo = true,
+  analytics = true,
   current,
 } = Astro.props;
 
@@ -97,6 +163,19 @@ const favicon = `data:image/svg+xml,${encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="${theme.ink}"/><text x="16" y="24" font-family="Georgia,serif" font-size="22" font-weight="700" fill="${theme.accent}" text-anchor="middle">${brand.trim().charAt(0)}</text></svg>`
 )}`;
 
+// Latin subset, matching what the download script pulled. Written out here
+// rather than in the global stylesheet because the families differ per demo.
+const LATIN =
+  'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD';
+
+const fontFaces = fonts
+  .map((font) => {
+    const variable = font.weight.trim().includes(' ');
+    const format = variable ? 'woff2-variations' : 'woff2';
+    return `@font-face{font-family:"${font.family}";font-style:normal;font-weight:${font.weight};font-display:swap;src:url("/fonts/demos/${font.file}") format("${format}");unicode-range:${LATIN};}`;
+  })
+  .join('');
+
 // The palette rides in as inline custom properties on the wrapper, which is
 // what keeps two demos with different palettes able to share this file.
 const themeVars = [
@@ -108,6 +187,9 @@ const themeVars = [
   `--paper-line:${theme.paperLine}`,
   `--accent:${theme.accent}`,
   `--accent-paper:${theme.accentOnPaper}`,
+  `--accent-alt:${theme.accentAlt ?? theme.accent}`,
+  `--accent-alt-paper:${theme.accentAltOnPaper ?? theme.accentOnPaper}`,
+  `--on-accent-alt:${theme.onAccentAlt ?? theme.onAccent}`,
   `--on-ink:${theme.onInk}`,
   `--on-ink-dim:${theme.onInkDim}`,
   `--on-paper:${theme.onPaper}`,
@@ -115,6 +197,11 @@ const themeVars = [
   `--on-accent:${theme.onAccent}`,
   `--font-display:${theme.displayFont}`,
   `--font-body:${theme.bodyFont}`,
+  `--font-mono:${theme.monoFont ?? 'ui-monospace, SFMono-Regular, Consolas, monospace'}`,
+  `--display-axes:${theme.displayAxes ?? 'normal'}`,
+  `--radius:${theme.radius ?? '0'}`,
+  `--leading:${theme.leading ?? '1.62'}`,
+  ...(theme.bodySize ? [`--fs-body-override:${theme.bodySize}`] : []),
 ].join(';');
 ---
 
@@ -124,39 +211,48 @@ const themeVars = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {seo && <meta name="description" content={description} />}
+    {seo && <link rel="canonical" href={canonical} />}
 
     {/* A fictional restaurant must never compete in search under Linova's
         domain. The SEO build below is real and inspectable; it just isn't
         pointed at Google. astro.config.mjs keeps /preview out of the sitemap
-        to match. */}
+        to match. This one line is not part of the SEO Setup line item and
+        stays even when seo is false. */}
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href={favicon} />
     <meta name="theme-color" content={theme.ink} />
 
-    <meta property="og:type" content="restaurant.restaurant" />
-    <meta property="og:site_name" content={brand} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImageUrl} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImageUrl} />
+    {seo && (
+      <>
+        <meta property="og:type" content={ogType} />
+        <meta property="og:site_name" content={brand} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImageUrl} />
+      </>
+    )}
 
-    <link
-      rel="preload"
-      href="/fonts/demos/fraunces-latin-var.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
+    {fonts[0] && (
+      <link
+        rel="preload"
+        href={`/fonts/demos/${fonts[0].file}`}
+        as="font"
+        type="font/woff2"
+        crossorigin
+      />
+    )}
+    <style is:inline set:html={fontFaces}></style>
 
-    {jsonLd.map((block) => (
-      <script type="application/ld+json" is:inline set:html={JSON.stringify(block)} />
-    ))}
+    {seo &&
+      jsonLd.map((block) => (
+        <script type="application/ld+json" is:inline set:html={JSON.stringify(block)} />
+      ))}
 
     {/* ── Analytics slot ────────────────────────────────────────────────
         A real build drops the client's own GA4 property in here. It stays
@@ -195,7 +291,7 @@ const themeVars = [
 
         <header class="nav">
           <div class="nav__in">
-            <a class="nav__brand" href={navLinks[0]?.href ?? '/'}>
+            <a class="nav__brand" href={brandHref ?? navLinks[0]?.href ?? '/'}>
               <span class="nav__brand-name">{brand}</span>
               <span class="nav__brand-tag">{tagline}</span>
             </a>
@@ -230,7 +326,7 @@ const themeVars = [
                   </li>
                 ))}
               </ul>
-              <a class="nav__cta" href={navCta.href} data-analytics-event="order_cta_nav">
+              <a class="nav__cta" href={navCta.href} data-analytics-event={analytics ? (navCta.event ?? 'nav_cta') : undefined}>
                 {navCta.label}
               </a>
             </nav>
@@ -252,7 +348,7 @@ const themeVars = [
             <address class="foot__address">
               {footerAddress.map((line) => <span>{line}</span>)}
             </address>
-            <a class="foot__link" href={footerPhone.href} data-analytics-event="phone_tap_footer">
+            <a class="foot__link" href={footerPhone.href} data-analytics-event={analytics ? 'phone_tap_footer' : undefined}>
               {footerPhone.label}
             </a>
             <a class="foot__link" href={footerEmail.href}>{footerEmail.label}</a>
@@ -313,27 +409,6 @@ const themeVars = [
          module is the look.
          ═══════════════════════════════════════════════════════════════ */
 
-      @font-face {
-        font-family: 'Fraunces';
-        font-style: normal;
-        font-weight: 400 700;
-        font-display: swap;
-        src: url('/fonts/demos/fraunces-latin-var.woff2') format('woff2-variations');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-          U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-          U+FEFF, U+FFFD;
-      }
-      @font-face {
-        font-family: 'Karla';
-        font-style: normal;
-        font-weight: 400 700;
-        font-display: swap;
-        src: url('/fonts/demos/karla-latin-var.woff2') format('woff2-variations');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-          U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-          U+FEFF, U+FFFD;
-      }
-
       html {
         scroll-behavior: smooth;
         /* the sticky chrome would otherwise cover a jump-nav target */
@@ -348,7 +423,7 @@ const themeVars = [
         --fs-title: clamp(1.9rem, 1.4rem + 2.2vw, 3.25rem);
         --fs-heading: clamp(1.35rem, 1.18rem + 0.8vw, 1.9rem);
         --fs-dish: clamp(1.08rem, 1rem + 0.35vw, 1.3rem);
-        --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
+        --fs-body: var(--fs-body-override, clamp(1rem, 0.96rem + 0.2vw, 1.1rem));
         --fs-small: 0.9rem;
         --fs-label: 0.72rem;
         --measure: 60ch;
@@ -360,7 +435,7 @@ const themeVars = [
         color: var(--on-ink);
         font-family: var(--font-body);
         font-size: var(--fs-body);
-        line-height: 1.62;
+        line-height: var(--leading, 1.62);
         -webkit-font-smoothing: antialiased;
       }
 
@@ -382,7 +457,7 @@ const themeVars = [
       .demo h3 {
         font-family: var(--font-display);
         font-weight: 600;
-        font-variation-settings: 'SOFT' 30, 'WONK' 1, 'opsz' 60;
+        font-variation-settings: var(--display-axes, normal);
         line-height: 1.04;
         letter-spacing: -0.015em;
         text-wrap: balance;
@@ -482,7 +557,7 @@ const themeVars = [
       }
       .nav__brand-name {
         font-family: var(--font-display);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 30;
+        font-variation-settings: var(--display-axes, normal);
         /* Shrinks rather than wrapping: a restaurant's name breaking across
            two lines in its own nav reads as a layout fault. */
         font-size: clamp(1.05rem, 0.85rem + 0.5vw, 1.22rem);
@@ -556,6 +631,7 @@ const themeVars = [
         box-shadow: inset 0 -1px 0 0 var(--accent);
       }
       .nav__cta {
+        border-radius: var(--radius, 0);
         text-decoration: none;
         background: var(--accent);
         color: var(--on-accent);
@@ -616,11 +692,20 @@ const themeVars = [
         .nav__menu {
           display: flex;
           align-items: center;
-          gap: clamp(1.25rem, 2.5vw, 2.25rem);
+          justify-content: flex-end;
+          flex-wrap: wrap;
+          gap: 0.5rem clamp(1rem, 2.2vw, 2.25rem);
         }
         .nav__list {
           display: flex;
-          gap: clamp(1.25rem, 2.5vw, 2.25rem);
+          /* Wraps rather than overflows. The links are nowrap individually, so
+             a demo with a seven-item nav (the clinic, the spa) would push the
+             row past the viewport between 768px and about 1100px without
+             this — the desktop menu appears at 768 but does not fit until
+             much later. */
+          flex-wrap: wrap;
+          justify-content: flex-end;
+          gap: 0.5rem clamp(1rem, 2.2vw, 2.25rem);
         }
       }
 
@@ -685,7 +770,13 @@ const themeVars = [
       }
 
       .btn {
+        border-radius: var(--radius, 0);
         display: inline-block;
+        /* On a <button> the UA supplies a light ButtonFace background, which
+           put .btn--line's near-white label on light grey at 1.01:1. Anything
+           that wants a fill sets one explicitly below. */
+        background: none;
+        border-style: solid;
         text-decoration: none;
         font-weight: 700;
         font-size: var(--fs-small);
@@ -738,7 +829,7 @@ const themeVars = [
       }
       .foot__name {
         font-family: var(--font-display);
-        font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+        font-variation-settings: var(--display-axes, normal);
         font-size: 1.5rem;
         font-weight: 600;
       }

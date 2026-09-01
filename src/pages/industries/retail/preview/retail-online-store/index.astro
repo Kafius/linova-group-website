@@ -1,0 +1,350 @@
+---
+// Bramble & Bone demo — home. Layout only: every string comes from
+// src/data/demos/retail-online-store.ts.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/brambleChrome';
+import { store } from '../../../../../lib/demos/brambleJsonld';
+import {
+  business,
+  categories,
+  home,
+  pageMeta,
+  productsIn,
+} from '../../../../../data/demos/retail-online-store';
+
+const meta = pageMeta.home;
+
+// Counts come off the catalogue rather than being typed twice.
+const categoryCards = categories.map((category) => ({
+  ...category,
+  count: productsIn(category.id).length,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[store(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.shop} data-analytics-event="shop_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.about} data-analytics-event="about_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="retail-online-store"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="5 / 4"
+        sizes="(min-width: 900px) 46vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Three pillars ───────────────────────────────────────────────── -->
+  <section class="bay pillars-bay" aria-labelledby="pillars-h">
+    <div class="wrap">
+      <h2 id="pillars-h" class="section-title">{home.pillarsHeading}</h2>
+      <hr class="rule" />
+      <ul class="pillars">
+        {home.pillars.map((pillar) => (
+          <li class="pillar">
+            <h3 class="pillar__title">{pillar.title}</h3>
+            <p class="pillar__detail">{pillar.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Categories ──────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="cats-h">
+    <div class="wrap">
+      <div class="cats__head">
+        <h2 id="cats-h" class="section-title">{home.categoriesHeading}</h2>
+        <a class="btn btn--line" href={routes.shop} data-analytics-event="shop_cta_categories">
+          {home.categoriesCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="cats">
+        {categoryCards.map((category) => (
+          <li>
+            <a class="cat" href={`${routes.shop}#${category.id}`} data-analytics-event="shop_cta_category">
+              <span class="cat__count">{category.count}</span>
+              <span class="cat__label">{category.label}</span>
+              <span class="cat__blurb">{category.blurb}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Made in the back — the forest-green band ────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="made-h">
+    <div class="wrap made">
+      <div>
+        <h2 id="made-h" class="section-title">{home.madeHereHeading}</h2>
+        <hr class="rule" />
+        <p class="made__body">{home.madeHereBody}</p>
+      </div>
+      <DemoImage
+        demo="retail-online-store"
+        file={home.madeHerePhoto.file}
+        subject={home.madeHerePhoto.subject}
+        alt={home.madeHerePhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 900px) 46vw, 100vw"
+        widths={[560, 900, 1200]}
+        class="made__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Pickup and delivery ─────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="del-h">
+    <div class="wrap delivery">
+      <div>
+        <h2 id="del-h" class="section-title">{home.deliveryHeading}</h2>
+        <p class="delivery__body">{home.deliveryBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.stockists} data-analytics-event="delivery_view_home">
+        {home.deliveryCta}
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{home.closerHeading}</h2>
+        <p class="closer__body">{home.closerBody}</p>
+      </div>
+      <div class="closer__actions">
+        <a class="btn btn--fill" href={routes.contact} data-analytics-event="contact_view_home">
+          {home.closerCta}
+        </a>
+        <a class="btn btn--line" href={business.phoneHref} data-analytics-event="phone_tap_home">
+          {business.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    background: var(--ink-raised);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    max-width: 15ch;
+  }
+  .hero__body {
+    margin-top: 1.25rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.55;
+    max-width: 42ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero :global(.hero__shot) {
+    border-radius: 20px;
+  }
+
+  /* ── Pillars ──────────────────────────────────────────────────────── */
+  .pillars {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 800px) {
+    .pillars {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .pillar {
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 18px;
+    padding: 1.75rem;
+  }
+  .pillar__title {
+    font-size: var(--fs-heading);
+  }
+  .pillar__detail {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Categories ───────────────────────────────────────────────────── */
+  .cats__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .cats {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 620px) {
+    .cats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .cats {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  .cat {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--ink-line);
+    border-radius: 18px;
+    text-decoration: none;
+    background: var(--ink-raised);
+    transition: border-color 0.18s ease, transform 0.18s ease;
+  }
+  .cat:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .cat__count {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .cat__label {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .cat__blurb {
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Made in the back ─────────────────────────────────────────────── */
+  .made {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .made {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .made__body {
+    margin-top: 1.5rem;
+    max-width: 42ch;
+    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+  .made :global(.made__shot) {
+    border-radius: 20px;
+  }
+
+  /* ── Delivery strip ───────────────────────────────────────────────── */
+  .delivery {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+    padding: 2rem;
+    border: 1px solid var(--ink-line);
+    border-radius: 22px;
+    background: var(--ink-raised);
+  }
+  .delivery__body {
+    margin-top: 0.6rem;
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+    font-size: var(--fs-small);
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+  }
+  .closer__body {
+    margin-top: 0.75rem;
+    max-width: 44ch;
+    color: var(--on-ink-dim);
+  }
+  .closer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

@@ -1,0 +1,426 @@
+---
+// Lakeshore demo — new patients, and the intake form.
+//
+// The intake form is deliberately SEPARATE from booking. It collects contact
+// details, a reason for the visit in the patient's own words, an optional
+// insurer name, and a consent checkbox — and the consent is scoped honestly:
+// it is consent to collect this information, NOT consent to treatment. Consent
+// to treat is discussed with the practitioner and signed in clinic after the
+// examination. Conflating the two on a website would be wrong.
+//
+// NO-OP HANDLER. Nothing is submitted anywhere. There is no endpoint, no
+// fetch, and no storage — on a demo especially, a form that looked like it
+// accepted health information and then dropped it would be worse than none.
+// Policy and certificate numbers are never asked for here; they are taken at
+// the desk.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/lakeshoreChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/lakeshoreJsonld';
+import { business, newPatients, pageMeta } from '../../../../../data/demos/clinic-practitioner';
+
+const meta = pageMeta.newPatients;
+const f = newPatients.form;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.newPatients}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.newPatients },
+    ]),
+  ]}
+>
+  <header class="bay np-head">
+    <div class="wrap">
+      <p class="eyebrow">{newPatients.eyebrow}</p>
+      <h1 class="np-title">{newPatients.heading}</h1>
+      <hr class="rule" />
+      <p class="lede np-lede">{newPatients.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── What to bring ───────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="bring-h">
+    <div class="wrap">
+      <h2 id="bring-h" class="section-title">{newPatients.bringHeading}</h2>
+      <hr class="rule" />
+      <dl class="cards">
+        {newPatients.bring.map((item) => (
+          <div class="card">
+            <dt class="card__title">{item.title}</dt>
+            <dd class="card__detail">{item.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── What happens ────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="expect-h">
+    <div class="wrap">
+      <h2 id="expect-h" class="section-title">{newPatients.expectHeading}</h2>
+      <hr class="rule" />
+      <ol class="steps">
+        {newPatients.expect.map((step) => (
+          <li class="step">
+            <h3 class="step__title">{step.title}</h3>
+            <p class="step__detail">{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Intake form ─────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="intake-h">
+    <div class="wrap">
+      <div class="intake">
+        <h2 id="intake-h" class="section-title">{newPatients.formHeading}</h2>
+        <hr class="rule" />
+        <p class="note">{newPatients.formNote}</p>
+
+        <form class="form" data-intake-form novalidate>
+          <div class="field">
+            <label class="field__label" for="np-name">{f.nameLabel}</label>
+            <input class="field__input" id="np-name" name="name" type="text" required
+              autocomplete="name" placeholder={f.namePlaceholder} aria-describedby="np-name-err" />
+            <p class="field__err" id="np-name-err" hidden>{f.nameError}</p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="field__label" for="np-email">{f.emailLabel}</label>
+              <input class="field__input" id="np-email" name="email" type="email" required
+                autocomplete="email" placeholder={f.emailPlaceholder} aria-describedby="np-email-err" />
+              <p class="field__err" id="np-email-err" hidden>{f.emailError}</p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="np-phone">{f.phoneLabel}</label>
+              <input class="field__input" id="np-phone" name="phone" type="tel" required
+                autocomplete="tel" placeholder={f.phonePlaceholder} aria-describedby="np-phone-err" />
+              <p class="field__err" id="np-phone-err" hidden>{f.phoneError}</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="np-reason">{f.reasonLabel}</label>
+            <textarea class="field__input field__input--area" id="np-reason" name="reason" rows="4" required
+              placeholder={f.reasonPlaceholder} aria-describedby="np-reason-err"></textarea>
+            <p class="field__err" id="np-reason-err" hidden>{f.reasonError}</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="np-insurer">{f.insurerLabel}</label>
+            <input class="field__input" id="np-insurer" name="insurer" type="text"
+              placeholder={f.insurerPlaceholder} aria-describedby="np-insurer-note" />
+            <p class="field__hint" id="np-insurer-note">{f.insurerNote}</p>
+          </div>
+
+          <div class="consent">
+            <label class="consent__label" for="np-consent">
+              <input class="consent__input" id="np-consent" name="consent" type="checkbox" required
+                aria-describedby="np-consent-note np-consent-err" />
+              <span>{f.consentLabel}</span>
+            </label>
+            <p class="consent__note" id="np-consent-note">{f.consentNote}</p>
+            <p class="field__err" id="np-consent-err" hidden>{f.consentError}</p>
+          </div>
+
+          <button class="btn btn--fill form__submit" type="submit"
+            data-analytics-event="form_submit_intake"
+            data-label-busy={f.submitting}>{f.submit}</button>
+        </form>
+
+        <div class="ok" data-intake-success hidden tabindex="-1">
+          <h3 class="ok__h">{f.successHeading}</h3>
+          <p class="ok__b">{f.successBody}</p>
+          <a class="btn btn--fill" href={routes.booking} data-analytics-event="booking_cta_intake">
+            {f.successCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // ── Intake form: validation and a success state, no delivery ─────────
+  // NO-OP HANDLER. Nothing here posts anywhere. There is no endpoint, no
+  // fetch, no storage. On a live build this is wired to the clinic's intake
+  // system over TLS with the practice's own retention policy behind it — and
+  // notably NOT to a generic form service, because this is health information.
+  const form = document.querySelector<HTMLFormElement>('[data-intake-form]');
+  const success = document.querySelector<HTMLElement>('[data-intake-success]');
+
+  if (form && success) {
+    const fields = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('.field__input, .consent__input')
+    );
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]');
+
+    const errorFor = (field: HTMLElement) => {
+      const ids = (field.getAttribute('aria-describedby') ?? '').split(' ');
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el?.classList.contains('field__err')) return el;
+      }
+      return null;
+    };
+
+    const validate = (field: HTMLInputElement | HTMLTextAreaElement): boolean => {
+      if (!field.required) return true;
+      const valid = field.checkValidity() && (field.type === 'checkbox' || field.value.trim() !== '');
+      const error = errorFor(field);
+      if (error) error.hidden = valid;
+      field.setAttribute('aria-invalid', String(!valid));
+      field.classList.toggle('is-invalid', !valid);
+      return valid;
+    };
+
+    fields.forEach((field) => {
+      field.addEventListener('blur', () => validate(field));
+      field.addEventListener('change', () => {
+        if (field.classList.contains('is-invalid')) validate(field);
+      });
+      field.addEventListener('input', () => {
+        if (field.classList.contains('is-invalid')) validate(field);
+      });
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const results = fields.map(validate);
+      if (results.includes(false)) {
+        fields.find((field) => field.classList.contains('is-invalid'))?.focus();
+        return;
+      }
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = submit.dataset.labelBusy ?? '';
+      }
+      window.setTimeout(() => {
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+      }, 450);
+    });
+  }
+</script>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .np-head {
+    padding-bottom: 0;
+  }
+  .np-title {
+    font-size: var(--fs-display);
+    max-width: 18ch;
+  }
+  .np-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+  .note {
+    margin-top: 1.25rem;
+    max-width: 56ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .cards {
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 760px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+  .card {
+    padding: 1.5rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+  }
+  .card__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 600;
+  }
+  .card__detail {
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 820px) {
+    .steps {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2.25rem;
+    }
+  }
+  .step {
+    counter-increment: step;
+    padding-top: 1.1rem;
+    border-top: 2px solid var(--accent-paper);
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.55rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--accent-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .step__title {
+    font-size: var(--fs-heading);
+  }
+  .step__detail {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Intake form ──────────────────────────────────────────────────── */
+  .intake {
+    max-width: 44rem;
+  }
+  .form {
+    margin-top: 2.25rem;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .field-row {
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 620px) {
+    .field-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .field__label {
+    font-weight: 700;
+    font-size: var(--fs-small);
+  }
+  .field__input {
+    font: inherit;
+    font-size: var(--fs-body);
+    color: var(--on-ink);
+    background: var(--ink);
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    width: 100%;
+  }
+  .field__input::placeholder {
+    color: color-mix(in srgb, var(--on-ink) 60%, transparent);
+  }
+  .field__input:focus {
+    border-color: var(--accent);
+  }
+  .field__input--area {
+    resize: vertical;
+    min-height: 7rem;
+  }
+  .field__input.is-invalid {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, var(--ink));
+  }
+  .field__hint {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .field__err {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .consent {
+    padding: 1.5rem;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+  }
+  .consent__label {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    cursor: pointer;
+  }
+  .consent__input {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.1rem 0 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .consent__input.is-invalid {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .consent__note {
+    margin-top: 1rem;
+    padding-left: 2.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .consent .field__err {
+    margin-top: 0.75rem;
+    padding-left: 2.5rem;
+  }
+
+  .form__submit {
+    justify-self: start;
+    border: 0;
+    padding: 1rem 2rem;
+  }
+  .form__submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .ok {
+    margin-top: 2.5rem;
+    padding: 2rem;
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+  .ok__h {
+    font-size: var(--fs-heading);
+    color: var(--accent);
+  }
+  .ok__b {
+    margin-top: 0.75rem;
+    max-width: 48ch;
+    color: var(--on-ink-dim);
+  }
+  .ok .btn {
+    margin-top: 1.5rem;
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+// Lakeshore demo — insurance and fees. One table with every figure on it, and
+// a plain account of what happens when a claim is declined.
+//
+// The payment section is where this playbook's Clover fit is argued in prose:
+// the terminal at the desk takes the money, so the website never handles a
+// payment and never stores a card. That is a security posture, not a
+// limitation, and on a clinic it is the strongest thing in the package.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/lakeshoreChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/lakeshoreJsonld';
+import {
+  business,
+  insurancePage,
+  pageMeta,
+  services,
+} from '../../../../../data/demos/clinic-practitioner';
+
+const meta = pageMeta.insurance;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.insurance}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.insurance },
+    ]),
+  ]}
+>
+  <header class="bay ins-head">
+    <div class="wrap">
+      <p class="eyebrow">{insurancePage.eyebrow}</p>
+      <h1 class="ins-title">{insurancePage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede ins-lede">{insurancePage.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── Fees ────────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="fees-h">
+    <div class="wrap">
+      <h2 id="fees-h" class="section-title">{insurancePage.feesHeading}</h2>
+      <hr class="rule" />
+      <table class="fees">
+        <thead>
+          <tr>
+            <th scope="col">{insurancePage.feesTable.service}</th>
+            <th scope="col">{insurancePage.feesTable.duration}</th>
+            <th scope="col">{insurancePage.feesTable.fee}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {services.map((service) => (
+            <tr>
+              <th scope="row">{service.name}</th>
+              <td>
+                {service.minutes === null ? '—' : `${service.minutes} ${insurancePage.durationLabel}`}
+              </td>
+              <td class="fees__amount">
+                {service.from && <span class="fees__from">{insurancePage.fromLabel} </span>}
+                ${service.price}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Direct billing ──────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="billing-h">
+    <div class="wrap">
+      <h2 id="billing-h" class="section-title">{insurancePage.billingHeading}</h2>
+      <hr class="rule" />
+      <dl class="points">
+        {insurancePage.billingPoints.map((point) => (
+          <div class="point">
+            <dt class="point__t">{point.title}</dt>
+            <dd class="point__d">{point.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Paying, and cancellations ───────────────────────────────────── -->
+  <section class="bay" aria-labelledby="pay-h">
+    <div class="wrap">
+      <div class="pay-grid">
+        <div>
+          <h2 id="pay-h" class="section-title">{insurancePage.paymentHeading}</h2>
+          <hr class="rule" />
+          <p class="pay__body">{insurancePage.paymentBody}</p>
+        </div>
+        <div>
+          <h2 class="section-title">{insurancePage.cancellationHeading}</h2>
+          <hr class="rule" />
+          <p class="pay__body">{insurancePage.cancellationBody}</p>
+        </div>
+      </div>
+
+      <a class="btn btn--fill ins-cta" href={routes.booking} data-analytics-event="booking_cta_insurance">
+        {insurancePage.bookCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .ins-head {
+    padding-bottom: 0;
+  }
+  .ins-title {
+    font-size: var(--fs-display);
+    max-width: 18ch;
+  }
+  .ins-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+
+  .fees {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 52rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .fees th,
+  .fees td {
+    text-align: left;
+    padding: 1rem 1rem 1rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .fees thead th {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+  }
+  .fees tbody th {
+    font-weight: 700;
+  }
+  .fees td {
+    color: var(--on-ink-dim);
+  }
+  .fees__amount {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .fees__from {
+    font-weight: 400;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .points {
+    margin: 2.25rem 0 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 800px) {
+    .points {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .point__t {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 600;
+  }
+  .point__d {
+    margin: 0.7rem 0 0;
+    max-width: 46ch;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  .pay-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 860px) {
+    .pay-grid {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .pay__body {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .ins-cta {
+    margin-top: 2.5rem;
+  }
+</style>

@@ -1,0 +1,264 @@
+---
+// Northline demo — industries served. Six building types, each with the one
+// thing that actually changes about the work. The "what is different here"
+// line is the page: anyone can list building types.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/northlineChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/northlineJsonld';
+import {
+  business,
+  industries,
+  industriesPage,
+  pageMeta,
+  serviceArea,
+} from '../../../../../data/demos/b2b-commercial-services';
+
+const meta = pageMeta.industries;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.industries}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.industries },
+    ]),
+  ]}
+>
+  <header class="bay in-head">
+    <div class="wrap">
+      <p class="kicker">{industriesPage.kicker}</p>
+      <h1 class="in-title">{industriesPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede in-lede">{industriesPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={industriesPage.heading}>
+    <div class="wrap">
+      <ul class="cards">
+        {industries.map((industry, i) => (
+          <li class="card" id={industry.id}>
+            <div class="card__top">
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <ul class="card__spec">
+                {industry.spec.map((entry) => (
+                  <li class="chip">
+                    <span class="chip__k">{entry.label}</span>
+                    <span class="chip__v">{entry.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <h2 class="card__name">{industry.name}</h2>
+            <p class="card__summary">{industry.summary}</p>
+            <div class="card__distinct">
+              <h3 class="card__distinct-h">{industriesPage.distinctLabel}</h3>
+              <p class="card__distinct-b">{industry.distinct}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay area-bay" aria-label={industriesPage.kicker}>
+    <div class="wrap">
+      <ul class="area__list">
+        {serviceArea.map((city) => <li class="area__city">{city}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay on-paper">
+    <div class="wrap closer">
+      <div>
+        <h2 class="section-title">{industriesPage.closerHeading}</h2>
+        <p class="section-body section-body--paper">{industriesPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.quote} data-analytics-event="quote_cta_industries">
+        {industriesPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--ink-line);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+  .chip__k {
+    padding: 0.4rem 0.5rem;
+    background: var(--ink-raised);
+    color: var(--on-ink-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .chip__v {
+    padding: 0.4rem 0.55rem;
+    font-weight: 600;
+    color: var(--on-ink);
+    border-left: 1px solid var(--ink-line);
+  }
+
+  .in-head {
+    padding-bottom: 0;
+  }
+  .in-title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    max-width: 20ch;
+  }
+  .in-lede {
+    margin-top: 1.35rem;
+    max-width: 56ch;
+  }
+
+  /* A hairline grid — one pixel of the line colour showing between cells,
+     which is the whole visual system on this demo. */
+  .cards {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  @media (min-width: 780px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1180px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .card {
+    padding: 1.75rem 1.6rem;
+    background: var(--ink);
+    scroll-margin-top: 7rem;
+    display: grid;
+    align-content: start;
+  }
+  .card__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .card__num {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .card__spec {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .card__name {
+    margin-top: 1.4rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .card__summary {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+  .card__distinct {
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--ink-line);
+  }
+  .card__distinct-h {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .card__distinct-b {
+    margin-top: 0.65rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+  }
+
+  .area-bay {
+    padding-top: 0;
+  }
+  .area__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  @media (min-width: 640px) {
+    .area__list {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  .area__city {
+    padding: 1.1rem 1rem;
+    background: var(--ink-raised);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .closer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

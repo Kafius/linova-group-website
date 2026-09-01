@@ -1,0 +1,386 @@
+---
+// Redline demo — home. Layout only: every string comes from
+// src/data/demos/automotive-book-a-bay.ts.
+//
+// Local SEO is the build for this playbook, so the service-area block reads
+// from the same `serviceArea` list that feeds the schema's areaServed.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/redlineChrome';
+import { autoRepair } from '../../../../../lib/demos/redlineJsonld';
+import {
+  business,
+  findService,
+  home,
+  pageMeta,
+  serviceArea,
+  servicesPage,
+} from '../../../../../data/demos/automotive-book-a-bay';
+import { formatPrice } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.home;
+const quick = home.quickIds
+  .map((id) => findService(id))
+  .filter((service): service is NonNullable<typeof service> => service !== undefined);
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[autoRepair(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero__media" aria-hidden="true">
+      <DemoImage
+        demo="automotive-book-a-bay"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="16 / 9"
+        sizes="100vw"
+        widths={[900, 1400, 1920]}
+        eager
+        quiet
+        class="hero__shot"
+      />
+    </div>
+    <div class="wrap hero__in">
+      <p class="eyebrow">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <p class="hero__body">{home.heroBody}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_hero">
+          {home.heroPrimaryCta}
+        </a>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_hero">
+          {home.heroSecondaryCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Booked most often ───────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="quick-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="quick-h" class="section-title">{home.quickHeading}</h2>
+          <p class="head__note">{home.quickNote}</p>
+        </div>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_quick">
+          {home.quickCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="quick">
+        {quick.map((service) => (
+          <li class="card">
+            <span class="card__price">
+              {service.from && <span class="card__from">{servicesPage.fromLabel}</span>}
+              ${formatPrice(service.price ?? 0)}
+            </span>
+            <h3 class="card__name">{service.name}</h3>
+            <p class="card__desc">{service.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Service area — the local SEO block ──────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="area-h">
+    <div class="wrap">
+      <h2 id="area-h" class="section-title">{home.areaHeading}</h2>
+      <hr class="rule" />
+      <p class="area__body">{home.areaBody}</p>
+      <ul class="towns">
+        {serviceArea.map((town) => <li class="town">{town}</li>)}
+      </ul>
+      <p class="area__note">{home.areaNote}</p>
+    </div>
+  </section>
+
+  <!-- ── What you get either way ─────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="proof-h">
+    <div class="wrap">
+      <h2 id="proof-h" class="section-title">{home.proofHeading}</h2>
+      <hr class="rule" />
+      <ul class="proof">
+        {home.proof.map((item) => (
+          <li class="proof__item">
+            <h3 class="proof__title">{item.title}</h3>
+            <p class="proof__detail">{item.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{home.closerHeading}</h2>
+        <p class="closer__body">{home.closerBody}</p>
+      </div>
+      <div class="closer__actions">
+        <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_footer">
+          {home.closerCta}
+        </a>
+        <span class="closer__phone">
+          <span class="closer__phone-label">{home.closerPhoneLabel}</span>
+          <a href={business.phoneHref} data-analytics-event="phone_tap_home">{business.phone}</a>
+        </span>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .head__note {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(27rem, 70vh, 42rem);
+    overflow: hidden;
+    border-bottom: 4px solid var(--accent);
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero :global(.hero__shot) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to top,
+      var(--ink) 12%,
+      color-mix(in srgb, var(--ink) 90%, transparent) 58%,
+      color-mix(in srgb, var(--ink) 76%, transparent) 100%
+    );
+  }
+  .hero__in {
+    width: 100%;
+    padding-top: clamp(3rem, 10vh, 6rem);
+    padding-bottom: clamp(2.5rem, 7vh, 4.5rem);
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    max-width: 17ch;
+  }
+  .hero__body {
+    margin-top: 1.1rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.5;
+    max-width: 44ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Quick cards: boxed, square, price first ──────────────────────── */
+  .quick {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 620px) {
+    .quick {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .quick {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .card {
+    padding: 1.5rem;
+    border: 1px solid var(--ink-line);
+    border-top: 4px solid var(--accent);
+    background: var(--ink-raised);
+  }
+  .card__price {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .card__from {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    display: block;
+  }
+  .card__name {
+    margin-top: 0.75rem;
+    font-size: 1.08rem;
+    font-weight: 700;
+  }
+  .card__desc {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Service area ─────────────────────────────────────────────────── */
+  .area__body {
+    margin-top: 1.25rem;
+    max-width: 50ch;
+    color: var(--on-paper-dim);
+  }
+  .towns {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 760px) {
+    .towns {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .town {
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--paper-line);
+    border-left: 4px solid var(--accent-paper);
+    background: var(--paper-raised);
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .area__note {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Proof ────────────────────────────────────────────────────────── */
+  .proof {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 800px) {
+    .proof {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .proof__item {
+    padding-top: 1.1rem;
+    border-top: 2px solid var(--accent);
+  }
+  .proof__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .proof__detail {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+    max-width: 40ch;
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer {
+    border-top: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+  }
+  .closer__body {
+    margin-top: 0.6rem;
+    max-width: 42ch;
+    color: var(--on-ink-dim);
+  }
+  .closer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .closer__phone {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .closer__phone-label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .closer__phone a {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+</style>

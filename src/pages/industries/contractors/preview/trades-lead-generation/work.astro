@@ -1,0 +1,232 @@
+---
+// Bright Line demo — Our Work. Before/after pairs, each carrying the town it
+// was in, which is the local-search value of the page as well as the proof.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/brightLineChrome';
+import { demoBreadcrumbs, workList } from '../../../../../lib/demos/brightLineJsonld';
+import {
+  business,
+  pageMeta,
+  projects,
+  workPage,
+} from '../../../../../data/demos/trades-lead-generation';
+
+const meta = pageMeta.work;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.work}
+  jsonLd={[
+    workList(routes.work),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.work },
+    ]),
+  ]}
+>
+  <header class="bay wk-head">
+    <div class="wrap">
+      <p class="eyebrow">{workPage.eyebrow}</p>
+      <h1 class="wk-title">{workPage.heading}</h1>
+      <p class="lede wk-lede">{workPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay wk-list" aria-label={workPage.heading}>
+    <div class="wrap">
+      <ul class="jobs">
+        {projects.map((project) => (
+          <li class="job" id={project.id}>
+            <div class="pair">
+              <figure class="shot">
+                <DemoImage
+                  demo="trades-lead-generation"
+                  file={project.before.file}
+                  subject={project.before.subject}
+                  alt={project.before.alt}
+                  ratio="4 / 3"
+                  sizes="(min-width: 900px) 24vw, 50vw"
+                  widths={[380, 560, 760]}
+                  class="shot__img"
+                />
+                <figcaption class="shot__cap">{workPage.beforeLabel}</figcaption>
+              </figure>
+              <figure class="shot">
+                <DemoImage
+                  demo="trades-lead-generation"
+                  file={project.after.file}
+                  subject={project.after.subject}
+                  alt={project.after.alt}
+                  ratio="4 / 3"
+                  sizes="(min-width: 900px) 24vw, 50vw"
+                  widths={[380, 560, 760]}
+                  class="shot__img"
+                />
+                <figcaption class="shot__cap shot__cap--after">{workPage.afterLabel}</figcaption>
+              </figure>
+            </div>
+            <div class="job__body">
+              <h2 class="job__title">{project.title}</h2>
+              <p class="job__detail">{project.detail}</p>
+              <dl class="job__spec">
+                <div>
+                  <dt class="spec__k">{workPage.townLabel}</dt>
+                  <dd class="spec__v spec__v--town">{project.town}</dd>
+                </div>
+                <div>
+                  <dt class="spec__k">{workPage.scopeLabel}</dt>
+                  <dd class="spec__v">{project.scope}</dd>
+                </div>
+                <div>
+                  <dt class="spec__k">{workPage.durationLabel}</dt>
+                  <dd class="spec__v">{project.duration}</dd>
+                </div>
+              </dl>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{workPage.closerHeading}</h2>
+        <p class="section-body">{workPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.estimate} data-analytics-event="estimate_cta_work">
+        {workPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .wk-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .wk-title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .wk-lede {
+    margin-top: 1.35rem;
+    max-width: 52ch;
+  }
+  .wk-list {
+    padding-top: 0;
+  }
+
+  .jobs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 3rem;
+  }
+  .job {
+    display: grid;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--ink-line);
+  }
+  @media (min-width: 900px) {
+    .job {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      align-items: start;
+    }
+  }
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .shot {
+    margin: 0;
+  }
+  .shot :global(.shot__img) {
+    border-radius: var(--radius);
+  }
+  .shot__cap {
+    margin-top: 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .shot__cap--after {
+    color: var(--accent);
+  }
+  .job__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.2rem + 0.8vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .job__detail {
+    margin-top: 0.8rem;
+    color: var(--on-ink-dim);
+    max-width: 46ch;
+  }
+  .job__spec {
+    margin: 1.35rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--ink-line);
+  }
+  .spec__k {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .spec__v {
+    margin: 0.3rem 0 0;
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+  .spec__v--town {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

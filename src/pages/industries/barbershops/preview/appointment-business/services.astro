@@ -1,0 +1,241 @@
+---
+// Ironwood demo — services and pricing. The price list, with the barber rates
+// that sit on top of it. Every figure here is the same data the booking page
+// adds up and the JSON-LD publishes as makesOffer.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/ironwoodChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/ironwoodJsonld';
+import {
+  barbers,
+  business,
+  pageMeta,
+  services,
+  servicesPage,
+} from '../../../../../data/demos/appointment-business';
+import { formatPrice } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.services;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.services}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.services },
+    ]),
+  ]}
+>
+  <header class="bay svc-head">
+    <div class="wrap">
+      <p class="eyebrow">{servicesPage.eyebrow}</p>
+      <h1 class="svc-title">{servicesPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede svc-lede">{servicesPage.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The list ────────────────────────────────────────────────────── -->
+  <section class="bay" aria-label={servicesPage.heading}>
+    <div class="wrap">
+      <ul class="list">
+        {services.map((service) => (
+          <li class="row">
+            <div class="row__main">
+              <h2 class="row__name">{service.name}</h2>
+              <p class="row__desc">{service.description}</p>
+            </div>
+            <div class="row__meta">
+              <span class="row__time">{service.minutes} {servicesPage.durationLabel}</span>
+              <span class="row__price">
+                <span class="row__from">{servicesPage.fromLabel}</span>
+                ${formatPrice(service.price)}
+              </span>
+              <a
+                class="row__book"
+                href={routes.book}
+                data-analytics-event="booking_cta_service"
+              >{servicesPage.bookCta}</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Barber rates ────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="rates-h">
+    <div class="wrap">
+      <h2 id="rates-h" class="section-title">{servicesPage.rateHeading}</h2>
+      <hr class="rule" />
+      <p class="rates__note">{servicesPage.rateNote}</p>
+      <table class="rates">
+        <thead>
+          <tr>
+            <th scope="col">{servicesPage.rateTable.barber}</th>
+            <th scope="col">{servicesPage.rateTable.role}</th>
+            <th scope="col">{servicesPage.rateTable.rate}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {barbers.map((barber) => (
+            <tr>
+              <th scope="row">{barber.name}</th>
+              <td>{barber.role}</td>
+              <td class="rates__amount">
+                {barber.surcharge === 0
+                  ? servicesPage.baseRateLabel
+                  : `+$${formatPrice(barber.surcharge)}`}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <a class="btn btn--fill rates__cta" href={routes.book} data-analytics-event="booking_cta_rates">
+        {servicesPage.allCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+  .svc-head {
+    padding-bottom: 0;
+  }
+  .svc-title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+  }
+  .svc-lede {
+    margin-top: 1.25rem;
+    max-width: 52ch;
+  }
+
+  /* ── Price list: hairline rules, tabular figures ──────────────────── */
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .row {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 760px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 2.5rem;
+    }
+  }
+  .row__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem);
+    font-weight: 700;
+    letter-spacing: 0.005em;
+  }
+  .row__desc {
+    margin-top: 0.4rem;
+    max-width: 54ch;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+  .row__meta {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+  }
+  @media (min-width: 760px) {
+    .row__meta {
+      justify-content: flex-end;
+      min-width: 17rem;
+    }
+  }
+  .row__time {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .row__price {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .row__from {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .row__book {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+    text-underline-offset: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── Rates ────────────────────────────────────────────────────────── */
+  .rates__note {
+    margin-top: 1rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .rates {
+    margin-top: 1.75rem;
+    width: 100%;
+    max-width: 40rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .rates th,
+  .rates td {
+    text-align: left;
+    padding: 0.8rem 0.75rem 0.8rem 0;
+    border-bottom: 1px solid var(--paper-line);
+    font-size: var(--fs-small);
+  }
+  .rates thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+    font-weight: 700;
+  }
+  .rates tbody th {
+    font-weight: 700;
+  }
+  .rates td {
+    color: var(--on-paper-dim);
+  }
+  .rates__amount {
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .rates__cta {
+    margin-top: 2rem;
+  }
+</style>

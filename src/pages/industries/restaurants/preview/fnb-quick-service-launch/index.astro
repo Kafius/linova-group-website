@@ -1,0 +1,766 @@
+---
+// Sumac Street demo — the whole site. This is a ONE PAGER, and the argument
+// for the tier is that it has to feel finished rather than cut short: hero,
+// the full menu, the ordering slot, hours, location and contact, all reachable
+// from a jump nav that never leaves the screen.
+//
+// Flags built: SEO, E-Commerce, Analytics, Domain.
+// NOT built: CMS, CRM, booking. Nobody books a shawarma, and there is no
+// content system behind an eighteen-item menu that changes twice a year.
+//
+// Client JS is the jump nav only. The sticky order bar is CSS.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome } from '../../../../../lib/demos/sumacChrome';
+import { fastFood } from '../../../../../lib/demos/sumacJsonld';
+import {
+  business,
+  dietaryLegend,
+  formatMenuPrice,
+  hours,
+  menu,
+  page,
+  pageMeta,
+} from '../../../../../data/demos/fnb-quick-service-launch';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const hourRows = hours.map((day) => ({
+  day: day.day,
+  open: `${formatTime(day.open)} – ${formatTime(day.close)}`,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={pageMeta.title}
+  description={pageMeta.description}
+  ogImage={pageMeta.ogImage}
+  current={pageMeta.route}
+  ogType="restaurant.restaurant"
+  jsonLd={[fastFood(pageMeta.route, pageMeta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero__media" aria-hidden="true">
+      <DemoImage
+        demo="fnb-quick-service-launch"
+        file={page.heroPhoto.file}
+        subject={page.heroPhoto.subject}
+        alt={page.heroPhoto.alt}
+        ratio="16 / 9"
+        sizes="100vw"
+        widths={[900, 1400, 1920]}
+        eager
+        quiet
+        class="hero__shot"
+      />
+    </div>
+    <div class="wrap hero__in">
+      <p class="eyebrow">{page.heroEyebrow}</p>
+      <h1 class="hero__title">{page.heroTitle}</h1>
+      <p class="hero__body">{page.heroBody}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--fill" href="#order" data-analytics-event="order_cta_hero">
+          {page.heroPrimaryCta}
+        </a>
+        <a class="btn btn--line" href="#menu" data-analytics-event="menu_view_hero">
+          {page.heroSecondaryCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Jump nav ────────────────────────────────────────────────────── -->
+  <nav class="jump no-print" aria-label={page.jumpLabel} data-jump>
+    <div class="wrap jump__in">
+      <ul class="jump__list">
+        {page.jump.map((target) => (
+          <li>
+            <a class="jump__link" href={`#${target.id}`} data-jump-link={target.id}>{target.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Menu ────────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" id="menu" aria-labelledby="menu-h">
+    <div class="wrap">
+      <h2 id="menu-h" class="section-title">{page.menuHeading}</h2>
+      <hr class="rule" />
+      <p class="note">{page.menuNote}</p>
+
+      <dl class="legend" aria-label={page.legendLabel}>
+        {dietaryLegend.map((entry) => (
+          <div class="legend__pair">
+            <dt class="marker">{entry.marker}</dt>
+            <dd>{entry.label}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="courses">
+        {menu.map((section) => (
+          <section class="course" aria-labelledby={`c-${section.id}`}>
+            <h3 class="course__name" id={`c-${section.id}`}>{section.name}</h3>
+            <ul class="items">
+              {section.items.map((item) => (
+                <li class="item">
+                  <div class="item__line">
+                    <h4 class="item__name">
+                      {item.name}
+                      {item.dietary?.length ? (
+                        <span class="item__markers">
+                          {item.dietary.map((marker) => (
+                            <abbr
+                              class="marker"
+                              title={dietaryLegend.find((e) => e.marker === marker)?.label}
+                            >{marker}</abbr>
+                          ))}
+                        </span>
+                      ) : null}
+                    </h4>
+                    <span class="item__price">${formatMenuPrice(item.price)}</span>
+                  </div>
+                  <p class="item__desc">{item.description}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Order ───────────────────────────────────────────────────────── -->
+  <section class="bay" id="order" aria-labelledby="order-h">
+    <div class="wrap">
+      <h2 id="order-h" class="section-title">{page.orderHeading}</h2>
+      <hr class="rule" />
+      <p class="lede order__body">{page.orderBody}</p>
+
+      <div class="embed">
+        <span class="embed__corner" aria-hidden="true"></span>
+        <div class="embed__center">
+          <p class="embed__label">{page.embedLabel}</p>
+          <p class="embed__note">{page.embedNote}</p>
+        </div>
+      </div>
+
+      <div class="order-grid">
+        <p class="order__explainer">{page.orderExplainer}</p>
+        <ol class="steps">
+          {page.orderSteps.map((step) => (
+            <li class="step">
+              <h3 class="step__title">{step.title}</h3>
+              <p class="step__detail">{step.detail}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <p class="order__delivery">{page.deliveryNote}</p>
+    </div>
+  </section>
+
+  <!-- ── Find us ─────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" id="find" aria-labelledby="find-h">
+    <div class="wrap">
+      <h2 id="find-h" class="section-title">{page.findHeading}</h2>
+      <hr class="rule" />
+      <p class="note">{page.findBody}</p>
+
+      <div class="find">
+        <div>
+          <h3 class="find__h">{page.hoursHeading}</h3>
+          <table class="hours">
+            <thead>
+              <tr>
+                <th scope="col">{page.hoursTable.day}</th>
+                <th scope="col">{page.hoursTable.open}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {hourRows.map((row) => (
+                <tr>
+                  <th scope="row">{row.day}</th>
+                  <td>{row.open}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="hours__note">{page.hoursNote}</p>
+        </div>
+
+        <div class="map" role="img" aria-label={page.mapLabel}>
+          <span class="map__label">{page.mapLabel}</span>
+          <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+            <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+            <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ─────────────────────────────────────────────────────── -->
+  <section class="bay" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <h2 id="contact-h" class="section-title">{page.contactHeading}</h2>
+      <hr class="rule" />
+      <p class="lede contact__body">{page.contactBody}</p>
+
+      <dl class="contact">
+        <div class="contact__item">
+          <dt class="contact__label">{page.phoneHeading}</dt>
+          <dd class="contact__value">
+            <a class="contact__phone" href={business.phoneHref} data-analytics-event="phone_tap_contact">
+              {business.phone}
+            </a>
+          </dd>
+        </div>
+        <div class="contact__item">
+          <dt class="contact__label">{page.emailHeading}</dt>
+          <dd class="contact__value"><a href={business.emailHref}>{business.email}</a></dd>
+        </div>
+        <div class="contact__item">
+          <dt class="contact__label">{page.addressHeading}</dt>
+          <dd class="contact__value">
+            <address class="contact__address">
+              <span>{business.address.street}</span>
+              <span>{business.address.neighbourhood}, {business.address.city}</span>
+              <span>{business.address.region} {business.address.postalCode}</span>
+            </address>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Sticky order bar. CSS only, small screens only, where the nav's
+       own CTA is hidden behind the toggle. ──────────────────────────── -->
+  <div class="sticky-bar no-print">
+    <a class="sticky-bar__cta" href="#order" data-analytics-event="order_cta_sticky">
+      {page.stickyCta}
+    </a>
+  </div>
+</DemoLayout>
+
+<script>
+  // The only script on this page: keep the jump nav's sticky offset honest
+  // without hard-coding the chrome height, and mark the section in view.
+  const chromeEl = document.querySelector<HTMLElement>('.chrome');
+  const jump = document.querySelector<HTMLElement>('[data-jump]');
+
+  const setOffsets = () => {
+    const chromeH = chromeEl?.offsetHeight ?? 0;
+    const jumpH = jump?.offsetHeight ?? 0;
+    document.documentElement.style.setProperty('--chrome-h', `${chromeH}px`);
+    document.documentElement.style.setProperty('--scroll-pad', `${chromeH + jumpH + 16}px`);
+  };
+  setOffsets();
+  window.addEventListener('resize', setOffsets);
+  if (document.fonts?.ready) void document.fonts.ready.then(setOffsets);
+
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-jump-link]'));
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.jumpLink ?? ''))
+    .filter((section): section is HTMLElement => section !== null);
+
+  if (sections.length) {
+    const setCurrent = (id: string) => {
+      links.forEach((link) => {
+        const on = link.dataset.jumpLink === id;
+        link.classList.toggle('is-current', on);
+        if (on) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) setCurrent(visible.target.id);
+      },
+      { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 54ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .on-paper .note {
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(26rem, 72vh, 40rem);
+    overflow: hidden;
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero :global(.hero__shot) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to top,
+      var(--ink) 10%,
+      color-mix(in srgb, var(--ink) 88%, transparent) 55%,
+      color-mix(in srgb, var(--ink) 70%, transparent) 100%
+    );
+  }
+  .hero__in {
+    width: 100%;
+    padding-top: clamp(3rem, 10vh, 5.5rem);
+    padding-bottom: clamp(2.5rem, 7vh, 4rem);
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.035em;
+    max-width: 13ch;
+  }
+  .hero__body {
+    margin-top: 1.1rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.5;
+    max-width: 42ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  /* ── Jump nav ─────────────────────────────────────────────────────── */
+  .jump {
+    position: sticky;
+    top: var(--chrome-h, 0px);
+    z-index: 40;
+    background: color-mix(in srgb, var(--ink) 94%, transparent);
+    backdrop-filter: blur(6px);
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .jump__in {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .jump__in::-webkit-scrollbar {
+    display: none;
+  }
+  .jump__list {
+    list-style: none;
+    margin: 0;
+    padding: 0.7rem 0;
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    white-space: nowrap;
+  }
+  .jump__link {
+    text-decoration: none;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+    padding-bottom: 0.2rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .jump__link:hover {
+    color: var(--on-ink);
+  }
+  .jump__link.is-current {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── Sections get a scroll offset for the two sticky bars ─────────── */
+  #menu,
+  #order,
+  #find,
+  #contact {
+    scroll-margin-top: var(--scroll-pad, 9rem);
+  }
+
+  /* ── Menu ─────────────────────────────────────────────────────────── */
+  .legend {
+    margin: 1.75rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--paper-line);
+  }
+  .legend__pair {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .legend__pair dd {
+    margin: 0;
+  }
+  .marker {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    padding: 0.25em 0.4em;
+    border: 1px solid color-mix(in srgb, var(--accent-paper) 45%, transparent);
+    border-radius: 3px;
+    color: var(--accent-paper);
+    text-decoration: none;
+    vertical-align: 0.14em;
+  }
+
+  .courses {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 860px) {
+    .courses {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem 4rem;
+    }
+  }
+  .course__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2.1rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid var(--accent-paper);
+  }
+  .items {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .item__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .item__name {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .item__markers {
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-left: 0.45rem;
+  }
+  .item__price {
+    flex: none;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-paper);
+  }
+  .item__desc {
+    margin-top: 0.3rem;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--on-paper-dim);
+    max-width: 46ch;
+  }
+
+  /* ── Order ────────────────────────────────────────────────────────── */
+  .order__body {
+    margin-top: 1.25rem;
+    max-width: 48ch;
+  }
+  .embed {
+    position: relative;
+    margin-top: 2rem;
+    min-height: 26rem;
+    height: clamp(26rem, 55vh, 36rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--radius);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 14px,
+        color-mix(in srgb, var(--accent) 5%, transparent) 14px 15px
+      ),
+      var(--ink-raised);
+  }
+  .embed__corner {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+  }
+  .embed__center {
+    max-width: 32ch;
+  }
+  .embed__label {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.45;
+  }
+  .embed__note {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .order-grid {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 900px) {
+    .order-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .order__explainer {
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+  }
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .step {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.2rem 0.9rem;
+  }
+  .step::before {
+    content: counter(step, decimal-leading-zero);
+    grid-row: 1 / span 2;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.4;
+  }
+  .step__title {
+    font-size: var(--fs-body);
+    font-weight: 700;
+  }
+  .step__detail {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 38ch;
+  }
+  .order__delivery {
+    margin-top: 2rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--accent);
+    max-width: 54ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Find us ──────────────────────────────────────────────────────── */
+  .find {
+    margin-top: 2.25rem;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .find {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .find__h {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .hours {
+    margin-top: 1rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    border-bottom: 1px solid var(--paper-line);
+    font-size: var(--fs-small);
+  }
+  .hours thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+    font-weight: 700;
+  }
+  .hours tbody th {
+    font-weight: 700;
+  }
+  .hours td {
+    color: var(--on-paper-dim);
+    text-align: right;
+  }
+  .hours__note {
+    margin-top: 1rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--accent-paper) 45%, transparent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent-paper) 6%, transparent);
+    color: var(--accent-paper);
+  }
+  .map__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Contact ──────────────────────────────────────────────────────── */
+  .contact__body {
+    margin-top: 1.25rem;
+    max-width: 46ch;
+  }
+  .contact {
+    margin: 2.25rem 0 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 760px) {
+    .contact {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .contact__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .contact__value {
+    margin: 0.6rem 0 0;
+    font-size: clamp(1.02rem, 1rem + 0.2vw, 1.12rem);
+  }
+  .contact__phone {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .contact__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  /* ── Sticky order bar: CSS only, and only where the nav CTA is hidden ── */
+  .sticky-bar {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .sticky-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 55;
+      display: block;
+      padding: 0.65rem var(--gutter) calc(0.65rem + env(safe-area-inset-bottom, 0px));
+      background: color-mix(in srgb, var(--ink) 92%, transparent);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--ink-line);
+    }
+    .sticky-bar__cta {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius);
+    }
+    /* The bar covers the end of the page otherwise. */
+    .contact {
+      padding-bottom: 4rem;
+    }
+  }
+</style>

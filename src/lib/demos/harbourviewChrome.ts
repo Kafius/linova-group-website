@@ -6,6 +6,7 @@
 // Pages spread this and add their own title, description, current and JSON-LD.
 import {
   business,
+  fonts,
   footer,
   formatTime,
   hours,
@@ -16,6 +17,7 @@ import {
 
 export const chrome = {
   theme,
+  fonts,
   brand: business.name,
   tagline: business.positioning,
   navLinks: [...navigation.links],
@@ -43,9 +45,9 @@ export const chrome = {
 /** Route constants, so a path is written once and the JSON-LD, the nav and
  *  the breadcrumbs all agree on it. */
 export const routes = {
-  home: '/industries/restaurants/preview/',
-  menu: '/industries/restaurants/preview/menu',
-  order: '/industries/restaurants/preview/order',
-  about: '/industries/restaurants/preview/about',
-  contact: '/industries/restaurants/preview/contact',
+  home: '/industries/restaurants/preview/fnb-full-service/',
+  menu: '/industries/restaurants/preview/fnb-full-service/menu',
+  order: '/industries/restaurants/preview/fnb-full-service/order',
+  about: '/industries/restaurants/preview/fnb-full-service/about',
+  contact: '/industries/restaurants/preview/fnb-full-service/contact',
 } as const;

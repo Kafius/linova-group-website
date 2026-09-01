@@ -1,0 +1,59 @@
+---
+// Halden demo — Dining. A thin wrapper: the page body is HaldenCategory,
+// shared by all four category pages so the filter UI cannot become four
+// slightly different filter UIs.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import HaldenCategory from '../../../../../components/demos/HaldenCategory.astro';
+import { chrome, routes } from '../../../../../lib/demos/haldenChrome';
+import { categoryList, demoBreadcrumbs } from '../../../../../lib/demos/haldenJsonld';
+import {
+  business,
+  categoryById,
+  pageMeta,
+} from '../../../../../data/demos/retail-large-catalogue';
+
+const meta = pageMeta.dining;
+const category = categoryById('dining')!;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.dining}
+  jsonLd={[
+    categoryList('dining', routes.dining),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.dining },
+    ]),
+  ]}
+>
+  <header class="bay cat-head">
+    <div class="wrap">
+      <p class="eyebrow">{category.name}</p>
+      <h1 class="cat-title">{category.heading}</h1>
+      <p class="lede cat-lede">{category.intro}</p>
+    </div>
+  </header>
+
+  <HaldenCategory category={category} />
+</DemoLayout>
+
+<style>
+  .cat-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .cat-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+  }
+  .cat-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+</style>

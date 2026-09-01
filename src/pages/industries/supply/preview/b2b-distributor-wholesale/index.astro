@@ -1,0 +1,418 @@
+---
+// Grandview demo — home. Operational register: figures in mono, a route
+// table above the fold of the second screen, and account terms answered
+// before a chef has to ring and ask.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes as pageRoutes } from '../../../../../lib/demos/grandviewChrome';
+import { organization, wholesaleStore } from '../../../../../lib/demos/grandviewJsonld';
+import {
+  accountTerms,
+  categories,
+  deliveryPage,
+  formatNumber,
+  home,
+  pageMeta,
+  routes,
+  storageLabels,
+} from '../../../../../data/demos/b2b-distributor-wholesale';
+
+const meta = pageMeta.home;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={pageRoutes.home}
+  jsonLd={[
+    wholesaleStore(pageRoutes.home, meta.ogImage),
+    organization(pageRoutes.home, pageRoutes.about),
+  ]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap">
+      <p class="kicker">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <div class="hero__foot">
+        <p class="lede hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={pageRoutes.apply} data-analytics-event="apply_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={pageRoutes.delivery} data-analytics-event="delivery_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Figures ─────────────────────────────────────────────────────── -->
+  <section class="bay figures-bay" aria-labelledby="fig-h">
+    <div class="wrap">
+      <h2 id="fig-h" class="kicker">{home.figuresHeading}</h2>
+      <dl class="figures">
+        {home.figures.map((figure) => (
+          <div class="figure">
+            <dt class="figure__v">{figure.value}</dt>
+            <dd class="figure__k">{figure.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Categories ──────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="cat-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="cat-h" class="section-title">{home.categoriesHeading}</h2>
+          <p class="section-body">{home.categoriesBody}</p>
+        </div>
+        <a class="btn btn--line" href={pageRoutes.products} data-analytics-event="products_view_home">
+          {home.categoriesCta}
+        </a>
+      </div>
+      <ul class="cats">
+        {categories.map((category) => (
+          <li>
+            <a class="cat" href={`${pageRoutes.products}#${category.id}`} data-analytics-event="category_view_home">
+              <span class="cat__lines">{formatNumber(category.lines)}</span>
+              <span class="cat__lines-k">{home.linesLabel}</span>
+              <span class="cat__name">{category.name}</span>
+              <span class="cat__storage">{storageLabels[category.storage]}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Routes, on the slate band ───────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="rt-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="rt-h" class="section-title">{home.routesHeading}</h2>
+          <p class="section-body section-body--paper">{home.routesBody}</p>
+        </div>
+        <a class="btn btn--line" href={pageRoutes.delivery} data-analytics-event="delivery_view_routes">
+          {home.routesCta}
+        </a>
+      </div>
+      <div class="table-wrap">
+        <table class="routes">
+          <thead>
+            <tr>
+              <th scope="col">{deliveryPage.routeLabel}</th>
+              <th scope="col">{deliveryPage.daysLabel}</th>
+              <th scope="col">{deliveryPage.areasLabel}</th>
+              <th scope="col">{deliveryPage.cutOffLabel}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {routes.map((route) => (
+              <tr>
+                <th scope="row" class="routes__id">{route.name}</th>
+                <td class="routes__days">{route.days}</td>
+                <td class="routes__areas">{route.areas.join(', ')}</td>
+                <td class="routes__cut">{route.cutOff}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Terms ───────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="terms-h">
+    <div class="wrap">
+      <h2 id="terms-h" class="section-title">{home.termsHeading}</h2>
+      <p class="section-body">{home.termsBody}</p>
+      <dl class="terms">
+        {accountTerms.map((term) => (
+          <div class="term">
+            <dt class="term__k">{term.label}</dt>
+            <dd class="term__v">
+              <span class="term__value">{term.value}</span>
+              <span class="term__note">{term.note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{home.applyHeading}</h2>
+        <p class="section-body">{home.applyBody}</p>
+      </div>
+      <a class="btn btn--fill" href={pageRoutes.apply} data-analytics-event="apply_cta_closer">
+        {home.applyCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: 56ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero__title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+    max-width: 20ch;
+  }
+  .hero__foot {
+    margin-top: 1.75rem;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 880px) {
+    .hero__foot {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+  .hero__body {
+    max-width: 52ch;
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Figures ──────────────────────────────────────────────────────── */
+  .figures-bay {
+    padding-top: 0;
+  }
+  .figures {
+    margin: 1.5rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  @media (min-width: 820px) {
+    .figures {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .figure {
+    padding: 1.4rem 1.25rem;
+    background: var(--ink);
+  }
+  .figure__v {
+    font-family: var(--font-mono);
+    font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.7rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .figure__k {
+    margin: 0.7rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Categories ───────────────────────────────────────────────────── */
+  .cats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  @media (min-width: 700px) {
+    .cats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1120px) {
+    .cats {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+  .cat {
+    display: grid;
+    align-content: start;
+    height: 100%;
+    padding: 1.4rem 1.25rem;
+    background: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+  .cat:hover {
+    background: var(--ink-raised);
+  }
+  .cat__lines {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .cat__lines-k {
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .cat__name {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .cat__storage {
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Routes table ─────────────────────────────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .routes {
+    width: 100%;
+    min-width: 40rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .routes th,
+  .routes td {
+    text-align: left;
+    padding: 0.85rem 1rem 0.85rem 0;
+    border-bottom: 1px solid var(--paper-line);
+    vertical-align: baseline;
+  }
+  .routes thead th {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+    border-bottom-width: 2px;
+  }
+  .routes__id {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .routes__days,
+  .routes__cut {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    white-space: nowrap;
+  }
+  .routes__cut {
+    color: var(--accent-paper);
+  }
+  .routes__areas {
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Terms ────────────────────────────────────────────────────────── */
+  .terms {
+    margin: 2rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .term {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 780px) {
+    .term {
+      grid-template-columns: 12rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .term__k {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .term__v {
+    margin: 0;
+  }
+  .term__value {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .term__note {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 60ch;
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

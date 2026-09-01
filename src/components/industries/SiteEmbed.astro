@@ -1,133 +1,176 @@
 ---
-// The real sample site inside the plotted browser frame — the same chrome as
+// The real sample sites inside the plotted browser frame — the same chrome as
 // SiteMockup.astro, with a live same-origin iframe where that one draws a
 // fiction out of typed blocks.
 //
 // This is the upgrade path for a vertical: it renders the drawn mockup until
-// the demo actually exists, then swaps to the built site with the frame,
-// tabs, and device toggle unchanged. The page tabs really navigate and the
-// mobile toggle really reflows, because there is nothing to simulate.
+// the demos exist, then swaps to the built sites with the frame, tabs, and
+// device toggle unchanged. The page tabs really navigate and the mobile
+// toggle really reflows, because there is nothing to simulate.
+//
+// A vertical can carry several packages — restaurants alone has seven — so
+// when more than one demo is built the frame gains a package switcher and
+// every playbook's address bar, tabs and premise swap with it.
 //
 // Plotter & Marker stops at the frame, exactly as it does for the mockup.
-// Everything inside the iframe is the demo's own brand world, isolated by the
-// document boundary rather than by CSS discipline.
+// Everything inside the iframe is that demo's own brand world, isolated by
+// the document boundary rather than by CSS discipline.
 import type { LivePlaybook } from '../../data/playbooks';
 
 interface Props {
-  playbook: LivePlaybook;
+  /** every built demo for this vertical, in pipeline order */
+  playbooks: LivePlaybook[];
   /** scopes the instance's ids so a page could carry more than one */
   slug: string;
   /** the vertical's accent — the frame's own colour, as with the mockup */
   accent: string;
 }
 
-const { playbook, slug, accent } = Astro.props;
-const { demo } = playbook;
-const first = demo.pages[0];
+const { playbooks, slug, accent } = Astro.props;
+const lead = playbooks[0];
+const many = playbooks.length > 1;
 ---
 
-<div class="embed-root" data-site-embed={slug} style={`--mk-accent:${accent}`}>
-  <!-- ── Above the frame: the premise, and the device toggle ───────── -->
-  <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-    <p class="m-0 max-w-[54ch] text-caption text-film-dim">{demo.premise}</p>
+{lead && (
+  <div class="embed-root" data-site-embed={slug} style={`--mk-accent:${accent}`}>
+    {/* ── Package switcher, only once a vertical has more than one ──── */}
+    {many && (
+      <div class="mb-4 flex flex-wrap items-center gap-2" role="group" aria-label="Sample site">
+        <span class="label-mono mr-1 shrink-0">package</span>
+        {playbooks.map((playbook, i) => (
+          <button
+            type="button"
+            data-pb={playbook.slug}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+            class="pb-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+          >{playbook.name}</button>
+        ))}
+      </div>
+    )}
 
-    <div class="shrink-0" role="group" aria-label="Preview device">
-      <button
-        type="button"
-        data-device="desktop"
-        aria-pressed="true"
-        class="device-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
-      >desktop</button>
-      <button
-        type="button"
-        data-device="mobile"
-        aria-pressed="false"
-        class="device-btn label-mono ml-2 rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
-      >mobile</button>
-    </div>
-  </div>
+    <!-- ── Above the frame: the premise, and the device toggle ───────── -->
+    <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div class="max-w-[54ch]">
+        {playbooks.map((playbook, i) => (
+          <p class="m-0 text-caption text-film-dim" data-pb-premise={playbook.slug} hidden={i !== 0}>
+            {playbook.demo.premise}
+          </p>
+        ))}
+      </div>
 
-  <!-- ── The frame ─────────────────────────────────────────────────── -->
-  <div class="mockup-frame relative border border-grid/40" data-view="desktop">
-    <!-- chrome -->
-    <div class="flex items-center gap-3 bg-ink px-4 py-2.5">
-      <span class="flex shrink-0 gap-1.5" aria-hidden="true">
-        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
-        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
-        <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
-      </span>
-      <span class="label-mono truncate normal-case tracking-normal">{demo.displayUrl}</span>
-      <span class="label-mono ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
-        sample site
-      </span>
-    </div>
-    <hr class="rule-gold m-0" />
-
-    <!-- page tabs — these drive a real navigation, not a panel swap -->
-    <div
-      class="flex flex-wrap items-center gap-x-1 gap-y-1 border-b border-grid/40 bg-ink px-3 py-2"
-      role="tablist"
-      aria-label={`${playbook.name} sample pages`}
-    >
-      {demo.pages.map((page, i) => (
+      <div class="shrink-0" role="group" aria-label="Preview device">
         <button
           type="button"
-          role="tab"
-          id={`etab-${slug}-${page.id}`}
-          aria-controls={`eframe-${slug}`}
-          aria-selected={i === 0 ? 'true' : 'false'}
-          tabindex={i === 0 ? 0 : -1}
-          data-tab={page.id}
-          data-path={page.path}
-          class="page-tab label-mono rounded-chip px-3 py-1.5 normal-case tracking-normal"
-        >{page.label}</button>
-      ))}
-      <span class="label-mono ml-auto hidden pr-1 normal-case tracking-normal text-film-dim/60 md:block" aria-hidden="true">
-        click through it
-      </span>
-    </div>
-
-    <!-- viewport: the iframe does its own scrolling, so the frame does not -->
-    <div class="embed-viewport">
-      <div class="embed-stage">
-        <iframe
-          id={`eframe-${slug}`}
-          data-embed-frame
-          src={first?.path}
-          title={`${playbook.name} sample site`}
-          loading="lazy"
-          class="embed-iframe"
-        ></iframe>
+          data-device="desktop"
+          aria-pressed="true"
+          class="device-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+        >desktop</button>
+        <button
+          type="button"
+          data-device="mobile"
+          aria-pressed="false"
+          class="device-btn label-mono ml-2 rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+        >mobile</button>
       </div>
     </div>
-  </div>
 
-  <p class="mt-4 text-caption text-film-dim">
-    <a
-      href={playbook.demoUrl}
-      target="_blank"
-      rel="noopener"
-      data-track="demo_view"
-      data-track-label={playbook.slug}
-      class="text-gold underline decoration-1 underline-offset-4"
-    >Open the sample site full size</a>
-    {' '}— it is easier to judge at the size a customer would see it.
-  </p>
-</div>
+    <!-- ── The frame ─────────────────────────────────────────────────── -->
+    <div class="mockup-frame relative border border-grid/40" data-view="desktop">
+      <!-- chrome -->
+      <div class="flex items-center gap-3 bg-ink px-4 py-2.5">
+        <span class="flex shrink-0 gap-1.5" aria-hidden="true">
+          <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+          <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+          <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
+        </span>
+        {playbooks.map((playbook, i) => (
+          <span
+            class="label-mono truncate normal-case tracking-normal"
+            data-pb-url={playbook.slug}
+            hidden={i !== 0}
+          >{playbook.demo.displayUrl}</span>
+        ))}
+        <span class="label-mono ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
+          sample site
+        </span>
+      </div>
+      <hr class="rule-gold m-0" />
+
+      <!-- page tabs — these drive a real navigation, not a panel swap -->
+      {playbooks.map((playbook, pbIndex) => (
+        <div
+          class="flex flex-wrap items-center gap-x-1 gap-y-1 border-b border-grid/40 bg-ink px-3 py-2"
+          role="tablist"
+          aria-label={`${playbook.name} sample pages`}
+          data-pb-tabs={playbook.slug}
+          hidden={pbIndex !== 0}
+        >
+          {playbook.demo.pages.map((page, i) => (
+            <button
+              type="button"
+              role="tab"
+              aria-controls={`eframe-${slug}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab={page.id}
+              data-path={page.path}
+              class="page-tab label-mono rounded-chip px-3 py-1.5 normal-case tracking-normal"
+            >{page.label}</button>
+          ))}
+          <span class="label-mono ml-auto hidden pr-1 normal-case tracking-normal text-film-dim/60 md:block" aria-hidden="true">
+            click through it
+          </span>
+        </div>
+      ))}
+
+      <!-- viewport: the iframe does its own scrolling, so the frame does not -->
+      <div class="embed-viewport">
+        <div class="embed-stage">
+          <iframe
+            id={`eframe-${slug}`}
+            data-embed-frame
+            src={lead.demo.pages[0]?.path}
+            title={`${lead.name} sample site`}
+            loading="lazy"
+            class="embed-iframe"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    {playbooks.map((playbook, i) => (
+      <p class="mt-4 text-caption text-film-dim" data-pb-open={playbook.slug} hidden={i !== 0}>
+        <a
+          href={playbook.demoUrl}
+          target="_blank"
+          rel="noopener"
+          data-track="demo_view"
+          data-track-label={playbook.slug}
+          class="text-gold underline decoration-1 underline-offset-4"
+        >Open the sample site full size</a>
+        {' '}— it is easier to judge at the size a customer would see it.
+      </p>
+    ))}
+  </div>
+)}
 
 <script>
-  // Tabs drive a real navigation inside the frame, and the frame reports back
-  // when the visitor navigates it themselves, so the tabs never go stale.
+  // Tabs drive a real navigation inside the frame; the frame reports back when
+  // the visitor navigates it themselves, so the tabs never go stale; and the
+  // package switcher swaps which playbook's tabs and address bar are showing.
   document.querySelectorAll<HTMLElement>('[data-site-embed]').forEach((root) => {
     const frame = root.querySelector<HTMLElement>('.mockup-frame');
     const iframe = root.querySelector<HTMLIFrameElement>('[data-embed-frame]');
-    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
     if (!frame || !iframe) return;
 
     const normalise = (path: string) => path.replace(/\/+$/, '') || '/';
+    const visibleTabs = () =>
+      [...root.querySelectorAll<HTMLElement>('[data-pb-tabs]')]
+        .filter((group) => !group.hidden)
+        .flatMap((group) => [...group.querySelectorAll<HTMLButtonElement>('[data-tab]')]);
 
     const mark = (id: string, focus = false) => {
-      tabs.forEach((tab) => {
+      visibleTabs().forEach((tab) => {
         const active = tab.dataset.tab === id;
         tab.setAttribute('aria-selected', String(active));
         tab.tabIndex = active ? 0 : -1;
@@ -135,12 +178,9 @@ const first = demo.pages[0];
       });
     };
 
-    const go = (tab: HTMLButtonElement) => {
-      const path = tab.dataset.path;
-      if (!path) return;
-      mark(tab.dataset.tab ?? '');
-      // replace() rather than assigning src: a sample site the visitor clicked
-      // through should not stack up entries in their own back button.
+    // replace() rather than assigning src: a sample site the visitor clicked
+    // through should not stack up entries in their own back button.
+    const load = (path: string) => {
       try {
         iframe.contentWindow?.location.replace(path);
       } catch {
@@ -148,18 +188,60 @@ const first = demo.pages[0];
       }
     };
 
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => go(tab));
-      tab.addEventListener('keydown', (event) => {
-        const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-        if (!step) return;
-        event.preventDefault();
-        const next = tabs[(i + step + tabs.length) % tabs.length];
-        if (next) {
-          mark(next.dataset.tab ?? '', true);
-          next.click();
+    root.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement | null;
+
+      const tab = target?.closest<HTMLButtonElement>('[data-tab]');
+      if (tab?.dataset.path) {
+        mark(tab.dataset.tab ?? '');
+        load(tab.dataset.path);
+        return;
+      }
+
+      const pb = target?.closest<HTMLButtonElement>('[data-pb]');
+      if (pb?.dataset.pb) {
+        const slug = pb.dataset.pb;
+        root.querySelectorAll<HTMLButtonElement>('[data-pb]').forEach((btn) => {
+          btn.setAttribute('aria-pressed', String(btn.dataset.pb === slug));
+        });
+        // Every per-playbook element carries its slug in one of these attrs.
+        (['data-pb-tabs', 'data-pb-url', 'data-pb-premise', 'data-pb-open'] as const).forEach((attr) => {
+          root.querySelectorAll<HTMLElement>(`[${attr}]`).forEach((el) => {
+            el.hidden = el.getAttribute(attr) !== slug;
+          });
+        });
+        const first = root
+          .querySelector<HTMLElement>(`[data-pb-tabs="${slug}"]`)
+          ?.querySelector<HTMLButtonElement>('[data-tab]');
+        if (first?.dataset.path) {
+          mark(first.dataset.tab ?? '');
+          load(first.dataset.path);
         }
-      });
+        return;
+      }
+
+      const device = target?.closest<HTMLButtonElement>('[data-device]');
+      if (device) {
+        frame.dataset.view = device.dataset.device ?? 'desktop';
+        root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((other) => {
+          other.setAttribute('aria-pressed', String(other === device));
+        });
+      }
+    });
+
+    // Left/right arrows move along the visible tab row, as a tablist should.
+    root.addEventListener('keydown', (event) => {
+      const tab = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>('[data-tab]');
+      if (!tab) return;
+      const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      event.preventDefault();
+      const tabs = visibleTabs();
+      const next = tabs[(tabs.indexOf(tab) + step + tabs.length) % tabs.length];
+      if (next?.dataset.path) {
+        mark(next.dataset.tab ?? '', true);
+        load(next.dataset.path);
+      }
     });
 
     // Same origin, so the frame's own nav can be read back and mirrored onto
@@ -167,20 +249,11 @@ const first = demo.pages[0];
     iframe.addEventListener('load', () => {
       try {
         const here = normalise(iframe.contentWindow?.location.pathname ?? '');
-        const match = tabs.find((tab) => normalise(tab.dataset.path ?? '') === here);
+        const match = visibleTabs().find((tab) => normalise(tab.dataset.path ?? '') === here);
         if (match) mark(match.dataset.tab ?? '');
       } catch {
         /* not readable — leave the tabs as they are */
       }
-    });
-
-    root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        frame.dataset.view = btn.dataset.device ?? 'desktop';
-        root.querySelectorAll<HTMLButtonElement>('[data-device]').forEach((other) => {
-          other.setAttribute('aria-pressed', String(other === btn));
-        });
-      });
     });
   });
 </script>
@@ -189,6 +262,7 @@ const first = demo.pages[0];
   /* Controls, in our register — matched to SiteMockup so the two frames are
      indistinguishable from outside. */
   .device-btn[aria-pressed='true'],
+  .pb-btn[aria-pressed='true'],
   .page-tab[aria-selected='true'] {
     border-color: var(--mk-accent);
     color: var(--mk-accent);
@@ -198,8 +272,12 @@ const first = demo.pages[0];
     color: var(--color-film-dim);
   }
   .page-tab:hover,
-  .device-btn:hover {
+  .device-btn:hover,
+  .pb-btn:hover {
     color: var(--color-film);
+  }
+  .pb-btn {
+    color: var(--color-film-dim);
   }
 
   .embed-viewport {

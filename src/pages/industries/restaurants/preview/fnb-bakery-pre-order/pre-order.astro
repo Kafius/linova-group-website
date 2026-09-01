@@ -1,0 +1,343 @@
+---
+// Almond & Rye demo — Pre-Order. The e-commerce line item.
+//
+// The Clover slot here is framed around PICKUP WINDOWS AND LEAD TIMES rather
+// than around a basket, because on a bakery pre-order what is actually being
+// sold ahead is a time. Three windows, four lead times, and a plain list of
+// what the shop will not do.
+//
+// Deliberately NOT built: a fake cart, a fake window picker, a fake total.
+// The slot is where the real Clover ordering iframe goes.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/almondRyeChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/almondRyeJsonld';
+import {
+  business,
+  leadTimes,
+  pageMeta,
+  pickupWindows,
+  preOrderPage,
+} from '../../../../../data/demos/fnb-bakery-pre-order';
+
+const meta = pageMeta.preOrder;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.preOrder}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.preOrder },
+    ]),
+  ]}
+>
+  <header class="bay po-head">
+    <div class="wrap">
+      <p class="eyebrow">{preOrderPage.eyebrow}</p>
+      <h1 class="po-title">{preOrderPage.heading}</h1>
+      <p class="lede po-lede">{preOrderPage.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The Clover slot ─────────────────────────────────────────────── -->
+  <section class="bay po-store" aria-labelledby="store-h">
+    <div class="wrap store">
+      <div>
+        <h2 id="store-h" class="section-title">{preOrderPage.embedHeading}</h2>
+        <p class="section-body">{preOrderPage.embedBody}</p>
+      </div>
+      <div class="embed">
+        <span class="embed__corner" aria-hidden="true"></span>
+        <div class="embed__center">
+          <p class="embed__label">{preOrderPage.embedLabel}</p>
+          <p class="embed__note">{preOrderPage.embedNote}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pickup windows ──────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="win-h">
+    <div class="wrap">
+      <h2 id="win-h" class="section-title">{preOrderPage.windowsHeading}</h2>
+      <p class="section-body section-body--paper">{preOrderPage.windowsNote}</p>
+      <ul class="windows">
+        {pickupWindows.map((window) => (
+          <li class="window">
+            <h3 class="window__time">{window.time}</h3>
+            <p class="window__note">{window.note}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Lead times ──────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="lead-h">
+    <div class="wrap">
+      <h2 id="lead-h" class="section-title">{preOrderPage.leadHeading}</h2>
+      <table class="leads">
+        <thead>
+          <tr>
+            <th scope="col">{preOrderPage.leadItemLabel}</th>
+            <th scope="col">{preOrderPage.leadNoticeLabel}</th>
+            <th scope="col">{preOrderPage.leadCutOffLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {leadTimes.map((lead) => (
+            <tr>
+              <th scope="row" class="leads__item">{lead.item}</th>
+              <td class="leads__notice">{lead.notice}</td>
+              <td class="leads__cut">{lead.cutOff}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── What we will not do ─────────────────────────────────────────── -->
+  <section class="bay honest-bay" aria-labelledby="hon-h">
+    <div class="wrap honest">
+      <div>
+        <h2 id="hon-h" class="section-title">{preOrderPage.honestHeading}</h2>
+        <a class="btn btn--line" href={routes.cakes} data-analytics-event="cakes_view_preorder">
+          {preOrderPage.cakesCta}
+        </a>
+      </div>
+      <ul class="nos">
+        {preOrderPage.honest.map((line) => <li class="no">{line}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{preOrderPage.closerHeading}</h2>
+        <p class="section-body">{preOrderPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_preorder">
+        {business.phone}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .po-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .po-title {
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 17ch;
+  }
+  .po-lede {
+    margin-top: 1.35rem;
+    max-width: 50ch;
+  }
+  .po-store {
+    padding-top: 0;
+  }
+  .store {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .store {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .embed {
+    position: relative;
+    min-height: 22rem;
+    height: clamp(22rem, 46vh, 30rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    border: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--radius);
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 14px,
+        color-mix(in srgb, var(--accent) 6%, transparent) 14px 15px
+      ),
+      var(--ink-raised);
+  }
+  .embed__corner {
+    position: absolute;
+    top: 1.1rem;
+    left: 1.1rem;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-top: 3px solid var(--accent);
+    border-left: 3px solid var(--accent);
+    border-top-left-radius: 10px;
+  }
+  .embed__center {
+    max-width: 30ch;
+  }
+  .embed__label {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.4;
+  }
+  .embed__note {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Windows ──────────────────────────────────────────────────────── */
+  .windows {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 820px) {
+    .windows {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .window {
+    padding: 1.5rem 1.4rem;
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius);
+  }
+  .window__time {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .window__note {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Lead times ───────────────────────────────────────────────────── */
+  .leads {
+    margin-top: 1.75rem;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .leads th,
+  .leads td {
+    text-align: left;
+    padding: 0.85rem 1rem 0.85rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    vertical-align: baseline;
+    font-size: var(--fs-small);
+  }
+  .leads thead th {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom-width: 2px;
+  }
+  .leads__item {
+    font-weight: 700;
+  }
+  .leads__notice {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .leads__cut {
+    color: var(--on-ink-dim);
+  }
+
+  /* ── The nos ──────────────────────────────────────────────────────── */
+  .honest-bay {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .honest {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 900px) {
+    .honest {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .honest .btn {
+    margin-top: 1.5rem;
+  }
+  .nos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .no {
+    position: relative;
+    padding: 1rem 0 1rem 2rem;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+    line-height: 1.65;
+  }
+  .no::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.55em;
+    width: 1rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

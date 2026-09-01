@@ -1,0 +1,287 @@
+---
+// Grandview demo — Delivery Areas & Schedule. The logistics page, and the one
+// a prospective customer actually reads before anything else: find the city,
+// read the cut-off, decide whether this supplier can work for you.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes as pageRoutes } from '../../../../../lib/demos/grandviewChrome';
+import { deliverySchedule, demoBreadcrumbs } from '../../../../../lib/demos/grandviewJsonld';
+import {
+  accountTerms,
+  business,
+  deliveryPage,
+  formatNumber,
+  pageMeta,
+  routes,
+} from '../../../../../data/demos/b2b-distributor-wholesale';
+
+const meta = pageMeta.delivery;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={pageRoutes.delivery}
+  jsonLd={[
+    deliverySchedule(pageRoutes.delivery),
+    demoBreadcrumbs([
+      { name: business.shortName, path: pageRoutes.home },
+      { name: meta.breadcrumb, path: pageRoutes.delivery },
+    ]),
+  ]}
+>
+  <header class="bay dl-head">
+    <div class="wrap">
+      <p class="kicker">{deliveryPage.eyebrow}</p>
+      <h1 class="dl-title">{deliveryPage.heading}</h1>
+      <p class="lede dl-lede">{deliveryPage.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The schedule ────────────────────────────────────────────────── -->
+  <section class="bay dl-table" aria-label={deliveryPage.heading}>
+    <div class="wrap">
+      <div class="table-wrap">
+        <table class="sched">
+          <thead>
+            <tr>
+              <th scope="col">{deliveryPage.routeLabel}</th>
+              <th scope="col">{deliveryPage.areasLabel}</th>
+              <th scope="col">{deliveryPage.daysLabel}</th>
+              <th scope="col">{deliveryPage.cutOffLabel}</th>
+              <th scope="col">{deliveryPage.windowLabel}</th>
+              <th scope="col" class="num">{deliveryPage.minimumLabel}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {routes.map((route) => (
+              <tr id={route.id}>
+                <th scope="row" class="sched__id">{route.name}</th>
+                <td class="sched__areas">{route.areas.join(', ')}</td>
+                <td class="sched__mono">{route.days}</td>
+                <td class="sched__mono sched__cut">{route.cutOff}</td>
+                <td class="sched__mono">{route.window}</td>
+                <td class="sched__mono num">${formatNumber(route.minimum)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The two honest answers ──────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="miss-h">
+    <div class="wrap two">
+      <div>
+        <h2 id="miss-h" class="section-title">{deliveryPage.missedHeading}</h2>
+        <p class="section-body">{deliveryPage.missedBody}</p>
+      </div>
+      <div>
+        <h2 class="section-title">{deliveryPage.outsideHeading}</h2>
+        <p class="section-body">{deliveryPage.outsideBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Terms, on the slate band ────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="terms-h">
+    <div class="wrap">
+      <h2 id="terms-h" class="section-title">{deliveryPage.termsHeading}</h2>
+      <dl class="terms">
+        {accountTerms.map((term) => (
+          <div class="term">
+            <dt class="term__k">{term.label}</dt>
+            <dd class="term__v">
+              <span class="term__value">{term.value}</span>
+              <span class="term__note">{term.note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{deliveryPage.ctaHeading}</h2>
+        <p class="section-body">{deliveryPage.ctaBody}</p>
+      </div>
+      <a class="btn btn--fill" href={pageRoutes.apply} data-analytics-event="apply_cta_delivery">
+        {deliveryPage.ctaLabel}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: 56ch;
+    color: var(--on-ink-dim);
+  }
+  .on-paper .section-body {
+    color: var(--on-paper-dim);
+  }
+  .dl-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .dl-title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+  }
+  .dl-lede {
+    margin-top: 1.35rem;
+    max-width: 56ch;
+  }
+  .dl-table {
+    padding-top: 0;
+  }
+
+  /* ── The route sheet ──────────────────────────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--ink-line);
+    background: var(--ink);
+  }
+  .sched {
+    width: 100%;
+    min-width: 52rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .sched th,
+  .sched td {
+    text-align: left;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--ink-line);
+    vertical-align: baseline;
+  }
+  .sched tbody tr:last-child th,
+  .sched tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .sched tbody tr:nth-child(even) {
+    background: var(--ink-raised);
+  }
+  .sched thead th {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    background: var(--ink-raised);
+    border-bottom: 2px solid var(--ink-line);
+    white-space: nowrap;
+  }
+  .sched__id {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .sched__areas {
+    font-size: var(--fs-small);
+    min-width: 16rem;
+  }
+  .sched__mono {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+  .sched__cut {
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .num {
+    text-align: right;
+  }
+
+  .two {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .two {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  /* ── Terms ────────────────────────────────────────────────────────── */
+  .terms {
+    margin: 2rem 0 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .term {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  @media (min-width: 780px) {
+    .term {
+      grid-template-columns: 12rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .term__k {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-paper-dim);
+  }
+  .term__v {
+    margin: 0;
+  }
+  .term__value {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+  }
+  .term__note {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+    max-width: 60ch;
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

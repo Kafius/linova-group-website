@@ -1,0 +1,349 @@
+---
+// Ironwood demo — home. Layout only: every string comes from
+// src/data/demos/appointment-business.ts.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/ironwoodChrome';
+import { barberShop } from '../../../../../lib/demos/ironwoodJsonld';
+import {
+  barbers,
+  business,
+  findService,
+  home,
+  pageMeta,
+} from '../../../../../data/demos/appointment-business';
+import { formatPrice } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.home;
+const popular = home.popularIds
+  .map((id) => findService(id))
+  .filter((service): service is NonNullable<typeof service> => service !== undefined);
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[barberShop(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero__media" aria-hidden="true">
+      <DemoImage
+        demo="appointment-business"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="16 / 9"
+        sizes="100vw"
+        widths={[900, 1400, 1920]}
+        eager
+        quiet
+        class="hero__shot"
+      />
+    </div>
+    <div class="wrap hero__in">
+      <p class="eyebrow">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <p class="hero__body">{home.heroBody}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_hero">
+          {home.heroPrimaryCta}
+        </a>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_hero">
+          {home.heroSecondaryCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Walk in or book ─────────────────────────────────────────────── -->
+  <section class="bay walkin-bay" aria-labelledby="walkin-h">
+    <div class="wrap">
+      <div class="walkin">
+        <h2 id="walkin-h" class="section-title">{home.walkinHeading}</h2>
+        <p class="walkin__body">{home.walkinBody}</p>
+        <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_walkin">
+          {home.closerCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── What people book — on the bone ground ───────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="pop-h">
+    <div class="wrap">
+      <div class="pop__head">
+        <div>
+          <h2 id="pop-h" class="section-title">{home.popularHeading}</h2>
+          <p class="pop__note">{home.popularNote}</p>
+        </div>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_popular">
+          {home.popularCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="pop">
+        {popular.map((service) => (
+          <li class="pop__item">
+            <div class="pop__line">
+              <h3 class="pop__name">{service.name}</h3>
+              <span class="pop__price">${formatPrice(service.price)}</span>
+            </div>
+            <p class="pop__meta">{service.minutes} min</p>
+            <p class="pop__desc">{service.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── The barbers ─────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="barbers-h">
+    <div class="wrap">
+      <div class="pop__head">
+        <h2 id="barbers-h" class="section-title">{home.barbersHeading}</h2>
+        <a class="btn btn--line" href={routes.barbers} data-analytics-event="barbers_view_home">
+          {home.barbersCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="chairs">
+        {barbers.map((barber) => (
+          <li class="chair">
+            <DemoImage
+              demo="appointment-business"
+              file={barber.photo.file}
+              subject={barber.photo.subject}
+              alt={barber.photo.alt}
+              ratio="3 / 4"
+              sizes="(min-width: 900px) 22vw, 45vw"
+              widths={[300, 460, 640]}
+            />
+            <h3 class="chair__name">{barber.name}</h3>
+            <p class="chair__role">{barber.role}</p>
+            <p class="chair__spec">{barber.specialties.join(' · ')}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{home.closerHeading}</h2>
+        <p class="closer__body">{home.closerBody}</p>
+      </div>
+      <div class="closer__actions">
+        <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_footer">
+          {home.closerCta}
+        </a>
+        <a class="btn btn--line" href={business.phoneHref} data-analytics-event="phone_tap_home">
+          {business.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(28rem, 74vh, 44rem);
+    overflow: hidden;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero :global(.hero__shot) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto !important;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to top,
+      var(--ink) 12%,
+      color-mix(in srgb, var(--ink) 90%, transparent) 55%,
+      color-mix(in srgb, var(--ink) 74%, transparent) 100%
+    );
+  }
+  .hero__in {
+    width: 100%;
+    padding-top: clamp(3rem, 10vh, 6rem);
+    padding-bottom: clamp(2.5rem, 7vh, 4.5rem);
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.025em;
+    max-width: 12ch;
+  }
+  .hero__body {
+    margin-top: 1.1rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.5;
+    max-width: 40ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Walk in ──────────────────────────────────────────────────────── */
+  /* Nested inside .wrap rather than narrowing it: .wrap centres a 1180px
+     column, so shrinking its own max-width centres the copy instead. */
+  .walkin {
+    max-width: 52ch;
+  }
+  .walkin__body {
+    margin-top: 1rem;
+    color: var(--on-ink-dim);
+  }
+  .walkin .btn {
+    margin-top: 1.75rem;
+  }
+
+  /* ── Popular ──────────────────────────────────────────────────────── */
+  .pop__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .pop__note {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .pop {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 760px) {
+    .pop {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .pop__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .pop__name {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: 0.005em;
+  }
+  .pop__price {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-paper);
+  }
+  .pop__meta {
+    margin-top: 0.5rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .pop__desc {
+    margin-top: 0.55rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Chairs ───────────────────────────────────────────────────────── */
+  .chairs {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 900px) {
+    .chairs {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .chair__name {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  .chair__role {
+    margin-top: 0.2rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .chair__spec {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer {
+    border-top: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+  .closer__body {
+    margin-top: 0.6rem;
+    max-width: 40ch;
+    color: var(--on-ink-dim);
+  }
+  .closer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

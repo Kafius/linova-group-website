@@ -1,0 +1,352 @@
+---
+// Bramble & Bone demo — shop. The E-Commerce line item made visible: the slot
+// the real Clover Online Store drops into, and the CMS-modelled catalogue
+// rendered as indexable pages around it.
+//
+// Deliberately NOT built: a fake cart, a fake checkout, a fake total. The
+// catalogue below the slot is content, not commerce — every price and stock
+// state comes from the CMS collection, and checkout happens inside Clover.
+//
+// CMS-DRIVEN: the product grid renders src/data/demos/retail-online-store.ts,
+// which is the seed for the `product` document in the .cms.ts schema stub. On
+// a live build this loop is fed from Sanity instead.
+//
+// The category filter is pure CSS — radio inputs plus :has() on the wrapper.
+// No JavaScript is spent on it, which keeps this demo inside the same client
+// JS budget as every other one.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/brambleChrome';
+import { catalogue, demoBreadcrumbs } from '../../../../../lib/demos/brambleJsonld';
+import {
+  business,
+  categories,
+  pageMeta,
+  products,
+  shop,
+} from '../../../../../data/demos/retail-online-store';
+import { formatPrice } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.shop;
+const filters = [{ id: 'all', label: shop.filterAll }, ...categories.map((c) => ({ id: c.id, label: c.label }))];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.shop}
+  jsonLd={[
+    catalogue(routes.shop),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.shop },
+    ]),
+  ]}
+>
+  <header class="bay shop-head">
+    <div class="wrap">
+      <p class="eyebrow">{shop.eyebrow}</p>
+      <h1 class="shop-title">{shop.heading}</h1>
+      <hr class="rule" />
+      <p class="lede shop-lede">{shop.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── The integration slot ────────────────────────────────────────── -->
+  <section class="wrap" aria-label={shop.embedLabel}>
+    <div class="embed">
+      <span class="embed__corner" aria-hidden="true"></span>
+      <div class="embed__center">
+        <p class="embed__label">{shop.embedLabel}</p>
+        <p class="embed__note">{shop.embedNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── What runs it ────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="clover-h">
+    <div class="wrap">
+      <div class="explainer">
+        <h2 id="clover-h" class="section-title">{shop.explainerHeading}</h2>
+        <hr class="rule" />
+        <p class="explainer__body">{shop.explainerBody}</p>
+        <p class="explainer__note">{shop.pickupNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Catalogue, filtered with no JavaScript ──────────────────────── -->
+  <section class="bay on-paper catalogue-bay" aria-labelledby="cat-h">
+    <div class="wrap">
+      <h2 id="cat-h" class="section-title">{shop.catalogueHeading}</h2>
+      <hr class="rule" />
+      <p class="catalogue__note">{shop.catalogueNote}</p>
+
+      <div class="shop-grid">
+        <fieldset class="filters">
+          <legend class="filters__legend">{shop.filterLabel}</legend>
+          {filters.map((filter, i) => (
+            <>
+              <input
+                class="filters__input"
+                type="radio"
+                name="category"
+                id={`filter-${filter.id}`}
+                value={filter.id}
+                checked={i === 0}
+              />
+              <label class="filters__label" for={`filter-${filter.id}`}>{filter.label}</label>
+            </>
+          ))}
+        </fieldset>
+
+        <ul class="products">
+          {products.map((product) => (
+            <li class="product" data-cat={product.category} id={product.id}>
+              <div class="product__head">
+                <h3 class="product__name">{product.name}</h3>
+                <span class="product__price">${formatPrice(product.price)}</span>
+              </div>
+              <p class="product__size">{product.size}</p>
+              <p class="product__desc">{product.description}</p>
+              <ul class="product__tags">
+                {product.tags.map((tag) => <li class="tag">{tag}</li>)}
+                {!product.inStock && <li class="tag tag--out">{shop.outOfStock}</li>}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .shop-head {
+    padding-bottom: 0;
+  }
+  .shop-title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .shop-lede {
+    margin-top: 1.25rem;
+    max-width: 48ch;
+  }
+
+  /* ── The slot. Proportioned like a real Clover Online Store iframe. ── */
+  .embed {
+    position: relative;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    min-height: 30rem;
+    height: clamp(30rem, 62vh, 42rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 22px;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 14px,
+        color-mix(in srgb, var(--accent) 5%, transparent) 14px 15px
+      ),
+      var(--ink-raised);
+  }
+  .embed__corner {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+    border-top-left-radius: 12px;
+  }
+  .embed__center {
+    max-width: 34ch;
+  }
+  .embed__label {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.3rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.45;
+  }
+  .embed__note {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* Sits inside .wrap rather than narrowing it: .wrap centres a 1180px
+     column, so shrinking that column's own max-width would either centre the
+     measure or pin it to the viewport edge. */
+  .explainer {
+    max-width: 60ch;
+  }
+  .explainer__body {
+    margin-top: 1.5rem;
+    color: var(--on-ink-dim);
+  }
+  .explainer__note {
+    margin-top: 1rem;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ── Catalogue ────────────────────────────────────────────────────── */
+  .catalogue__note {
+    margin-top: 1rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .shop-grid {
+    margin-top: 2.5rem;
+  }
+
+  .filters {
+    border: 0;
+    margin: 0 0 2rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .filters__legend {
+    width: 100%;
+    padding: 0 0 0.75rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  /* The radio itself is the state; the label is the control. Kept in the
+     accessibility tree rather than display:none so it stays keyboard-usable. */
+  .filters__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .filters__label {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--on-paper-dim);
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  }
+  .filters__label:hover {
+    color: var(--on-paper);
+  }
+  .filters__input:checked + .filters__label {
+    background: var(--accent-paper);
+    border-color: var(--accent-paper);
+    color: var(--paper);
+  }
+  .filters__input:focus-visible + .filters__label {
+    outline: 2px solid var(--accent-paper);
+    outline-offset: 3px;
+  }
+
+  .products {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 620px) {
+    .products {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .products {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  .product {
+    padding: 1.6rem;
+    border: 1px solid var(--paper-line);
+    border-radius: 18px;
+    background: var(--paper-raised);
+    scroll-margin-top: 7rem;
+  }
+  .product__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .product__name {
+    font-size: var(--fs-dish);
+    font-weight: 700;
+  }
+  .product__price {
+    flex: none;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-paper);
+  }
+  .product__size {
+    margin-top: 0.35rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-paper-dim);
+  }
+  .product__desc {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-paper-dim);
+  }
+  .product__tags {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--accent-paper) 45%, transparent);
+    border-radius: 999px;
+    color: var(--accent-paper);
+  }
+  .tag--out {
+    border-color: color-mix(in srgb, var(--on-paper) 35%, transparent);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── The filter itself: no JavaScript, just :has() on the wrapper ──── */
+  .shop-grid:has(#filter-food:checked) .product:not([data-cat='food']),
+  .shop-grid:has(#filter-treats:checked) .product:not([data-cat='treats']),
+  .shop-grid:has(#filter-toys:checked) .product:not([data-cat='toys']),
+  .shop-grid:has(#filter-care:checked) .product:not([data-cat='care']),
+  .shop-grid:has(#filter-accessories:checked) .product:not([data-cat='accessories']) {
+    display: none;
+  }
+</style>

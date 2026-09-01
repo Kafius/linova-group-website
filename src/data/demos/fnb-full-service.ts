@@ -3,7 +3,7 @@
 // is a real business, and the demo ribbon says so on every page.
 //
 // EVERY string the preview renders lives in this file. The .astro pages under
-// src/pages/industries/restaurants/preview/ hold layout and nothing else, so
+// src/pages/industries/restaurants/preview/fnb-full-service/ hold layout and nothing else, so
 // building the next demo is: duplicate this file, rewrite the values, point
 // the new pages at it. If you find yourself typing prose into a .astro file
 // in that folder, it belongs here instead.
@@ -108,7 +108,14 @@ export const theme = {
   onAccent: '#17110D',
   displayFont: '"Fraunces", "Iowan Old Style", Georgia, serif',
   bodyFont: '"Karla", "Segoe UI", system-ui, sans-serif',
+  displayAxes: "'SOFT' 40, 'WONK' 1, 'opsz' 40",
 } as const;
+
+/** The two self-hosted faces this demo loads. Display first — it is preloaded. */
+export const fonts = [
+  { family: 'Fraunces', file: 'fraunces-latin-var.woff2', weight: '400 700' },
+  { family: 'Karla', file: 'karla-latin-var.woff2', weight: '400 700' },
+];
 
 export const business = {
   name: 'Harbourview Bar & Grill',
@@ -431,13 +438,13 @@ export const pageMeta: Record<'home' | 'menu' | 'order' | 'about' | 'contact', D
 
 export const navigation = {
   links: [
-    { href: '/industries/restaurants/preview/', label: 'Home' },
-    { href: '/industries/restaurants/preview/menu', label: 'Menu' },
-    { href: '/industries/restaurants/preview/order', label: 'Order Online' },
-    { href: '/industries/restaurants/preview/about', label: 'About' },
-    { href: '/industries/restaurants/preview/contact', label: 'Contact' },
+    { href: '/industries/restaurants/preview/fnb-full-service/', label: 'Home' },
+    { href: '/industries/restaurants/preview/fnb-full-service/menu', label: 'Menu' },
+    { href: '/industries/restaurants/preview/fnb-full-service/order', label: 'Order Online' },
+    { href: '/industries/restaurants/preview/fnb-full-service/about', label: 'About' },
+    { href: '/industries/restaurants/preview/fnb-full-service/contact', label: 'Contact' },
   ],
-  cta: { href: '/industries/restaurants/preview/order', label: 'Order Online' },
+  cta: { href: '/industries/restaurants/preview/fnb-full-service/order', label: 'Order Online', event: 'order_cta_nav' },
   menuToggleOpen: 'Open menu',
   menuToggleClose: 'Close menu',
   skipToContent: 'Skip to content',

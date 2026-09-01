@@ -37,6 +37,10 @@ export default defineConfig({
     // same Calendly event. Kept as a permanent redirect so ads, emails and
     // bookmarks pointing at it still land somewhere real.
     '/discovery': '/book',
+    // The first sample site shipped at the bare /preview/ URL, before a
+    // second playbook needed the same vertical. Demos are now nested by
+    // playbook slug; this keeps any link already sent out working.
+    '/industries/restaurants/preview': '/industries/restaurants/preview/fnb-full-service/',
   },
   build: {
     // Inline all page CSS — kills ~470ms of render-blocking requests on

@@ -1,0 +1,141 @@
+---
+// Fernrock demo — our coffee. Three short sections rather than an essay,
+// which is the point the intro copy makes about itself.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/fernrockChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/fernrockJsonld';
+import { business, coffeePage, pageMeta } from '../../../../../data/demos/fnb-cafe-order-ahead';
+
+const meta = pageMeta.coffee;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.coffee}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.coffee },
+    ]),
+  ]}
+>
+  <header class="bay cf-head">
+    <div class="wrap">
+      <p class="eyebrow">{coffeePage.eyebrow}</p>
+      <h1 class="cf-title">{coffeePage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede cf-lede">{coffeePage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={coffeePage.heading}>
+    <div class="wrap">
+      <ul class="sections">
+        {coffeePage.sections.map((section) => (
+          <li class="sec">
+            <DemoImage
+              demo="fnb-cafe-order-ahead"
+              file={section.photo.file}
+              subject={section.photo.subject}
+              alt={section.photo.alt}
+              ratio="4 / 3"
+              sizes="(min-width: 860px) 42vw, 100vw"
+              widths={[500, 780, 1040]}
+              class="sec__shot"
+            />
+            <div>
+              <h2 class="sec__title">{section.title}</h2>
+              <p class="sec__body">{section.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay on-paper">
+    <div class="wrap closer">
+      <div>
+        <h2 class="closer__title">{coffeePage.closerHeading}</h2>
+        <p class="closer__body">{coffeePage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_coffee">
+        {coffeePage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .cf-head {
+    padding-bottom: 0;
+  }
+  .cf-title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+  }
+  .cf-lede {
+    margin-top: 1.35rem;
+    max-width: 54ch;
+  }
+
+  .sections {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  .sec {
+    display: grid;
+    gap: 1.75rem;
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .sec {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+    }
+    /* Alternate the photo side so three blocks do not read as a list. */
+    .sec:nth-child(even) :global(.sec__shot) {
+      order: 2;
+    }
+  }
+  .sec :global(.sec__shot) {
+    border-radius: var(--radius);
+  }
+  .sec__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.4rem + 1.4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .sec__body {
+    margin-top: 1rem;
+    max-width: 48ch;
+    line-height: 1.7;
+    color: var(--on-ink-dim);
+  }
+
+  .closer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+  .closer__body {
+    margin-top: 0.7rem;
+    max-width: 44ch;
+    color: var(--on-paper-dim);
+  }
+</style>

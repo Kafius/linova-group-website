@@ -1,0 +1,368 @@
+---
+// Cedarview demo — home. Layout only: every string comes from
+// src/data/demos/retail-grocery-order-ahead.ts.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/cedarviewChrome';
+import { groceryStore } from '../../../../../lib/demos/cedarviewJsonld';
+import {
+  departments,
+  formatMoney,
+  home,
+  pageMeta,
+  specials,
+  specialsPage,
+} from '../../../../../data/demos/retail-grocery-order-ahead';
+
+const meta = pageMeta.home;
+const featured = departments.slice(0, 3);
+const topSpecials = specials.items.slice(0, 3);
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[groceryStore(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.specials} data-analytics-event="specials_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="retail-grocery-order-ahead"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="5 / 4"
+        sizes="(min-width: 900px) 48vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+      />
+    </div>
+  </section>
+
+  <!-- ── The butcher — the green band ────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="butcher-h">
+    <div class="wrap">
+      <div class="butcher">
+        <h2 id="butcher-h" class="section-title">{home.butcherHeading}</h2>
+        <hr class="rule" />
+        <p class="butcher__body">{home.butcherBody}</p>
+        <ul class="ticks">
+          {home.butcherPoints.map((point) => <li class="tick">{point}</li>)}
+        </ul>
+        <a class="btn btn--line" href={routes.order} data-analytics-event="order_cta_butcher">
+          {home.butcherCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Departments ─────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="dept-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="dept-h" class="section-title">{home.departmentsHeading}</h2>
+        <a class="btn btn--line" href={routes.departments} data-analytics-event="departments_view_home">
+          {home.departmentsCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="tiles">
+        {featured.map((dept) => (
+          <li>
+            <a class="tile" href={`${routes.departments}#${dept.id}`} data-analytics-event="department_view">
+              <DemoImage
+                demo="retail-grocery-order-ahead"
+                file={dept.photo.file}
+                subject={dept.photo.subject}
+                alt={dept.photo.alt}
+                ratio="4 / 3"
+                sizes="(min-width: 900px) 30vw, 90vw"
+                widths={[400, 600, 800]}
+              />
+              <h3 class="tile__name">{dept.name}</h3>
+              <p class="tile__desc">{dept.description}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Specials ────────────────────────────────────────────────────── -->
+  <section class="bay specials-bay" aria-labelledby="spec-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="spec-h" class="section-title">{home.specialsHeading}</h2>
+          <p class="head__note">
+            {specialsPage.weekLabel} {specials.weekOf} {specialsPage.throughLabel} {specials.through}
+          </p>
+        </div>
+        <a class="btn btn--line" href={routes.specials} data-analytics-event="specials_view_home">
+          {home.specialsCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="specials">
+        {topSpecials.map((special) => (
+          <li class="special">
+            <h3 class="special__item">{special.item}</h3>
+            <p class="special__prices">
+              <span class="special__was">{specialsPage.wasLabel} ${formatMoney(special.was)}</span>
+              <span class="special__now">${formatMoney(special.now)}<span class="special__unit">{special.unit}</span></span>
+            </p>
+            <p class="special__detail">{special.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Order ahead strip ───────────────────────────────────────────── -->
+  <section class="bay">
+    <div class="wrap strip">
+      <div>
+        <h2 class="strip__title">{home.orderHeading}</h2>
+        <p class="strip__body">{home.orderBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_strip">
+        {home.orderCta}
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Find us ─────────────────────────────────────────────────────── -->
+  <section class="bay on-paper">
+    <div class="wrap strip">
+      <div>
+        <h2 class="strip__title">{home.findHeading}</h2>
+        <p class="strip__body strip__body--paper">{home.findBody}</p>
+      </div>
+      <a class="btn btn--line" href={routes.contact} data-analytics-event="contact_view_home">
+        {home.findCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .head__note {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .hero__body {
+    margin-top: 1.25rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.55;
+    max-width: 44ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Butcher band ─────────────────────────────────────────────────── */
+  /* Nested inside .wrap rather than narrowing it — .wrap centres a 1180px
+     column, so shrinking its own max-width centres the copy instead. */
+  .butcher {
+    max-width: 62ch;
+  }
+  .butcher__body {
+    margin-top: 1.5rem;
+    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.18rem);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+  .ticks {
+    list-style: none;
+    margin: 1.75rem 0 2rem;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .tick {
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: var(--fs-small);
+    color: var(--on-paper);
+  }
+  .tick::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.7rem;
+    height: 2px;
+    background: var(--accent-paper);
+  }
+
+  /* ── Department tiles ─────────────────────────────────────────────── */
+  .tiles {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 800px) {
+    .tiles {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+  .tile {
+    display: block;
+    text-decoration: none;
+    height: 100%;
+  }
+  .tile :global(.shot) {
+    border-radius: var(--radius);
+    transition: opacity 0.2s ease;
+  }
+  .tile:hover :global(.shot) {
+    opacity: 0.88;
+  }
+  .tile__name {
+    margin-top: 1rem;
+    font-size: var(--fs-heading);
+  }
+  .tile:hover .tile__name {
+    color: var(--accent);
+  }
+  .tile__desc {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Specials ─────────────────────────────────────────────────────── */
+  .specials-bay {
+    background: var(--ink-raised);
+    border-block: 1px solid var(--ink-line);
+  }
+  .specials {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 800px) {
+    .specials {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .special {
+    padding: 1.5rem;
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--ink);
+  }
+  .special__item {
+    font-size: var(--fs-heading);
+  }
+  .special__prices {
+    margin-top: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .special__was {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    text-decoration: line-through;
+  }
+  .special__now {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .special__unit {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--on-ink-dim);
+    margin-left: 0.15rem;
+  }
+  .special__detail {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Strips ───────────────────────────────────────────────────────── */
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+  .strip__title {
+    font-size: var(--fs-title);
+  }
+  .strip__body {
+    margin-top: 0.6rem;
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+  }
+  .strip__body--paper {
+    color: var(--on-paper-dim);
+  }
+</style>

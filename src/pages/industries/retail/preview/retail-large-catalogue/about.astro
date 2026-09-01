@@ -1,0 +1,192 @@
+---
+// Halden demo — About. The argument is the buying policy: a small floor is a
+// choice, and saying why is more persuasive than a founder story.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/haldenChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/haldenJsonld';
+import { aboutPage, business, pageMeta } from '../../../../../data/demos/retail-large-catalogue';
+
+const meta = pageMeta.about;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.about}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.about },
+    ]),
+  ]}
+>
+  <header class="bay ab-head">
+    <div class="wrap">
+      <p class="eyebrow">{aboutPage.eyebrow}</p>
+      <h1 class="ab-title">{aboutPage.heading}</h1>
+      <p class="lede ab-lede">{aboutPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay ab-facts" aria-labelledby="facts-h">
+    <div class="wrap">
+      <h2 id="facts-h" class="rule-h">{aboutPage.factsHeading}</h2>
+      <dl class="facts">
+        {aboutPage.facts.map((fact) => (
+          <div class="fact">
+            <dt class="fact__value">{fact.value}</dt>
+            <dd class="fact__label">{fact.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="bay on-paper" aria-labelledby="why-h">
+    <div class="wrap">
+      <h2 id="why-h" class="section-title">{aboutPage.whyHeading}</h2>
+      <p class="section-body section-body--paper wide">{aboutPage.whyBody}</p>
+    </div>
+  </section>
+
+  <section class="bay" aria-labelledby="crew-h">
+    <div class="wrap story">
+      <div>
+        <h2 id="crew-h" class="section-title">{aboutPage.crewHeading}</h2>
+        <p class="section-body">{aboutPage.crewBody}</p>
+        <h2 class="section-title story__second">{aboutPage.floorHeading}</h2>
+        <p class="section-body">{aboutPage.floorBody}</p>
+      </div>
+      <DemoImage
+        demo="retail-large-catalogue"
+        file="warehouse"
+        subject="Warehouse racking behind a furniture showroom with wrapped sofas and boxed appliances, a delivery truck backed to the bay"
+        alt="The warehouse behind the Halden showroom"
+        ratio="4 / 5"
+        sizes="(min-width: 940px) 38vw, 100vw"
+        widths={[460, 700, 940]}
+        class="story__shot"
+      />
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{aboutPage.ctaHeading}</h2>
+        <p class="section-body">{aboutPage.ctaBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.contact} data-analytics-event="contact_view_about">
+        {aboutPage.ctaLabel}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .wide {
+    max-width: 66ch;
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+  }
+  .rule-h {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rule-h::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-line);
+  }
+  .ab-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ab-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+  }
+  .ab-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+  .ab-facts {
+    padding-top: 0;
+  }
+  .facts {
+    margin: 1.75rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem 1.5rem;
+  }
+  @media (min-width: 820px) {
+    .facts {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .fact__value {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 1.7rem + 2.2vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .fact__label {
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .story {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 940px) {
+    .story {
+      grid-template-columns: 1fr 0.68fr;
+      gap: 3.5rem;
+    }
+  }
+  .story__second {
+    margin-top: 2.5rem;
+  }
+  .story :global(.story__shot) {
+    border: 1px solid var(--ink-line);
+  }
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

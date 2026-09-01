@@ -1,0 +1,901 @@
+---
+// Pin & Press Tailoring — the whole site. One page, four anchors.
+//
+// ── NO ANALYTICS ─────────────────────────────────────────────────────────
+// This is the only demo in the catalogue that passes analytics={false}. There
+// is not one data-analytics-event attribute on this page, and the layout does
+// not add its usual two either. Search this document in an inspector and the
+// count is zero; every other demo in the catalogue returns between five and
+// twenty-one on its home page alone.
+//
+// That is the line item, not an oversight.
+// ─────────────────────────────────────────────────────────────────────────
+//
+// ── BOOKING, LITE ────────────────────────────────────────────────────────
+// The form below is one screen with four questions. Six other demos in this
+// catalogue run a multi-step flow — service, then staff or bay or room, then
+// date, then time. This playbook is called Appointment Lite and costs $600,
+// and the honest build of it is a short form that gets a phone call started,
+// with the calendar handoff in a comment as usual.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/pinPressChrome';
+import { clothingStore } from '../../../../../lib/demos/pinPressJsonld';
+import {
+  business,
+  fitting,
+  formatPrice,
+  home,
+  hours,
+  pageMeta,
+  services,
+  turnaround,
+} from '../../../../../data/demos/appointment-lite';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.home;
+const f = fitting.fields;
+const hourRows = hours.map((day) => ({
+  day: day.day,
+  open: `${formatTime(day.open)} – ${formatTime(day.close)}`,
+}));
+const selects = [
+  { id: 'garment', name: 'garment', field: f.garment },
+  { id: 'service', name: 'service', field: f.service },
+];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  analytics={false}
+  jsonLd={[clothingStore(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap">
+      <p class="eyebrow">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <p class="lede hero__body">{home.heroBody}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--fill" href="#fitting">{home.heroPrimaryCta}</a>
+        <a class="btn btn--line" href="#services">{home.heroSecondaryCta}</a>
+      </div>
+      <dl class="facts">
+        {home.heroFacts.map((fact) => (
+          <div class="fact">
+            <dt class="fact__k">{fact.label}</dt>
+            <dd class="fact__v">{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Services and prices ─────────────────────────────────────────── -->
+  <section class="bay sv" id="services" aria-labelledby="sv-h">
+    <div class="wrap">
+      <h2 id="sv-h" class="section-title">{home.servicesHeading}</h2>
+      <p class="section-body">{home.servicesIntro}</p>
+
+      <div class="groups">
+        {services.map((group) => (
+          <section class="group" id={group.id} aria-labelledby={`g-${group.id}`}>
+            <h3 class="group__name" id={`g-${group.id}`}>{group.garment}</h3>
+            <p class="group__blurb">{group.blurb}</p>
+            <table class="rates">
+              <tbody>
+                {group.rows.map((row) => (
+                  <tr>
+                    <th scope="row" class="rates__svc">
+                      {row.service}
+                      {row.note && <span class="rates__note">{row.note}</span>}
+                    </th>
+                    <td class="rates__price">
+                      <span class="rates__from">${formatPrice(row.from)}</span>
+                      <span class="rates__dash">{home.toLabel}</span>
+                      <span class="rates__to">${formatPrice(row.to)}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Turnaround, on the charcoal band ────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="tt-h">
+    <div class="wrap">
+      <h2 id="tt-h" class="section-title">{home.turnaroundHeading}</h2>
+      <dl class="turn">
+        {turnaround.map((row) => (
+          <div class="turn__row">
+            <dt class="turn__k">{row.label}</dt>
+            <dd class="turn__v">{row.note}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Book a fitting ──────────────────────────────────────────────── -->
+  <section class="bay ft" id="fitting" aria-labelledby="ft-h">
+    <div class="wrap ft-grid">
+      <div>
+        <h2 id="ft-h" class="section-title">{home.fittingHeading}</h2>
+        <p class="section-body">{home.fittingIntro}</p>
+
+        <form class="form" id="fitting-form" novalidate aria-label={fitting.formLabel}>
+          <p class="required-note">{fitting.requiredNote}</p>
+
+          <div class="errors" id="error-summary" role="alert" tabindex="-1" hidden>
+            <h3 class="errors__h">{fitting.errorSummaryHeading}</h3>
+            <ul class="errors__list" id="error-list"></ul>
+          </div>
+
+          <div class="fields">
+            {selects.map((entry) => (
+              <p class="field">
+                <label class="field__label" for={entry.id}>{entry.field.label}</label>
+                {'hint' in entry.field && entry.field.hint && (
+                  <span class="field__hint" id={`${entry.id}-hint`}>{entry.field.hint}</span>
+                )}
+                <select
+                  class="control"
+                  id={entry.id}
+                  name={entry.name}
+                  data-required
+                  data-error={entry.field.error}
+                  aria-describedby={'hint' in entry.field && entry.field.hint ? `${entry.id}-hint` : undefined}
+                >
+                  <option value=""></option>
+                  {entry.field.options.map((option) => <option value={option}>{option}</option>)}
+                </select>
+                <span class="field__error" id={`${entry.id}-error`}></span>
+              </p>
+            ))}
+
+            <p class="field">
+              <label class="field__label" for="fitting-date">{f.fittingDate.label}</label>
+              <span class="field__hint" id="fitting-date-hint">{f.fittingDate.hint}</span>
+              <input
+                class="control"
+                type="date"
+                id="fitting-date"
+                name="fittingDate"
+                aria-describedby="fitting-date-hint"
+                data-required
+                data-error={f.fittingDate.error}
+              />
+              <span class="field__error" id="fitting-date-error"></span>
+            </p>
+
+            <div class="split">
+              <p class="field">
+                <label class="field__label" for="name">{f.name.label}</label>
+                <input
+                  class="control"
+                  type="text"
+                  id="name"
+                  name="name"
+                  autocomplete="name"
+                  data-required
+                  data-error={f.name.error}
+                />
+                <span class="field__error" id="name-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="phone">{f.phone.label}</label>
+                <span class="field__hint" id="phone-hint">{f.phone.hint}</span>
+                <input
+                  class="control"
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  autocomplete="tel"
+                  aria-describedby="phone-hint"
+                  data-required
+                  data-error={f.phone.error}
+                />
+                <span class="field__error" id="phone-error"></span>
+              </p>
+            </div>
+
+            <p class="field">
+              <label class="field__label" for="email">{f.email.label}</label>
+              <span class="field__hint" id="email-hint">{f.email.hint}</span>
+              <input class="control" type="email" id="email" name="email" autocomplete="email" aria-describedby="email-hint" />
+            </p>
+
+            <p class="field">
+              <label class="field__label" for="notes">{f.notes.label}</label>
+              <span class="field__hint" id="notes-hint">{f.notes.hint}</span>
+              <textarea class="control control--area" id="notes" name="notes" rows="3" aria-describedby="notes-hint"></textarea>
+            </p>
+          </div>
+
+          <button class="btn btn--fill submit" type="submit">{fitting.submitLabel}</button>
+        </form>
+
+        <!-- Confirmation. Replaces the form in place. -->
+        <div class="done" id="fitting-done" role="status" tabindex="-1" hidden>
+          <h3 class="done__h">{fitting.confirmation.heading}</h3>
+          <p class="done__b">{fitting.confirmation.body}</p>
+          <h4 class="done__sub">{fitting.confirmation.detailsHeading}</h4>
+          <dl class="summary" id="fitting-summary"></dl>
+          <p class="done__note">{fitting.confirmation.note}</p>
+          <div class="done__actions">
+            <a class="btn btn--fill" href={business.phoneHref}>
+              {fitting.confirmation.callLabel} — {business.phone}
+            </a>
+            <button class="btn btn--line" type="button" id="fitting-reset">
+              {fitting.confirmation.resetLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Hours and location ────────────────────────────────────── -->
+      <aside class="side" id="hours" aria-labelledby="hr-h">
+        <h2 id="hr-h" class="side__h">{home.hoursHeading}</h2>
+        <p class="side__note">{home.hoursNote}</p>
+        <table class="hours">
+          <thead>
+            <tr>
+              <th scope="col">{home.hoursTable.day}</th>
+              <th scope="col">{home.hoursTable.open}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hourRows.map((row) => (
+              <tr>
+                <th scope="row">{row.day}</th>
+                <td>{row.open}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h3 class="side__h side__h--spaced">{home.visitHeading}</h3>
+        <dl class="visit">
+          {home.visit.map((entry) => (
+            <div>
+              <dt class="visit__k">{entry.title}</dt>
+              <dd class="visit__v">{entry.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── Contact ─────────────────────────────────────────────────────── -->
+  <section class="bay ct" id="contact" aria-labelledby="ct-h">
+    <div class="wrap ct-grid">
+      <div>
+        <h2 id="ct-h" class="section-title">{home.contactHeading}</h2>
+        <p class="section-body">{home.contactNote}</p>
+        <a class="ct__phone" href={business.phoneHref}>{business.phone}</a>
+        <a class="ct__mail" href={business.emailHref}>{business.email}</a>
+        <address class="ct__address">
+          <span>{business.address.street}</span>
+          <span>{business.address.city}, {business.address.region} {business.address.postalCode}</span>
+        </address>
+      </div>
+      <div class="map" role="img" aria-label={home.mapLabel}>
+        <span class="map__label">{home.mapLabel}</span>
+        <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+          <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.25" />
+          <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.25" />
+        </svg>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // ── CALENDAR HANDOFF ───────────────────────────────────────────────────
+  // On a live build the submit handler posts the request to the shop's
+  // booking system and the confirmation state below is its success view:
+  //
+  //   await fetch(FITTING_ENDPOINT, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ garment, service, fittingDate, name, phone, email, notes }),
+  //   });
+  //
+  // FITTING_ENDPOINT is an environment variable, never a literal in the
+  // bundle. Nothing on this preview posts anywhere: it is a sample site.
+  //
+  // Note what this handler does NOT do: fire an analytics event. Analytics is
+  // false on this playbook and there is nothing here for a tag to read.
+  // ───────────────────────────────────────────────────────────────────────
+  const form = document.getElementById('fitting-form') as HTMLFormElement | null;
+  const done = document.getElementById('fitting-done');
+  const summary = document.getElementById('fitting-summary');
+  const errorBox = document.getElementById('error-summary');
+  const errorList = document.getElementById('error-list');
+  const resetButton = document.getElementById('fitting-reset');
+
+  if (form && done && summary && errorBox && errorList && resetButton) {
+    type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    const required = [...form.querySelectorAll<Control>('[data-required]')];
+
+    const labelText = (control: Control): string => {
+      const label = form.querySelector(`label[for="${control.id}"]`);
+      return (label?.textContent || control.name).trim();
+    };
+    const slotFor = (control: Control) => document.getElementById(`${control.id}-error`);
+
+    const clearError = (control: Control): void => {
+      control.removeAttribute('aria-invalid');
+      const slot = slotFor(control);
+      if (slot) slot.textContent = '';
+    };
+
+    required.forEach((control) => {
+      control.addEventListener('change', () => {
+        if (control.value.trim()) clearError(control);
+      });
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const failed: Control[] = [];
+      required.forEach((control) => {
+        clearError(control);
+        if (!control.value.trim()) {
+          control.setAttribute('aria-invalid', 'true');
+          const slot = slotFor(control);
+          if (slot) slot.textContent = control.dataset.error || '';
+          failed.push(control);
+        }
+      });
+
+      if (failed.length) {
+        errorList.innerHTML = '';
+        failed.forEach((control) => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `#${control.id}`;
+          link.textContent = `${labelText(control)} — ${control.dataset.error || ''}`;
+          link.addEventListener('click', (clickEvent) => {
+            clickEvent.preventDefault();
+            control.focus();
+          });
+          item.appendChild(link);
+          errorList.appendChild(item);
+        });
+        errorBox.hidden = false;
+        errorBox.focus();
+        return;
+      }
+
+      errorBox.hidden = true;
+      const data = new FormData(form);
+      summary.innerHTML = '';
+      form.querySelectorAll<Control>('[name]').forEach((control) => {
+        const value = String(data.get(control.name) || '').trim();
+        if (!value) return;
+        const row = document.createElement('div');
+        row.className = 'summary__row';
+        const key = document.createElement('dt');
+        key.className = 'summary__k';
+        key.textContent = labelText(control);
+        const val = document.createElement('dd');
+        val.className = 'summary__v';
+        val.textContent = value;
+        row.append(key, val);
+        summary.appendChild(row);
+      });
+
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+      done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      required.forEach(clearError);
+      done.hidden = true;
+      form.hidden = false;
+      errorBox.hidden = true;
+      form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: 56ch;
+    color: var(--on-ink-dim);
+  }
+  .on-paper .section-body {
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero__title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+    max-width: 16ch;
+  }
+  .hero__body {
+    margin-top: 1.25rem;
+    max-width: 50ch;
+  }
+  .hero__ctas {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+  .facts {
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  @media (min-width: 720px) {
+    .facts {
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 0;
+    }
+  }
+  .fact {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 720px) {
+    .fact {
+      border-top: 1px solid var(--ink-line);
+      border-bottom: 0;
+      padding-right: 1.5rem;
+    }
+  }
+  .fact__k {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .fact__v {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+  }
+
+  /* ── Prices ───────────────────────────────────────────────────────── */
+  .sv {
+    border-top: 1px solid var(--ink-line);
+  }
+  .groups {
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 880px) {
+    .groups {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.75rem 3.5rem;
+    }
+  }
+  .group__name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--accent);
+  }
+  .group__blurb {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+    max-width: 48ch;
+  }
+  .rates {
+    margin-top: 1.1rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .rates th,
+  .rates td {
+    text-align: left;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    vertical-align: baseline;
+  }
+  .rates__svc {
+    font-weight: 400;
+    font-size: var(--fs-small);
+    padding-right: 1rem;
+  }
+  .rates__note {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.72rem;
+    color: var(--on-ink-dim);
+  }
+  .rates__price {
+    text-align: right;
+    white-space: nowrap;
+    font-size: var(--fs-small);
+  }
+  .rates__from,
+  .rates__to {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--accent);
+  }
+  .rates__dash {
+    margin: 0 0.35rem;
+    color: var(--on-ink-dim);
+    font-size: 0.72rem;
+  }
+
+  /* ── Turnaround ───────────────────────────────────────────────────── */
+  .turn {
+    margin: 1.75rem 0 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .turn__row {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  @media (min-width: 700px) {
+    .turn__row {
+      grid-template-columns: 10rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .turn__k {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--accent-paper);
+  }
+  .turn__v {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+    max-width: 58ch;
+  }
+
+  /* ── Fitting form ─────────────────────────────────────────────────── */
+  .ft {
+    border-top: 1px solid var(--ink-line);
+  }
+  .ft-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 960px) {
+    .ft-grid {
+      grid-template-columns: 1fr 17rem;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .required-note {
+    margin-top: 1.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .fields {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+  }
+  .field__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .field__hint {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+  }
+  .control {
+    width: 100%;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .control--area {
+    resize: vertical;
+    min-height: 4.5rem;
+  }
+  .control:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .control[aria-invalid='true'] {
+    border-color: var(--accent);
+    border-left-width: 3px;
+  }
+  /* The line is reserved whether or not it holds an error, so clearing one on
+     blur cannot move the submit button out from under a cursor. */
+  .field__error {
+    display: block;
+    min-height: 1.25em;
+    font-size: 0.76rem;
+    line-height: 1.25;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .split {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 620px) {
+    .split {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .errors {
+    margin-top: 1.25rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    background: var(--ink-raised);
+  }
+  .errors:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .errors__h {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .errors__list {
+    margin: 0.6rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--fs-small);
+  }
+  .submit {
+    margin-top: 1.5rem;
+  }
+
+  .done {
+    margin-top: 1.75rem;
+    border: 1px solid var(--ink-line);
+    border-top: 2px solid var(--accent);
+    background: var(--ink-raised);
+    padding: clamp(1.25rem, 3vw, 1.9rem);
+  }
+  .done:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .done__h {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 600;
+  }
+  .done__b {
+    margin-top: 0.8rem;
+    max-width: 50ch;
+    color: var(--on-ink-dim);
+  }
+  .done__sub {
+    margin-top: 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .summary {
+    margin: 0.8rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary :global(.summary__row) {
+    display: grid;
+    gap: 0.1rem 1.25rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 560px) {
+    .summary :global(.summary__row) {
+      grid-template-columns: 11rem 1fr;
+    }
+  }
+  .summary :global(.summary__k) {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .summary :global(.summary__v) {
+    margin: 0;
+    font-size: var(--fs-small);
+  }
+  .done__note {
+    margin-top: 1.25rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 48ch;
+  }
+  .done__actions {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  /* ── Side: hours and location ─────────────────────────────────────── */
+  .side {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.25rem;
+    scroll-margin-top: 8rem;
+  }
+  .side__h {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .side__h--spaced {
+    margin-top: 2rem;
+  }
+  .side__note {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .hours {
+    margin-top: 1rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .hours thead th {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    font-weight: 700;
+  }
+  .hours tbody th {
+    font-weight: 400;
+  }
+  .hours td {
+    text-align: right;
+    font-family: var(--font-display);
+    font-size: 1rem;
+  }
+  .visit {
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .visit__k {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .visit__v {
+    margin: 0.3rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Contact ──────────────────────────────────────────────────────── */
+  .ct {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+    scroll-margin-top: 8rem;
+  }
+  .ct-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 880px) {
+    .ct-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+  }
+  .ct__phone {
+    display: block;
+    margin-top: 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.4rem + 1.2vw, 2.2rem);
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .ct__mail {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+    text-underline-offset: 4px;
+  }
+  .ct__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.1rem;
+    margin-top: 1.25rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--ink);
+    color: var(--accent);
+  }
+  .map__label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    max-width: 22ch;
+    line-height: 1.6;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>

@@ -1,0 +1,203 @@
+---
+// Harbourview demo — about. Private events point at a phone number and an
+// email on purpose: booking is off for this playbook, so there is no enquiry
+// form here and no calendar behind it.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/harbourviewChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/restaurantJsonld';
+import { about, business, pageMeta, staff } from '../../../../../data/demos/fnb-full-service';
+
+const meta = pageMeta.about;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.about}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.about },
+    ]),
+  ]}
+>
+  <!-- ── Origin ──────────────────────────────────────────────────────── -->
+  <header class="bay">
+    <div class="wrap">
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h1 class="about-title">{about.heading}</h1>
+      <hr class="rule" />
+      <div class="story">
+        {about.story.map((paragraph) => <p class="story__p">{paragraph}</p>)}
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Sourcing ────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="sourcing-h">
+    <div class="wrap sourcing">
+      <div>
+        <h2 id="sourcing-h" class="section-title">{about.sourcingHeading}</h2>
+        <hr class="rule" />
+        <p class="sourcing__body">{about.sourcingBody}</p>
+      </div>
+      <DemoImage
+        demo="fnb-full-service"
+        file={about.sourcingPhoto.file}
+        subject={about.sourcingPhoto.subject}
+        alt={about.sourcingPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 900px) 44vw, 100vw"
+        widths={[560, 900, 1200]}
+      />
+    </div>
+  </section>
+
+  <!-- ── Staff ───────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="staff-h">
+    <div class="wrap">
+      <h2 id="staff-h" class="section-title">{about.staffHeading}</h2>
+      <hr class="rule" />
+      <ul class="staff">
+        {staff.map((person) => (
+          <li class="person">
+            <DemoImage
+              demo="fnb-full-service"
+              file={person.photo.file}
+              subject={person.photo.subject}
+              alt={person.photo.alt}
+              ratio="1 / 1"
+              sizes="(min-width: 900px) 30vw, 90vw"
+              widths={[360, 560, 760]}
+            />
+            <h3 class="person__name">{person.name}</h3>
+            <p class="person__role">{person.role}</p>
+            <p class="person__bio">{person.bio}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Private events: phone and email, no form ────────────────────── -->
+  <section class="events">
+    <div class="wrap events__in">
+      <div>
+        <h2 class="events__title">{about.eventsHeading}</h2>
+        <p class="events__body">{about.eventsBody}</p>
+      </div>
+      <div class="events__actions">
+        <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_events">
+          {about.eventsPhoneCta}
+        </a>
+        <a class="btn btn--line" href={business.emailHref} data-analytics-event="email_tap_events">
+          {about.eventsEmailCta}
+        </a>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .about-title {
+    font-size: var(--fs-display);
+    font-variation-settings: 'SOFT' 20, 'WONK' 1, 'opsz' 144;
+    max-width: 18ch;
+  }
+  .story {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.25rem;
+    max-width: 56ch;
+  }
+  .story__p {
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+
+  .section-title {
+    font-size: var(--fs-title);
+  }
+
+  .sourcing {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .sourcing {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+  }
+  .sourcing__body {
+    margin-top: 1.5rem;
+    max-width: 44ch;
+    color: var(--on-paper-dim);
+    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
+    line-height: 1.6;
+  }
+
+  .staff {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 760px) {
+    .staff {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+  .person__name {
+    margin-top: 1.25rem;
+    font-size: var(--fs-heading);
+    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 40;
+  }
+  .person__role {
+    margin-top: 0.3rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .person__bio {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  .events {
+    border-top: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+    padding: var(--bay) 0;
+  }
+  .events__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .events__title {
+    font-size: var(--fs-title);
+  }
+  .events__body {
+    margin-top: 0.85rem;
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+  }
+  .events__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

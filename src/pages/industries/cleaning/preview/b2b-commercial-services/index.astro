@@ -1,0 +1,569 @@
+---
+// Northline demo — home. Layout only: every string comes from
+// src/data/demos/b2b-commercial-services.ts.
+//
+// The register is a tender document, not a brochure. Numbered section kickers
+// in the mono face, hairline rules, two-pixel corners, and every figure set in
+// IBM Plex Mono so the numbers read as facts rather than decoration.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/northlineChrome';
+import { professionalService } from '../../../../../lib/demos/northlineJsonld';
+import {
+  credentials,
+  home,
+  industries,
+  onboarding,
+  pageMeta,
+  serviceArea,
+  services,
+} from '../../../../../data/demos/b2b-commercial-services';
+
+const meta = pageMeta.home;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[professionalService(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="kicker">{home.heroKicker}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.quote} data-analytics-event="quote_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="b2b-commercial-services"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 920px) 46vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── The numbers ─────────────────────────────────────────────────── -->
+  <section class="bay stats-bay" aria-labelledby="stats-h">
+    <div class="wrap">
+      <p class="kicker" id="stats-h">{home.statsKicker}</p>
+      <hr class="rule" />
+      <dl class="stats">
+        {home.stats.map((stat) => (
+          <div class="stat">
+            <dt class="stat__value">{stat.value}</dt>
+            <dd class="stat__label">{stat.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Credentials, on the navy band ───────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="cred-h">
+    <div class="wrap">
+      <p class="kicker kicker--paper">{home.credentialsKicker}</p>
+      <h2 id="cred-h" class="section-title">{home.credentialsHeading}</h2>
+      <p class="section-body section-body--paper">{home.credentialsBody}</p>
+      <ul class="creds">
+        {credentials.map((credential) => (
+          <li class="cred">
+            <h3 class="cred__name">{credential.name}</h3>
+            <p class="cred__detail">{credential.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Services ────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="svc-h">
+    <div class="wrap">
+      <p class="kicker">{home.servicesKicker}</p>
+      <div class="head">
+        <div>
+          <h2 id="svc-h" class="section-title">{home.servicesHeading}</h2>
+          <p class="section-body">{home.servicesBody}</p>
+        </div>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_home">
+          {home.servicesCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="grid-list">
+        {services.map((service) => (
+          <li>
+            <a class="tile" href={`${routes.services}#${service.id}`} data-analytics-event="service_view">
+              <span class="tile__name">{service.name}</span>
+              <span class="tile__summary">{service.summary}</span>
+              <span class="tile__spec">
+                {service.spec.map((entry) => (
+                  <span class="chip">
+                    <span class="chip__k">{entry.label}</span>
+                    <span class="chip__v">{entry.value}</span>
+                  </span>
+                ))}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Industries ──────────────────────────────────────────────────── -->
+  <section class="bay industries-bay" aria-labelledby="ind-h">
+    <div class="wrap">
+      <p class="kicker">{home.industriesKicker}</p>
+      <div class="head">
+        <div>
+          <h2 id="ind-h" class="section-title">{home.industriesHeading}</h2>
+          <p class="section-body">{home.industriesBody}</p>
+        </div>
+        <a class="btn btn--line" href={routes.industries} data-analytics-event="industries_view_home">
+          {home.industriesCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="rows">
+        {industries.map((industry) => (
+          <li>
+            <a class="row" href={`${routes.industries}#${industry.id}`} data-analytics-event="industry_view">
+              <span class="row__name">{industry.name}</span>
+              <span class="row__summary">{industry.summary}</span>
+              <span class="row__spec">
+                {industry.spec.map((entry) => (
+                  <span class="chip">
+                    <span class="chip__k">{entry.label}</span>
+                    <span class="chip__v">{entry.value}</span>
+                  </span>
+                ))}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Onboarding ──────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="onb-h">
+    <div class="wrap">
+      <p class="kicker kicker--paper">{home.onboardingKicker}</p>
+      <h2 id="onb-h" class="section-title">{home.onboardingHeading}</h2>
+      <p class="section-body section-body--paper">{home.onboardingBody}</p>
+      <ol class="steps">
+        {onboarding.map((entry) => (
+          <li class="step">
+            <span class="step__num">{entry.step}</span>
+            <h3 class="step__title">{entry.title}</h3>
+            <p class="step__detail">{entry.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Coverage ────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="area-h">
+    <div class="wrap area">
+      <div>
+        <p class="kicker">{home.areaKicker}</p>
+        <h2 id="area-h" class="section-title">{home.areaHeading}</h2>
+        <p class="section-body">{home.areaBody}</p>
+      </div>
+      <ul class="area__list">
+        {serviceArea.map((city) => <li class="area__city">{city}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="section-body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.quote} data-analytics-event="quote_cta_closer">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  /* ── Shared page furniture ────────────────────────────────────────── */
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .kicker--paper {
+    color: var(--accent-paper);
+  }
+  .section-title {
+    margin-top: 0.9rem;
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* The spec chip. A key in mono, a value in mono, a hairline box around
+     both — the same object on every page of this demo. */
+  .chip {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--ink-line);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+  .chip__k {
+    padding: 0.4rem 0.5rem;
+    background: var(--ink-raised);
+    color: var(--on-ink-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .chip__v {
+    padding: 0.4rem 0.55rem;
+    font-weight: 600;
+    color: var(--on-ink);
+    border-left: 1px solid var(--ink-line);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 920px) {
+    .hero__in {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    max-width: 15ch;
+  }
+  .hero__body {
+    margin-top: 1.35rem;
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero__in :global(.hero__shot) {
+    border: 1px solid var(--ink-line);
+  }
+
+  /* ── Stats ────────────────────────────────────────────────────────── */
+  .stats-bay {
+    padding-top: 0;
+  }
+  .stats {
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 1.75rem 1rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 800px) {
+    .stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .stat {
+    border-left: 2px solid var(--accent);
+    padding-left: 1rem;
+  }
+  .stat__value {
+    font-family: var(--font-mono);
+    font-size: clamp(2rem, 1.6rem + 1.9vw, 3rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .stat__label {
+    margin: 0.65rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+    max-width: 20ch;
+  }
+
+  /* ── Credentials ──────────────────────────────────────────────────── */
+  .creds {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--paper-line);
+    border: 1px solid var(--paper-line);
+  }
+  @media (min-width: 720px) {
+    .creds {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .creds {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .cred {
+    padding: 1.6rem 1.4rem;
+    background: var(--paper);
+  }
+  .cred__name {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+  }
+  .cred__detail {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Service tiles ────────────────────────────────────────────────── */
+  .grid-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  @media (min-width: 700px) {
+    .grid-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .grid-list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .tile {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    height: 100%;
+    padding: 1.6rem 1.4rem;
+    background: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+  .tile:hover {
+    background: var(--ink-raised);
+  }
+  .tile__name {
+    font-size: 1.08rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .tile__summary {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+  .tile__spec {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+  }
+
+  /* ── Industry rows ────────────────────────────────────────────────── */
+  .industries-bay {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .row {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    text-decoration: none;
+  }
+  @media (min-width: 900px) {
+    .row {
+      grid-template-columns: 15rem 1fr auto;
+      align-items: baseline;
+      gap: 2rem;
+    }
+  }
+  .row:hover .row__name {
+    color: var(--accent);
+  }
+  .row__name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .row__summary {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+    max-width: 58ch;
+  }
+  .row__spec {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .industries-bay .chip__k {
+    background: var(--ink);
+  }
+
+  /* ── Onboarding ───────────────────────────────────────────────────── */
+  .steps {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--paper-line);
+    border: 1px solid var(--paper-line);
+  }
+  @media (min-width: 720px) {
+    .steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1080px) {
+    .steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .step {
+    padding: 1.6rem 1.4rem;
+    background: var(--paper);
+  }
+  .step__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--accent-paper);
+  }
+  .step__title {
+    margin-top: 0.7rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+  .step__detail {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Coverage ─────────────────────────────────────────────────────── */
+  .area {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .area {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+  }
+  .area__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  @media (min-width: 520px) {
+    .area__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .area__city {
+    padding: 1.1rem 1rem;
+    background: var(--ink);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

@@ -1,0 +1,327 @@
+---
+// Fernrock demo — home. Layout only: every string comes from
+// src/data/demos/fnb-cafe-order-ahead.ts.
+//
+// The bubble tea line carries the second accent (--accent-alt) wherever it
+// appears, which is the one piece of colour coding running through this demo.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/fernrockChrome';
+import { cafe } from '../../../../../lib/demos/fernrockJsonld';
+import {
+  home,
+  itemsIn,
+  lines,
+  pageMeta,
+} from '../../../../../data/demos/fnb-cafe-order-ahead';
+
+const meta = pageMeta.home;
+const cards = lines.map((line) => ({ ...line, count: itemsIn(line.id).length }));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  ogType="restaurant.restaurant"
+  jsonLd={[cafe(routes.home, routes.menu, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.menu} data-analytics-event="menu_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="fnb-cafe-order-ahead"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 900px) 48vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Four lines ──────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="lines-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="lines-h" class="section-title">{home.linesHeading}</h2>
+        <a class="btn btn--line" href={routes.menu} data-analytics-event="menu_view_lines">
+          {home.linesCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="lines">
+        {cards.map((line) => (
+          <li>
+            <a
+              class:list={['line', line.alt && 'line--alt']}
+              href={`${routes.menu}#${line.id}`}
+              data-analytics-event="menu_line_view"
+            >
+              <span class="line__count">{line.count}</span>
+              <span class="line__name">{line.name}</span>
+              <span class="line__blurb">{line.blurb}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Laptops, and the boba note — the grape band ─────────────────── -->
+  <section class="bay on-paper" aria-labelledby="room-h">
+    <div class="wrap room">
+      <div>
+        <h2 id="room-h" class="section-title">{home.laptopHeading}</h2>
+        <hr class="rule" />
+        <p class="room__body">{home.laptopBody}</p>
+        <ul class="ticks">
+          {home.laptopPoints.map((point) => <li class="tick">{point}</li>)}
+        </ul>
+      </div>
+      <div class="boba">
+        <h2 class="boba__h">{home.bobaHeading}</h2>
+        <p class="boba__b">{home.bobaBody}</p>
+        <a class="boba__cta" href={routes.coffee} data-analytics-event="coffee_view_home">
+          {home.bobaCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Order ahead ─────────────────────────────────────────────────── -->
+  <section class="bay">
+    <div class="wrap strip">
+      <div>
+        <h2 class="section-title">{home.orderHeading}</h2>
+        <p class="strip__body">{home.orderBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.order} data-analytics-event="order_cta_strip">
+        {home.orderCta}
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap strip">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="strip__body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--line" href={routes.contact} data-analytics-event="contact_view_home">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: -0.015em;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    max-width: 14ch;
+  }
+  .hero__body {
+    margin-top: 1.35rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    max-width: 44ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .hero__in :global(.hero__shot) {
+    border-radius: var(--radius);
+  }
+
+  /* ── Lines. The boba card takes the second accent. ────────────────── */
+  .lines {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .lines {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1020px) {
+    .lines {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .line {
+    display: grid;
+    align-content: start;
+    gap: 0.45rem;
+    height: 100%;
+    padding: 1.75rem;
+    border: 2px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+    text-decoration: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .line:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .line--alt:hover {
+    border-color: var(--accent-alt);
+  }
+  .line__count {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .line--alt .line__count {
+    color: var(--accent-alt);
+  }
+  .line__name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .line__blurb {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── The grape band ───────────────────────────────────────────────── */
+  .room {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .room {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .room__body {
+    margin-top: 1.5rem;
+    max-width: 46ch;
+    color: var(--on-paper-dim);
+  }
+  .ticks {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .tick {
+    padding-left: 1.6rem;
+    position: relative;
+    font-size: var(--fs-small);
+    color: var(--on-paper);
+  }
+  .tick::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.85rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-paper);
+  }
+  .boba {
+    padding: 1.75rem;
+    border: 2px solid var(--accent-alt-paper);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent-alt-paper) 10%, transparent);
+  }
+  .boba__h {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--accent-alt-paper);
+  }
+  .boba__b {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-paper-dim);
+  }
+  .boba__cta {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-weight: 700;
+    font-size: var(--fs-small);
+    color: var(--accent-alt-paper);
+    text-underline-offset: 5px;
+  }
+
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .strip__body {
+    margin-top: 0.7rem;
+    max-width: 48ch;
+    color: var(--on-ink-dim);
+  }
+  .closer {
+    border-top: 2px solid var(--ink-line);
+    background: var(--ink-raised);
+  }
+</style>

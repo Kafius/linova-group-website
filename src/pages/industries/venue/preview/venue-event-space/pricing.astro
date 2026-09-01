@@ -1,0 +1,324 @@
+---
+// The Foundry demo — Pricing & Packages. The page most venue sites refuse to
+// publish, which is exactly why publishing it is the point of this one.
+//
+// Note there is no payment UI anywhere on this page. The e-commerce flag is
+// false on this playbook: the deposit and the balance are invoiced against a
+// signed contract, and a venue that took a $6,500 hire through a web checkout
+// would be doing something odd.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/foundryJsonld';
+import {
+  business,
+  packages,
+  pageMeta,
+  pricingNotes,
+  pricingPage,
+} from '../../../../../data/demos/venue-event-space';
+
+const meta = pageMeta.pricing;
+const cad = new Intl.NumberFormat('en-CA');
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.pricing}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.pricing },
+    ]),
+  ]}
+>
+  <header class="bay pr-head">
+    <div class="wrap">
+      <p class="eyebrow">{pricingPage.eyebrow}</p>
+      <h1 class="pr-title">{pricingPage.heading}</h1>
+      <p class="lede pr-lede">{pricingPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay pr-bay" aria-label={pricingPage.heading}>
+    <div class="wrap">
+      <ul class="tiers">
+        {packages.map((tier) => (
+          <li class="tier" id={tier.id}>
+            <div class="tier__head">
+              <h2 class="tier__name">{tier.name}</h2>
+              <p class="tier__price">
+                {tier.fromPrice === null ? (
+                  <span class="tier__quoted">{pricingPage.quotedLabel}</span>
+                ) : (
+                  <>
+                    <span class="tier__from">{pricingPage.fromLabel}</span>
+                    <span class="tier__figure">${cad.format(tier.fromPrice)}</span>
+                  </>
+                )}
+              </p>
+            </div>
+            <p class="tier__summary">{tier.summary}</p>
+            <p class="tier__note">{tier.priceNote}</p>
+            <h3 class="tier__sub">{pricingPage.includesLabel}</h3>
+            <ul class="tier__list">
+              {tier.includes.map((line) => <li class="tier__item">{line}</li>)}
+            </ul>
+            <p class="tier__min">
+              <span class="tier__min-k">{pricingPage.minimumLabel}</span>
+              {tier.minimum}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Extras, on the brick band ───────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="ex-h">
+    <div class="wrap">
+      <h2 id="ex-h" class="section-title">{pricingPage.extrasHeading}</h2>
+      <hr class="rule" />
+      <dl class="extras">
+        {pricingPage.extras.map((extra) => (
+          <div class="extra">
+            <dt class="extra__k">{extra.item}</dt>
+            <dd class="extra__v">{extra.price}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Terms ───────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="terms-h">
+    <div class="wrap">
+      <h2 id="terms-h" class="section-title">{pricingPage.notesHeading}</h2>
+      <hr class="rule" />
+      <dl class="terms">
+        {pricingNotes.map((note) => (
+          <div class="term">
+            <dt class="term__k">{note.title}</dt>
+            <dd class="term__v">{note.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{pricingPage.closerHeading}</h2>
+        <p class="section-body">{pricingPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.checkADate} data-analytics-event="date_cta_pricing">
+        {pricingPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .pr-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .pr-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .pr-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+  .pr-bay {
+    padding-top: 0;
+  }
+
+  /* ── Tiers ────────────────────────────────────────────────────────── */
+  .tiers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 820px) {
+    .tiers {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+    }
+  }
+  .tier {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.5rem;
+    display: grid;
+    align-content: start;
+  }
+  .tier__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+  }
+  .tier__name {
+    font-size: clamp(1.7rem, 1.4rem + 1.2vw, 2.2rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .tier__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .tier__from,
+  .tier__quoted {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .tier__figure {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .tier__summary {
+    margin-top: 1.1rem;
+    color: var(--on-ink-dim);
+    max-width: 44ch;
+  }
+  .tier__note {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    color: var(--accent);
+  }
+  .tier__sub {
+    margin-top: 1.75rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--on-ink-dim);
+  }
+  .tier__list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .tier__item {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+  .tier__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.8rem;
+    height: 1px;
+    background: var(--accent);
+  }
+  .tier__min {
+    margin-top: 1.5rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .tier__min-k {
+    display: block;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+
+  /* ── Extras ───────────────────────────────────────────────────────── */
+  .extras {
+    margin: 2.5rem 0 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .extra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .extra__k {
+    font-size: var(--fs-small);
+  }
+  .extra__v {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: -0.01em;
+    color: var(--accent-paper);
+  }
+
+  /* ── Terms ────────────────────────────────────────────────────────── */
+  .terms {
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 780px) {
+    .terms {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.25rem 3rem;
+    }
+  }
+  .term__k {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+  }
+  .term__v {
+    margin: 0.7rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-ink-dim);
+    max-width: 46ch;
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+</style>

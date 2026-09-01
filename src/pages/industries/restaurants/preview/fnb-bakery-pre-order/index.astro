@@ -1,0 +1,341 @@
+---
+// Almond & Rye demo — home. Three routes in rather than two: walk in,
+// pre-order, or commission a cake. Each carries its notice period, because
+// on a bakery site the notice IS the product distinction.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/almondRyeChrome';
+import { bakery } from '../../../../../lib/demos/almondRyeJsonld';
+import {
+  home,
+  menuLines,
+  pageMeta,
+  preOrderItems,
+} from '../../../../../data/demos/fnb-bakery-pre-order';
+
+const meta = pageMeta.home;
+const wayRoutes: Record<string, string> = {
+  menu: routes.menu,
+  preOrder: routes.preOrder,
+  cakes: routes.cakes,
+};
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  ogType="restaurant.restaurant"
+  jsonLd={[bakery(routes.home, routes.menu, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="lede hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.preOrder} data-analytics-event="order_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.menu} data-analytics-event="menu_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="fnb-bakery-pre-order"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 920px) 46vw, 100vw"
+        widths={[600, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Three ways in ───────────────────────────────────────────────── -->
+  <section class="bay ways-bay" aria-labelledby="ways-h">
+    <div class="wrap">
+      <h2 id="ways-h" class="section-title">{home.threeHeading}</h2>
+      <ul class="ways">
+        {home.three.map((way) => (
+          <li class="way">
+            <p class="way__note">{way.note}</p>
+            <h3 class="way__title">{way.title}</h3>
+            <p class="way__body">{way.body}</p>
+            <a class="way__cta" href={wayRoutes[way.href]} data-analytics-event={`${way.id}_view_home`}>
+              {way.cta}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Why the bread is pre-order, on the berry band ───────────────── -->
+  <section class="bay on-paper" aria-labelledby="bread-h">
+    <div class="wrap bread">
+      <div>
+        <h2 id="bread-h" class="section-title">{home.breadHeading}</h2>
+        <p class="section-body section-body--paper">{home.breadBody}</p>
+        <a class="btn btn--line" href={routes.preOrder} data-analytics-event="order_cta_bread">
+          {home.breadCta}
+        </a>
+      </div>
+      <ul class="loaves">
+        {preOrderItems().map((item) => (
+          <li class="loaf">
+            <span class="loaf__name">{item.name}</span>
+            <span class="loaf__unit">{item.unit}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── The board ───────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="menu-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="menu-h" class="section-title">{home.menuHeading}</h2>
+          <p class="section-body">{home.menuBody}</p>
+        </div>
+        <a class="btn btn--line" href={routes.menu} data-analytics-event="menu_view_board">
+          {home.menuCta}
+        </a>
+      </div>
+      <ul class="lines">
+        {menuLines.map((line) => (
+          <li class="line">
+            <h3 class="line__name">{line.name}</h3>
+            <p class="line__blurb">{line.blurb}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="section-body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.contact} data-analytics-event="contact_view_home">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 920px) {
+    .hero__in {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .hero__title {
+    margin-top: 1.1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 14ch;
+  }
+  .hero__body {
+    margin-top: 1.35rem;
+    max-width: 44ch;
+  }
+  .hero__ctas {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero__in :global(.hero__shot) {
+    border-radius: var(--radius);
+  }
+
+  /* ── Three ways ───────────────────────────────────────────────────── */
+  .ways-bay {
+    background: var(--ink-raised);
+    border-block: 1px solid var(--ink-line);
+  }
+  .ways {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 860px) {
+    .ways {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .way {
+    display: grid;
+    align-content: start;
+    padding: 1.75rem 1.6rem;
+    background: var(--ink);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+  }
+  .way__note {
+    display: inline-block;
+    justify-self: start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .way__title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.3rem + 1vw, 1.9rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .way__body {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-ink-dim);
+  }
+  .way__cta {
+    margin-top: 1.25rem;
+    justify-self: start;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+    text-underline-offset: 5px;
+  }
+
+  /* ── Bread ────────────────────────────────────────────────────────── */
+  .bread {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .bread {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3.5rem;
+    }
+  }
+  .bread .btn {
+    margin-top: 1.75rem;
+  }
+  .loaves {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .loaf {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .loaf__name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--accent-paper);
+  }
+  .loaf__unit {
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Lines ────────────────────────────────────────────────────────── */
+  .lines {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .line {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 660px) {
+    .line {
+      grid-template-columns: 13rem 1fr;
+      gap: 1.75rem;
+      align-items: baseline;
+    }
+  }
+  .line__name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .line__blurb {
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-ink-dim);
+    max-width: 54ch;
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

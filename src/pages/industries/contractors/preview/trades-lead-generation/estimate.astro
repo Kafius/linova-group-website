@@ -1,0 +1,673 @@
+---
+// Bright Line demo — Get an Estimate.
+//
+// ── THIS IS A FORM, NOT A CRM ────────────────────────────────────────────
+// CRM is FALSE on this playbook. The form validates, takes photos and
+// confirms, and on a live build it emails the office:
+//
+//   const payload = new FormData(form);          // includes the photos
+//   await fetch(ESTIMATE_ENDPOINT, { method: 'POST', body: payload });
+//
+// ESTIMATE_ENDPOINT is an environment variable, never a literal in the
+// bundle. What this does NOT do is what the CRM line item would add: route
+// the lead to an estimator, rank it against the eleven others that came in
+// this week, and keep a record that survives the inbox. Northline Facility
+// Services is the same shape of form one tier up, and that is the difference.
+//
+// ── THE PHOTO UPLOAD ─────────────────────────────────────────────────────
+// The file input is real, because the control is part of what is being sold —
+// a homeowner photographing a peeling soffit saves a site visit on about half
+// of these. The chosen files are listed back and named in the confirmation so
+// the interaction is complete. Nothing leaves the browser: this preview posts
+// nowhere, like every other form in the catalogue.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/brightLineChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/brightLineJsonld';
+import {
+  business,
+  estimatePage,
+  pageMeta,
+  serviceArea,
+} from '../../../../../data/demos/trades-lead-generation';
+
+const meta = pageMeta.estimate;
+const f = estimatePage.fields;
+const selects = [
+  { id: 'project-type', name: 'projectType', field: f.projectType },
+  { id: 'size', name: 'size', field: f.size },
+  { id: 'timeline', name: 'timeline', field: f.timeline },
+];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.estimate}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.estimate },
+    ]),
+  ]}
+>
+  <header class="bay es-head">
+    <div class="wrap">
+      <p class="eyebrow">{estimatePage.eyebrow}</p>
+      <h1 class="es-title">{estimatePage.heading}</h1>
+      <p class="lede es-lede">{estimatePage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay es-bay">
+    <div class="wrap es-grid">
+      <div>
+        <form class="form" id="estimate-form" novalidate>
+          <p class="required-note">{estimatePage.requiredNote}</p>
+
+          <div class="errors" id="error-summary" role="alert" tabindex="-1" hidden>
+            <h2 class="errors__h">{estimatePage.errorSummaryHeading}</h2>
+            <ul class="errors__list" id="error-list"></ul>
+          </div>
+
+          <div class="fields">
+            {selects.map((entry) => (
+              <p class="field">
+                <label class="field__label" for={entry.id}>{entry.field.label}</label>
+                {'hint' in entry.field && entry.field.hint && (
+                  <span class="field__hint" id={`${entry.id}-hint`}>{entry.field.hint}</span>
+                )}
+                <select
+                  class="control"
+                  id={entry.id}
+                  name={entry.name}
+                  data-required
+                  data-error={entry.field.error}
+                  aria-describedby={'hint' in entry.field && entry.field.hint ? `${entry.id}-hint` : undefined}
+                >
+                  <option value=""></option>
+                  {entry.field.options.map((option) => <option value={option}>{option}</option>)}
+                </select>
+                <span class="field__error" id={`${entry.id}-error`}></span>
+              </p>
+            ))}
+
+            <p class="field">
+              <label class="field__label" for="town">{f.town.label}</label>
+              <span class="field__hint" id="town-hint">{f.town.hint}</span>
+              <select
+                class="control"
+                id="town"
+                name="town"
+                aria-describedby="town-hint"
+                data-required
+                data-error={f.town.error}
+              >
+                <option value=""></option>
+                {serviceArea.map((area) => <option value={area.town}>{area.town}</option>)}
+              </select>
+              <span class="field__error" id="town-error"></span>
+            </p>
+
+            <!-- ── The photo upload ──────────────────────────────────── -->
+            <div class="field">
+              <span class="field__label" id="photos-label">{f.photos.label}</span>
+              <span class="field__hint" id="photos-hint">{f.photos.hint}</span>
+              <div class="photos">
+                <input
+                  class="photos__input"
+                  type="file"
+                  id="photos"
+                  name="photos"
+                  accept="image/*"
+                  multiple
+                  aria-labelledby="photos-label"
+                  aria-describedby="photos-hint"
+                />
+                <label class="photos__button" for="photos">{f.photos.buttonLabel}</label>
+                <span
+                  class="photos__count"
+                  id="photo-count"
+                  data-count-label={f.photos.countLabel}
+                  aria-live="polite"
+                >{f.photos.noneLabel}</span>
+              </div>
+              <ul class="photos__list" id="photo-list"></ul>
+            </div>
+
+            <div class="split">
+              <p class="field">
+                <label class="field__label" for="name">{f.name.label}</label>
+                <input
+                  class="control"
+                  type="text"
+                  id="name"
+                  name="name"
+                  autocomplete="name"
+                  data-required
+                  data-error={f.name.error}
+                />
+                <span class="field__error" id="name-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="phone">{f.phone.label}</label>
+                <span class="field__hint" id="phone-hint">{f.phone.hint}</span>
+                <input
+                  class="control"
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  autocomplete="tel"
+                  aria-describedby="phone-hint"
+                  data-required
+                  data-error={f.phone.error}
+                />
+                <span class="field__error" id="phone-error"></span>
+              </p>
+            </div>
+
+            <p class="field">
+              <label class="field__label" for="email">{f.email.label}</label>
+              <span class="field__hint" id="email-hint">{f.email.hint}</span>
+              <input
+                class="control"
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="email"
+                aria-describedby="email-hint"
+                data-required
+                data-error={f.email.error}
+              />
+              <span class="field__error" id="email-error"></span>
+            </p>
+
+            <p class="field">
+              <label class="field__label" for="notes">{f.notes.label}</label>
+              <span class="field__hint" id="notes-hint">{f.notes.hint}</span>
+              <textarea class="control control--area" id="notes" name="notes" rows="4" aria-describedby="notes-hint"></textarea>
+            </p>
+          </div>
+
+          <button class="btn btn--fill submit" type="submit" data-analytics-event="estimate_submit">
+            {estimatePage.submitLabel}
+          </button>
+        </form>
+
+        <div class="done" id="estimate-done" role="status" tabindex="-1" hidden>
+          <h2 class="done__h">{estimatePage.confirmation.heading}</h2>
+          <p class="done__b">{estimatePage.confirmation.body}</p>
+          <h3 class="done__sub">{estimatePage.confirmation.detailsHeading}</h3>
+          <dl class="summary" id="estimate-summary" data-photo-label={estimatePage.confirmation.photoRow}></dl>
+          <p class="done__note">{estimatePage.confirmation.note}</p>
+          <div class="done__actions">
+            <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_estimate">
+              {estimatePage.confirmation.callLabel} — {business.phone}
+            </a>
+            <button class="btn btn--line" type="button" id="estimate-reset">
+              {estimatePage.confirmation.resetLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side" aria-label={estimatePage.sidebarHeading}>
+        <h2 class="side__h">{estimatePage.sidebarHeading}</h2>
+        <ol class="timeline">
+          {estimatePage.sidebarSteps.map((step) => (
+            <li class="tl">
+              <span class="tl__when">{step.when}</span>
+              <span class="tl__what">{step.what}</span>
+            </li>
+          ))}
+        </ol>
+      </aside>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // Validation and the photo list only — no network. See the handoff note at
+  // the top of this file.
+  const form = document.getElementById('estimate-form') as HTMLFormElement | null;
+  const done = document.getElementById('estimate-done');
+  const summary = document.getElementById('estimate-summary');
+  const errorBox = document.getElementById('error-summary');
+  const errorList = document.getElementById('error-list');
+  const resetButton = document.getElementById('estimate-reset');
+  const photos = document.getElementById('photos') as HTMLInputElement | null;
+  const photoCount = document.getElementById('photo-count');
+  const photoList = document.getElementById('photo-list');
+
+  if (form && done && summary && errorBox && errorList && resetButton && photos && photoCount && photoList) {
+    type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    const required = [...form.querySelectorAll<Control>('[data-required]')];
+    const noneLabel = photoCount.textContent || '';
+    const countLabel = photoCount.dataset.countLabel || 'chosen';
+    const photoRowLabel = summary.dataset.photoLabel || 'Photos';
+
+    const emailLooksReal = (v: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+    const labelText = (control: Control): string =>
+      (form.querySelector(`label[for="${control.id}"]`)?.textContent || control.name).trim();
+    const slotFor = (control: Control) => document.getElementById(`${control.id}-error`);
+
+    const clearError = (control: Control): void => {
+      control.removeAttribute('aria-invalid');
+      const slot = slotFor(control);
+      if (slot) slot.textContent = '';
+    };
+
+    required.forEach((control) => {
+      control.addEventListener('change', () => {
+        if (control.value.trim()) clearError(control);
+      });
+    });
+
+    /** Names the chosen files back to the person who chose them. A file input
+     *  that says nothing after a tap is the most common reason people attach
+     *  photos twice. */
+    const renderPhotos = (): void => {
+      const files = [...(photos.files || [])].slice(0, 6);
+      photoList.innerHTML = '';
+      if (!files.length) {
+        photoCount.textContent = noneLabel;
+        return;
+      }
+      photoCount.textContent = `${files.length} ${countLabel}`;
+      files.forEach((file) => {
+        const item = document.createElement('li');
+        item.className = 'photos__item';
+        item.textContent = file.name;
+        photoList.appendChild(item);
+      });
+    };
+    photos.addEventListener('change', renderPhotos);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const failed: Control[] = [];
+      required.forEach((control) => {
+        clearError(control);
+        const value = control.value.trim();
+        const badEmail = control.getAttribute('type') === 'email' && !emailLooksReal(value);
+        if (!value || badEmail) {
+          control.setAttribute('aria-invalid', 'true');
+          const slot = slotFor(control);
+          if (slot) slot.textContent = control.dataset.error || '';
+          failed.push(control);
+        }
+      });
+
+      if (failed.length) {
+        errorList.innerHTML = '';
+        failed.forEach((control) => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `#${control.id}`;
+          link.textContent = `${labelText(control)} — ${control.dataset.error || ''}`;
+          link.addEventListener('click', (clickEvent) => {
+            clickEvent.preventDefault();
+            control.focus();
+          });
+          item.appendChild(link);
+          errorList.appendChild(item);
+        });
+        errorBox.hidden = false;
+        errorBox.focus();
+        return;
+      }
+
+      errorBox.hidden = true;
+      const data = new FormData(form);
+      summary.innerHTML = '';
+      const row = (key: string, value: string): void => {
+        const wrap = document.createElement('div');
+        wrap.className = 'summary__row';
+        const dt = document.createElement('dt');
+        dt.className = 'summary__k';
+        dt.textContent = key;
+        const dd = document.createElement('dd');
+        dd.className = 'summary__v';
+        dd.textContent = value;
+        wrap.append(dt, dd);
+        summary.appendChild(wrap);
+      };
+
+      form.querySelectorAll<Control>('[name]').forEach((control) => {
+        if (control.getAttribute('type') === 'file') return;
+        const value = String(data.get(control.name) || '').trim();
+        if (value) row(labelText(control), value);
+      });
+      const files = [...(photos.files || [])].slice(0, 6);
+      if (files.length) row(photoRowLabel, files.map((file) => file.name).join(', '));
+
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+      done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      required.forEach(clearError);
+      renderPhotos();
+      done.hidden = true;
+      form.hidden = false;
+      errorBox.hidden = true;
+      form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .es-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .es-title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    max-width: 17ch;
+  }
+  .es-lede {
+    margin-top: 1.35rem;
+    max-width: 52ch;
+  }
+  .es-bay {
+    padding-top: 0;
+  }
+  .es-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 980px) {
+    .es-grid {
+      grid-template-columns: 1fr 18rem;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .required-note {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .fields {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+  }
+  .field__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .field__hint {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+  }
+  .control {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .control--area {
+    resize: vertical;
+    min-height: 5.5rem;
+  }
+  .control:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .control[aria-invalid='true'] {
+    border-color: var(--accent);
+    border-left-width: 3px;
+  }
+  /* The error line is reserved whether or not it holds an error, so clearing
+     one on blur cannot move the submit button out from under a cursor. */
+  .field__error {
+    display: block;
+    min-height: 1.3em;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .split {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 660px) {
+    .split {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* ── Photo upload ─────────────────────────────────────────────────── */
+  .photos {
+    margin-top: 0.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  /* Visually hidden but still focusable, so the label acts as the button and
+     the keyboard ring lands on it. */
+  .photos__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .photos__button {
+    display: inline-block;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--accent);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .photos__button:hover {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .photos__input:focus-visible + .photos__button {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .photos__count {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .photos__list {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .photos__item {
+    font-size: 0.8rem;
+    padding-left: 1.1rem;
+    position: relative;
+    color: var(--on-ink-dim);
+    word-break: break-word;
+  }
+  .photos__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.6rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .errors {
+    margin-top: 1.5rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+  }
+  .errors:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .errors__h {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .errors__list {
+    margin: 0.7rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--fs-small);
+  }
+  .submit {
+    margin-top: 1.75rem;
+  }
+
+  .done {
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .done:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .done__h {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .done__b {
+    margin-top: 0.9rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .done__sub {
+    margin-top: 1.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .summary {
+    margin: 0.9rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary :global(.summary__row) {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 560px) {
+    .summary :global(.summary__row) {
+      grid-template-columns: 11rem 1fr;
+    }
+  }
+  .summary :global(.summary__k) {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .summary :global(.summary__v) {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .done__note {
+    margin-top: 1.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 50ch;
+  }
+  .done__actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .side {
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.4rem;
+    background: var(--ink-raised);
+    align-self: start;
+  }
+  .side__h {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .timeline {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .tl {
+    display: grid;
+    gap: 0.3rem;
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--accent);
+  }
+  .tl__when {
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tl__what {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+</style>

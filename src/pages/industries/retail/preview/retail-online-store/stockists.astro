@@ -1,0 +1,261 @@
+---
+// Bramble & Bone demo — stockists and delivery. The page a local shop
+// actually needs: who else carries their treats, and the zones, minimums and
+// cut-offs for the van.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/brambleChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/brambleJsonld';
+import { business, pageMeta, stockists } from '../../../../../data/demos/retail-online-store';
+import { formatPrice } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.stockists;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.stockists}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.stockists },
+    ]),
+  ]}
+>
+  <header class="bay stock-head">
+    <div class="wrap">
+      <p class="eyebrow">{stockists.eyebrow}</p>
+      <h1 class="stock-title">{stockists.heading}</h1>
+      <hr class="rule" />
+      <p class="lede stock-lede">{stockists.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── Stockists ───────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="stockists-h">
+    <div class="wrap">
+      <h2 id="stockists-h" class="section-title">{stockists.stockistsHeading}</h2>
+      <hr class="rule" />
+      <p class="note">{stockists.stockistsNote}</p>
+      <ul class="stockists">
+        {stockists.stockistList.map((shop) => (
+          <li class="stockist">
+            <h3 class="stockist__name">{shop.name}</h3>
+            <p class="stockist__place">{shop.place}</p>
+            <p class="stockist__detail">{shop.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Curbside pickup ─────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="pickup-h">
+    <div class="wrap">
+      <h2 id="pickup-h" class="section-title">{stockists.pickupHeading}</h2>
+      <hr class="rule" />
+      <ol class="steps">
+        {stockists.pickupSteps.map((step) => (
+          <li class="step">
+            <h3 class="step__title">{step.title}</h3>
+            <p class="step__detail">{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Delivery zones ──────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="delivery-h">
+    <div class="wrap">
+      <h2 id="delivery-h" class="section-title">{stockists.deliveryHeading}</h2>
+      <hr class="rule" />
+      <p class="note">{stockists.deliveryNote}</p>
+
+      <table class="zones">
+        <thead>
+          <tr>
+            <th scope="col">{stockists.zonesTable.zone}</th>
+            <th scope="col">{stockists.zonesTable.days}</th>
+            <th scope="col">{stockists.minimumLabel}</th>
+            <th scope="col">{stockists.feeLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stockists.deliveryZones.map((zone) => (
+            <tr>
+              <th scope="row">{zone.zone}</th>
+              <td>{zone.days}</td>
+              <td>${formatPrice(zone.minimum)}</td>
+              <td>{zone.fee === 0 ? stockists.freeLabel : `$${formatPrice(zone.fee)}`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <ul class="terms">
+        {stockists.deliveryTerms.map((term) => <li>{term}</li>)}
+      </ul>
+
+      <a class="btn btn--fill zones__cta" href={routes.shop} data-analytics-event="shop_cta_delivery">
+        {stockists.orderCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .stock-head {
+    padding-bottom: 0;
+  }
+  .stock-title {
+    font-size: var(--fs-display);
+    max-width: 18ch;
+  }
+  .stock-lede {
+    margin-top: 1.25rem;
+    max-width: 50ch;
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 52ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .on-paper .note {
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Stockists ────────────────────────────────────────────────────── */
+  .stockists {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 620px) {
+    .stockists {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .stockists {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .stockist {
+    padding: 1.5rem;
+    border: 1px solid var(--ink-line);
+    border-radius: 18px;
+    background: var(--ink-raised);
+  }
+  .stockist__name {
+    font-size: var(--fs-dish);
+    font-weight: 700;
+  }
+  .stockist__place {
+    margin-top: 0.3rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stockist__detail {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Pickup steps ─────────────────────────────────────────────────── */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 800px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+  .step {
+    counter-increment: step;
+  }
+  .step::before {
+    content: counter(step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-bottom: 0.9rem;
+    border-radius: 999px;
+    background: var(--accent-paper);
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .step__title {
+    font-size: var(--fs-heading);
+  }
+  .step__detail {
+    margin-top: 0.55rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-paper-dim);
+    max-width: 36ch;
+  }
+
+  /* ── Zones ────────────────────────────────────────────────────────── */
+  .zones {
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 46rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .zones th,
+  .zones td {
+    text-align: left;
+    padding: 0.8rem 0.75rem 0.8rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .zones thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .zones tbody th {
+    font-weight: 700;
+  }
+  .zones td {
+    color: var(--on-ink-dim);
+  }
+
+  .terms {
+    margin: 1.75rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.5rem;
+    max-width: 52ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .zones__cta {
+    margin-top: 2rem;
+  }
+</style>

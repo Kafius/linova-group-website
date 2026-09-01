@@ -1,0 +1,280 @@
+---
+// The Foundry demo — Gallery.
+//
+// ── CMS-DRIVEN ───────────────────────────────────────────────────────────
+// This page renders the one collection the owner edits. On a live build every
+// tile below is a `galleryItem` document from the studio — see
+// src/data/demos/venue-event-space.cms.ts for the model: image, alt, caption,
+// a reference to an eventKind and a room, a photographer credit, the event
+// date, a release flag and a featured flag. `gallery` in the data module is
+// the seed for the first import, not the long-term source.
+//
+// Three things the model enforces that markup cannot: alt text is required,
+// the credit is required (our release from photographers is conditional on
+// publishing it), and an unticked release flag never publishes whatever else
+// is set. Those are the reasons this collection is worth a CMS and the rooms,
+// the packages and the terms are not.
+// ─────────────────────────────────────────────────────────────────────────
+//
+// The event-type filter is pure CSS — radio inputs plus :has() on the
+// wrapper. No JavaScript is spent on it.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
+import { demoBreadcrumbs, imageGallery } from '../../../../../lib/demos/foundryJsonld';
+import {
+  business,
+  eventKinds,
+  gallery,
+  galleryPage,
+  pageMeta,
+} from '../../../../../data/demos/venue-event-space';
+
+const meta = pageMeta.gallery;
+const filters = [{ id: 'all', label: galleryPage.allLabel }, ...eventKinds];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.gallery}
+  jsonLd={[
+    imageGallery(routes.gallery),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.gallery },
+    ]),
+  ]}
+>
+  <header class="bay gl-head">
+    <div class="wrap">
+      <p class="eyebrow">{galleryPage.eyebrow}</p>
+      <h1 class="gl-title">{galleryPage.heading}</h1>
+      <p class="lede gl-lede">{galleryPage.intro}</p>
+      <p class="gl-count">{gallery.length} {galleryPage.countLabel}</p>
+    </div>
+  </header>
+
+  <section class="bay gl-bay" aria-label={galleryPage.heading}>
+    <div class="gl-grid">
+      <div class="wrap">
+        <fieldset class="filters">
+          <legend class="filters__legend">{galleryPage.filterLabel}</legend>
+          {filters.map((filter, i) => (
+            <>
+              <input
+                class="filters__input"
+                type="radio"
+                name="kind"
+                id={`filter-${filter.id}`}
+                value={filter.id}
+                checked={i === 0}
+              />
+              <label class="filters__label" for={`filter-${filter.id}`}>{filter.label}</label>
+            </>
+          ))}
+        </fieldset>
+      </div>
+
+      <ul class="tiles">
+        {gallery.map((item) => (
+          <li class="tile" data-kind={item.kind}>
+            <DemoImage
+              demo="venue-event-space"
+              file={item.photo.file}
+              subject={item.photo.subject}
+              alt={item.photo.alt}
+              ratio="3 / 2"
+              sizes="(min-width: 1100px) 33vw, (min-width: 700px) 50vw, 100vw"
+              widths={[480, 720, 1000]}
+            />
+            <div class="tile__foot">
+              <p class="tile__caption">{item.caption}</p>
+              <p class="tile__meta">
+                <span class="tile__room">{item.room}</span>
+                <span class="tile__credit">{galleryPage.creditLabel}: {item.credit}</span>
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{galleryPage.closerHeading}</h2>
+        <p class="section-body">{galleryPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.contact} data-analytics-event="viewing_cta_gallery">
+        {galleryPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .gl-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .gl-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .gl-lede {
+    margin-top: 1.5rem;
+    max-width: 50ch;
+  }
+  .gl-count {
+    margin-top: 1.5rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .gl-bay {
+    padding-top: 0;
+  }
+
+  /* ── Filter row ───────────────────────────────────────────────────── */
+  .filters {
+    border: 0;
+    padding: 0;
+    margin: 0 0 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    align-items: baseline;
+    border-bottom: 1px solid var(--ink-line);
+    padding-bottom: 1.1rem;
+  }
+  .filters__legend {
+    padding: 0;
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    width: 100%;
+    margin-bottom: 0.9rem;
+  }
+  .filters__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .filters__label {
+    cursor: pointer;
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid transparent;
+  }
+  .filters__label:hover {
+    color: var(--on-ink);
+  }
+  .filters__input:checked + .filters__label {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  /* The input is visually hidden, so the focus ring has to land on the
+     label instead or the filter is unusable from a keyboard. */
+  .filters__input:focus-visible + .filters__label {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ── Tiles ────────────────────────────────────────────────────────── */
+  .tiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 700px) {
+    .tiles {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .tiles {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .tile {
+    background: var(--ink);
+    display: grid;
+    align-content: start;
+  }
+  .tile :global(img),
+  .tile :global(picture) {
+    display: block;
+    width: 100%;
+  }
+  .tile__foot {
+    padding: 1.15rem var(--gutter) 1.6rem;
+  }
+  .tile__caption {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+  .tile__meta {
+    margin-top: 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .tile__room {
+    color: var(--accent);
+  }
+
+  /* ── The filter itself: no JavaScript, just :has() on the wrapper ──── */
+  .gl-grid:has(#filter-wedding:checked) .tile:not([data-kind='wedding']),
+  .gl-grid:has(#filter-corporate:checked) .tile:not([data-kind='corporate']),
+  .gl-grid:has(#filter-film:checked) .tile:not([data-kind='film']),
+  .gl-grid:has(#filter-celebration:checked) .tile:not([data-kind='celebration']) {
+    display: none;
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+</style>

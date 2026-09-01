@@ -1,0 +1,336 @@
+---
+// Halden demo — home. Showroom register: white, wide, image-led, and short on
+// text. The deposit explainer sits above the fold of the second screen because
+// "can I actually buy a sofa on a website" is the question this catalogue has
+// to answer before anything else.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { categoryRoute, chrome, routes } from '../../../../../lib/demos/haldenChrome';
+import { furnitureStore } from '../../../../../lib/demos/haldenJsonld';
+import {
+  categories,
+  home,
+  pageMeta,
+  productsIn,
+} from '../../../../../data/demos/retail-large-catalogue';
+
+const meta = pageMeta.home;
+const rooms = categories.map((category) => ({
+  ...category,
+  count: productsIn(category.id).length,
+  href: categoryRoute(category.id),
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[furnitureStore(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap">
+      <p class="eyebrow">{home.heroEyebrow}</p>
+      <h1 class="hero__title">{home.heroTitle}</h1>
+      <div class="hero__foot">
+        <p class="lede hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.living} data-analytics-event="shop_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.delivery} data-analytics-event="delivery_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="bleed">
+    <DemoImage
+      demo="retail-large-catalogue"
+      file={home.heroPhoto.file}
+      subject={home.heroPhoto.subject}
+      alt={home.heroPhoto.alt}
+      ratio="21 / 9"
+      sizes="100vw"
+      widths={[900, 1400, 1920]}
+      eager
+    />
+  </div>
+
+  <!-- ── Four rooms ──────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="rooms-h">
+    <div class="wrap">
+      <h2 id="rooms-h" class="rule-h">{home.categoriesHeading}</h2>
+      <ul class="rooms">
+        {rooms.map((room) => (
+          <li>
+            <a class="room" href={room.href} data-analytics-event="category_view_home">
+              <span class="room__shot" aria-hidden="true"></span>
+              <span class="room__line">
+                <span class="room__name">{room.name}</span>
+                <span class="room__count">{room.count} {home.categoriesCount}</span>
+              </span>
+              <span class="room__intro">{room.intro}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── The deposit argument, on the wine band ──────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="dep-h">
+    <div class="wrap dep">
+      <div>
+        <h2 id="dep-h" class="section-title">{home.depositHeading}</h2>
+        <p class="section-body section-body--paper">{home.depositBody}</p>
+        <a class="btn btn--line" href={routes.delivery} data-analytics-event="delivery_view_deposit">
+          {home.depositCta}
+        </a>
+      </div>
+      <ul class="dep__points">
+        {home.depositPoints.map((point) => <li class="dep__point">{point}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── What is in the price ────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="svc-h">
+    <div class="wrap">
+      <h2 id="svc-h" class="rule-h">{home.serviceHeading}</h2>
+      <ul class="service">
+        {home.service.map((entry) => (
+          <li class="svc">
+            <h3 class="svc__title">{entry.title}</h3>
+            <p class="svc__detail">{entry.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── About ───────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{home.aboutHeading}</h2>
+        <p class="section-body">{home.aboutBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.about} data-analytics-event="about_view_home">
+        {home.aboutCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .rule-h {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .rule-h::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink-line);
+  }
+
+  .hero {
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .hero__title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    max-width: 18ch;
+  }
+  .hero__foot {
+    margin-top: 2rem;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 880px) {
+    .hero__foot {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+  .hero__body {
+    max-width: 48ch;
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .bleed {
+    width: 100%;
+  }
+  .bleed :global(img),
+  .bleed :global(picture) {
+    display: block;
+    width: 100%;
+  }
+
+  /* ── Rooms ────────────────────────────────────────────────────────── */
+  .rooms {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 700px) {
+    .rooms {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1120px) {
+    .rooms {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .room {
+    display: grid;
+    align-content: start;
+    height: 100%;
+    text-decoration: none;
+  }
+  .room__shot {
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    transition: border-color 0.2s ease;
+  }
+  .room:hover .room__shot {
+    border-color: var(--accent);
+  }
+  .room__line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.9rem;
+  }
+  .room__name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+  }
+  .room__count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .room__intro {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Deposit ──────────────────────────────────────────────────────── */
+  .dep {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .dep {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3.5rem;
+    }
+  }
+  .dep .btn {
+    margin-top: 1.75rem;
+  }
+  .dep__points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  .dep__point {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--paper-line);
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+    color: var(--accent-paper);
+  }
+
+  /* ── Service ──────────────────────────────────────────────────────── */
+  .service {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 860px) {
+    .service {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .svc {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.25rem;
+  }
+  .svc__title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .svc__detail {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+    max-width: 42ch;
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

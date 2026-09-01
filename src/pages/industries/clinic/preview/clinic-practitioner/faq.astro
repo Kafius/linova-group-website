@@ -1,0 +1,168 @@
+---
+// Lakeshore demo — questions.
+//
+// CMS-DRIVEN: renders the `faqItem` collection, and the same array generates
+// the FAQPage structured data, so an answer reception rewrites updates both at
+// once. That matters here more than on other demos: if a College asks for a
+// wording change, the visible page and the markup Google shows have to move
+// together.
+//
+// Native <details>/<summary> rather than scripted accordions — keyboard and
+// screen-reader behaviour comes free and correct, and the page needs no JS.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/lakeshoreChrome';
+import { demoBreadcrumbs, faqSchema } from '../../../../../lib/demos/lakeshoreJsonld';
+import { business, faq, faqPage, pageMeta } from '../../../../../data/demos/clinic-practitioner';
+
+const meta = pageMeta.faq;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.faq}
+  jsonLd={[
+    faqSchema(),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.faq },
+    ]),
+  ]}
+>
+  <header class="bay faq-head">
+    <div class="wrap">
+      <p class="eyebrow">{faqPage.eyebrow}</p>
+      <h1 class="faq-title">{faqPage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede faq-lede">{faqPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay" aria-label={faqPage.heading}>
+    <div class="wrap">
+      <div class="qs">
+        {faq.map((item) => (
+          <details class="q" id={item.id}>
+            <summary class="q__summary">
+              <span class="q__question">{item.question}</span>
+              <span class="q__mark" aria-hidden="true"></span>
+            </summary>
+            <div class="q__answer">
+              <p>{item.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <div class="faq-cta">
+        <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_faq">
+          {faqPage.contactCta}
+        </a>
+        <a class="btn btn--line" href={routes.booking} data-analytics-event="booking_cta_faq">
+          {faqPage.bookCta}
+        </a>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .faq-head {
+    padding-bottom: 0;
+  }
+  .faq-title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .faq-lede {
+    margin-top: 1.5rem;
+    max-width: 58ch;
+  }
+
+  .qs {
+    max-width: 60rem;
+    border-top: 2px solid var(--accent);
+  }
+  .q {
+    border-bottom: 1px solid var(--ink-line);
+    scroll-margin-top: 8rem;
+  }
+  .q__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .q__summary::-webkit-details-marker {
+    display: none;
+  }
+  .q__summary:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .q__question {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.6rem);
+    font-weight: 600;
+  }
+  .q:hover .q__question {
+    color: var(--accent);
+  }
+  /* A plus that becomes a minus. Drawn in CSS so it needs no icon file and
+     inherits the accent automatically. */
+  .q__mark {
+    position: relative;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .q__mark::before,
+  .q__mark::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .q__mark::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    transform: translateY(-50%);
+  }
+  .q__mark::after {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+  }
+  .q[open] .q__mark::after {
+    opacity: 0;
+    transform: translateX(-50%) rotate(90deg);
+  }
+  .q__answer {
+    padding: 0 0 1.75rem;
+    max-width: 62ch;
+    color: var(--on-ink-dim);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .q__mark::before,
+    .q__mark::after {
+      transition: none;
+    }
+  }
+
+  .faq-cta {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+</style>

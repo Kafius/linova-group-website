@@ -1,0 +1,318 @@
+---
+// Vernon Street demo — Cakes & Special Orders.
+//
+// ── CMS-DRIVEN ───────────────────────────────────────────────────────────
+// The collection below is the `seasonalCake` document type — see
+// retail-catalogue-wholesale.cms.ts. It rotates four times a year and the
+// model makes two things impossible: publishing a cake with no allergen list,
+// and publishing one with no size. Retiring a cake unticks a box rather than
+// deleting a document, so next autumn it returns with its prices intact.
+// ─────────────────────────────────────────────────────────────────────────
+//
+// There is no order form here. Booking is FALSE on this playbook and cakes
+// are not sold through the Clover store either: a deposit is taken at the
+// counter or over the phone, because a 10 inch with a date on it is a
+// conversation, not a checkout.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/vernonChrome';
+import { cakeList, demoBreadcrumbs } from '../../../../../lib/demos/vernonJsonld';
+import {
+  business,
+  cakes,
+  cakesPage,
+  formatPrice,
+  pageMeta,
+} from '../../../../../data/demos/retail-catalogue-wholesale';
+
+const meta = pageMeta.cakes;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.cakes}
+  jsonLd={[
+    cakeList(routes.cakes),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.cakes },
+    ]),
+  ]}
+>
+  <header class="bay ck-head">
+    <div class="wrap">
+      <p class="eyebrow">{cakesPage.eyebrow}</p>
+      <h1 class="ck-title">{cakesPage.heading}</h1>
+      <p class="lede ck-lede">{cakesPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay ck-list" aria-label={cakesPage.heading}>
+    <div class="wrap">
+      <ul class="cakes">
+        {cakes.map((cake) => (
+          <li class="cake" id={cake.id}>
+            <div class="cake__head">
+              <h2 class="cake__name">{cake.name}</h2>
+              <p class="cake__season">
+                <span class="cake__season-k">{cakesPage.seasonLabel}</span>
+                {cake.season}
+              </p>
+            </div>
+            <p class="cake__desc">{cake.description}</p>
+            <table class="sizes">
+              <tbody>
+                {cake.sizes.map((size) => (
+                  <tr>
+                    <th scope="row" class="sizes__size">{size.size}</th>
+                    <td class="sizes__serves">{cakesPage.servesLabel} {size.serves}</td>
+                    <td class="sizes__price">${formatPrice(size.price)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="cake__allergens">
+              <span class="cake__allergen-k">{cakesPage.allergenLabel}</span>
+              {cake.allergens.join(' · ')}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── How to order ────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="how-h">
+    <div class="wrap">
+      <h2 id="how-h" class="section-title">{cakesPage.howHeading}</h2>
+      <ol class="how">
+        {cakesPage.how.map((step) => (
+          <li class="how__step">
+            <h3 class="how__title">{step.title}</h3>
+            <p class="how__detail">{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Allergens and what we do not do ─────────────────────────────── -->
+  <section class="bay" aria-labelledby="all-h">
+    <div class="wrap honest">
+      <div>
+        <h2 id="all-h" class="section-title">{cakesPage.allergenHeading}</h2>
+        <p class="section-body">{cakesPage.allergenBody}</p>
+      </div>
+      <div>
+        <h2 class="section-title">{cakesPage.customHeading}</h2>
+        <p class="section-body">{cakesPage.customBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{cakesPage.ctaHeading}</h2>
+        <p class="section-body">{cakesPage.ctaBody}</p>
+      </div>
+      <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_cakes">
+        {business.phone}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .on-paper .section-body {
+    color: var(--on-paper-dim);
+  }
+  .ck-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ck-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+  }
+  .ck-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+
+  .ck-list {
+    padding-top: 0;
+  }
+  .cakes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 860px) {
+    .cakes {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+    }
+  }
+  .cake {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.5rem;
+    display: grid;
+    align-content: start;
+  }
+  .cake__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
+  .cake__name {
+    font-size: clamp(1.5rem, 1.3rem + 0.9vw, 1.9rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .cake__season {
+    font-size: var(--fs-small);
+  }
+  .cake__season-k {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    margin-right: 0.5rem;
+  }
+  .cake__desc {
+    margin-top: 1rem;
+    color: var(--on-ink-dim);
+    max-width: 46ch;
+  }
+  .sizes {
+    margin-top: 1.5rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .sizes th,
+  .sizes td {
+    text-align: left;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .sizes tr:first-child th,
+  .sizes tr:first-child td {
+    border-top: 1px solid var(--ink-line);
+  }
+  .sizes__size {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    width: 6rem;
+  }
+  .sizes__serves {
+    color: var(--on-ink-dim);
+  }
+  .sizes__price {
+    text-align: right;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .cake__allergens {
+    margin-top: 1.1rem;
+    font-size: var(--fs-small);
+  }
+  .cake__allergen-k {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+
+  /* ── How to order ─────────────────────────────────────────────────── */
+  .how {
+    list-style: none;
+    counter-reset: how;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--paper-line);
+    border: 1px solid var(--paper-line);
+  }
+  @media (min-width: 820px) {
+    .how {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .how__step {
+    counter-increment: how;
+    padding: 1.6rem 1.5rem;
+    background: var(--paper);
+  }
+  .how__step::before {
+    content: counter(how, decimal-leading-zero);
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+    margin-bottom: 0.7rem;
+  }
+  .how__title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .how__detail {
+    margin-top: 0.7rem;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-paper-dim);
+  }
+
+  .honest {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .honest {
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

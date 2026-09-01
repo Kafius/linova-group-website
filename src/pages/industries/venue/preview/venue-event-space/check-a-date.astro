@@ -1,0 +1,825 @@
+---
+// The Foundry demo — Check a Date. This page is the Booking line item.
+//
+// ── CALENDAR HANDOFF ─────────────────────────────────────────────────────
+// There is no live calendar API here and there should not be: availability on
+// a venue is a judgement (a provisional hold, a wedding that has not signed,
+// a film unit that wants the Thursday either side) and publishing a red/green
+// grid would commit the client to answers they have to walk back.
+//
+// On a live build the submit handler writes a seven-day provisional hold into
+// the venue's own calendar and emails the office, keeping the confirmation
+// state below as its success view:
+//
+//   await fetch(HOLD_ENDPOINT, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({
+//       source: 'website/check-a-date',
+//       eventType, preferredDate, alternateDate,
+//       guestCount, seating, budgetBand,
+//       contact: { name, email, phone, notes },
+//       holdDays: 7,
+//     }),
+//   });
+//
+// HOLD_ENDPOINT is an environment variable, never a literal in the bundle.
+// Nothing on this preview posts anywhere: it is a sample site.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/foundryJsonld';
+import {
+  business,
+  checkADatePage,
+  pageMeta,
+} from '../../../../../data/demos/venue-event-space';
+
+const meta = pageMeta.checkADate;
+const f = checkADatePage.fields;
+const steps = checkADatePage.steps;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.checkADate}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.checkADate },
+    ]),
+  ]}
+>
+  <header class="bay cd-head">
+    <div class="wrap">
+      <p class="eyebrow">{checkADatePage.eyebrow}</p>
+      <h1 class="cd-title">{checkADatePage.heading}</h1>
+      <p class="lede cd-lede">{checkADatePage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay cd-bay">
+    <div class="wrap cd-grid">
+      <div>
+        <form class="form" id="date-form" novalidate>
+          <!-- Progress. aria-live so a screen reader hears the step change. -->
+          <p class="progress" data-step-label={checkADatePage.stepLabel} data-of-label={checkADatePage.ofLabel}>
+            <span class="progress__text" id="progress-text" aria-live="polite">
+              {`${checkADatePage.stepLabel} 1 ${checkADatePage.ofLabel} ${steps.length}`}
+            </span>
+            <span class="progress__bar" aria-hidden="true">
+              {steps.map((step, i) => (
+                <span class:list={['progress__seg', i === 0 && 'is-on']} data-seg={String(i)}></span>
+              ))}
+            </span>
+          </p>
+
+          <div class="errors" id="error-summary" role="alert" tabindex="-1" hidden>
+            <h2 class="errors__h">{checkADatePage.errorSummaryHeading}</h2>
+            <ul class="errors__list" id="error-list"></ul>
+          </div>
+
+          <!-- ── Step 1 — event type ─────────────────────────────────── -->
+          <fieldset class="step" data-step="0">
+            <legend class="step__legend" tabindex="-1">{steps[0].title}</legend>
+            <p class="step__hint">{steps[0].hint}</p>
+            <div class="choices" data-error-slot="eventType">
+              {f.eventType.options.map((option, i) => (
+                <>
+                  <input
+                    class="choice__input"
+                    type="radio"
+                    name="eventType"
+                    id={`event-${i}`}
+                    value={option}
+                    data-required
+                    data-error={f.eventType.error}
+                  />
+                  <label class="choice" for={`event-${i}`}>{option}</label>
+                </>
+              ))}
+            </div>
+            <span class="field__error" id="eventType-error"></span>
+          </fieldset>
+
+          <!-- ── Step 2 — dates ──────────────────────────────────────── -->
+          <fieldset class="step" data-step="1" hidden>
+            <legend class="step__legend" tabindex="-1">{steps[1].title}</legend>
+            <p class="step__hint">{steps[1].hint}</p>
+            <div class="split">
+              <p class="field">
+                <label class="field__label" for="preferred-date">{f.preferredDate.label}</label>
+                <span class="field__hint" id="preferred-date-hint">{f.preferredDate.hint}</span>
+                <input
+                  class="control"
+                  type="date"
+                  id="preferred-date"
+                  name="preferredDate"
+                  aria-describedby="preferred-date-hint"
+                  data-required
+                  data-error={f.preferredDate.error}
+                />
+                <span class="field__error" id="preferred-date-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="alternate-date">{f.alternateDate.label}</label>
+                <span class="field__hint" id="alternate-date-hint">{f.alternateDate.hint}</span>
+                <input
+                  class="control"
+                  type="date"
+                  id="alternate-date"
+                  name="alternateDate"
+                  aria-describedby="alternate-date-hint"
+                />
+              </p>
+            </div>
+          </fieldset>
+
+          <!-- ── Step 3 — size and budget ────────────────────────────── -->
+          <fieldset class="step" data-step="2" hidden>
+            <legend class="step__legend" tabindex="-1">{steps[2].title}</legend>
+            <p class="step__hint">{steps[2].hint}</p>
+            <div class="split">
+              <p class="field">
+                <label class="field__label" for="guest-count">{f.guestCount.label}</label>
+                <span class="field__hint" id="guest-count-hint">{f.guestCount.hint}</span>
+                <input
+                  class="control"
+                  type="number"
+                  id="guest-count"
+                  name="guestCount"
+                  min="1"
+                  max="250"
+                  inputmode="numeric"
+                  aria-describedby="guest-count-hint"
+                  data-required
+                  data-error={f.guestCount.error}
+                />
+                <span class="field__error" id="guest-count-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="seating">{f.seating.label}</label>
+                <select class="control" id="seating" name="seating" data-required data-error={f.seating.error}>
+                  <option value=""></option>
+                  {f.seating.options.map((option) => <option value={option}>{option}</option>)}
+                </select>
+                <span class="field__error" id="seating-error"></span>
+              </p>
+            </div>
+            <p class="field">
+              <label class="field__label" for="budget-band">{f.budgetBand.label}</label>
+              <span class="field__hint" id="budget-band-hint">{f.budgetBand.hint}</span>
+              <select
+                class="control"
+                id="budget-band"
+                name="budgetBand"
+                aria-describedby="budget-band-hint"
+                data-required
+                data-error={f.budgetBand.error}
+              >
+                <option value=""></option>
+                {f.budgetBand.options.map((option) => <option value={option}>{option}</option>)}
+              </select>
+              <span class="field__error" id="budget-band-error"></span>
+            </p>
+          </fieldset>
+
+          <!-- ── Step 4 — contact ────────────────────────────────────── -->
+          <fieldset class="step" data-step="3" hidden>
+            <legend class="step__legend" tabindex="-1">{steps[3].title}</legend>
+            <p class="step__hint">{steps[3].hint}</p>
+            <div class="split">
+              <p class="field">
+                <label class="field__label" for="name">{f.name.label}</label>
+                <input
+                  class="control"
+                  type="text"
+                  id="name"
+                  name="name"
+                  autocomplete="name"
+                  data-required
+                  data-error={f.name.error}
+                />
+                <span class="field__error" id="name-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="email">{f.email.label}</label>
+                <input
+                  class="control"
+                  type="email"
+                  id="email"
+                  name="email"
+                  autocomplete="email"
+                  data-required
+                  data-error={f.email.error}
+                />
+                <span class="field__error" id="email-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="phone">{f.phone.label}</label>
+                <span class="field__hint" id="phone-hint">{f.phone.hint}</span>
+                <input
+                  class="control"
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  autocomplete="tel"
+                  aria-describedby="phone-hint"
+                />
+              </p>
+            </div>
+            <p class="field">
+              <label class="field__label" for="notes">{f.notes.label}</label>
+              <span class="field__hint" id="notes-hint">{f.notes.hint}</span>
+              <textarea
+                class="control control--area"
+                id="notes"
+                name="notes"
+                rows="4"
+                aria-describedby="notes-hint"
+              ></textarea>
+            </p>
+          </fieldset>
+
+          <div class="actions">
+            <button class="btn btn--line" type="button" id="step-back" hidden>
+              {checkADatePage.backLabel}
+            </button>
+            <button class="btn btn--fill" type="button" id="step-next">
+              {checkADatePage.nextLabel}
+            </button>
+            <button class="btn btn--fill" type="submit" id="step-submit" data-analytics-event="date_submit" hidden>
+              {checkADatePage.submitLabel}
+            </button>
+          </div>
+        </form>
+
+        <!-- Confirmation. Replaces the form in place rather than navigating,
+             which is what the live build does once the hold is written. -->
+        <div class="done" id="date-done" role="status" tabindex="-1" hidden>
+          <h2 class="done__h">{checkADatePage.confirmation.heading}</h2>
+          <p class="done__b">{checkADatePage.confirmation.body}</p>
+          <h3 class="done__sub">{checkADatePage.confirmation.detailsHeading}</h3>
+          <dl class="summary" id="date-summary"></dl>
+          <p class="done__note">{checkADatePage.confirmation.holdNote}</p>
+          <div class="done__actions">
+            <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_date">
+              {checkADatePage.confirmation.callLabel} — {business.phone}
+            </a>
+            <button class="btn btn--line" type="button" id="date-reset">
+              {checkADatePage.confirmation.resetLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side" aria-label={checkADatePage.sidebarHeading}>
+        <h2 class="side__h">{checkADatePage.sidebarHeading}</h2>
+        <ul class="side__list">
+          {checkADatePage.sidebarPoints.map((point) => <li class="side__point">{point}</li>)}
+        </ul>
+      </aside>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // Step navigation and validation only — no network. The hold POST goes where
+  // the comment at the top of this file says it goes.
+  const form = document.getElementById('date-form') as HTMLFormElement | null;
+  const done = document.getElementById('date-done');
+  const summary = document.getElementById('date-summary');
+  const errorBox = document.getElementById('error-summary');
+  const errorList = document.getElementById('error-list');
+  const backButton = document.getElementById('step-back') as HTMLButtonElement | null;
+  const nextButton = document.getElementById('step-next') as HTMLButtonElement | null;
+  const submitButton = document.getElementById('step-submit') as HTMLButtonElement | null;
+  const progressText = document.getElementById('progress-text');
+  const resetButton = document.getElementById('date-reset');
+
+  if (form && done && summary && errorBox && errorList && backButton && nextButton && submitButton && progressText && resetButton) {
+    const steps = [...form.querySelectorAll<HTMLFieldSetElement>('.step')];
+    const segments = [...form.querySelectorAll<HTMLElement>('[data-seg]')];
+    // Both words come off the wrapper's data attributes rather than being
+    // parsed back out of the rendered sentence, which would break the moment
+    // either label was reworded in the data module.
+    const progress = progressText.closest('.progress') as HTMLElement | null;
+    const stepWord = progress?.dataset.stepLabel ?? 'Step';
+    const ofWord = progress?.dataset.ofLabel ?? 'of';
+    let index = 0;
+
+    type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+    const emailLooksReal = (value: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+
+    // A radio's own <label> is the answer ("Wedding"), not the question, so the
+    // error line and the confirmation summary take the step's legend instead.
+    const labelText = (control: Control): string => {
+      if (control.type !== 'radio') {
+        const label = form.querySelector(`label[for="${control.id}"]`);
+        if (label) return (label.textContent || '').trim();
+      }
+      const legend = control.closest('fieldset')?.querySelector('legend');
+      return (legend?.textContent || control.name).trim();
+    };
+
+    const errorSlotFor = (control: Control): HTMLElement | null => {
+      if (control.type === 'radio') {
+        return document.getElementById(`${control.name}-error`);
+      }
+      return document.getElementById(`${control.id}-error`);
+    };
+
+    // The inline slots are emptied rather than hidden, and .field__error
+    // reserves its line in CSS. Toggling `hidden` here removed a row of
+    // layout the moment a field blurred, which slid the Continue button up
+    // from under whoever had just clicked it.
+    const clearError = (control: Control): void => {
+      control.removeAttribute('aria-invalid');
+      const slot = errorSlotFor(control);
+      if (slot) slot.textContent = '';
+    };
+
+    const showError = (control: Control, message: string): void => {
+      control.setAttribute('aria-invalid', 'true');
+      const slot = errorSlotFor(control);
+      if (slot) slot.textContent = message;
+    };
+
+    /** One entry per required question on this step, radios collapsed to one. */
+    const questionsIn = (step: HTMLFieldSetElement): Control[] => {
+      const seen = new Set<string>();
+      return [...step.querySelectorAll<Control>('[data-required]')].filter((control) => {
+        if (control.type !== 'radio') return true;
+        if (seen.has(control.name)) return false;
+        seen.add(control.name);
+        return true;
+      });
+    };
+
+    const valueOf = (control: Control): string => {
+      if (control.type === 'radio') {
+        const picked = form.querySelector<HTMLInputElement>(`input[name="${control.name}"]:checked`);
+        return picked ? picked.value : '';
+      }
+      return control.value.trim();
+    };
+
+    const validate = (step: HTMLFieldSetElement): Control[] => {
+      const failed: Control[] = [];
+      questionsIn(step).forEach((control) => {
+        clearError(control);
+        const value = valueOf(control);
+        let bad = !value;
+        if (!bad && control.type === 'email') bad = !emailLooksReal(value);
+        if (!bad && control.type === 'number') {
+          const n = Number(value);
+          bad = !Number.isFinite(n) || n < 1 || n > 250;
+        }
+        if (bad) {
+          showError(control, control.dataset.error || '');
+          failed.push(control);
+        }
+      });
+      return failed;
+    };
+
+    const listErrors = (failed: Control[]): void => {
+      errorList.innerHTML = '';
+      failed.forEach((control) => {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${control.id}`;
+        link.textContent = `${labelText(control)} — ${control.dataset.error || ''}`;
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          control.focus();
+        });
+        item.appendChild(link);
+        errorList.appendChild(item);
+      });
+      errorBox.hidden = false;
+      errorBox.focus();
+    };
+
+    const render = (): void => {
+      steps.forEach((step, i) => {
+        step.hidden = i !== index;
+      });
+      segments.forEach((segment, i) => {
+        segment.classList.toggle('is-on', i <= index);
+      });
+      progressText.textContent = `${stepWord} ${index + 1} ${ofWord} ${steps.length}`;
+      backButton.hidden = index === 0;
+      const last = index === steps.length - 1;
+      nextButton.hidden = last;
+      submitButton.hidden = !last;
+      const legend = steps[index].querySelector<HTMLElement>('legend');
+      legend?.focus();
+    };
+
+    form.querySelectorAll<Control>('[data-required]').forEach((control) => {
+      control.addEventListener('change', () => {
+        if (valueOf(control)) clearError(control);
+      });
+    });
+
+    nextButton.addEventListener('click', () => {
+      const failed = validate(steps[index]);
+      if (failed.length) {
+        listErrors(failed);
+        return;
+      }
+      errorBox.hidden = true;
+      index = Math.min(index + 1, steps.length - 1);
+      render();
+    });
+
+    backButton.addEventListener('click', () => {
+      errorBox.hidden = true;
+      index = Math.max(index - 1, 0);
+      render();
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const failed = validate(steps[index]);
+      if (failed.length) {
+        listErrors(failed);
+        return;
+      }
+      errorBox.hidden = true;
+
+      summary.innerHTML = '';
+      const written = new Set<string>();
+      form.querySelectorAll<Control>('[name]').forEach((control) => {
+        if (written.has(control.name)) return;
+        const value = valueOf(control) || (control.type === 'radio' ? '' : control.value.trim());
+        if (!value) return;
+        written.add(control.name);
+        const row = document.createElement('div');
+        row.className = 'summary__row';
+        const key = document.createElement('dt');
+        key.className = 'summary__k';
+        key.textContent = labelText(control);
+        const val = document.createElement('dd');
+        val.className = 'summary__v';
+        val.textContent = value;
+        row.append(key, val);
+        summary.appendChild(row);
+      });
+
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+      done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      form.querySelectorAll<Control>('[data-required]').forEach(clearError);
+      index = 0;
+      render();
+      done.hidden = true;
+      form.hidden = false;
+      errorBox.hidden = true;
+      form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .cd-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .cd-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    max-width: 16ch;
+  }
+  .cd-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+  .cd-bay {
+    padding-top: 0;
+  }
+  .cd-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 980px) {
+    .cd-grid {
+      grid-template-columns: 1fr 18rem;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+
+  /* ── Progress ─────────────────────────────────────────────────────── */
+  .progress {
+    display: grid;
+    gap: 0.85rem;
+    margin-bottom: 2.5rem;
+  }
+  .progress__text {
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .progress__bar {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0.4rem;
+  }
+  .progress__seg {
+    height: 2px;
+    background: var(--ink-line);
+  }
+  .progress__seg.is-on {
+    background: var(--accent);
+  }
+
+  /* ── Steps ────────────────────────────────────────────────────────── */
+  .step {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .step__legend {
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.4rem + 1.3vw, 2.3rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .step__legend:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .step__hint {
+    margin-top: 0.9rem;
+    max-width: 46ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Radio choices ────────────────────────────────────────────────── */
+  .choices {
+    margin-top: 2rem;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .choice__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .choice {
+    display: block;
+    padding: 1.05rem 1rem 1.05rem 2.5rem;
+    border-bottom: 1px solid var(--ink-line);
+    cursor: pointer;
+    position: relative;
+    font-size: var(--fs-small);
+  }
+  .choice::before {
+    content: '';
+    position: absolute;
+    left: 0.6rem;
+    top: 1.32em;
+    width: 0.85rem;
+    height: 0.85rem;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+  }
+  .choice:hover {
+    background: var(--ink-raised);
+  }
+  .choice__input:checked + .choice {
+    color: var(--accent);
+  }
+  .choice__input:checked + .choice::before {
+    background: var(--accent);
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .choice__input:focus-visible + .choice {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  /* ── Fields ───────────────────────────────────────────────────────── */
+  .split {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.75rem;
+  }
+  @media (min-width: 660px) {
+    .split {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem 2rem;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    margin: 1.75rem 0 0;
+  }
+  .split .field {
+    margin: 0;
+  }
+  .field__label {
+    font-size: var(--fs-small);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .field__hint {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--on-ink-dim);
+  }
+  .control {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+    color: var(--on-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.4;
+    /* Without this the native date picker and its icon render as a light
+       widget on a near-black field. */
+    color-scheme: dark;
+  }
+  .control--area {
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .control:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .control[aria-invalid='true'] {
+    border-color: var(--accent);
+    border-left-width: 3px;
+  }
+  /* The line is reserved whether or not there is an error in it. Showing and
+     hiding this span moved everything below it — including the Continue
+     button, at the exact moment a field blurred. */
+  .field__error {
+    display: block;
+    min-height: 1.3em;
+    font-size: 0.82rem;
+    line-height: 1.3;
+    color: var(--accent);
+  }
+
+  .errors {
+    margin-bottom: 2rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    background: var(--ink-raised);
+  }
+  .errors:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .errors__h {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--accent);
+    font-family: var(--font-body);
+  }
+  .errors__list {
+    margin: 0.75rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--fs-small);
+  }
+
+  .actions {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Confirmation ─────────────────────────────────────────────────── */
+  .done {
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    background: var(--ink-raised);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .done:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .done__h {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .done__b {
+    margin-top: 1rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .done__sub {
+    margin-top: 2rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--on-ink-dim);
+    font-family: var(--font-body);
+  }
+  .summary {
+    margin: 1rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary :global(.summary__row) {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 560px) {
+    .summary :global(.summary__row) {
+      grid-template-columns: 12rem 1fr;
+    }
+  }
+  .summary :global(.summary__k) {
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .summary :global(.summary__v) {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+  }
+  .done__note {
+    margin-top: 1.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 50ch;
+  }
+  .done__actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Sidebar ──────────────────────────────────────────────────────── */
+  .side {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.5rem;
+  }
+  .side__h {
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--accent);
+    font-family: var(--font-body);
+  }
+  .side__list {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+  }
+  .side__point {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+</style>

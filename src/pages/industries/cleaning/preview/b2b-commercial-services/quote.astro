@@ -1,0 +1,657 @@
+---
+// Northline demo — Request a Quote. This page is the CRM line item, and the
+// reason the playbook carries CRM rather than a contact form.
+//
+// ── CRM HANDOFF ──────────────────────────────────────────────────────────
+// On a live build the submit handler below POSTs the collected payload to the
+// client's CRM instead of rendering the confirmation locally. The shape is
+// already the shape the CRM wants — six qualifying answers plus the contact
+// block — so the lead arrives ranked rather than as free text in an inbox:
+//
+//   await fetch(CRM_ENDPOINT, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({
+//       source: 'website/request-a-quote',
+//       facilityType, squareFootage, frequency, currentProvider, timeline,
+//       contact: { name, company, email, phone, siteCity, notes },
+//     }),
+//   });
+//
+// CRM_ENDPOINT is an environment variable, never a literal in the bundle, and
+// the handler keeps the confirmation state below as its success view. Nothing
+// on this preview posts anywhere: it is a sample site.
+// ─────────────────────────────────────────────────────────────────────────
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/northlineChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/northlineJsonld';
+import {
+  business,
+  pageMeta,
+  quotePage,
+} from '../../../../../data/demos/b2b-commercial-services';
+
+const meta = pageMeta.quote;
+const f = quotePage.fields;
+
+/** The five qualifying selects, rendered from one loop so the markup cannot
+ *  drift from the data module. Each carries its own error message. */
+const selects = [
+  { id: 'facility-type', name: 'facilityType', field: f.facilityType },
+  { id: 'square-footage', name: 'squareFootage', field: f.squareFootage },
+  { id: 'frequency', name: 'frequency', field: f.frequency },
+  { id: 'current-provider', name: 'currentProvider', field: f.currentProvider },
+  { id: 'timeline', name: 'timeline', field: f.timeline },
+];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.quote}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.quote },
+    ]),
+  ]}
+>
+  <header class="bay qt-head">
+    <div class="wrap">
+      <p class="kicker">{quotePage.kicker}</p>
+      <h1 class="qt-title">{quotePage.heading}</h1>
+      <hr class="rule" />
+      <p class="lede qt-lede">{quotePage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay qt-bay">
+    <div class="wrap qt-grid">
+      <!-- ── The form ─────────────────────────────────────────────────── -->
+      <div>
+        <form class="form" id="quote-form" novalidate aria-label={quotePage.formLabel}>
+          <p class="required-note">{quotePage.requiredNote}</p>
+
+          <div class="errors" id="error-summary" role="alert" tabindex="-1" hidden>
+            <h2 class="errors__h">{quotePage.errorSummaryHeading}</h2>
+            <ul class="errors__list" id="error-list"></ul>
+          </div>
+
+          <div class="fields">
+            {selects.map((entry, i) => (
+              <p class="field">
+                <label class="field__label" for={entry.id}>
+                  <span class="field__num">{String(i + 1).padStart(2, '0')}</span>
+                  {entry.field.label}
+                  <span class="req" aria-hidden="true">*</span>
+                </label>
+                <span class="field__hint" id={`${entry.id}-hint`}>{entry.field.hint}</span>
+                <select
+                  class="control"
+                  id={entry.id}
+                  name={entry.name}
+                  required
+                  aria-describedby={`${entry.id}-hint`}
+                  data-error={entry.field.error}
+                >
+                  <option value=""></option>
+                  {entry.field.options.map((option) => <option value={option}>{option}</option>)}
+                </select>
+                <span class="field__error" id={`${entry.id}-error`}></span>
+              </p>
+            ))}
+
+            <div class="split">
+              <p class="field">
+                <label class="field__label" for="contact-name">
+                  <span class="field__num">{String(selects.length + 1).padStart(2, '0')}</span>
+                  {f.contactName.label}
+                  <span class="req" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="control"
+                  type="text"
+                  id="contact-name"
+                  name="contactName"
+                  autocomplete="name"
+                  required
+                  data-error={f.contactName.error}
+                />
+                <span class="field__error" id="contact-name-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="company">
+                  {f.company.label}
+                  <span class="req" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="control"
+                  type="text"
+                  id="company"
+                  name="company"
+                  autocomplete="organization"
+                  required
+                  data-error={f.company.error}
+                />
+                <span class="field__error" id="company-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="email">
+                  {f.email.label}
+                  <span class="req" aria-hidden="true">*</span>
+                </label>
+                <input
+                  class="control"
+                  type="email"
+                  id="email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                  data-error={f.email.error}
+                />
+                <span class="field__error" id="email-error"></span>
+              </p>
+              <p class="field">
+                <label class="field__label" for="phone">{f.phone.label}</label>
+                <span class="field__hint" id="phone-hint">{f.phone.hint}</span>
+                <input
+                  class="control"
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  autocomplete="tel"
+                  aria-describedby="phone-hint"
+                />
+              </p>
+              <p class="field">
+                <label class="field__label" for="site-city">
+                  {f.siteCity.label}
+                  <span class="req" aria-hidden="true">*</span>
+                </label>
+                <span class="field__hint" id="site-city-hint">{f.siteCity.hint}</span>
+                <input
+                  class="control"
+                  type="text"
+                  id="site-city"
+                  name="siteCity"
+                  autocomplete="address-level2"
+                  required
+                  aria-describedby="site-city-hint"
+                  data-error={f.siteCity.error}
+                />
+                <span class="field__error" id="site-city-error"></span>
+              </p>
+            </div>
+
+            <p class="field">
+              <label class="field__label" for="notes">{f.notes.label}</label>
+              <span class="field__hint" id="notes-hint">{f.notes.hint}</span>
+              <textarea
+                class="control control--area"
+                id="notes"
+                name="notes"
+                rows="4"
+                aria-describedby="notes-hint"
+              ></textarea>
+            </p>
+          </div>
+
+          <button class="btn btn--fill submit" type="submit" data-analytics-event="quote_submit">
+            {quotePage.submitLabel}
+          </button>
+        </form>
+
+        <!-- Confirmation. Replaces the form in place rather than navigating,
+             which is what the live build does after the CRM POST resolves. -->
+        <div class="done" id="quote-done" role="status" tabindex="-1" hidden>
+          <h2 class="done__h">{quotePage.confirmation.heading}</h2>
+          <p class="done__b">{quotePage.confirmation.body}</p>
+          <h3 class="done__sub">{quotePage.confirmation.detailsHeading}</h3>
+          <dl class="summary" id="quote-summary"></dl>
+          <p class="done__note">{quotePage.confirmation.urgentNote}</p>
+          <div class="done__actions">
+            <a class="btn btn--fill" href={business.phoneHref} data-analytics-event="phone_tap_quote">
+              {business.phone}
+            </a>
+            <button class="btn btn--line" type="button" id="quote-reset">
+              {quotePage.confirmation.resetLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── What happens next ────────────────────────────────────────── -->
+      <aside class="side" aria-label={quotePage.responseHeading}>
+        <div class="side__block">
+          <h2 class="side__h">{quotePage.responseHeading}</h2>
+          <ol class="timeline">
+            {quotePage.responseSteps.map((step) => (
+              <li class="tl">
+                <span class="tl__when">{step.title}</span>
+                <span class="tl__what">{step.detail}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="side__block side__block--call">
+          <h2 class="side__h">{quotePage.sidebarHeading}</h2>
+          <p class="side__b">{quotePage.sidebarBody}</p>
+          <a class="side__phone" href={business.phoneHref} data-analytics-event="phone_tap_quote_side">
+            {business.phone}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // Validation only — no network. The CRM POST goes where the comment at the
+  // top of this file says it goes.
+  const form = document.getElementById('quote-form') as HTMLFormElement | null;
+  const done = document.getElementById('quote-done');
+  const summary = document.getElementById('quote-summary');
+  const errorBox = document.getElementById('error-summary');
+  const errorList = document.getElementById('error-list');
+  const resetButton = document.getElementById('quote-reset');
+
+  if (form && done && summary && errorBox && errorList && resetButton) {
+    const controls = [...form.querySelectorAll<HTMLElement>('[data-error]')] as (
+      | HTMLInputElement
+      | HTMLSelectElement
+    )[];
+
+    const emailLooksReal = (value: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+
+    const showError = (control: HTMLInputElement | HTMLSelectElement, message: string): void => {
+      const slot = document.getElementById(`${control.id}-error`);
+      control.setAttribute('aria-invalid', 'true');
+      const described = [control.getAttribute('aria-describedby'), `${control.id}-error`]
+        .filter(Boolean)
+        .join(' ');
+      control.setAttribute('aria-describedby', described);
+      if (slot) slot.textContent = message;
+    };
+
+    const clearError = (control: HTMLInputElement | HTMLSelectElement): void => {
+      const slot = document.getElementById(`${control.id}-error`);
+      control.removeAttribute('aria-invalid');
+      const described = (control.getAttribute('aria-describedby') || '')
+        .split(' ')
+        .filter((id) => id && id !== `${control.id}-error`)
+        .join(' ');
+      if (described) control.setAttribute('aria-describedby', described);
+      else control.removeAttribute('aria-describedby');
+      if (slot) slot.textContent = '';
+    };
+
+    const labelFor = (control: HTMLInputElement | HTMLSelectElement): string => {
+      const label = form.querySelector(`label[for="${control.id}"]`);
+      return (label?.textContent || control.id).replace(/\s*\*\s*$/, '').replace(/^\d\d\s*/, '').trim();
+    };
+
+    controls.forEach((control) => {
+      control.addEventListener('change', () => {
+        if (control.value.trim()) clearError(control);
+      });
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const failed: (HTMLInputElement | HTMLSelectElement)[] = [];
+
+      controls.forEach((control) => {
+        clearError(control);
+        const value = control.value.trim();
+        const badEmail = control.getAttribute('type') === 'email' && !emailLooksReal(value);
+        if (!value || badEmail) {
+          showError(control, control.dataset.error || '');
+          failed.push(control);
+        }
+      });
+
+      if (failed.length) {
+        errorList.innerHTML = '';
+        failed.forEach((control) => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = `#${control.id}`;
+          link.textContent = `${labelFor(control)} — ${control.dataset.error || ''}`;
+          link.addEventListener('click', (clickEvent) => {
+            clickEvent.preventDefault();
+            control.focus();
+          });
+          item.appendChild(link);
+          errorList.appendChild(item);
+        });
+        errorBox.hidden = false;
+        errorBox.focus();
+        return;
+      }
+
+      errorBox.hidden = true;
+      const data = new FormData(form);
+      summary.innerHTML = '';
+      form.querySelectorAll<HTMLElement>('[name]').forEach((control) => {
+        const named = control as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        const value = String(data.get(named.name) || '').trim();
+        if (!value) return;
+        const row = document.createElement('div');
+        row.className = 'summary__row';
+        const key = document.createElement('dt');
+        key.className = 'summary__k';
+        key.textContent = labelFor(named as HTMLInputElement);
+        const val = document.createElement('dd');
+        val.className = 'summary__v';
+        val.textContent = value;
+        row.append(key, val);
+        summary.appendChild(row);
+      });
+
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+      done.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      controls.forEach(clearError);
+      done.hidden = true;
+      form.hidden = false;
+      errorBox.hidden = true;
+      form.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  }
+</script>
+
+<style>
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .qt-head {
+    padding-bottom: 0;
+  }
+  .qt-title {
+    margin-top: 1rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+  }
+  .qt-lede {
+    margin-top: 1.35rem;
+    max-width: 54ch;
+  }
+
+  .qt-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 960px) {
+    .qt-grid {
+      grid-template-columns: 1fr 20rem;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  /* ── Form ─────────────────────────────────────────────────────────── */
+  .required-note {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .fields {
+    margin-top: 1.75rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+  }
+  .field__label {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .field__num {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+  .req {
+    color: var(--accent);
+    margin-left: 0.15rem;
+  }
+  .field__hint {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--on-ink-dim);
+  }
+  .control {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--on-ink);
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .control--area {
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .control:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .control[aria-invalid='true'] {
+    border-color: var(--accent);
+    border-left-width: 3px;
+  }
+  /* The line is reserved whether or not there is an error in it. Showing
+     and hiding this span moved the submit button the moment a field blurred. */
+  .field__error {
+    display: block;
+    min-height: 1.3em;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .split {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 620px) {
+    .split {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .submit {
+    margin-top: 2rem;
+  }
+
+  .errors {
+    margin-top: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    background: var(--ink-raised);
+  }
+  .errors:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .errors__h {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .errors__list {
+    margin: 0.75rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--fs-small);
+  }
+
+  /* ── Confirmation ─────────────────────────────────────────────────── */
+  .done {
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    background: var(--ink-raised);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .done:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .done__h {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .done__b {
+    margin-top: 0.9rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .done__sub {
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .summary {
+    margin: 1rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .summary :global(.summary__row) {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 560px) {
+    .summary :global(.summary__row) {
+      grid-template-columns: 12rem 1fr;
+    }
+  }
+  .summary :global(.summary__k) {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .summary :global(.summary__v) {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+  }
+  .done__note {
+    margin-top: 1.75rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 48ch;
+  }
+  .done__actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* ── Sidebar ──────────────────────────────────────────────────────── */
+  .side {
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+    align-self: start;
+  }
+  .side__block {
+    padding: 1.5rem 1.4rem;
+    background: var(--ink);
+  }
+  .side__block--call {
+    background: var(--paper);
+  }
+  .side__h {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .side__block--call .side__h {
+    color: var(--accent-paper);
+  }
+  .side__b {
+    margin-top: 0.8rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+  }
+  .side__phone {
+    display: inline-block;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+    text-decoration: none;
+  }
+  .side__phone:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .timeline {
+    list-style: none;
+    margin: 1.1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 1.1rem;
+  }
+  .tl {
+    display: grid;
+    gap: 0.3rem;
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--accent);
+  }
+  .tl__when {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tl__what {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+</style>

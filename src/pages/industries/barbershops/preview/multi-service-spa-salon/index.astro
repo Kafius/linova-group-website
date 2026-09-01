@@ -1,0 +1,344 @@
+---
+// Stillwater demo — home. Layout only: every string comes from
+// src/data/demos/multi-service-spa-salon.ts.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { categoryRoute, chrome, routes } from '../../../../../lib/demos/stillwaterChrome';
+import { daySpa } from '../../../../../lib/demos/stillwaterJsonld';
+import {
+  categories,
+  home,
+  packages,
+  packagesPage,
+  pageMeta,
+  servicesIn,
+} from '../../../../../data/demos/multi-service-spa-salon';
+
+const meta = pageMeta.home;
+const rooms = categories.map((category) => ({
+  ...category,
+  count: servicesIn(category.id).length,
+  href: categoryRoute[category.id] ?? routes.home,
+}));
+const featured = packages.slice(0, 3);
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[daySpa(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.packages} data-analytics-event="packages_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="multi-service-spa-salon"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 5"
+        sizes="(min-width: 900px) 42vw, 100vw"
+        widths={[520, 780, 1040]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── Three rooms ─────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="rooms-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="rooms-h" class="section-title">{home.roomsHeading}</h2>
+        <a class="btn btn--line" href={routes.book} data-analytics-event="booking_cta_rooms">
+          {home.roomsCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="rooms">
+        {rooms.map((room) => (
+          <li>
+            <a class="room" href={room.href} data-analytics-event="room_view">
+              <DemoImage
+                demo="multi-service-spa-salon"
+                file={room.photo.file}
+                subject={room.photo.subject}
+                alt={room.photo.alt}
+                ratio="3 / 4"
+                sizes="(min-width: 900px) 30vw, 90vw"
+                widths={[380, 560, 760]}
+              />
+              <h3 class="room__name">{room.name}</h3>
+              <p class="room__blurb">{room.blurb}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Packages ────────────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="pkg-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="pkg-h" class="section-title">{home.packagesHeading}</h2>
+          <p class="head__note">{home.packagesNote}</p>
+        </div>
+        <a class="btn btn--line" href={routes.packages} data-analytics-event="packages_view_home">
+          {home.packagesCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="pkgs">
+        {featured.map((pkg) => (
+          <li class="pkg">
+            <h3 class="pkg__name">{pkg.name}</h3>
+            <p class="pkg__meta">
+              {pkg.minutes} {packagesPage.minutesLabel} · ${pkg.price}
+            </p>
+            <p class="pkg__desc">{pkg.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Membership ──────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="mem-h">
+    <div class="wrap">
+      <div class="member">
+        <h2 id="mem-h" class="section-title">{home.membershipHeading}</h2>
+        <hr class="rule" />
+        <p class="member__price">
+          ${home.membershipPrice}<span class="member__unit">{home.membershipUnit}</span>
+        </p>
+        <p class="member__body">{home.membershipBody}</p>
+        <p class="member__note">{home.membershipNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{home.closerHeading}</h2>
+        <p class="closer__body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.book} data-analytics-event="booking_cta_footer">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    letter-spacing: 0.01em;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .head__note {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero__in {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4.5rem;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    letter-spacing: 0.005em;
+    max-width: 15ch;
+  }
+  .hero__body {
+    margin-top: 1.75rem;
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    line-height: 1.75;
+    max-width: 42ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero__in :global(.hero__shot) {
+    border-radius: var(--radius);
+  }
+
+  /* ── Rooms ────────────────────────────────────────────────────────── */
+  .rooms {
+    list-style: none;
+    margin: 3rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 820px) {
+    .rooms {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+  }
+  .room {
+    display: block;
+    text-decoration: none;
+    height: 100%;
+  }
+  .room :global(.shot) {
+    border-radius: var(--radius);
+    transition: opacity 0.25s ease;
+  }
+  .room:hover :global(.shot) {
+    opacity: 0.9;
+  }
+  .room__name {
+    margin-top: 1.25rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .room:hover .room__name {
+    color: var(--accent);
+  }
+  .room__blurb {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Packages ─────────────────────────────────────────────────────── */
+  .pkgs {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 820px) {
+    .pkgs {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .pkg {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--accent-paper);
+  }
+  .pkg__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.25rem + 0.7vw, 1.85rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .pkg__meta {
+    margin-top: 0.4rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .pkg__desc {
+    margin-top: 0.75rem;
+    font-size: var(--fs-small);
+    line-height: 1.7;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Membership ───────────────────────────────────────────────────── */
+  .member {
+    max-width: 58ch;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+  }
+  .member__price {
+    margin-top: 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 2rem + 2vw, 3.6rem);
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .member__unit {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    margin-left: 0.6rem;
+  }
+  .member__body {
+    margin-top: 1.5rem;
+    line-height: 1.75;
+    color: var(--on-ink-dim);
+  }
+  .member__note {
+    margin-top: 1.25rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--accent);
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    letter-spacing: 0.01em;
+  }
+  .closer__body {
+    margin-top: 0.75rem;
+    max-width: 44ch;
+    color: var(--on-ink-dim);
+  }
+</style>

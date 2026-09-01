@@ -76,7 +76,7 @@ const menuSection = (section: MenuSection): JsonLd => ({
 
 const dietUris = (markers: readonly string[]): string[] =>
   markers
-    .map((marker) => {
+    .map((marker): string | null => {
       if (marker === 'V') return 'https://schema.org/VegetarianDiet';
       if (marker === 'VG') return 'https://schema.org/VeganDiet';
       if (marker === 'GF') return 'https://schema.org/GlutenFreeDiet';

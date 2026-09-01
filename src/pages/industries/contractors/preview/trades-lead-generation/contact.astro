@@ -1,0 +1,295 @@
+---
+// Bright Line demo — Contact. The phone is the biggest thing on the page,
+// because on a trades site it is the conversion. No second form: the estimate
+// page already asks the six questions that make a call useful.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/brightLineChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/brightLineJsonld';
+import {
+  business,
+  contactPage,
+  officeHours,
+  pageMeta,
+  serviceArea,
+} from '../../../../../data/demos/trades-lead-generation';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.contact;
+const hourRows = officeHours.map((day) => ({
+  day: day.day,
+  open: `${formatTime(day.open)} – ${formatTime(day.close)}`,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.contact}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.contact },
+    ]),
+  ]}
+>
+  <header class="bay ct-head">
+    <div class="wrap">
+      <p class="eyebrow">{contactPage.eyebrow}</p>
+      <h1 class="ct-title">{contactPage.heading}</h1>
+    </div>
+  </header>
+
+  <section class="bay ct-main">
+    <div class="wrap ct-grid">
+      <div class="details">
+        <div class="detail">
+          <h2 class="detail__h">{contactPage.phoneHeading}</h2>
+          <a class="detail__phone" href={business.phoneHref} data-analytics-event="phone_tap_contact">
+            {business.phone}
+          </a>
+        </div>
+        <div class="detail">
+          <h2 class="detail__h">{contactPage.emailHeading}</h2>
+          <a class="detail__link" href={business.emailHref}>{business.email}</a>
+        </div>
+        <div class="detail">
+          <h2 class="detail__h">{contactPage.addressHeading}</h2>
+          <address class="detail__address">
+            <span>{business.address.street}</span>
+            <span>{business.address.city}, {business.address.region} {business.address.postalCode}</span>
+          </address>
+          <p class="detail__note">{contactPage.addressNote}</p>
+        </div>
+        <a class="btn btn--fill" href={routes.estimate} data-analytics-event="estimate_cta_contact">
+          {contactPage.estimateCta}
+        </a>
+      </div>
+
+      <div class="map" role="img" aria-label={contactPage.mapLabel}>
+        <span class="map__label">{contactPage.mapLabel}</span>
+        <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+          <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+          <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="bay hours-bay" aria-labelledby="hours-h">
+    <div class="wrap hours-grid">
+      <div>
+        <h2 id="hours-h" class="section-title">{contactPage.hoursHeading}</h2>
+        <p class="note">{contactPage.hoursNote}</p>
+        <table class="hours">
+          <thead>
+            <tr>
+              <th scope="col">{contactPage.hoursTable.day}</th>
+              <th scope="col">{contactPage.hoursTable.open}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {hourRows.map((row) => (
+              <tr>
+                <th scope="row">{row.day}</th>
+                <td>{row.open}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2 class="section-title">{contactPage.areaHeading}</h2>
+        <dl class="areas">
+          {serviceArea.map((area) => (
+            <div class="area">
+              <dt class="area__town">{area.town}</dt>
+              <dd class="area__note">{area.note}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 52ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .ct-head {
+    padding-bottom: 0;
+  }
+  .ct-title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .ct-main {
+    padding-top: clamp(2rem, 5vw, 3rem);
+  }
+  .ct-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .ct-grid {
+      grid-template-columns: 1fr 0.9fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .details {
+    display: grid;
+    gap: 2rem;
+    justify-items: start;
+  }
+  .detail__h {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    margin-bottom: 0.5rem;
+  }
+  .detail__phone {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.6rem + 1.8vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .detail__link {
+    font-size: clamp(1rem, 0.96rem + 0.3vw, 1.15rem);
+    text-underline-offset: 4px;
+    word-break: break-word;
+  }
+  .detail__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.15rem;
+    font-size: 1.05rem;
+  }
+  .detail__note {
+    margin-top: 0.7rem;
+    max-width: 42ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    color: var(--accent);
+  }
+  .map__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    max-width: 24ch;
+    line-height: 1.6;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hours-bay {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .hours-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .hours-grid {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .hours {
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 26rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .hours thead th {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    font-weight: 600;
+  }
+  .hours tbody th {
+    font-weight: 400;
+  }
+  .hours td {
+    text-align: right;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+  .areas {
+    margin: 1.5rem 0 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .area {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 640px) {
+    .area {
+      grid-template-columns: 9rem 1fr;
+      gap: 1.5rem;
+      align-items: baseline;
+    }
+  }
+  .area__town {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .area__note {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-ink-dim);
+  }
+</style>

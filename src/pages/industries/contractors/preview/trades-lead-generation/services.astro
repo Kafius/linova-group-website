@@ -1,0 +1,256 @@
+---
+// Bright Line demo — Services. The prep lists are long on purpose: on a
+// painting site the prep is the differentiator, and a cheap quote is cheap
+// because it leaves those lines out.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/brightLineChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/brightLineJsonld';
+import {
+  business,
+  pageMeta,
+  serviceArea,
+  services,
+  servicesPage,
+} from '../../../../../data/demos/trades-lead-generation';
+
+const meta = pageMeta.services;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.services}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.services },
+    ]),
+  ]}
+>
+  <header class="bay sv-head">
+    <div class="wrap">
+      <p class="eyebrow">{servicesPage.eyebrow}</p>
+      <h1 class="sv-title">{servicesPage.heading}</h1>
+      <p class="lede sv-lede">{servicesPage.intro}</p>
+    </div>
+  </header>
+
+  <section class="bay sv-list" aria-label={servicesPage.heading}>
+    <div class="wrap">
+      {services.map((service) => (
+        <article class="svc" id={service.id} aria-labelledby={`h-${service.id}`}>
+          <div class="svc__head">
+            <h2 class="svc__name" id={`h-${service.id}`}>{service.name}</h2>
+            <p class="svc__summary">{service.summary}</p>
+            <dl class="svc__spec">
+              <div>
+                <dt class="spec__k">{servicesPage.typicalLabel}</dt>
+                <dd class="spec__v">{service.typical}</dd>
+              </div>
+              <div>
+                <dt class="spec__k">{servicesPage.timelineLabel}</dt>
+                <dd class="spec__v">{service.timeline}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="svc__body">
+            <h3 class="svc__sub">{servicesPage.includesLabel}</h3>
+            <ul class="inc">
+              {service.includes.map((line) => <li class="inc__item">{line}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bay on-paper" aria-labelledby="prep-h">
+    <div class="wrap prep">
+      <h2 id="prep-h" class="section-title">{servicesPage.prepHeading}</h2>
+      <p class="prep__body">{servicesPage.prepBody}</p>
+    </div>
+  </section>
+
+  <section class="bay" aria-labelledby="area-h">
+    <div class="wrap">
+      <h2 id="area-h" class="section-title">{servicesPage.areaHeading}</h2>
+      <ul class="towns">
+        {serviceArea.map((area) => <li class="town">{area.town}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="section-title">{servicesPage.closerHeading}</h2>
+        <p class="section-body">{servicesPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.estimate} data-analytics-event="estimate_cta_services">
+        {servicesPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .sv-head {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .sv-title {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .sv-lede {
+    margin-top: 1.35rem;
+    max-width: 52ch;
+  }
+  .sv-list {
+    padding-top: 0;
+  }
+
+  .svc {
+    padding: clamp(1.75rem, 4vw, 2.75rem) 0;
+    border-top: 1px solid var(--ink-line);
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 940px) {
+    .svc {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .svc__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .svc__summary {
+    margin-top: 0.9rem;
+    color: var(--on-ink-dim);
+    max-width: 44ch;
+  }
+  .svc__spec {
+    margin: 1.35rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+  }
+  .spec__k {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .spec__v {
+    margin: 0.3rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .svc__body {
+    margin-top: 1.75rem;
+  }
+  @media (min-width: 940px) {
+    .svc__body {
+      margin-top: 0;
+    }
+  }
+  .svc__sub {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .inc {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .inc__item {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+  .inc__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.85rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .prep {
+    max-width: 66ch;
+  }
+  .prep__body {
+    margin-top: 1rem;
+    font-size: clamp(1.02rem, 0.98rem + 0.35vw, 1.18rem);
+    color: var(--on-paper-dim);
+  }
+
+  .towns {
+    list-style: none;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  @media (min-width: 640px) {
+    .towns {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .town {
+    padding: 1.1rem 1rem;
+    background: var(--ink-raised);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .closer {
+    background: var(--ink-raised);
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

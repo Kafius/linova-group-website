@@ -1,0 +1,239 @@
+---
+// Lakeshore demo — home. Layout only: every string comes from
+// src/data/demos/clinic-practitioner.ts, where the copy rule for this demo is
+// written out in full. Nothing here claims an outcome.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/lakeshoreChrome';
+import { medicalClinic } from '../../../../../lib/demos/lakeshoreJsonld';
+import {
+  groups,
+  home,
+  pageMeta,
+  servicesIn,
+} from '../../../../../data/demos/clinic-practitioner';
+
+const meta = pageMeta.home;
+const offered = groups.map((group) => ({ ...group, count: servicesIn(group.id).length }));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.home}
+  jsonLd={[medicalClinic(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero ────────────────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div>
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.booking} data-analytics-event="booking_cta_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--line" href={routes.newPatients} data-analytics-event="new_patients_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+      </div>
+      <DemoImage
+        demo="clinic-practitioner"
+        file={home.heroPhoto.file}
+        subject={home.heroPhoto.subject}
+        alt={home.heroPhoto.alt}
+        ratio="4 / 3"
+        sizes="(min-width: 900px) 46vw, 100vw"
+        widths={[560, 900, 1200]}
+        eager
+        class="hero__shot"
+      />
+    </div>
+  </section>
+
+  <!-- ── What we offer ───────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="offer-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="offer-h" class="section-title">{home.groupsHeading}</h2>
+        <a class="btn btn--line" href={routes.services} data-analytics-event="services_view_home">
+          {home.groupsCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="groups">
+        {offered.map((group) => (
+          <li class="group">
+            <h3 class="group__name">{group.name}</h3>
+            <p class="group__blurb">{group.blurb}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── The first appointment ───────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="first-h">
+    <div class="wrap">
+      <div class="first">
+        <h2 id="first-h" class="section-title">{home.firstVisitHeading}</h2>
+        <hr class="rule" />
+        <p class="first__body">{home.firstVisitBody}</p>
+        <ul class="points">
+          {home.firstVisitPoints.map((point) => <li class="point">{point}</li>)}
+        </ul>
+        <a class="btn btn--line" href={routes.newPatients} data-analytics-event="new_patients_view_first">
+          {home.firstVisitCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Insurance ───────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="ins-h">
+    <div class="wrap strip">
+      <div>
+        <h2 id="ins-h" class="section-title">{home.insuranceHeading}</h2>
+        <p class="strip__body">{home.insuranceBody}</p>
+      </div>
+      <a class="btn btn--line" href={routes.insurance} data-analytics-event="insurance_view_home">
+        {home.insuranceCta}
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay closer">
+    <div class="wrap strip">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="strip__body">{home.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.booking} data-analytics-event="booking_cta_footer">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .hero__in {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 4rem;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    max-width: 17ch;
+  }
+  .hero__body {
+    margin-top: 1.75rem;
+    font-size: clamp(1.12rem, 1.05rem + 0.5vw, 1.32rem);
+    max-width: 46ch;
+    color: var(--on-ink-dim);
+  }
+  .hero__ctas {
+    margin-top: 2.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+  .hero__in :global(.hero__shot) {
+    border-radius: var(--radius);
+  }
+
+  .groups {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 820px) {
+    .groups {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .group {
+    padding: 1.75rem;
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius);
+    background: var(--ink-raised);
+  }
+  .group__name {
+    font-size: var(--fs-heading);
+  }
+  .group__blurb {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .first {
+    max-width: 62ch;
+  }
+  .first__body {
+    margin-top: 1.75rem;
+    color: var(--on-paper-dim);
+  }
+  .points {
+    list-style: none;
+    margin: 1.75rem 0 2.25rem;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .point {
+    padding-left: 1.6rem;
+    position: relative;
+    color: var(--on-paper);
+  }
+  .point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.8rem;
+    height: 2px;
+    background: var(--accent-paper);
+  }
+
+  .strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .strip__body {
+    margin-top: 0.85rem;
+    max-width: 52ch;
+    color: var(--on-ink-dim);
+  }
+  .closer {
+    border-top: 1px solid var(--ink-line);
+    background: var(--ink-raised);
+  }
+</style>

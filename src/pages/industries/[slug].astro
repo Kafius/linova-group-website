@@ -11,7 +11,7 @@ import SiteEmbed from '../../components/industries/SiteEmbed.astro';
 import { industries, getCategory, type Industry } from '../../data/industries';
 import { proofShots } from '../../data/proofShots';
 import { getMockup } from '../../data/industryMockups';
-import { embeddableDemoFor } from '../../data/playbooks';
+import { embeddableDemosFor } from '../../data/playbooks';
 import { breadcrumbs, service } from '../../lib/jsonld';
 
 export function getStaticPaths() {
@@ -29,9 +29,10 @@ const { industry } = Astro.props;
 const shot = proofShots[industry.slug];
 const isConcept = industry.status === 'concept';
 const mockup = getMockup(industry.slug);
-// Where a vertical has a built sample site, the frame shows the real thing.
+// Where a vertical has built sample sites, the frame shows the real things.
 // The drawn mockup stays the fallback for the verticals that don't yet.
-const builtDemo = embeddableDemoFor(industry.slug);
+const builtDemos = embeddableDemosFor(industry.slug);
+const leadDemo = builtDemos[0];
 const category = getCategory(industry.category);
 ---
 
@@ -124,29 +125,31 @@ const category = getCategory(industry.category);
          The old industry pages each carried one of these and it was the
          thing people actually played with; it is back, and no longer
          limited to the two verticals without a client. -->
-    {(builtDemo || mockup) && (
+    {(leadDemo || mockup) && (
       <section id="spec-build" class="mx-auto max-w-[1200px] px-6 py-20" aria-label="What we'd build">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="font-display text-title text-film">
-            {isConcept && !builtDemo
+            {isConcept && !leadDemo
               ? "No client yet. Here's the spec work."
               : `What we'd build for ${industry.cycleWord}`}
           </h2>
           <span class="label-mono hidden shrink-0 sm:block" style="color: var(--vx)">
-            {builtDemo ? 'built' : 'spec build'}
+            {leadDemo ? 'built' : 'spec build'}
           </span>
         </div>
         <hr class="rule-gold mt-3" />
         <p class="mt-6 max-w-[58ch] text-body text-film-dim">
-          {builtDemo
-            ? `Not a drawing of a ${industry.railWord} site — the finished one, on the ${builtDemo.packageTier} spec this page describes. It is a sample business, not a client, and it says so on every page of it.`
+          {leadDemo
+            ? builtDemos.length > 1
+              ? `Not drawings of a ${industry.railWord} site — the finished ones, ${builtDemos.length} packages built to the specs this page describes. They are sample businesses, not clients, and every page of them says so.`
+              : `Not a drawing of a ${industry.railWord} site — the finished one, on the ${leadDemo.packageTier} spec this page describes. It is a sample business, not a client, and it says so on every page of it.`
             : isConcept
               ? industry.conceptPitch
               : `A ${industry.name.toLowerCase().replace(/^b2b & /, '')} site built the way this page describes — click through the pages, flip it to a phone, and hold it against what you have now. It is spec work, not a client; the real one is below.`}
         </p>
         <div class="mt-10">
-          {builtDemo ? (
-            <SiteEmbed playbook={builtDemo} slug={industry.slug} accent={industry.accent} />
+          {leadDemo ? (
+            <SiteEmbed playbooks={builtDemos} slug={industry.slug} accent={industry.accent} />
           ) : (
             mockup && <SiteMockup mockup={mockup} slug={industry.slug} />
           )}

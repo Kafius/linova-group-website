@@ -1,0 +1,303 @@
+---
+// The Foundry demo — The Space. Four rooms with the numbers a planner writes
+// down, then the inventory, then how things get in and out of the building.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/foundryJsonld';
+import {
+  business,
+  included,
+  pageMeta,
+  rooms,
+  spacePage,
+} from '../../../../../data/demos/venue-event-space';
+
+const meta = pageMeta.space;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.space}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.space },
+    ]),
+  ]}
+>
+  <header class="bay sp-head">
+    <div class="wrap">
+      <p class="eyebrow">{spacePage.eyebrow}</p>
+      <h1 class="sp-title">{spacePage.heading}</h1>
+      <p class="lede sp-lede">{spacePage.intro}</p>
+    </div>
+  </header>
+
+  <section aria-label={spacePage.heading}>
+    {rooms.map((room, i) => (
+      <article class:list={['room', i % 2 === 1 && 'room--flip']} id={room.id}>
+        <div class="room__shot">
+          <DemoImage
+            demo="venue-event-space"
+            file={room.photo.file}
+            subject={room.photo.subject}
+            alt={room.photo.alt}
+            ratio="4 / 3"
+            sizes="(min-width: 900px) 55vw, 100vw"
+            widths={[600, 900, 1300]}
+          />
+        </div>
+        <div class="room__body">
+          <div class="room__inner">
+            <h2 class="room__name">{room.name}</h2>
+            <p class="room__blurb">{room.blurb}</p>
+            <dl class="specs">
+              {room.specs.map((spec) => (
+                <div class="spec">
+                  <dt class="spec__k">{spec.label}</dt>
+                  <dd class="spec__v">{spec.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p class="room__best">
+              <span class="room__best-k">{spacePage.bestForLabel}</span>
+              {room.bestFor}
+            </p>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <!-- ── The inventory, on the brick band ────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="inc-h">
+    <div class="wrap">
+      <h2 id="inc-h" class="section-title">{spacePage.includedHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body section-body--paper">{spacePage.includedBody}</p>
+      <dl class="inc">
+        {included.map((entry) => (
+          <div class="inc__item">
+            <dt class="inc__title">{entry.title}</dt>
+            <dd class="inc__detail">{entry.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Access ──────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="acc-h">
+    <div class="wrap">
+      <h2 id="acc-h" class="section-title">{spacePage.accessHeading}</h2>
+      <hr class="rule" />
+      <dl class="access">
+        {spacePage.access.map((entry) => (
+          <div class="access__item">
+            <dt class="access__k">{entry.title}</dt>
+            <dd class="access__v">{entry.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{spacePage.closerHeading}</h2>
+        <p class="section-body">{spacePage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.contact} data-analytics-event="viewing_cta_space">
+        {spacePage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .sp-head {
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .sp-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .sp-lede {
+    margin-top: 1.5rem;
+    max-width: 50ch;
+  }
+
+  /* ── One room: full-bleed photograph, text alongside. ─────────────── */
+  .room {
+    display: grid;
+    border-top: 1px solid var(--ink-line);
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 900px) {
+    .room {
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: stretch;
+    }
+    .room--flip .room__shot {
+      order: 2;
+    }
+  }
+  .room__shot :global(img),
+  .room__shot :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .room__body {
+    display: flex;
+    align-items: center;
+    padding: clamp(2rem, 5vw, 3.5rem) var(--gutter);
+  }
+  .room__inner {
+    width: 100%;
+    max-width: 46ch;
+  }
+  .room__name {
+    font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.8rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+  .room__blurb {
+    margin-top: 1.1rem;
+    color: var(--on-ink-dim);
+  }
+  .specs {
+    margin: 1.75rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem 1.5rem;
+    border-top: 1px solid var(--ink-line);
+    border-bottom: 1px solid var(--ink-line);
+    padding: 1.35rem 0;
+  }
+  .spec__k {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+  .spec__v {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  .room__best {
+    margin-top: 1.35rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .room__best-k {
+    display: block;
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+  }
+
+  /* ── Inventory ────────────────────────────────────────────────────── */
+  .inc {
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 720px) {
+    .inc {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.25rem 3rem;
+    }
+  }
+  @media (min-width: 1120px) {
+    .inc {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .inc__title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    color: var(--accent-paper);
+  }
+  .inc__detail {
+    margin: 0.7rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-paper-dim);
+  }
+
+  /* ── Access ───────────────────────────────────────────────────────── */
+  .access {
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 0;
+  }
+  .access__item {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 780px) {
+    .access__item {
+      grid-template-columns: 14rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .access__k {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: -0.01em;
+  }
+  .access__v {
+    margin: 0;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 58ch;
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+</style>

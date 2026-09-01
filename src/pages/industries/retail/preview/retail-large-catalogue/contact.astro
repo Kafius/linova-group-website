@@ -1,0 +1,296 @@
+---
+// Halden demo — Contact. Two numbers, because "when is my sofa coming" and
+// "do you have that in oak" are different questions for different desks.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import { chrome, routes } from '../../../../../lib/demos/haldenChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/haldenJsonld';
+import {
+  business,
+  contactPage,
+  pageMeta,
+  showroomHours,
+} from '../../../../../data/demos/retail-large-catalogue';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.contact;
+const hourRows = showroomHours.map((day) => ({
+  day: day.day,
+  open: `${formatTime(day.open)} – ${formatTime(day.close)}`,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.contact}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.contact },
+    ]),
+  ]}
+>
+  <header class="bay ct-head">
+    <div class="wrap">
+      <p class="eyebrow">{contactPage.eyebrow}</p>
+      <h1 class="ct-title">{contactPage.heading}</h1>
+    </div>
+  </header>
+
+  <section class="wrap ct-grid">
+    <div class="cards">
+      <div class="card">
+        <h2 class="card__h">{contactPage.showroomHeading}</h2>
+        <a class="card__phone" href={business.phoneHref} data-analytics-event="phone_tap_contact">
+          {business.phone}
+        </a>
+        <a class="card__mail" href={business.emailHref}>{business.email}</a>
+      </div>
+      <div class="card card--delivery on-paper">
+        <h2 class="card__h">{contactPage.deliveryHeading}</h2>
+        <p class="card__note">{contactPage.deliveryNote}</p>
+        <a class="btn btn--line" href={routes.delivery} data-analytics-event="delivery_view_contact">
+          {contactPage.ctaLabel}
+        </a>
+      </div>
+      <div class="card card--address">
+        <h2 class="card__h">{contactPage.addressHeading}</h2>
+        <address class="card__address">
+          <span>{business.address.street}</span>
+          <span>{business.address.city}, {business.address.region} {business.address.postalCode}</span>
+        </address>
+      </div>
+    </div>
+
+    <div class="map" role="img" aria-label={contactPage.mapLabel}>
+      <span class="map__label">{contactPage.mapLabel}</span>
+      <svg class="map__cross" aria-hidden="true" preserveAspectRatio="none">
+        <line x1="0" y1="0" x2="100%" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+        <line x1="100%" y1="0" x2="0" y2="100%" stroke="currentColor" stroke-width="1" opacity="0.2" />
+      </svg>
+    </div>
+  </section>
+
+  <section class="bay" aria-labelledby="hours-h">
+    <div class="wrap">
+      <h2 id="hours-h" class="section-title">{contactPage.hoursHeading}</h2>
+      <p class="note">{contactPage.hoursNote}</p>
+      <table class="hours">
+        <thead>
+          <tr>
+            <th scope="col">{contactPage.hoursTable.day}</th>
+            <th scope="col">{contactPage.hoursTable.open}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {hourRows.map((row) => (
+            <tr>
+              <th scope="row">{row.day}</th>
+              <td>{row.open}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="bay on-paper" aria-labelledby="visit-h">
+    <div class="wrap">
+      <h2 id="visit-h" class="section-title">{contactPage.visitHeading}</h2>
+      <dl class="visit">
+        {contactPage.visit.map((entry) => (
+          <div>
+            <dt class="visit__k">{entry.title}</dt>
+            <dd class="visit__v">{entry.detail}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .note {
+    margin-top: 1rem;
+    max-width: 56ch;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .ct-head {
+    padding-bottom: 0;
+  }
+  .ct-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+  }
+  .ct-grid {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .ct-grid {
+      grid-template-columns: 1fr 0.9fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .cards {
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+  }
+  .card {
+    padding: 1.6rem 1.5rem;
+  }
+  /* The page's scoped styles load after the layout's, so a bare `.card`
+     background would beat .on-paper's and leave paper-coloured text on an
+     ink card. Exclude the paper card explicitly. */
+  .card:not(.on-paper) {
+    background: var(--ink);
+  }
+  /* The paper surface comes from DemoLayout's .on-paper utility rather than
+     a local background, because .on-paper also carries the button and link
+     rules for a dark surface. Setting the background by hand here left a
+     .btn--line with ink-coloured text on wine at 1.31:1. */
+  .card--delivery {
+    border: 0;
+  }
+  .card--address {
+    background: var(--ink-raised);
+  }
+  .card__h {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .card--delivery .card__h {
+    color: var(--accent-paper);
+  }
+  .card__phone {
+    display: block;
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.35rem + 1vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .card__mail {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    text-underline-offset: 4px;
+    word-break: break-word;
+  }
+  .card__note {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--on-paper-dim);
+    max-width: 44ch;
+  }
+  .card--delivery .btn {
+    margin-top: 1.35rem;
+  }
+  .card__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.9rem;
+    font-size: 1.05rem;
+  }
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+    color: var(--accent);
+  }
+  .map__label {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    max-width: 24ch;
+    line-height: 1.6;
+  }
+  .map__cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hours {
+    margin-top: 1.75rem;
+    width: 100%;
+    max-width: 30rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+  }
+  .hours thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .hours tbody th {
+    font-weight: 400;
+  }
+  .hours td {
+    text-align: right;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--on-ink-dim);
+  }
+  .visit {
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 820px) {
+    .visit {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  .visit__k {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-paper);
+  }
+  .visit__v {
+    margin: 0.7rem 0 0;
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--on-paper-dim);
+  }
+</style>

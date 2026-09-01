@@ -1,0 +1,304 @@
+---
+// The Foundry demo — Weddings. The timeline is the page; the "things we do not
+// do" list is the reason a planner trusts the rest of it.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/foundryChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/foundryJsonld';
+import {
+  business,
+  catering,
+  gallery,
+  pageMeta,
+  weddingsPage,
+} from '../../../../../data/demos/venue-event-space';
+
+const meta = pageMeta.weddings;
+const shot = gallery.find((item) => item.id === 'hall-rounds') ?? gallery[0];
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.weddings}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.weddings },
+    ]),
+  ]}
+>
+  <header class="bay wd-head">
+    <div class="wrap">
+      <p class="eyebrow">{weddingsPage.eyebrow}</p>
+      <h1 class="wd-title">{weddingsPage.heading}</h1>
+      <p class="lede wd-lede">{weddingsPage.intro}</p>
+      <p class="wd-cap">{weddingsPage.capacityLine}</p>
+    </div>
+  </header>
+
+  <div class="bleed">
+    <DemoImage
+      demo="venue-event-space"
+      file={shot.photo.file}
+      subject={shot.photo.subject}
+      alt={shot.photo.alt}
+      ratio="21 / 9"
+      sizes="100vw"
+      widths={[900, 1400, 1920]}
+      eager
+    />
+  </div>
+
+  <!-- ── The day ─────────────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="day-h">
+    <div class="wrap">
+      <h2 id="day-h" class="section-title">{weddingsPage.dayHeading}</h2>
+      <hr class="rule" />
+      <ol class="day">
+        {weddingsPage.day.map((entry) => (
+          <li class="beat">
+            <span class="beat__time">{entry.time}</span>
+            <div>
+              <h3 class="beat__title">{entry.title}</h3>
+              <p class="beat__detail">{entry.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Catering, on the brick band ─────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="cat-h">
+    <div class="wrap">
+      <h2 id="cat-h" class="section-title">{catering.heading}</h2>
+      <hr class="rule" />
+      <p class="section-body section-body--paper">{catering.body}</p>
+      <h3 class="cat__sub">{catering.listHeading}</h3>
+      <ul class="caterers">
+        {catering.caterers.map((entry) => (
+          <li class="caterer">
+            <span class="caterer__name">{entry.name}</span>
+            <span class="caterer__style">{entry.style}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="cat__note">{catering.listNote}</p>
+    </div>
+  </section>
+
+  <!-- ── Things we do not do ─────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="hon-h">
+    <div class="wrap honest">
+      <div>
+        <h2 id="hon-h" class="section-title">{weddingsPage.honestHeading}</h2>
+        <hr class="rule" />
+        <p class="section-body">{weddingsPage.honestBody}</p>
+      </div>
+      <ul class="nos">
+        {weddingsPage.honest.map((line) => <li class="no">{line}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bay closer">
+    <div class="wrap closer__in">
+      <div>
+        <h2 class="closer__title">{weddingsPage.closerHeading}</h2>
+        <p class="section-body">{weddingsPage.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.checkADate} data-analytics-event="date_cta_weddings">
+        {weddingsPage.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .section-body {
+    margin-top: 1rem;
+    max-width: 54ch;
+    color: var(--on-ink-dim);
+  }
+  .section-body--paper {
+    color: var(--on-paper-dim);
+  }
+  .wd-head {
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+  }
+  .wd-title {
+    margin-top: 1.25rem;
+    font-size: var(--fs-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    max-width: 16ch;
+  }
+  .wd-lede {
+    margin-top: 1.5rem;
+    max-width: 52ch;
+  }
+  .wd-cap {
+    margin-top: 1.5rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .bleed {
+    width: 100%;
+  }
+  .bleed :global(img),
+  .bleed :global(picture) {
+    display: block;
+    width: 100%;
+  }
+
+  /* ── The timeline ─────────────────────────────────────────────────── */
+  .day {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+  }
+  .beat {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  @media (min-width: 720px) {
+    .beat {
+      grid-template-columns: 9rem 1fr;
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  .beat__time {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+  }
+  .beat__title {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+  .beat__detail {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 56ch;
+  }
+
+  /* ── Caterers ─────────────────────────────────────────────────────── */
+  .cat__sub {
+    margin-top: 2.5rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--accent-paper);
+  }
+  .caterers {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--paper-line);
+  }
+  @media (min-width: 860px) {
+    .caterers {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 3rem;
+    }
+  }
+  .caterer {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  @media (min-width: 560px) {
+    .caterer {
+      grid-template-columns: 13rem 1fr;
+      gap: 1.25rem;
+      align-items: baseline;
+    }
+  }
+  .caterer__name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  .caterer__style {
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .cat__note {
+    margin-top: 1.75rem;
+    max-width: 58ch;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  /* ── The nos ──────────────────────────────────────────────────────── */
+  .honest {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 940px) {
+    .honest {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+  .nos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink-line);
+  }
+  .no {
+    position: relative;
+    padding: 1.1rem 0 1.1rem 2.25rem;
+    border-bottom: 1px solid var(--ink-line);
+    font-size: var(--fs-small);
+    line-height: 1.65;
+  }
+  .no::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.85em;
+    width: 1.1rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .closer {
+    border-top: 1px solid var(--ink-line);
+  }
+  .closer__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .closer__title {
+    font-size: var(--fs-title);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+</style>
