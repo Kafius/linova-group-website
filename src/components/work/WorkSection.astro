@@ -57,8 +57,8 @@ const studies = (await fetchCaseStudies()).filter((s) => s.featured).slice(0, 3)
                   <a href={`/work/${study.slug}`} class="no-underline hover:text-gold">{study.client}</a>
                 </h3>
                 <p class="mt-3 text-caption text-film-dim">{study.summary}</p>
-                <a href={`/work/${study.slug}`} class="label-caps mt-3 inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
-                  read the case study →
+                <a href={`/work/${study.slug}`} class="mt-5 inline-block rounded-chip border border-gold px-5 py-2.5 text-caption text-film transition-colors hover:border-redline">
+                  read the case study
                 </a>
               </div>
             </div>

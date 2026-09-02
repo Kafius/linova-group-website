@@ -1,10 +1,18 @@
-Feature-category photographs, used in two places:
+Feature-category photographs.
 
-  - homepage act 3, the parts list cards, one file per siteSystems id
+Used in two places:
+
   - /services, the full parts list, one strip per featureGroup
+  - homepage act 3, ONE of them run full width as the act's band. It is type
+    and hairlines otherwise, so it uses a single photograph, currently cms.jpg
+    (FeaturesSection.astro picks it by id — cms because the source is 1600px
+    wide and the subject reads as a whole build).
 
-Both lists live in src/data/siteFeatures.ts and both read this directory.
-Drop one file per siteSystems id:
+That leaves four files currently unreferenced: crm, ecommerce, analytics,
+reviews. They are kept because that act has changed shape twice and the
+siteSystems ids still match them one-for-one.
+
+Both lists live in src/data/siteFeatures.ts. Drop one file per siteSystems id:
 
   booking.jpg  payments.jpg  cms.jpg        crm.jpg
   ecommerce.jpg  forms.jpg   analytics.jpg  reviews.jpg
@@ -23,7 +31,7 @@ as a system and reuse its file rather than holding a second copy:
 
 Until a file exists, FeaturePhoto.astro renders a dashed placeholder that
 prints the art direction for that category (group.photo.subject) plus the
-path it is waiting for. Nothing breaks; the card just says what is missing.
+path it is waiting for. Nothing breaks; the frame just says what is missing.
 
 Landscape crops, roughly 16:10. They are cropped with object-cover into a
 16:10 frame, so keep the subject away from the extreme edges.

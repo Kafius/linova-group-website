@@ -191,19 +191,32 @@ export const featureCount = featureGroups.reduce(
   0
 );
 
-/** ── The homepage act-3 grid ──────────────────────────────────────────
- *  Eight systems, two rows of four. Promoted out of src/data/buildPillars.ts
- *  when the build act was removed — they were already rendering there as the
- *  "systems" artifact panel, which duplicated this grid one section below.
+/** ── The homepage act-3 list ──────────────────────────────────────────
+ *  Eight systems, each a hairline, a name, and one line (FeaturesSection).
+ *  Promoted out of src/data/buildPillars.ts when the build act was removed —
+ *  they were already rendering there as the "systems" artifact panel, which
+ *  duplicated this grid one section below.
  *
- *  `name` + `detail` are the card's subtitle and line. `photo.alt` describes
- *  the image actually sitting in src/assets/features/<id>.jpg right now;
- *  `photo.subject` is the direction a replacement should follow. Keep alt
- *  matching the real file whenever a photo is swapped.
+ *  Copy rule, harder here than anywhere else on the site: this act is the
+ *  first thing a cold owner reads about what they are buying, so no row is
+ *  allowed to be named after the software that does it. "Your own edits", not
+ *  CMS. "Enquiries", not CRM. "What's working", not analytics. If a barber
+ *  would not say the word, it does not go in `name`.
+ *    name   — the part, in a word the owner already uses
+ *    claim  — what it does for them, as a sentence they'd say themselves
+ *    detail — what is actually in it, plainly
+ *
+ *  `photo` is mostly not rendered on the homepage any more — act 3 is type
+ *  and hairlines, with ONE of these photographs run full width as the act's
+ *  band (currently cms; FeaturesSection picks it by id). The rest are kept
+ *  because the ids still match the files in src/assets/features/ one-for-one,
+ *  so the act can take more pictures back without re-deriving the art
+ *  direction. See that directory's README.
  */
 export interface SiteSystem {
   id: string;
   name: string;
+  claim: string;
   detail: string;
   photo: { subject: string; alt: string };
 }
@@ -212,7 +225,8 @@ export const siteSystems: SiteSystem[] = [
   {
     id: 'booking',
     name: 'Booking',
-    detail: 'slots, staff, deposits, reminders',
+    claim: "They book while you're closed.",
+    detail: 'Times, staff, deposits, and the reminder that stops the no-show.',
     photo: {
       subject: 'A booking calendar on screen — a week of slots with staff assigned.',
       alt: 'A laptop showing a week of colour-coded appointment slots, beside a coffee',
@@ -220,8 +234,9 @@ export const siteSystems: SiteSystem[] = [
   },
   {
     id: 'payments',
-    name: 'Payments',
-    detail: 'deposits, invoices, online checkout',
+    name: 'Getting paid',
+    claim: 'Paid before they walk out.',
+    detail: 'Deposits, invoices, and card payments taken on the site.',
     photo: {
       subject: 'A card payment being taken at a counter, or a checkout screen mid-transaction.',
       alt: 'A bank card being tapped on a countertop payment terminal in a shop',
@@ -229,8 +244,9 @@ export const siteSystems: SiteSystem[] = [
   },
   {
     id: 'cms',
-    name: 'CMS',
-    detail: 'you edit prices, hours, and photos',
+    name: 'Your own edits',
+    claim: 'Change a price without phoning us.',
+    detail: 'Prices, hours, and photos — edited by you, no developer and no fee.',
     photo: {
       subject: 'An owner editing their own content — a CMS open on a laptop at a desk.',
       alt: 'A laptop on a wooden desk showing a content editing screen',
@@ -238,8 +254,9 @@ export const siteSystems: SiteSystem[] = [
   },
   {
     id: 'crm',
-    name: 'CRM',
-    detail: 'leads land where sales already works',
+    name: 'Enquiries',
+    claim: 'Nothing gets lost between calls.',
+    detail: 'Every message lands where your team already works, with the details attached.',
     photo: {
       subject: 'A pipeline or contact list on screen; someone working leads at a desk.',
       alt: 'Two people working at desks with data open on their monitors',
@@ -247,8 +264,9 @@ export const siteSystems: SiteSystem[] = [
   },
   {
     id: 'ecommerce',
-    name: 'E-commerce',
-    detail: 'stock that matches the shelf',
+    name: 'Selling online',
+    claim: 'The shelf stays open all night.',
+    detail: "Stock, orders, pickup and delivery — matching what's really in the shop.",
     photo: {
       subject: 'Stock on a shelf or orders being packed — the physical side of the storefront.',
       alt: 'Stock on shelves and packed orders in a small store',
@@ -256,8 +274,9 @@ export const siteSystems: SiteSystem[] = [
   },
   {
     id: 'forms',
-    name: 'Forms & quoting',
-    detail: 'requests that qualify themselves',
+    name: 'Quotes',
+    claim: 'The request arrives already answered.',
+    detail: 'Forms that ask your questions first, so you quote once instead of three times.',
     photo: {
       subject: 'A quote request arriving — a tradesperson on site with a phone or quote pad.',
       alt: 'A site surveyor in a hi-vis vest holding a phone on a construction site',
@@ -265,8 +284,9 @@ export const siteSystems: SiteSystem[] = [
   },
   {
     id: 'analytics',
-    name: 'Analytics',
-    detail: 'calls booked, not just pageviews',
+    name: "What's working",
+    claim: "You'll know what brought the call.",
+    detail: 'Calls, bookings, and forms counted — not just visitors.',
     photo: {
       subject: 'A dashboard of charts on a screen — real numbers, not a stock graph render.',
       alt: 'A dashboard of performance metrics displayed on a screen',
@@ -275,7 +295,8 @@ export const siteSystems: SiteSystem[] = [
   {
     id: 'reviews',
     name: 'Reviews',
-    detail: 'Google profile asked at the right moment',
+    claim: "Asked when they're happiest.",
+    detail: 'The review request goes out right after the job, and lands on your Google profile.',
     photo: {
       subject: 'A customer leaving a rating on a phone, or a star rating on screen.',
       alt: 'A smiling customer looking at their phone',

@@ -62,12 +62,12 @@ const railData = industries.map((i) => ({ word: i.railWord, accent: i.accent }))
         logo dropped in.
       </p>
 
-      <p class="mt-6 text-body text-film-dim">
-        <a
-          href="/industries"
-          class="text-gold underline decoration-1 underline-offset-4"
-          >See what we've built for you</a>
-      </p>
+      <a
+        href="/industries"
+        class="mt-8 inline-block rounded-chip border border-gold px-6 py-3 text-body text-film transition-colors hover:border-redline"
+      >
+        See what we've built for you
+      </a>
     </div>
 
     <!-- ── The pile ─────────────────────────────────────────────── -->
@@ -94,7 +94,6 @@ const railData = industries.map((i) => ({ word: i.railWord, accent: i.accent }))
           </div>
         ))}
       </div>
-      <p class="label-caps fit-caption" data-fit-caption>{stack[0].name}</p>
     </div>
   </div>
 
