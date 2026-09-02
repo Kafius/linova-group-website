@@ -80,15 +80,15 @@ const rendered = photo
   ) : (
     <div class="photo-slot flex h-full w-full flex-col justify-between p-5" data-photo-slot={slug}>
       <div class="flex items-start justify-between gap-3">
-        <span class="label-mono">{name}</span>
-        <span class="label-mono opacity-70">photo</span>
+        <span class="label-caps">{name}</span>
+        <span class="label-caps opacity-70">photo</span>
       </div>
 
       <p class="m-0 max-w-[34ch] text-caption normal-case leading-relaxed text-film-dim">
         {subject}
       </p>
 
-      <span class="label-mono opacity-70">src/assets/industries/{slug}.jpg</span>
+      <span class="label-caps opacity-70">src/assets/industries/{slug}.jpg</span>
 
       <!-- plotter crosshair: marks the frame without pretending to be art -->
       <svg class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" preserveAspectRatio="none">

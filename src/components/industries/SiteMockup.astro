@@ -67,13 +67,13 @@ const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
         type="button"
         data-device="desktop"
         aria-pressed="true"
-        class="device-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+        class="device-btn label-caps rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
       >desktop</button>
       <button
         type="button"
         data-device="mobile"
         aria-pressed="false"
-        class="device-btn label-mono ml-2 rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+        class="device-btn label-caps ml-2 rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
       >mobile</button>
     </div>
   </div>
@@ -87,8 +87,8 @@ const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
         <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
         <i class="h-2.5 w-2.5 rounded-full bg-grid/60"></i>
       </span>
-      <span class="label-mono truncate normal-case tracking-normal">{mockup.url}</span>
-      <span class="label-mono ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
+      <span class="label-caps truncate normal-case tracking-normal">{mockup.url}</span>
+      <span class="label-caps ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
         concept
       </span>
     </div>
@@ -106,10 +106,10 @@ const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
           aria-selected={i === 0 ? 'true' : 'false'}
           tabindex={i === 0 ? 0 : -1}
           data-tab={page.id}
-          class="page-tab label-mono rounded-chip px-3 py-1.5 normal-case tracking-normal"
+          class="page-tab label-caps rounded-chip px-3 py-1.5 normal-case tracking-normal"
         >{page.label}</button>
       ))}
-      <span class="label-mono ml-auto hidden pr-1 normal-case tracking-normal text-film-dim/60 md:block" aria-hidden="true">
+      <span class="label-caps ml-auto hidden pr-1 normal-case tracking-normal text-film-dim/60 md:block" aria-hidden="true">
         click through it
       </span>
     </div>
@@ -299,13 +299,13 @@ const blockKey = (block: MockupBlock, i: number) => `${block.kind}-${i}`;
          the bottom corner — every mockup nav carries a right-aligned CTA, so
          a top-right stamp lands on a button and reads as a render bug. -->
     <span
-      class="pointer-events-none absolute bottom-4 right-4 rotate-6 border-2 bg-ink px-2 py-0.5 font-mono text-[0.7rem] font-medium uppercase tracking-[0.12em]"
+      class="pointer-events-none absolute bottom-4 right-4 rotate-6 border-2 bg-ink px-2 py-0.5 font-label text-[0.7rem] font-medium uppercase tracking-[0.12em]"
       style="border-color: var(--color-redline); color: var(--color-redline)"
       aria-hidden="true"
     >concept</span>
   </div>
 
-  <p class="label-mono mt-3 normal-case tracking-normal text-film-dim/60">
+  <p class="label-caps mt-3 normal-case tracking-normal text-film-dim/60">
     {mockup.business} — spec work, built by Linova. Not a client.
   </p>
 </div>

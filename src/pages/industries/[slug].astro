@@ -70,7 +70,7 @@ const category = getCategory(industry.category);
         />
       </div>
       <div class="relative mx-auto max-w-[1200px] px-6 pb-16 pt-24">
-        <nav class="label-mono" aria-label="Breadcrumb">
+        <nav class="label-caps" aria-label="Breadcrumb">
           <a href="/industries" class="hover:text-film">industries</a>
           {category && (
             <>
@@ -123,7 +123,7 @@ const category = getCategory(industry.category);
         <div class="mt-10 grid gap-px border border-grid/40 bg-grid/40 md:grid-cols-2">
           {industry.marketingAngles.map((angle) => (
             <div class="bg-ink p-6 sm:p-8">
-              <p class="label-mono" style="color: var(--vx)">{angle.channel}</p>
+              <p class="label-caps" style="color: var(--vx)">{angle.channel}</p>
               <p class="m-0 mt-3 max-w-[52ch] text-body text-film-dim">{angle.angle}</p>
             </div>
           ))}
@@ -147,7 +147,7 @@ const category = getCategory(industry.category);
               expected state and saying "built" over it was noise; the copy
               underneath already says it is the finished one. */}
           {!leadDemo && (
-            <span class="label-mono hidden shrink-0 sm:block" style="color: var(--vx)">
+            <span class="label-caps hidden shrink-0 sm:block" style="color: var(--vx)">
               spec build
             </span>
           )}
@@ -192,7 +192,7 @@ const category = getCategory(industry.category);
                 href={industry.proof?.url}
                 target="_blank"
                 rel="noopener"
-                class="label-mono mt-6 inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
+                class="label-caps mt-6 inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film"
               >
                 visit {industry.proof?.client} ↗
               </a>
@@ -217,7 +217,7 @@ const category = getCategory(industry.category);
     <!-- Close -->
     <section class="border-t border-grid/30 bg-ink">
       <div class="mx-auto max-w-[1200px] px-6 py-20">
-        <p class="label-mono">next step</p>
+        <p class="label-caps">next step</p>
         <a href="/book" class="mt-4 inline-block font-display text-display text-film no-underline transition-colors hover:text-gold">
           Book a call<span class="text-redline">.</span>
         </a>

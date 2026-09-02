@@ -75,13 +75,13 @@ const framed = await Promise.all(
     {/* ── Package switcher, only once a vertical has more than one ──── */}
     {many && (
       <div class="mb-4 flex flex-wrap items-center gap-2" role="group" aria-label="Sample site">
-        <span class="label-mono mr-1 shrink-0">package</span>
+        <span class="label-caps mr-1 shrink-0">package</span>
         {playbooks.map((playbook, i) => (
           <button
             type="button"
             data-pb={playbook.slug}
             aria-pressed={i === 0 ? 'true' : 'false'}
-            class="pb-btn label-mono rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
+            class="pb-btn label-caps rounded-chip border border-grid/50 px-3 py-1.5 normal-case tracking-normal"
           >{playbook.name}</button>
         ))}
       </div>
@@ -108,12 +108,12 @@ const framed = await Promise.all(
           </span>
           {playbooks.map((playbook, i) => (
             <span
-              class="label-mono truncate normal-case tracking-normal"
+              class="label-caps truncate normal-case tracking-normal"
               data-pb-url={playbook.slug}
               hidden={i !== 0}
             >{playbook.demo.displayUrl}</span>
           ))}
-          <span class="label-mono ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
+          <span class="label-caps ml-auto hidden shrink-0 rounded-chip border border-grid/50 px-2 py-0.5 sm:block">
             sample site
           </span>
         </div>
@@ -135,7 +135,7 @@ const framed = await Promise.all(
                 class="embed-shot"
               />
             ) : (
-              <div class="embed-shot-missing label-mono">
+              <div class="embed-shot-missing label-caps">
                 screenshot pending — {playbook.demo.displayUrl}
               </div>
             )}

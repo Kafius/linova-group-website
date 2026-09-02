@@ -36,12 +36,17 @@ export interface FeatureGroup {
    *  says which picture is missing and what it should be. Same contract as
    *  heroPhoto in industries.ts. */
   photo: { subject: string; alt: string };
+  /** Which file under src/assets/features/ this group shows on the parts
+   *  list. Usually the group id, but four groups share a scene with a
+   *  siteSystems entry and point at that file instead of duplicating it. */
+  photoFile: string;
   features: SiteFeature[];
 }
 
 export const featureGroups: FeatureGroup[] = [
   {
     id: 'booking',
+    photoFile: 'booking',
     name: 'booking & scheduling',
     blurb:
       "Bookings without the DM thread. Deposits hold the chair, reminders cut no-shows, and cancellations refill themselves.",
@@ -60,6 +65,7 @@ export const featureGroups: FeatureGroup[] = [
   },
   {
     id: 'selling',
+    photoFile: 'payments',
     name: 'selling',
     blurb:
       "Anything you charge for, paid for on the site — through the tools you already use.",
@@ -79,6 +85,7 @@ export const featureGroups: FeatureGroup[] = [
   },
   {
     id: 'content',
+    photoFile: 'cms',
     name: 'content you control',
     blurb:
       "Change a price once; every page follows. No developer, no ticket, no fee to edit your own hours.",
@@ -100,6 +107,7 @@ export const featureGroups: FeatureGroup[] = [
   },
   {
     id: 'enquiry',
+    photoFile: 'forms',
     name: 'getting the enquiry',
     blurb:
       "Forms that reach whoever actually answers, already scoped. One tap to call or text on a phone.",
@@ -119,6 +127,7 @@ export const featureGroups: FeatureGroup[] = [
   },
   {
     id: 'trust',
+    photoFile: 'trust',
     name: 'proof a stranger checks',
     blurb:
       "Your rating, your licence, last month's job, the towns you cover — put where a buyer is already looking.",
@@ -137,13 +146,14 @@ export const featureGroups: FeatureGroup[] = [
   },
   {
     id: 'found',
+    photoFile: 'found',
     name: 'found & measured',
     blurb:
       "Being good is not the same as being findable. Measured in calls booked, not pageviews.",
     photo: {
       subject:
-        "Someone on a pavement at dusk searching on their phone, a lit shopfront out of focus ahead of them.",
-      alt: "A person on a lit city street at dusk looking at their phone",
+        "A phone held up showing a map app mid-search, a nearby business pinned with its rating and hours.",
+      alt: "A phone showing a map app with a local business pinned, rated and open",
     },
     features: [
       { name: 'Structured data', detail: 'LocalBusiness, Service, FAQ' },
@@ -156,13 +166,14 @@ export const featureGroups: FeatureGroup[] = [
   },
   {
     id: 'build',
+    photoFile: 'build',
     name: 'the build itself',
     blurb:
       "Mobile-first, accessible, fast, and backed up. At handoff the keys are yours.",
     photo: {
       subject:
-        "The same site open on a phone and a laptop side by side, on a workbench with real tools around them.",
-      alt: "A laptop, tablet and phone side by side on a desk showing the same site",
+        "A site open on a laptop on a working desk, a phone beside it, printed work within reach.",
+      alt: "A laptop on a desk showing a website, with a phone and printed work beside it",
     },
     features: [
       { name: 'Mobile first', detail: 'tested on the phones your customers carry' },

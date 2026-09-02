@@ -635,5 +635,26 @@
     "photo": "https://unsplash.com/photos/two-blank-business-cards-sitting-on-top-of-each-other-XdlhXRH_UJw?utm_source=linova_demos&utm_medium=referral",
     "id": "XdlhXRH_UJw",
     "query": "blank business cards stack paper"
+  },
+  "parts/trust": {
+    "photographer": "Proxyclick Visitor Management System",
+    "profile": "https://unsplash.com/@proxyclick?utm_source=linova_demos&utm_medium=referral",
+    "photo": "https://unsplash.com/photos/photos-on-wall-near-stairs-xyKu1uyM078?utm_source=linova_demos&utm_medium=referral",
+    "id": "xyKu1uyM078",
+    "query": "framed certificates wall"
+  },
+  "parts/build": {
+    "photographer": "Igor Miske",
+    "profile": "https://unsplash.com/@igormiske?utm_source=linova_demos&utm_medium=referral",
+    "photo": "https://unsplash.com/photos/turned-on-macbook-pro-beside-gray-mug-Px3iBXV-4TU?utm_source=linova_demos&utm_medium=referral",
+    "id": "Px3iBXV-4TU",
+    "query": "responsive website devices laptop tablet"
+  },
+  "parts/found": {
+    "photographer": "henry perks",
+    "profile": "https://unsplash.com/@hjkp?utm_source=linova_demos&utm_medium=referral",
+    "photo": "https://unsplash.com/photos/person-holding-black-smartphone-BJXAxQ1L7dI?utm_source=linova_demos&utm_medium=referral",
+    "id": "BJXAxQ1L7dI",
+    "query": "smartphone map app hand"
   }
 }

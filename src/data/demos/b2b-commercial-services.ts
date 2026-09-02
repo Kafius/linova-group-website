@@ -83,7 +83,7 @@ export const theme: DemoTheme = {
   displayFont: '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif',
   bodyFont: '"IBM Plex Sans", "Segoe UI", system-ui, sans-serif',
   /** the mono face carries every figure — crew sizes, service windows,
-   *  square footage. It reaches the pages as var(--font-mono). */
+   *  square footage. It reaches the pages as var(--font-label). */
   monoFont: '"IBM Plex Mono", ui-monospace, Consolas, monospace',
   radius: '2px',
 };

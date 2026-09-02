@@ -15,7 +15,7 @@ const FORMSPREE = 'https://formspree.io/f/xeepbppp';
 >
   <div class="plot-grid">
     <header class="mx-auto max-w-[1100px] px-6 pb-10 pt-24">
-      <p class="label-mono">contact</p>
+      <p class="label-caps">contact</p>
       <h1 class="mt-4 font-display text-display text-film">Send a message</h1>
       <p class="mt-5 max-w-[54ch] text-body text-film-dim">
         Prefer talking? <a href="/book" data-track="book_click" data-track-label="contact" class="text-gold underline decoration-1 underline-offset-4">Book a call</a> instead —
@@ -28,26 +28,26 @@ const FORMSPREE = 'https://formspree.io/f/xeepbppp';
     <form data-contact-form action={FORMSPREE} method="POST" class="flex flex-col gap-6" novalidate>
       <div class="grid gap-6 sm:grid-cols-2">
         <label class="flex flex-col gap-2">
-          <span class="label-mono">your name</span>
+          <span class="label-caps">your name</span>
           <input type="text" name="name" required autocomplete="name" class="field" />
         </label>
         <label class="flex flex-col gap-2">
-          <span class="label-mono">business</span>
+          <span class="label-caps">business</span>
           <input type="text" name="business" autocomplete="organization" class="field" />
         </label>
       </div>
       <div class="grid gap-6 sm:grid-cols-2">
         <label class="flex flex-col gap-2">
-          <span class="label-mono">email</span>
+          <span class="label-caps">email</span>
           <input type="email" name="email" required autocomplete="email" class="field" />
         </label>
         <label class="flex flex-col gap-2">
-          <span class="label-mono">phone <span class="normal-case tracking-normal">(optional)</span></span>
+          <span class="label-caps">phone <span class="normal-case tracking-normal">(optional)</span></span>
           <input type="tel" name="phone" autocomplete="tel" class="field" />
         </label>
       </div>
       <label class="flex flex-col gap-2">
-        <span class="label-mono">what do you need</span>
+        <span class="label-caps">what do you need</span>
         <select name="need" class="field">
           <option value="new-site">A new website</option>
           <option value="rebuild">A rebuild of an existing site</option>
@@ -57,7 +57,7 @@ const FORMSPREE = 'https://formspree.io/f/xeepbppp';
         </select>
       </label>
       <label class="flex flex-col gap-2">
-        <span class="label-mono">the message</span>
+        <span class="label-caps">the message</span>
         <textarea name="message" rows="5" required class="field"></textarea>
       </label>
       <!-- honeypot -->

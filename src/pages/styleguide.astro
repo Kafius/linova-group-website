@@ -23,7 +23,7 @@ const core = [
 >
   <div class="plot-grid">
     <div class="mx-auto max-w-[1100px] px-6 py-16">
-      <p class="label-mono">sheet 02 · foundation · v2</p>
+      <p class="label-caps">sheet 02 · foundation · v2</p>
       <h1 class="text-display mt-4 text-film">Styleguide</h1>
       <p class="mt-4 max-w-[65ch] text-film-dim">
         The Plotter &amp; Marker system as shipped: tokens, type, registers, and
@@ -35,7 +35,7 @@ const core = [
       <section class="mt-16">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="text-title text-film">Palette</h2>
-          <span class="label-mono">6 core + 7 scoped accents</span>
+          <span class="label-caps">6 core + 7 scoped accents</span>
         </div>
         <hr class="rule-gold mt-2 mb-8" />
         <div class="grid grid-cols-2 gap-px border border-grid/50 bg-grid/50 sm:grid-cols-3 lg:grid-cols-6">
@@ -44,7 +44,7 @@ const core = [
               <div class="h-20" style={`background:${c.hex}; border-bottom:1px solid rgba(77,77,143,0.4)`}></div>
               <div class="p-3">
                 <span class="block text-caption font-medium text-film">{c.name}</span>
-                <span class="label-mono block normal-case">{c.hex}</span>
+                <span class="label-caps block normal-case">{c.hex}</span>
                 <span class="block text-[0.75rem] text-film-dim">{c.note}</span>
               </div>
             </div>
@@ -55,7 +55,7 @@ const core = [
             <span class="inline-flex items-center gap-2 rounded-chip border border-grid/50 px-3 py-1.5 text-caption text-film-dim">
               <span class="h-3 w-3 rounded-[2px]" style={`background:${i.accent}`}></span>
               {i.accentName}
-              <span class="label-mono normal-case">{i.accent}</span>
+              <span class="label-caps normal-case">{i.accent}</span>
             </span>
           ))}
         </div>
@@ -65,24 +65,24 @@ const core = [
       <section class="mt-16">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="text-title text-film">Type</h2>
-          <span class="label-mono">outfit var · plex sans var · plex mono</span>
+          <span class="label-caps">outfit var · plex sans var · plex mono</span>
         </div>
         <hr class="rule-gold mt-2 mb-8" />
         <div class="flex flex-col gap-8 overflow-hidden border border-grid/50 p-6 sm:p-10">
           <div>
-            <span class="label-mono">display-xl · clamp → 9rem</span>
+            <span class="label-caps">display-xl · clamp → 9rem</span>
             <p class="text-display-xl mt-2 text-film">Built for <span class="text-vx-restaurants">restaurants.</span></p>
           </div>
           <div>
-            <span class="label-mono">display</span>
+            <span class="label-caps">display</span>
             <p class="text-display mt-2 text-film">The system shows its work</p>
           </div>
           <div>
-            <span class="label-mono">title</span>
+            <span class="label-caps">title</span>
             <p class="text-title mt-2 text-film">Machine-fast, <span class="marker-u">human-real</span></p>
           </div>
           <div class="max-w-[65ch]">
-            <span class="label-mono">body · plex sans · 65ch</span>
+            <span class="label-caps">body · plex sans · 65ch</span>
             <p class="mt-2 text-film-dim">
               Display is Outfit — a geometric sans in the same Futura lineage as
               the LINOVA wordmark, so headlines and the mark share one skeleton.
@@ -94,8 +94,8 @@ const core = [
             </p>
           </div>
           <div>
-            <span class="label-mono">mono-label · the gold register</span>
-            <p class="label-mono mt-2">sheet 02 · rev 1 · lot 14 · 6:12 pitch · covers 84</p>
+            <span class="label-caps">mono-label · the gold register</span>
+            <p class="label-caps mt-2">sheet 02 · rev 1 · lot 14 · 6:12 pitch · covers 84</p>
           </div>
         </div>
       </section>
@@ -104,18 +104,18 @@ const core = [
       <section class="mt-16">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="text-title text-film">Registers</h2>
-          <span class="label-mono">plotter · marker</span>
+          <span class="label-caps">plotter · marker</span>
         </div>
         <hr class="rule-gold mt-2 mb-8" />
         <div class="grid gap-px border border-grid/50 bg-grid/50 sm:grid-cols-2">
           <div class="bg-navy p-6">
-            <span class="label-mono">the plotter — gold, ruled</span>
+            <span class="label-caps">the plotter — gold, ruled</span>
             <hr class="rule-gold my-4" />
-            <p class="label-mono normal-case tracking-normal">[0.8s] palette mixed · 6/6</p>
-            <p class="label-mono normal-case tracking-normal">[1.2s] {industries.length} industries loaded</p>
+            <p class="label-caps normal-case tracking-normal">[0.8s] palette mixed · 6/6</p>
+            <p class="label-caps normal-case tracking-normal">[1.2s] {industries.length} industries loaded</p>
           </div>
           <div class="bg-navy p-6">
-            <span class="label-mono text-redline">the marker — redline, one per viewport</span>
+            <span class="label-caps text-redline">the marker — redline, one per viewport</span>
             <p class="mt-4 font-display text-heading font-normal text-film">
               handoff: <span class="marker-u">humans take it from here.</span>
             </p>
@@ -130,18 +130,18 @@ const core = [
       <section class="mt-16">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="text-title text-film">Data modules</h2>
-          <span class="label-mono">src/data — the single source of truth</span>
+          <span class="label-caps">src/data — the single source of truth</span>
         </div>
         <hr class="rule-gold mt-2 mb-8" />
         <div class="overflow-x-auto border border-grid/50">
           <table class="w-full text-caption">
             <thead>
               <tr class="border-b border-gold text-left">
-                <th class="label-mono p-3 font-medium">Vertical</th>
-                <th class="label-mono p-3 font-medium">Accent</th>
-                <th class="label-mono p-3 font-medium">Motif</th>
-                <th class="label-mono p-3 font-medium">Headline</th>
-                <th class="label-mono p-3 font-medium">Proof</th>
+                <th class="label-caps p-3 font-medium">Vertical</th>
+                <th class="label-caps p-3 font-medium">Accent</th>
+                <th class="label-caps p-3 font-medium">Motif</th>
+                <th class="label-caps p-3 font-medium">Headline</th>
+                <th class="label-caps p-3 font-medium">Proof</th>
               </tr>
             </thead>
             <tbody>
@@ -152,12 +152,12 @@ const core = [
                     <span class="mr-2 inline-block h-3 w-3 rounded-[2px] align-[-1px]" style={`background:${i.accent}`}></span>
                     <span class="text-film-dim">{i.accentName}</span>
                   </td>
-                  <td class="label-mono p-3 normal-case">{i.motif}</td>
+                  <td class="label-caps p-3 normal-case">{i.motif}</td>
                   <td class="p-3 text-film-dim">{i.headline}</td>
                   <td class="p-3 whitespace-nowrap">
                     {i.proof
                       ? <a href={i.proof.url} class="text-gold underline decoration-1 underline-offset-4" target="_blank" rel="noopener">{i.proof.client}</a>
-                      : <span class="label-mono normal-case">concept</span>}
+                      : <span class="label-caps normal-case">concept</span>}
                   </td>
                 </tr>
               ))}

@@ -13,6 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { breadcrumbs } from '../lib/jsonld';
 import { services } from '../data/services';
 import { industries } from '../data/industries';
+import { featureGroups } from '../data/siteFeatures';
 
 // Globbed rather than imported so the build still works before any photo has
 // been fetched, when the file does not exist yet.
@@ -23,11 +24,16 @@ const allCredits = Object.values(creditFiles)[0] ?? {};
 
 // Only the marketing site's own photographs. The demo credits stay on the
 // demo footers, where the picture actually appears.
+// Only the three parts-list groups fetched through the API appear here. The
+// other four reuse a file downloaded by hand under the plain Unsplash
+// License, which asks for no attribution — so they have no credits entry and
+// this filter drops them on its own.
 const nameFor = new Map<string, string>([
   ...industries.map((i) => [`industries/${i.slug}`, i.name] as const),
   ...services.flatMap((s) =>
     s.photos.map((p) => [`services/${p.id}`, s.name] as const)
   ),
+  ...featureGroups.map((g) => [`parts/${g.id}`, `The parts list — ${g.name}`] as const),
 ]);
 
 const rows = Object.entries(allCredits)
@@ -46,7 +52,7 @@ const REF = '?utm_source=the_linova_group&utm_medium=referral';
 >
   <div class="bg-film text-navy" data-ground="film">
     <article class="mx-auto max-w-[680px] px-6 pb-24 pt-24">
-      <p class="label-mono !text-gold-deep">credits</p>
+      <p class="label-caps !text-gold-deep">credits</p>
       <h1 class="mt-4 font-display text-title">The photographers</h1>
 
       <div class="mt-10 flex flex-col gap-5 text-body">

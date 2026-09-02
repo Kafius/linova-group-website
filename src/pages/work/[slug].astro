@@ -42,7 +42,7 @@ const seoTitle =
   <article style={`--vx: ${industry?.accent ?? 'var(--color-gold)'}`}>
     <header class="plot-grid">
       <div class="mx-auto max-w-[1000px] px-6 pb-12 pt-24">
-        <nav class="label-mono" aria-label="Breadcrumb">
+        <nav class="label-caps" aria-label="Breadcrumb">
           <a href="/work" class="hover:text-film">work</a>
           {industry && (
             <>
@@ -58,12 +58,12 @@ const seoTitle =
         <h1 class="mt-6 max-w-[18ch] font-display text-display text-film">{study.title}</h1>
         <div class="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2">
           {industry && (
-            <a href={`/industries/${industry.slug}`} class="label-mono inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+            <a href={`/industries/${industry.slug}`} class="label-caps inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
               {industry.name.toLowerCase()}
             </a>
           )}
           {study.liveUrl && (
-            <a href={study.liveUrl} target="_blank" rel="noopener" class="label-mono inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+            <a href={study.liveUrl} target="_blank" rel="noopener" class="label-caps inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
               visit the live site ↗
             </a>
           )}
@@ -93,19 +93,19 @@ const seoTitle =
 
     <div class="mx-auto max-w-[1000px] px-6 py-16">
       <section aria-label="The challenge">
-        <h2 class="label-mono">the challenge</h2>
+        <h2 class="label-caps">the challenge</h2>
         <p class="mt-4 max-w-[62ch] text-heading font-normal leading-snug text-film">{study.challenge}</p>
       </section>
 
       <section class="mt-16" aria-label="The build">
-        <h2 class="label-mono">the build</h2>
+        <h2 class="label-caps">the build</h2>
         <div class="mt-4 flex max-w-[65ch] flex-col gap-5 text-body text-film-dim">
           {study.approach.map((paragraph) => <p class="m-0">{paragraph}</p>)}
         </div>
       </section>
 
       <section class="mt-16" aria-label="What shipped">
-        <h2 class="label-mono">what shipped</h2>
+        <h2 class="label-caps">what shipped</h2>
         <dl class="m-0 mt-6 grid gap-px border border-grid/40 bg-grid/40 md:grid-cols-2">
           {study.shipped.map((item) => (
             <div class="bg-navy p-6">
@@ -117,16 +117,16 @@ const seoTitle =
       </section>
 
       <section class="mt-16 flex flex-wrap items-center gap-3" aria-label="Stack">
-        <h2 class="label-mono m-0 mr-2">stack</h2>
+        <h2 class="label-caps m-0 mr-2">stack</h2>
         {study.stack.map((tech) => (
-          <span class="rounded-chip border border-grid/50 px-3 py-1.5 font-mono text-[0.75rem] text-film-dim">{tech}</span>
+          <span class="rounded-chip border border-grid/50 px-3 py-1.5 font-label text-[0.75rem] text-film-dim">{tech}</span>
         ))}
       </section>
     </div>
 
     <section class="border-t border-grid/30 bg-ink">
       <div class="mx-auto max-w-[1000px] px-6 py-20">
-        <p class="label-mono">want one like it</p>
+        <p class="label-caps">want one like it</p>
         <a href="/book" class="mt-4 inline-block font-display text-display text-film no-underline transition-colors hover:text-gold">
           Book a call<span class="text-redline">.</span>
         </a>

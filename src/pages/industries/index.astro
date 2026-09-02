@@ -30,7 +30,7 @@ const railItems = [
   <div class="plot-grid">
     <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
       <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-        <p class="label-mono">industries</p>
+        <p class="label-caps">industries</p>
       </div>
       <h1 class="mt-4 max-w-[18ch] font-display text-display text-film">
         Designed for your Industry
@@ -42,13 +42,13 @@ const railItems = [
     </header>
   </div>
 
-  <SectionRail label="Industry groups" active="/industries" items={railItems} />
-
-  {/* Sits under the rail, not instead of it: the rail is real pages with real
-      URLs, this is for someone who knows their trade but not its group. */}
-  <div class="plot-grid pt-10">
+  {/* Both ways of narrowing the list, in one band. The rail is real pages
+      with real URLs; the search is for someone who knows their trade but not
+      its group. They were two blocks with a gap between them, which read as
+      two unrelated controls. */}
+  <SectionRail label="Industry groups" active="/industries" items={railItems}>
     <IndustrySearch total={industries.length} />
-  </div>
+  </SectionRail>
 
   <div class="plot-grid pb-4">
     {menu.map((category, i) => (
@@ -76,7 +76,7 @@ const railItems = [
       <p class="max-w-[52ch] text-body text-film-dim">
         Not on the list? The system doesn't care what you sell — the playbook
         just hasn't been written yet.{' '}
-        <a href="/book" class="text-gold underline decoration-1 underline-offset-4">Book a call</a>
+        <a href="/book" class="text-gold underline decoration-1 underline-offset-4">Book a call</a>{' '}
         and we'll write it on the spot.
       </p>
     </div>

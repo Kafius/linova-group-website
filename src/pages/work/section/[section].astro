@@ -65,12 +65,12 @@ const noun = section.count === 1 ? 'study' : 'studies';
   <div class="plot-grid">
     <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24" style={`--vx: ${section.accent}`}>
       <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-        <p class="label-mono">
+        <p class="label-caps">
           <a href="/work" class="text-gold no-underline hover:text-film">work</a>
           <span aria-hidden="true"> / </span>
           <span style="color: var(--color-film-dim)">section</span>
         </p>
-        <p class="label-mono" style="color: var(--color-film-dim)">
+        <p class="label-caps" style="color: var(--color-film-dim)">
           {section.count} {noun} of {total}
         </p>
       </div>
@@ -104,7 +104,7 @@ const noun = section.count === 1 ? 'study' : 'studies';
   </div>
 
   <div class="mx-auto max-w-[1200px] px-6 pb-28">
-    <a href="/work" class="label-mono inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
+    <a href="/work" class="label-caps inline-block py-1.5 normal-case tracking-normal underline decoration-1 underline-offset-4 hover:text-film">
       ← every section
     </a>
   </div>

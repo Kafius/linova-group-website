@@ -41,8 +41,33 @@ const LIMIT = Number(args.find((a) => a.startsWith('--limit='))?.split('=')[1] ?
 // attribution rather than forking another script.
 const INDUSTRIES = args.includes('--industries');
 const SERVICES = args.includes('--services');
+const PARTS = args.includes('--parts');
 
 const loadSlots = () => {
+  if (PARTS) {
+    // The parts-list groups on /services. They land in src/assets/features/
+    // alongside the homepage system photos — same categories, one directory —
+    // under the group's own photoFile, which is why four of the seven resolve
+    // to a file that already exists and are skipped as already present.
+    const src = readFileSync('src/data/siteFeatures.ts', 'utf-8');
+    const out = [];
+    for (const m of src.matchAll(
+      /id: '([a-z]+)',\s*photoFile: '([a-z]+)',\s*name: '([^']*)',[\s\S]*?photo: \{\s*subject:\s*"([\s\S]*?)",\s*alt: "([^"]*)"/g
+    )) {
+      out.push({
+        demo: 'parts',
+        file: m[2],
+        subject: m[4].replace(/\s+/g, ' ').trim(),
+        alt: m[5],
+        // A wide strip at the head of a column, two up inside 1152px.
+        ratio: 16 / 6,
+        maxWidth: 548,
+        key: `parts/${m[1]}`,
+        dir: 'src/assets/features',
+      });
+    }
+    return out;
+  }
   if (SERVICES) {
     // Read from the data file rather than a generated list: a group that
     // gains a fourth picture should be picked up without touching this.
@@ -156,6 +181,12 @@ const OVERRIDES = {
   'services/analytics-dashboard': 'analytics dashboard screen charts',
   'services/analytics-report': 'printed report charts desk',
   'services/analytics-review': 'google search results laptop',
+
+  // The three parts-list groups with no photo already in the directory. The
+  // other four share a scene with a siteSystems entry and reuse that file.
+  'parts/trust': 'framed certificates wall',
+  'parts/found': 'smartphone map app hand',
+  'parts/build': 'responsive website devices laptop tablet',
   // marketing-print, social-filming and analytics-review are on their second
   // query. The first ones matched the words and missed the picture: "flyers
   // brochures" returned a blank mockup template, "filming phone shop counter"

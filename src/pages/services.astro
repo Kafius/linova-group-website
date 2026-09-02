@@ -8,11 +8,6 @@ import PartsList from '../components/features/PartsList.astro';
 import ServiceMosaic from '../components/services/ServiceMosaic.astro';
 import { breadcrumbs, service as serviceJsonLd } from '../lib/jsonld';
 
-const engineLabel = {
-  machine: 'the build system',
-  human: 'the marketing team',
-  both: 'both engines',
-} as const;
 ---
 
 <BaseLayout
@@ -25,7 +20,7 @@ const engineLabel = {
 >
   <div class="plot-grid">
     <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
-      <p class="label-mono">services</p>
+      <p class="label-caps">services</p>
       <h1 class="mt-4 max-w-[18 ch] font-display text-display text-film">
         You are good at what you do. Let's keep it that way.
       </h1>
@@ -46,9 +41,6 @@ const engineLabel = {
               Order only — in the DOM the words still come first, so the
               reading order and the tab order stay unchanged. */}
           <div class:list={[i % 2 === 1 && 'lg:order-2']}>
-            <p class="label-mono" class:list={[svc.engine === 'human' ? 'text-redline' : '']}>
-              {engineLabel[svc.engine]}
-            </p>
             <h2 class="mt-3 font-display text-title text-film">{svc.name}</h2>
             {/* The gold hairline runs under every group. It used to be held
                 back from the human-engine ones so a redline marker could sit
@@ -61,7 +53,7 @@ const engineLabel = {
             <ul class="m-0 mt-8 flex list-none flex-col gap-3 p-0">
               {svc.deliverables.map((item) => (
                 <li class="flex items-baseline gap-3 text-caption text-film-dim">
-                  <span class="label-mono shrink-0" aria-hidden="true">—</span>
+                  <span class="label-caps shrink-0" aria-hidden="true">—</span>
                   <span set:html={emphasize(item, svc.keywords)} />
                 </li>
               ))}
@@ -82,7 +74,7 @@ const engineLabel = {
     </div>
 
     <div class="pt-16">
-      <p class="label-mono">where to start</p>
+      <p class="label-caps">where to start</p>
       <a href="/book" class="mt-4 inline-block font-display text-display text-film no-underline transition-colors hover:text-gold">
         Book a call<span class="text-redline">.</span>
       </a>

@@ -42,23 +42,23 @@ const accent = campaign.accent ?? 'var(--color-gold)';
         ))}
 
         <label class="flex flex-col gap-1.5">
-          <span class="label-mono">your name</span>
+          <span class="label-caps">your name</span>
           <input type="text" name="name" required autocomplete="name" class="field" />
         </label>
         <label class="flex flex-col gap-1.5">
-          <span class="label-mono">business</span>
+          <span class="label-caps">business</span>
           <input type="text" name="business" required autocomplete="organization" class="field" />
         </label>
         <label class="flex flex-col gap-1.5">
-          <span class="label-mono">email</span>
+          <span class="label-caps">email</span>
           <input type="email" name="email" required autocomplete="email" class="field" />
         </label>
         <label class="flex flex-col gap-1.5">
-          <span class="label-mono">phone</span>
+          <span class="label-caps">phone</span>
           <input type="tel" name="phone" required autocomplete="tel" class="field" />
         </label>
         <label class="flex flex-col gap-1.5">
-          <span class="label-mono">what do you need</span>
+          <span class="label-caps">what do you need</span>
           <select name="need" class="field">
             <option value="new-site">A new website</option>
             <option value="rebuild">A rebuild of an existing site</option>
@@ -82,7 +82,7 @@ const accent = campaign.accent ?? 'var(--color-gold)';
       </form>
 
       <section class="mt-12" aria-label="What you get">
-        <h2 class="label-mono">{campaign.offer.title}</h2>
+        <h2 class="label-caps">{campaign.offer.title}</h2>
         <ul class="m-0 mt-4 flex list-none flex-col gap-3 p-0">
           {campaign.offer.points.map((point) => (
             <li class="flex items-baseline gap-3 text-body text-film-dim">

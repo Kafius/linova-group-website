@@ -19,7 +19,7 @@ const steps: [string, string][] = [
 >
   <div class="plot-grid">
     <header class="mx-auto max-w-[1000px] px-6 pb-10 pt-24">
-      <p class="label-mono">message received</p>
+      <p class="label-caps">message received</p>
       <h1 class="mt-4 max-w-[14ch] font-display text-display text-film">
         Got it<span class="text-redline">.</span>
       </h1>
@@ -34,7 +34,7 @@ const steps: [string, string][] = [
     <ol class="m-0 grid list-none gap-px border border-grid/40 bg-grid/40 p-0 md:grid-cols-3">
       {steps.map(([title, detail], i) => (
         <li class="bg-navy p-6">
-          <p class="label-mono m-0">{String(i + 1).padStart(2, '0')}</p>
+          <p class="label-caps m-0">{String(i + 1).padStart(2, '0')}</p>
           <p class="m-0 mt-3 text-body font-medium text-film">{title}</p>
           <p class="m-0 mt-2 text-caption text-film-dim">{detail}</p>
         </li>
@@ -42,7 +42,7 @@ const steps: [string, string][] = [
     </ol>
 
     <div class="mt-16">
-      <p class="label-mono">rather talk sooner</p>
+      <p class="label-caps">rather talk sooner</p>
       <a
         href="/book"
         data-track="book_click"

@@ -1,9 +1,22 @@
-Feature-category photographs for homepage act 3 (the parts list cards).
+Feature-category photographs, used in two places:
 
-Drop one file per system, named for the id in siteSystems (src/data/siteFeatures.ts):
+  - homepage act 3, the parts list cards, one file per siteSystems id
+  - /services, the full parts list, one strip per featureGroup
+
+Both lists live in src/data/siteFeatures.ts and both read this directory.
+Drop one file per siteSystems id:
 
   booking.jpg  payments.jpg  cms.jpg        crm.jpg
   ecommerce.jpg  forms.jpg   analytics.jpg  reviews.jpg
+
+The featureGroups on /services name their file explicitly in `photoFile`,
+because the mapping is not one-to-one — four groups describe the same scene
+as a system and reuse its file rather than holding a second copy:
+
+  booking -> booking.jpg    selling -> payments.jpg
+  content -> cms.jpg        enquiry -> forms.jpg
+
+  trust.jpg  found.jpg  build.jpg     (the three groups with no system)
 
 .jpg / .png / .webp / .avif all work. Astro optimises and serves webp at
 400/640/900w, so supply something at least 1200px wide.
@@ -30,6 +43,17 @@ can be traced or replaced:
   analytics.jpg  photo-1526628953301-3e589a6a8b74
   reviews.jpg    photo-1642165835095-528b68f00663
 
+The three parts-list images came later, through the Unsplash API
+(scripts/fetch-demo-photos.mjs --parts) rather than by hand. That route is
+governed by the API Guidelines, not the plain Unsplash License, so these DO
+require attribution — it is carried on /credits, generated from
+src/data/demos/photo-credits.json. Replace one by hand and drop its entry
+from that file.
+
+  trust.jpg      xyKu1uyM078   Proxyclick Visitor Management System
+  found.jpg      BJXAxQ1L7dI   henry perks
+  build.jpg      Px3iBXV-4TU   Igor Miske
+
 These are generic scenes, NOT vendor product screenshots. Dennis asked for
 Cal.com/Calendly, Clover, and Sanity dashboards; those are the vendors'
 copyrighted UI and trademarks, and republishing them on Linova's commercial
@@ -41,5 +65,8 @@ of those in over the same filename and it replaces the stock photo on the
 next build.
 
 Note: payments.jpg shows a Square terminal and ecommerce.jpg shows boxes
-branded "medino". Incidental trademarks inside a licensed photograph are
-normal; swap them if that reads wrong for a client conversation.
+branded "medino". found.jpg shows Google Maps with a real shop, "Morley
+Butchers", pinned. Incidental trademarks inside a licensed photograph are
+normal; swap them if that reads wrong for a client conversation. found.jpg
+is the one to watch on that count — the whole frame is a Google product,
+which is on-message for "found & measured" but is a vendor's UI.

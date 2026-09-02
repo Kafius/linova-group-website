@@ -3,6 +3,12 @@
 // rail. Every entry is a real static page, not a client-side filter: deep
 // links work, the active state is server-rendered, and the menu needs no JS
 // to do its job. Counts are live, derived from whatever the page fetched.
+//
+// A page can add a second row to the band through the default slot —
+// /industries puts its trade search there, so the two ways of narrowing the
+// list are one control rather than two blocks with a gap between them. The
+// slot is optional and renders nothing when empty, so /work and the category
+// pages are unchanged.
 import RailSymbol from './RailSymbol.astro';
 
 export interface RailItem {
@@ -24,10 +30,15 @@ interface Props {
 }
 
 const { items, active, label } = Astro.props;
+
+// The band is one section, so the <nav> can only wrap the links — anything in
+// the slot is a control, not navigation, and would be announced as part of
+// this menu if it sat inside.
+const hasExtra = Astro.slots.has('default');
 ---
 
-<nav class="rail" aria-label={label}>
-  <div class="rail__inner">
+<div class="rail">
+  <nav class="rail__inner" aria-label={label}>
     <ul class="rail__list">
       {items.map((item) => (
         <li>
@@ -43,8 +54,14 @@ const { items, active, label } = Astro.props;
         </li>
       ))}
     </ul>
-  </div>
-</nav>
+  </nav>
+
+  {hasExtra && (
+    <div class="rail__extra">
+      <slot />
+    </div>
+  )}
+</div>
 
 <style>
   /* Parks under the sticky Nav — 44px logo + 2 × 16px of padding. */
@@ -76,18 +93,32 @@ const { items, active, label } = Astro.props;
     white-space: nowrap;
   }
 
+  /* The slot's row. Same measure and gutter as .rail__inner so the control
+     lines up with the links above it, but no overflow-x — the links scroll
+     sideways on a phone and a text field inside a scroller is miserable. */
+  .rail__extra {
+    margin-inline: auto;
+    max-width: 1200px;
+    padding-inline: 1.5rem;
+    /* Hairline between the two rows, in the grid blue rather than the band's
+       gold, so the band still reads as one section rather than two stacked. */
+    border-top: 1px solid rgba(77, 77, 143, 0.4);
+  }
+
   .rail__link {
     display: inline-flex;
     align-items: baseline;
     gap: 0.6ch;
     /* 0.7rem rather than the old 0.85. The seven category symbols cost the
-       rail the single line that padding used to buy — it is ~37px over at
-       1200 now and scrolls, which is the documented fallback. Squeezing
-       further to reclaim those pixels only made the entries look cramped. */
+       rail the single line that padding used to buy: measured at 1200, the
+       links run 1246px and scroll, which is the documented fallback.
+       Squeezing further only made the entries look cramped.
+       Moving the register off IBM Plex Mono bought 11px of that back — worth
+       having, but nowhere near a line, so the rail still scrolls. */
     padding: 0.9rem 0.7rem;
     border-bottom: 2px solid transparent;
     color: var(--color-film-dim);
-    font-family: var(--font-mono);
+    font-family: var(--font-label);
     font-size: var(--text-label);
     letter-spacing: var(--text-label--letter-spacing);
     text-transform: uppercase;

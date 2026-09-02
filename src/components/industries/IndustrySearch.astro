@@ -10,6 +10,11 @@
 // Progressive enhancement, honestly done: the markup ships hidden and the
 // script reveals it. Without JS there is no dead control on the page, and the
 // full grid is visible, which is the correct fallback for a filter.
+//
+// Lives in SectionRail's slot, so it draws no container of its own — the band
+// supplies the measure and the gutter. The band is sticky, which is why this
+// is kept to a single row: every line here is a line of the page that stays
+// pinned while the cards scroll under it.
 interface Props {
   /** how many cards the page is showing, for the initial count */
   total: number;
@@ -18,10 +23,11 @@ interface Props {
 const { total } = Astro.props;
 ---
 
-<div class="search mx-auto max-w-[1200px] px-6" data-industry-search hidden>
-  <label class="search__label label-mono" for="industry-search">
-    Search by trade
-  </label>
+<div class="search" data-industry-search hidden>
+  {/* Screen-reader only. Under the rail's own links, a visible "search by
+      trade" caption is a third mono register competing with them; the icon
+      and the placeholder carry it for everyone else. */}
+  <label class="sr-only" for="industry-search">Search by trade</label>
   <div class="search__field">
     <svg class="search__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
       <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.4" />
@@ -35,17 +41,15 @@ const { total } = Astro.props;
       autocomplete="off"
       data-search-input
     />
-    <button type="button" class="search__clear label-mono" data-search-clear hidden>
+    <button type="button" class="search__clear label-caps" data-search-clear hidden>
       clear
     </button>
   </div>
-  <p class="search__count label-mono" role="status" aria-live="polite" data-search-count>
-    {total} industries
-  </p>
+  {/* One line, not three. This is inside the sticky band, so a paragraph
+      would shove the whole grid down the moment someone mistypes. */}
   <p class="search__empty" data-search-empty hidden>
-    Nothing matches that. Try the trade rather than the industry — "plumber"
-    rather than "trades" — or <a href="/book">book a call</a> and we will tell
-    you which playbook fits.
+    Nothing matches. Try the trade rather than the group — or{' '}
+    <a href="/book">book a call</a>.
   </p>
 </div>
 
@@ -113,23 +117,23 @@ const { total } = Astro.props;
 </script>
 
 <style>
+  /* Symmetrical padding, and modest: this is a row of a pinned band, not a
+     block on the page. It used to carry 1.5rem of bottom padding to hold
+     itself off the grid below, which the band now handles. */
   .search {
-    padding-bottom: 1.5rem;
+    padding-block: 0.6rem;
   }
 
-  .search__label {
-    display: block;
-    margin-bottom: 0.6rem;
-  }
-
+  /* No border of its own — the band is the frame. A bordered box inside a
+     bordered band reads as two controls again, which is the thing being
+     fixed. The field is marked by its rule underneath and the gold icon. */
   .search__field {
     display: flex;
     align-items: center;
     gap: 0.7rem;
     max-width: 34rem;
-    padding: 0.7rem 0.9rem;
-    border: 1px solid rgba(77, 77, 143, 0.55);
-    background: rgba(15, 15, 38, 0.4);
+    padding: 0.35rem 0 0.35rem 0.1rem;
+    border-bottom: 1px solid rgba(77, 77, 143, 0.55);
     transition: border-color 0.2s var(--ease-plot);
   }
   .search__field:focus-within {
@@ -179,16 +183,13 @@ const { total } = Astro.props;
     border-color: var(--color-gold);
   }
 
-  .search__count {
-    margin: 0.75rem 0 0;
-    color: var(--color-film-dim);
-  }
-
+  /* Caption rather than body, and tight to the field: it appears inside the
+     pinned band, so its whole cost is height the grid loses while it shows. */
   .search__empty {
-    margin: 0.75rem 0 0;
-    max-width: 52ch;
+    margin: 0.5rem 0 0;
+    max-width: 60ch;
     color: var(--color-film-dim);
-    font-size: var(--text-body);
+    font-size: var(--text-caption);
   }
   .search__empty a {
     color: var(--color-gold);

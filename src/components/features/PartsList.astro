@@ -3,22 +3,20 @@
 // owner. Lives on /services, where someone has already decided to read
 // detail. The homepage only previews it (see FeaturesSection.astro).
 //
-// Drawn as a bill of materials rather than a card grid: continuous numbering
-// across all groups, mono indices in the gold register, no icons and no
-// "learn more" (brief §2 kills that pattern outright).
-import { featureGroups, featureCount } from '../../data/siteFeatures';
-
-// Continuous index across groups — computed here so the markup stays dumb.
-let running = 0;
-const numbered = featureGroups.map((group) => ({
-  ...group,
-  features: group.features.map((feature) => ({ ...feature, index: ++running })),
-}));
+// Drawn as a bill of materials rather than a card grid: point form, markers
+// in the gold register, no icons and no "learn more" (brief §2 kills that
+// pattern outright).
+//
+// The rows used to carry a running 01..42 index across all seven groups. It
+// read as a count of what you were buying, which is the opposite of what the
+// deck above says — the playbook picks the parts, the list is not a package.
+import { featureGroups } from '../../data/siteFeatures';
+import PartPhoto from './PartPhoto.astro';
 ---
 
 <section id="parts-list" aria-labelledby="parts-list-heading">
   <div class="max-w-[760px]">
-    <p class="label-mono">the parts list</p>
+    <p class="label-caps">the parts list</p>
     <h2 id="parts-list-heading" class="mt-4 font-display text-title text-film">
       Everything that can go in a site.
     </h2>
@@ -29,20 +27,30 @@ const numbered = featureGroups.map((group) => ({
   </div>
 
   <div class="parts-grid mt-14">
-    {numbered.map((group) => (
+    {featureGroups.map((group) => (
       <section class="parts-group" aria-labelledby={`pg-${group.id}`}>
         <hr class="rule-gold m-0" />
-        <h3 id={`pg-${group.id}`} class="label-mono mt-3">
+        <h3 id={`pg-${group.id}`} class="label-caps mt-3">
           {group.name}
-          <span class="parts-count">{group.features.length}</span>
         </h3>
+
+        {/* Under the heading rather than above the rule: above it the strip
+            would read as the tail of the previous group. */}
+        <div class="mt-3">
+          <PartPhoto
+            file={group.photoFile}
+            name={group.name}
+            subject={group.photo.subject}
+            alt={group.photo.alt}
+          />
+        </div>
 
         <ul class="m-0 mt-4 list-none p-0">
           {group.features.map((feature) => (
             <li class="parts-row" data-parts-row>
-              <span class="parts-index" aria-hidden="true">
-                {String(feature.index).padStart(2, '0')}
-              </span>
+              {/* The same em-dash marker the deliverables lists on this page
+                  use, so the two read as one register. */}
+              <span class="parts-index" aria-hidden="true">—</span>
               <span class="min-w-0">
                 <span class="parts-name">{feature.name}</span>
                 <span class="parts-detail register-cold">{feature.detail}</span>
@@ -75,12 +83,6 @@ const numbered = featureGroups.map((group) => ({
     margin-bottom: 2.75rem;
   }
 
-  .parts-count {
-    float: right;
-    opacity: 0.65;
-    font-variant-numeric: tabular-nums;
-  }
-
   .parts-row {
     display: flex;
     align-items: baseline;
@@ -92,12 +94,13 @@ const numbered = featureGroups.map((group) => ({
     border-bottom: 0;
   }
 
+  /* Narrower than the 1.6rem the two-digit index needed, so the names sit
+     closer to the marker now that it is one character. */
   .parts-index {
     flex: none;
-    width: 1.6rem;
-    font-family: var(--font-mono);
+    width: 0.9rem;
+    font-family: var(--font-label);
     font-size: 0.6875rem;
-    font-variant-numeric: tabular-nums;
     color: var(--color-gold);
     opacity: 0.75;
   }
@@ -110,7 +113,7 @@ const numbered = featureGroups.map((group) => ({
   .parts-detail {
     display: block;
     margin-top: 0.125rem;
-    font-family: var(--font-mono);
+    font-family: var(--font-label);
     font-size: 0.6875rem;
     line-height: 1.5;
     color: color-mix(in srgb, var(--color-film) 62%, transparent);

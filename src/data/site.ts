@@ -51,5 +51,5 @@ export type SocialProfile = {
  *  renders no row at all rather than icons that go nowhere. */
 export const social: SocialProfile[] = [
   { label: 'Instagram', href: 'https://instagram.com/thelinovagroup', icon: 'instagram' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/company/thelinovagroup', icon: 'linkedin' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/company/linova-group', icon: 'linkedin' },
 ];
