@@ -5,6 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { services } from '../data/services';
 import { emphasize } from '../lib/emphasis';
 import PartsList from '../components/features/PartsList.astro';
+import ServiceMosaic from '../components/services/ServiceMosaic.astro';
 import { breadcrumbs, service as serviceJsonLd } from '../lib/jsonld';
 
 const engineLabel = {
@@ -37,9 +38,14 @@ const engineLabel = {
 
   <div class="mx-auto max-w-[1200px] px-6 pb-24">
     <ul class="m-0 list-none border-t border-grid/40 p-0">
-      {services.map((svc) => (
-        <li id={svc.slug} class="grid gap-6 border-b border-grid/40 py-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-16">
-          <div>
+      {services.map((svc, i) => (
+        <li id={svc.slug} class="grid gap-8 border-b border-grid/40 py-12 lg:grid-cols-2 lg:gap-16">
+          {/* The mosaic swaps sides down the page. Five stacked rows with the
+              pictures all down one edge reads as a column of images next to a
+              column of text; alternating makes each group its own spread.
+              Order only — in the DOM the words still come first, so the
+              reading order and the tab order stay unchanged. */}
+          <div class:list={[i % 2 === 1 && 'lg:order-2']}>
             <p class="label-mono" class:list={[svc.engine === 'human' ? 'text-redline' : '']}>
               {engineLabel[svc.engine]}
             </p>
@@ -51,15 +57,20 @@ const engineLabel = {
                 The engine label above the heading carries that distinction. */}
             <hr class="rule-gold mt-4 max-w-[120px]" />
             <p class="mt-5 max-w-[52ch] text-body text-film-dim" set:html={emphasize(svc.deck, svc.keywords)} />
+
+            <ul class="m-0 mt-8 flex list-none flex-col gap-3 p-0">
+              {svc.deliverables.map((item) => (
+                <li class="flex items-baseline gap-3 text-caption text-film-dim">
+                  <span class="label-mono shrink-0" aria-hidden="true">—</span>
+                  <span set:html={emphasize(item, svc.keywords)} />
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul class="m-0 flex list-none flex-col gap-3 self-center p-0">
-            {svc.deliverables.map((item) => (
-              <li class="flex items-baseline gap-3 text-caption text-film-dim">
-                <span class="label-mono shrink-0" aria-hidden="true">—</span>
-                <span set:html={emphasize(item, svc.keywords)} />
-              </li>
-            ))}
-          </ul>
+
+          <div class:list={['self-center', i % 2 === 1 && 'lg:order-1']}>
+            <ServiceMosaic photos={svc.photos} />
+          </div>
         </li>
       ))}
     </ul>

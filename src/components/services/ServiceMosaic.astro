@@ -1,0 +1,45 @@
+---
+// A service group's photographs, as a mosaic: the first runs the full width
+// of the column as the lead, the rest pair up beneath it.
+//
+// The column span is a Tailwind utility rather than a scoped rule here. Astro
+// scopes styles per component, so a selector written in this file would not
+// match ServicePhoto's own <figure> — the same trap FeaturePhoto documents.
+// Tailwind's utilities are global, so they land.
+import ServicePhoto from './ServicePhoto.astro';
+import type { ServicePhoto as Photo } from '../../data/services';
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+const [lead, ...rest] = photos;
+
+// At lg the mosaic column settles around 544px inside the 1200px measure;
+// each of the pair takes half of that, less the gap.
+const LEAD_SIZES = '(min-width: 1024px) 544px, 92vw';
+const PAIR_SIZES = '(min-width: 1024px) 266px, 45vw';
+---
+
+<div class="grid grid-cols-2 gap-3">
+  {lead && (
+    <ServicePhoto
+      id={lead.id}
+      subject={lead.subject}
+      alt={lead.alt}
+      ratio="16 / 9"
+      sizes={LEAD_SIZES}
+      class="col-span-2"
+    />
+  )}
+  {rest.map((photo) => (
+    <ServicePhoto
+      id={photo.id}
+      subject={photo.subject}
+      alt={photo.alt}
+      ratio="4 / 3"
+      sizes={PAIR_SIZES}
+    />
+  ))}
+</div>

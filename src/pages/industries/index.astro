@@ -4,6 +4,7 @@
 // their group heading, each row carrying the specific businesses it covers.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionRail from '../../components/shell/SectionRail.astro';
+import IndustrySearch from '../../components/industries/IndustrySearch.astro';
 import IndustryCards from '../../components/industries/IndustryCards.astro';
 import { industries, categoryMenu, industriesIn } from '../../data/industries';
 import { breadcrumbs } from '../../lib/jsonld';
@@ -29,10 +30,10 @@ const railItems = [
   <div class="plot-grid">
     <header class="mx-auto max-w-[1200px] px-6 pb-10 pt-24">
       <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-        <p class="label-mono">playbooks</p>
+        <p class="label-mono">industries</p>
       </div>
       <h1 class="mt-4 max-w-[18ch] font-display text-display text-film">
-        Playbooks Designed for your Industry
+        Designed for your Industry
       </h1>
       <p class="mt-5 max-w-[54ch] text-body text-film-dim">
         We've done the work to find what works for your industry. Pick your
@@ -43,11 +44,18 @@ const railItems = [
 
   <SectionRail label="Industry groups" active="/industries" items={railItems} />
 
+  {/* Sits under the rail, not instead of it: the rail is real pages with real
+      URLs, this is for someone who knows their trade but not its group. */}
+  <div class="plot-grid pt-10">
+    <IndustrySearch total={industries.length} />
+  </div>
+
   <div class="plot-grid pb-4">
     {menu.map((category, i) => (
       <section
         class:list={['pb-16 pt-14', i > 0 && 'border-t border-gold/40']}
         aria-labelledby={`group-${category.slug}`}
+        data-industry-group
       >
         <div class="mx-auto max-w-[1200px] px-6 pb-6">
           <div class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">

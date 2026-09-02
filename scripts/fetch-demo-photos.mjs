@@ -32,7 +32,76 @@ const ONLY = args.find((a) => a.startsWith('--only='))?.split('=')[1];
 const NO_PEOPLE = args.includes('--no-people');
 const LIMIT = Number(args.find((a) => a.startsWith('--limit='))?.split('=')[1] ?? Infinity);
 
-const SLOTS = JSON.parse(readFileSync('scripts/demo-photo-slots.json', 'utf-8'));
+// Three kinds of slot, one pipeline. A demo slot lives under
+// src/assets/demos/<demo>/<file>.jpg; an industry hero is one file per
+// vertical at src/assets/industries/<slug>.jpg; a service photo is one of the
+// three in a group's mosaic at src/assets/services/<id>.jpg. All carry art
+// direction written when they were built, so the only real difference is
+// where the file lands — worth sharing the overrides, the dedupe and the
+// attribution rather than forking another script.
+const INDUSTRIES = args.includes('--industries');
+const SERVICES = args.includes('--services');
+
+const loadSlots = () => {
+  if (SERVICES) {
+    // Read from the data file rather than a generated list: a group that
+    // gains a fourth picture should be picked up without touching this.
+    const src = readFileSync('src/data/services.ts', 'utf-8');
+    const out = [];
+    // `\s*` between the fields rather than a literal newline: the repo mixes
+    // CRLF and LF, and an `\n` here silently matched nothing on the CRLF side.
+    // `id` appears on no other shape in this file, so it needs no anchor.
+    for (const m of src.matchAll(
+      /id: '([a-z0-9-]+)',\s*subject:\s*'([\s\S]*?)',\s*alt: '([^']*)'/g
+    )) {
+      // The lead of each mosaic is 16:9 and twice the width of the pair
+      // beneath it, which are 4:3. Position in the file is the mosaic order.
+      const lead = out.length % 3 === 0;
+      out.push({
+        demo: 'services',
+        file: m[1],
+        subject: m[2].replace(/\s+/g, ' ').trim(),
+        alt: m[3],
+        ratio: lead ? 16 / 9 : 4 / 3,
+        maxWidth: lead ? 544 : 266,
+        key: `services/${m[1]}`,
+        dir: 'src/assets/services',
+      });
+    }
+    return out;
+  }
+  if (!INDUSTRIES) {
+    return JSON.parse(readFileSync('scripts/demo-photo-slots.json', 'utf-8')).map((s) => ({
+      ...s,
+      key: `${s.demo}/${s.file}`,
+      dir: path.join('src/assets/demos', s.demo),
+    }));
+  }
+  // Pulled from the source of truth rather than a generated list: verticals
+  // get added, and a stale copy would quietly skip the new ones.
+  const src = readFileSync('src/data/industries.ts', 'utf-8');
+  const out = [];
+  // cycleWord is the field only an industry has — the category list shares
+  // the same `slug:` shape at the same indentation.
+  for (const m of src.matchAll(
+    /slug: '([a-z-]+)',\n\s*name: '[^']*',\n\s*cycleWord:[\s\S]*?heroPhoto: \{\s*\n?\s*subject:\s*\n?\s*'([\s\S]*?)',\s*\n\s*alt: '([^']*)'/g
+  )) {
+    out.push({
+      demo: 'industries',
+      file: m[1],
+      subject: m[2].replace(/\s+/g, ' ').trim(),
+      alt: m[3],
+      // The hero sits in a 460px panel beside the headline, 3:2.
+      ratio: 1.5,
+      maxWidth: 460,
+      key: `industries/${m[1]}`,
+      dir: 'src/assets/industries',
+    });
+  }
+  return out;
+};
+
+const SLOTS = loadSlots();
 const CREDITS_FILE = 'src/data/demos/photo-credits.json';
 const credits = existsSync(CREDITS_FILE) ? JSON.parse(readFileSync(CREDITS_FILE, 'utf-8')) : {};
 
@@ -52,6 +121,47 @@ const OVERRIDES = {
   'retail-large-catalogue/hero-showroom': 'furniture showroom',
   'trades-lead-generation/ajax-before': 'old wooden kitchen cabinets',
   'trades-lead-generation/pickering-before': 'empty office corridor',
+  // The last three. "Foundry hall" and "stucco before" are the kind of phrase
+  // that describes the picture perfectly and matches nothing in a stock
+  // library, which indexes on plain nouns.
+  'venue-event-space/hero-hall': 'empty warehouse event space brick',
+  'retail-large-catalogue/warehouse': 'warehouse racking boxes',
+  'trades-lead-generation/ajax-stucco-before': 'suburban house exterior stucco',
+  'industries/bakeries': 'bakery bread loaves',
+  // Three heroes that matched something plausible for the words but wrong for
+  // the trade. "Treatment room" is a hospital in a stock library, not a spa;
+  // "butcher counter" returned a cafe brunch plate; "showroom floor" returned
+  // an antiques shop. All three needed the trade naming itself.
+  'industries/spas-salons': 'spa massage table',
+  'industries/grocery': 'grocery store produce aisle',
+  'industries/furniture': 'modern furniture showroom sofas',
+
+  // The service mosaics. Their art direction is written as a sentence with
+  // the lighting and framing in it, and the first four words off that reads
+  // like "phone held hand showing" — grammar, not nouns. Every one of these
+  // is a plain noun phrase for what should be in the frame.
+  'services/web-build-desk': 'developer desk code monitor',
+  'services/web-build-wireframe': 'website wireframe sketch paper',
+  'services/web-build-mobile': 'smartphone website screen browsing',
+  'services/marketing-planning': 'marketing team planning meeting',
+  'services/marketing-print': 'brochure print design stack',
+  'services/marketing-review': 'marketing report charts desk',
+  'services/social-shoot': 'camera tripod food photography',
+  'services/social-editing': 'video editing laptop timeline',
+  'services/social-filming': 'phone recording video hand',
+  'services/brand-sketching': 'logo sketches sketchbook pencil',
+  'services/brand-proofs': 'blank business cards stack paper',
+  // "Colour" is the spelling on the page; a stock library indexes the other.
+  'services/brand-colour': 'color swatches paper samples',
+  'services/analytics-dashboard': 'analytics dashboard screen charts',
+  'services/analytics-report': 'printed report charts desk',
+  'services/analytics-review': 'google search results laptop',
+  // marketing-print, social-filming and analytics-review are on their second
+  // query. The first ones matched the words and missed the picture: "flyers
+  // brochures" returned a blank mockup template, "filming phone shop counter"
+  // a shop counter with no phone in it, and "laptop analytics graphs" a laptop
+  // with nobody at it — each leaving alt text describing something the image
+  // did not show. Check the picture, not just that a file arrived.
 };
 
 const STOP = new Set(
@@ -63,7 +173,7 @@ const STOP = new Set(
 );
 
 const query = (slot) => {
-  if (OVERRIDES[`${slot.demo}/${slot.file}`]) return OVERRIDES[`${slot.demo}/${slot.file}`];
+  if (OVERRIDES[slot.key]) return OVERRIDES[slot.key];
   const words = (slot.subject || '')
     .toLowerCase()
     .replace(/[^a-z\s-]/g, ' ')
@@ -125,7 +235,7 @@ for (const slot of SLOTS) {
   if (NO_PEOPLE && isNamedPerson(slot)) continue;
   if (done >= LIMIT) break;
 
-  const dir = path.join('src/assets/demos', slot.demo);
+  const dir = slot.dir;
   const out = path.join(dir, `${slot.file}.jpg`);
   if (existsSync(out)) { skipped += 1; continue; }
 
@@ -133,7 +243,7 @@ for (const slot of SLOTS) {
   const o = orientation(slot);
 
   if (DRY) {
-    console.log(`  ${slot.demo}/${slot.file}  [${o}]  "${q}"`);
+    console.log(`  ${slot.key}  [${o}]  "${q}"`);
     done += 1;
     continue;
   }
@@ -153,8 +263,8 @@ for (const slot of SLOTS) {
       // words, whereas every match already being used needs a wider search.
       console.log(
         results.length
-          ? `  MISS  ${slot.demo}/${slot.file}  all ${results.length} matches already used — "${q}"`
-          : `  MISS  ${slot.demo}/${slot.file}  query matched nothing — "${q}"  (add an OVERRIDE)`
+          ? `  MISS  ${slot.key}  all ${results.length} matches already used — "${q}"`
+          : `  MISS  ${slot.key}  query matched nothing — "${q}"  (add an OVERRIDE)`
       );
       continue;
     }
@@ -184,7 +294,7 @@ for (const slot of SLOTS) {
     mkdirSync(dir, { recursive: true });
     writeFileSync(out, Buffer.from(await img.arrayBuffer()));
 
-    credits[`${slot.demo}/${slot.file}`] = {
+    credits[slot.key] = {
       photographer: hit.user.name,
       profile: `${hit.user.links.html}?utm_source=linova_demos&utm_medium=referral`,
       photo: `${hit.links.html}?utm_source=linova_demos&utm_medium=referral`,
@@ -194,13 +304,13 @@ for (const slot of SLOTS) {
     writeFileSync(CREDITS_FILE, JSON.stringify(credits, null, 2) + '\n');
 
     const kb = Math.round(readFileSync(out).length / 1024);
-    console.log(`  ok    ${slot.demo}/${slot.file}  ${want}px ${kb}KB  "${q}"  — ${hit.user.name}  (${remaining} left)`);
+    console.log(`  ok    ${slot.key}  ${want}px ${kb}KB  "${q}"  — ${hit.user.name}  (${remaining} left)`);
     done += 1;
     // Paced deliberately. Downloading as fast as the loop allows is what
     // tripped the CDN's own throttle in the first place.
     await new Promise((r) => setTimeout(r, 1200));
   } catch (err) {
-    console.error(`  FAIL  ${slot.demo}/${slot.file}: ${err.message}`);
+    console.error(`  FAIL  ${slot.key}: ${err.message}`);
     if (String(err.message).includes('rate limited')) break;
   }
 }

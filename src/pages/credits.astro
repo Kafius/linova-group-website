@@ -1,0 +1,91 @@
+---
+// /credits — photographer attribution for every photograph on the site.
+//
+// The Unsplash API Guidelines require crediting the photographer and Unsplash
+// wherever a photo is used. The demo sites already do it on their own footer
+// legal line (DemoLayout), but the marketing site's own pictures — the
+// industry heroes and the service mosaics — had nowhere to carry it. This is
+// that page.
+//
+// Generated from the same photo-credits.json the fetch script writes, so a
+// photo added later shows up here without anyone remembering to edit a list.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { breadcrumbs } from '../lib/jsonld';
+import { services } from '../data/services';
+import { industries } from '../data/industries';
+
+// Globbed rather than imported so the build still works before any photo has
+// been fetched, when the file does not exist yet.
+const creditFiles = import.meta.glob<
+  Record<string, { photographer: string; profile: string }>
+>('/src/data/demos/photo-credits.json', { eager: true, import: 'default' });
+const allCredits = Object.values(creditFiles)[0] ?? {};
+
+// Only the marketing site's own photographs. The demo credits stay on the
+// demo footers, where the picture actually appears.
+const nameFor = new Map<string, string>([
+  ...industries.map((i) => [`industries/${i.slug}`, i.name] as const),
+  ...services.flatMap((s) =>
+    s.photos.map((p) => [`services/${p.id}`, s.name] as const)
+  ),
+]);
+
+const rows = Object.entries(allCredits)
+  .filter(([key]) => nameFor.has(key))
+  .map(([key, credit]) => ({ where: nameFor.get(key)!, ...credit }))
+  .sort((a, b) => a.where.localeCompare(b.where) || a.photographer.localeCompare(b.photographer));
+
+// The referral parameter is required by the API Guidelines on links back.
+const REF = '?utm_source=the_linova_group&utm_medium=referral';
+---
+
+<BaseLayout
+  title="Photo credits — The Linova Group"
+  description="The photographers behind the photographs on this site."
+  jsonLd={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Photo credits', path: '/credits' }])]}
+>
+  <div class="bg-film text-navy" data-ground="film">
+    <article class="mx-auto max-w-[680px] px-6 pb-24 pt-24">
+      <p class="label-mono !text-gold-deep">credits</p>
+      <h1 class="mt-4 font-display text-title">The photographers</h1>
+
+      <div class="mt-10 flex flex-col gap-5 text-body">
+        {/* The explicit {' '} is load-bearing: the build collapses the
+            newline between the text and the link, so without it the words
+            run together — "come fromUnsplash". Same idiom as /industries. */}
+        <p>
+          The photographs on this site come from{' '}
+          <a
+            href={`https://unsplash.com${REF}`}
+            class="underline decoration-1 underline-offset-4"
+            rel="noopener">Unsplash</a
+          >, whose photographers licence their work for use like this. Credit
+          is theirs; the list below says which picture is whose.
+        </p>
+        <p>
+          The sample sites under{' '}
+          <a href="/work" class="underline decoration-1 underline-offset-4">our work</a>{' '}
+          carry their own credits on each site's footer.
+        </p>
+      </div>
+
+      {rows.length > 0 && (
+        <ul class="m-0 mt-12 list-none border-t border-navy/15 p-0">
+          {rows.map((row) => (
+            <li class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-navy/15 py-3">
+              <span class="text-caption">{row.where}</span>
+              {/* inline-block + padding so the link clears the 24px WCAG 2.2
+                  target minimum; caption type on its own is 21px tall. Same
+                  idiom as the footer's legal links. */}
+              <a
+                href={`${row.profile}${REF}`}
+                class="inline-block py-1.5 text-caption underline decoration-1 underline-offset-4"
+                rel="noopener">{row.photographer}</a
+              >
+            </li>
+          ))}
+        </ul>
+      )}
+    </article>
+  </div>
+</BaseLayout>

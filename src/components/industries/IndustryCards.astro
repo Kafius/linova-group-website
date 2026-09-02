@@ -19,7 +19,23 @@ const { items } = Astro.props;
 
 <ul class="industry-grid m-0 mx-auto grid max-w-[1200px] list-none gap-x-6 gap-y-8 px-6 p-0">
   {items.map((industry) => (
-    <li class="flex">
+    /* Everything a search should match, lowercased at build time so the
+       filter is a substring test rather than work done per keystroke. The
+       covers are the point: most people search their own trade ("plumber",
+       "dojo") long before they search a category name. */
+    <li
+      class="flex"
+      data-industry
+      data-search={[
+        industry.name,
+        industry.cycleWord,
+        industry.railWord,
+        ...industry.covers,
+        ...(industry.searchTerms ?? []),
+      ]
+        .join(' ')
+        .toLowerCase()}
+    >
       <a
         href={`/industries/${industry.slug}`}
         class="industry-card group flex w-full flex-col"
@@ -45,12 +61,11 @@ const { items } = Astro.props;
           >
             {industry.name}
           </span>
-          <span class="mt-2 block text-caption text-film-dim">{industry.headline}</span>
 
           <Covers items={industry.covers} class="mt-4" />
 
           <span class="label-mono mt-auto block pt-5 text-gold" aria-hidden="true">
-            open the playbook →
+            see our package →
           </span>
         </span>
       </a>

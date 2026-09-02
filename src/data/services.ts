@@ -7,6 +7,14 @@
 // still describes the team as a Philippines-based differentiator, so treat
 // the brief as out of date on that point rather than reintroducing it.
 
+export interface ServicePhoto {
+  /** file base name under src/assets/services/ */
+  id: string;
+  /** art direction — printed on the placeholder until the file exists */
+  subject: string;
+  alt: string;
+}
+
 export interface Service {
   slug: string;
   name: string;
@@ -20,6 +28,11 @@ export interface Service {
   keywords: string[];
   /** which engine delivers this: the build system, the marketing team, or both */
   engine: 'machine' | 'human' | 'both';
+  /** Photographs for the section, in mosaic order: the first runs full
+   *  width as the lead, the rest pair up beneath it. Files live at
+   *  src/assets/services/<id>.jpg; until one exists the frame prints its
+   *  own art direction, so a gap is visible on the page rather than blank. */
+  photos: ServicePhoto[];
 }
 
 export const services: Service[] = [
@@ -46,7 +59,27 @@ export const services: Service[] = [
       'Lighthouse report',
       'Mobile-first'
     ],
-    engine: 'machine'
+    engine: 'machine',
+    photos: [
+      {
+        id: 'web-build-desk',
+        subject:
+          'a developer workstation at night, wide monitor showing code, keyboard and notebook in the foreground, low warm desk lamp',
+        alt: 'A developer workstation at night with code open on a wide monitor'
+      },
+      {
+        id: 'web-build-wireframe',
+        subject:
+          'hand-drawn page wireframes on paper, overhead flat lay on a plain desk',
+        alt: 'Hand-drawn page wireframes sketched on paper'
+      },
+      {
+        id: 'web-build-mobile',
+        subject:
+          'someone holding a phone showing a web page while working at a laptop, over the shoulder',
+        alt: 'Someone holding a phone showing a web page while working at a laptop'
+      }
+    ]
   },
   {
     slug: 'marketing-strategy-campaigns',
@@ -69,7 +102,27 @@ export const services: Service[] = [
       'Offer and message testing',
       'Reporting in plain language'
     ],
-    engine: 'human'
+    engine: 'human',
+    photos: [
+      {
+        id: 'marketing-planning',
+        subject:
+          'people around a table during a planning meeting, notebooks open, daylight office',
+        alt: 'People around a table with open notebooks during a planning meeting'
+      },
+      {
+        id: 'marketing-print',
+        subject:
+          'a stack of printed brochures on a shelf, close crop along the edges, shallow depth of field',
+        alt: 'A stack of printed brochures on a shelf'
+      },
+      {
+        id: 'marketing-review',
+        subject:
+          'a hand marking up printed charts on a desk, notebook and calculator beside them',
+        alt: 'A hand marking up printed charts beside a notebook and calculator'
+      }
+    ]
   },
   {
     slug: 'social-media-content',
@@ -90,7 +143,27 @@ export const services: Service[] = [
       'Community management',
       'monthly report'
     ],
-    engine: 'human'
+    engine: 'human',
+    photos: [
+      {
+        id: 'social-shoot',
+        subject:
+          'a camera on a tripod set up for a shoot, soft light, behind the scenes',
+        alt: 'A camera on a tripod set up for a shoot'
+      },
+      {
+        id: 'social-editing',
+        subject:
+          'a video editing timeline on screen, dim room',
+        alt: 'A video editing timeline open on screen'
+      },
+      {
+        id: 'social-filming',
+        subject:
+          'hands editing a video clip on a phone, editing timeline on the screen, desk at night',
+        alt: 'Hands editing a video clip on a phone'
+      }
+    ]
   },
   {
     slug: 'brand-graphic-design',
@@ -111,7 +184,27 @@ export const services: Service[] = [
       'Brand guidelines',
       'existing equity'
     ],
-    engine: 'human'
+    engine: 'human',
+    photos: [
+      {
+        id: 'brand-sketching',
+        subject:
+          'logo sketches in pencil across a sketchbook page, overhead, pencil resting on the page',
+        alt: 'Logo sketches drawn in pencil across a sketchbook page'
+      },
+      {
+        id: 'brand-proofs',
+        subject:
+          'two stacks of blank business cards on a plain white surface, raking light on the edges',
+        alt: 'Two stacks of blank business cards'
+      },
+      {
+        id: 'brand-colour',
+        subject:
+          'a printed colour swatch chart, close crop, even daylight',
+        alt: 'A printed colour swatch chart'
+      }
+    ]
   },
   {
     slug: 'analytics-seo-support',
@@ -133,6 +226,26 @@ export const services: Service[] = [
       'structured data',
       'Monthly reporting'
     ],
-    engine: 'both'
+    engine: 'both',
+    photos: [
+      {
+        id: 'analytics-dashboard',
+        subject:
+          'an analytics dashboard of line and bar charts on screen, desk at a window',
+        alt: 'An analytics dashboard of line and bar charts on screen'
+      },
+      {
+        id: 'analytics-report',
+        subject:
+          'a hand marking up printed charts on a desk, phone and tablet beside them, overhead',
+        alt: 'A hand marking up printed charts on a desk'
+      },
+      {
+        id: 'analytics-review',
+        subject:
+          'over the shoulder at a laptop with a search engine open, coffee cup on the table, daylight',
+        alt: 'Someone at a laptop with a search engine open'
+      }
+    ]
   }
 ];

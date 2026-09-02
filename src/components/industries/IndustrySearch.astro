@@ -1,0 +1,202 @@
+---
+// Type-to-filter across the industry grid.
+//
+// The section rail beside this is deliberately not a client-side filter —
+// every group is a real page with a real URL. This is the other half of that:
+// a visitor who knows their trade but not which group it files under should
+// not have to guess. It matches the vertical's name and, more usefully, every
+// business type in its covers list — "plumber", "dojo", "boba", "detailing".
+//
+// Progressive enhancement, honestly done: the markup ships hidden and the
+// script reveals it. Without JS there is no dead control on the page, and the
+// full grid is visible, which is the correct fallback for a filter.
+interface Props {
+  /** how many cards the page is showing, for the initial count */
+  total: number;
+}
+
+const { total } = Astro.props;
+---
+
+<div class="search mx-auto max-w-[1200px] px-6" data-industry-search hidden>
+  <label class="search__label label-mono" for="industry-search">
+    Search by trade
+  </label>
+  <div class="search__field">
+    <svg class="search__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.4" />
+      <path d="M10.4 10.4 L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+    </svg>
+    <input
+      id="industry-search"
+      type="search"
+      class="search__input"
+      placeholder="plumber, dojo, bubble tea, detailing…"
+      autocomplete="off"
+      data-search-input
+    />
+    <button type="button" class="search__clear label-mono" data-search-clear hidden>
+      clear
+    </button>
+  </div>
+  <p class="search__count label-mono" role="status" aria-live="polite" data-search-count>
+    {total} industries
+  </p>
+  <p class="search__empty" data-search-empty hidden>
+    Nothing matches that. Try the trade rather than the industry — "plumber"
+    rather than "trades" — or <a href="/book">book a call</a> and we will tell
+    you which playbook fits.
+  </p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-industry-search]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const count = document.querySelector<HTMLElement>('[data-search-count]');
+  const empty = document.querySelector<HTMLElement>('[data-search-empty]');
+  const clear = document.querySelector<HTMLButtonElement>('[data-search-clear]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-industry]'));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-industry-group]'));
+
+  if (root && input && cards.length) {
+    // Only now does the control exist for anyone: no JS, no dead input.
+    root.hidden = false;
+
+    const label = (n: number) => `${n} ${n === 1 ? 'industry' : 'industries'}`;
+
+    const apply = () => {
+      const q = input.value.trim().toLowerCase();
+      // Every word has to appear somewhere in the card's text, so "bubble
+      // tea" narrows rather than widening the way an OR would.
+      const terms = q.split(/\s+/).filter(Boolean);
+      let shown = 0;
+
+      for (const card of cards) {
+        const hay = card.dataset.search ?? '';
+        const hit = terms.every((t) => hay.includes(t));
+        card.hidden = !hit;
+        if (hit) shown += 1;
+      }
+
+      // A group whose cards are all filtered out would otherwise leave its
+      // heading, blurb and divider stranded above nothing.
+      for (const group of groups) {
+        group.hidden = !group.querySelector<HTMLElement>('[data-industry]:not([hidden])');
+      }
+
+      if (count) count.textContent = q ? `${label(shown)} matching “${q}”` : label(cards.length);
+      if (empty) empty.hidden = shown > 0;
+      if (clear) clear.hidden = q.length === 0;
+    };
+
+    input.addEventListener('input', apply);
+    input.addEventListener('search', apply);
+
+    clear?.addEventListener('click', () => {
+      input.value = '';
+      apply();
+      input.focus();
+    });
+
+    // Escape clears rather than only blurring, which is what a filter should
+    // do when someone wants the whole list back.
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && input.value) {
+        event.preventDefault();
+        input.value = '';
+        apply();
+      }
+    });
+
+    apply();
+  }
+</script>
+
+<style>
+  .search {
+    padding-bottom: 1.5rem;
+  }
+
+  .search__label {
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .search__field {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    max-width: 34rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid rgba(77, 77, 143, 0.55);
+    background: rgba(15, 15, 38, 0.4);
+    transition: border-color 0.2s var(--ease-plot);
+  }
+  .search__field:focus-within {
+    border-color: var(--color-gold);
+  }
+
+  .search__icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--color-gold);
+  }
+
+  .search__input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-film);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+  }
+  .search__input::placeholder {
+    /* 0.62 alpha on the navy ground clears AA for placeholder text, which is
+       still text somebody has to read. */
+    color: rgba(239, 241, 248, 0.62);
+  }
+  .search__input:focus {
+    outline: none;
+  }
+  /* The browser's own clear affordance duplicates the button and is unstyled. */
+  .search__input::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  .search__clear {
+    flex: none;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid rgba(77, 77, 143, 0.55);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--color-film-dim);
+    cursor: pointer;
+  }
+  .search__clear:hover {
+    color: var(--color-film);
+    border-color: var(--color-gold);
+  }
+
+  .search__count {
+    margin: 0.75rem 0 0;
+    color: var(--color-film-dim);
+  }
+
+  .search__empty {
+    margin: 0.75rem 0 0;
+    max-width: 52ch;
+    color: var(--color-film-dim);
+    font-size: var(--text-body);
+  }
+  .search__empty a {
+    color: var(--color-gold);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .search__field {
+      transition: none;
+    }
+  }
+</style>
