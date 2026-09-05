@@ -1,0 +1,519 @@
+---
+// Marlowe demo — home. Layout only: every string comes from
+// src/data/demos/real-estate-agent.ts, which also carries the three rules
+// this demo is written to (no certification marks, the brokerage is named
+// everywhere, buying and leasing never merge).
+//
+// The hero is the agent, at the size a portrait deserves, because in this
+// vertical the person is the product. A carousel of houses above the fold is
+// what every template does and it sells nobody.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import MarloweListing from '../../../../../components/demos/MarloweListing.astro';
+import { chrome, routes } from '../../../../../lib/demos/marloweChrome';
+import { realEstateAgent } from '../../../../../lib/demos/marloweJsonld';
+import {
+  agent,
+  forLease,
+  forSale,
+  home,
+  neighbourhoods,
+  pageMeta,
+} from '../../../../../data/demos/real-estate-agent';
+
+const meta = pageMeta.home;
+const featuredSale = forSale().slice(0, 3);
+const featuredLease = forLease().slice(0, 2);
+const doorHref: Record<string, string> = { buy: routes.buy, rent: routes.rent };
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  ogType="profile"
+  current={routes.home}
+  jsonLd={[realEstateAgent(routes.home, meta.ogImage)]}
+>
+  <!-- ── Hero: the agent ─────────────────────────────────────────────── -->
+  <section class="bay hero">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="eyebrow">{home.heroEyebrow}</p>
+        <h1 class="hero__title">{home.heroTitle}</h1>
+        <p class="lede hero__body">{home.heroBody}</p>
+        <div class="hero__ctas">
+          <a class="btn btn--fill" href={routes.buy} data-analytics-event="buy_view_hero">
+            {home.heroPrimaryCta}
+          </a>
+          <a class="btn btn--fill hero__cta-lease" href={routes.rent} data-analytics-event="rent_view_hero">
+            {home.heroSecondaryCta}
+          </a>
+        </div>
+        <p class="hero__credential">{home.heroCredential}</p>
+      </div>
+
+      <div class="hero__figure">
+        <DemoImage
+          demo="real-estate-agent"
+          file={agent.photo.file}
+          subject={agent.photo.subject}
+          alt={agent.photo.alt}
+          ratio="4 / 5"
+          sizes="(min-width: 900px) 42vw, 100vw"
+          widths={[520, 780, 1040]}
+          eager
+          class="hero__shot"
+        />
+        <p class="hero__name">
+          <span class="hero__name-n">{agent.name}</span>
+          <span class="hero__name-t">{agent.title}</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <dl class="stats">
+        {home.heroStats.map((stat) => (
+          <div class="stat">
+            <dt class="stat__l">{stat.label}</dt>
+            <dd class="stat__v">{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── Two front doors ─────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="doors-h">
+    <div class="wrap">
+      <h2 id="doors-h" class="section-title">{home.doorsHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body">{home.doorsBody}</p>
+      <ul class="doors">
+        {home.doors.map((door) => (
+          <li class:list={['door', door.deal === 'lease' && 'door--lease']}>
+            <h3 class="door__t">{door.title}</h3>
+            <p class="door__b">{door.body}</p>
+            <a
+              class="btn btn--fill door__cta"
+              href={doorHref[door.id]}
+              data-analytics-event={`${door.id}_view_doors`}
+            >
+              {door.cta}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Featured listings ───────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="feat-h">
+    <div class="wrap">
+      <h2 id="feat-h" class="section-title">{home.featuredHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body">{home.featuredBody}</p>
+
+      <div class="feat__head">
+        <h3 class="feat__sub">{home.featuredSaleLabel}</h3>
+        <a class="btn btn--line" href={routes.buy} data-analytics-event="buy_view_featured">
+          {home.featuredSaleCta}
+        </a>
+      </div>
+      <ul class="cards">
+        {featuredSale.map((listing) => <MarloweListing listing={listing} compact />)}
+      </ul>
+
+      <div class="feat__head feat__head--lease">
+        <h3 class="feat__sub">{home.featuredLeaseLabel}</h3>
+        <a class="btn btn--line" href={routes.rent} data-analytics-event="rent_view_featured">
+          {home.featuredLeaseCta}
+        </a>
+      </div>
+      <ul class="cards cards--pair">
+        {featuredLease.map((listing) => <MarloweListing listing={listing} compact />)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Where I work ────────────────────────────────────────────────── -->
+  <section class="bay areas-bay" aria-labelledby="areas-h">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2 id="areas-h" class="section-title">{home.areasHeading}</h2>
+          <p class="section-body">{home.areasBody}</p>
+        </div>
+        <a class="btn btn--line" href={routes.about} data-analytics-event="about_view_areas">
+          {home.areasCta}
+        </a>
+      </div>
+      <hr class="rule" />
+      <ul class="areas">
+        {neighbourhoods.map((area) => (
+          <li class="area">
+            <h3 class="area__n">{area.name}</h3>
+            <p class="area__b">{area.blurb}</p>
+            <p class="area__t">{area.typical}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── How this goes ───────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="how-h">
+    <div class="wrap">
+      <h2 id="how-h" class="section-title">{home.howHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body">{home.howBody}</p>
+      <ol class="steps">
+        {home.how.map((step, i) => (
+          <li class="step">
+            <p class="step__n">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="step__t">{step.title}</h3>
+            <p class="step__d">{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay">
+    <div class="wrap closer">
+      <div>
+        <h2 class="section-title">{home.closerHeading}</h2>
+        <p class="section-body">{home.closerBody}</p>
+        <p class="closer__phone">
+          <span class="closer__phone-l">{home.closerPhoneLabel}</span>
+          <a href={chrome.footerPhone.href} data-analytics-event="phone_tap_home">
+            {chrome.footerPhone.label}
+          </a>
+        </p>
+      </div>
+      <a class="btn btn--fill" href={routes.enquiry} data-analytics-event="enquiry_cta_home_closer">
+        {home.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: var(--measure);
+    color: var(--on-ink-dim);
+  }
+  .on-paper .section-body {
+    color: var(--on-paper-dim);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  /* ── Hero ─────────────────────────────────────────────────────────── */
+  .hero__in {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hero__in {
+      grid-template-columns: 1fr 0.85fr;
+    }
+  }
+  .hero__title {
+    font-size: var(--fs-display);
+    max-width: 16ch;
+  }
+  .hero__body {
+    margin-top: 1.4rem;
+    max-width: 46ch;
+  }
+  .hero__ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  /* The lease CTA carries the second accent from the first screen, so the
+     colour split is learned before anyone has clicked anything. */
+  .hero__cta-lease {
+    background: var(--accent-alt);
+    color: var(--on-accent-alt);
+  }
+  .hero__cta-lease:hover {
+    background: color-mix(in srgb, var(--accent-alt) 85%, white);
+  }
+  .hero__credential {
+    margin-top: 1.6rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    max-width: 42ch;
+    line-height: 1.6;
+  }
+
+  .hero__figure {
+    position: relative;
+  }
+  .hero__name {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.8rem;
+  }
+  .hero__name-n {
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes, normal);
+    font-size: 1.35rem;
+    font-weight: 600;
+  }
+  .hero__name-t {
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stats {
+    margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+    display: grid;
+    gap: 1px;
+    background: var(--ink-line);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius, 0);
+    overflow: hidden;
+  }
+  @media (min-width: 640px) {
+    .stats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .stat {
+    background: var(--ink);
+    padding: 1.2rem 1.4rem;
+  }
+  .stat__l {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .stat__v {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--display-axes, normal);
+    font-size: 1.85rem;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  /* ── Doors ────────────────────────────────────────────────────────── */
+  .doors {
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 760px) {
+    .doors {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .door {
+    border: 1px solid var(--paper-line);
+    border-top: 3px solid var(--accent-paper);
+    border-radius: var(--radius, 0);
+    padding: clamp(1.4rem, 3vw, 2.1rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: var(--paper-raised);
+  }
+  .door--lease {
+    border-top-color: var(--accent-alt-paper);
+    --accent: var(--accent-alt);
+    --on-accent: var(--on-accent-alt);
+  }
+  .door__t {
+    font-size: var(--fs-heading);
+  }
+  .door__b {
+    color: var(--on-paper-dim);
+    font-size: var(--fs-small);
+    max-width: 34ch;
+  }
+  .door__cta {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+
+  /* ── Featured ─────────────────────────────────────────────────────── */
+  .feat__head {
+    margin-top: 2.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--ink-line);
+    padding-bottom: 0.9rem;
+  }
+  .feat__head--lease {
+    margin-top: 3.4rem;
+  }
+  .feat__sub {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .feat__head--lease .feat__sub {
+    color: var(--accent-alt);
+  }
+
+  .cards {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .cards--pair {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 68%;
+    }
+  }
+
+  /* ── Areas ────────────────────────────────────────────────────────── */
+  .areas-bay {
+    background: var(--ink-raised);
+  }
+  .areas {
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.5rem 2rem;
+  }
+  @media (min-width: 700px) {
+    .areas {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1050px) {
+    .areas {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .area {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1rem;
+  }
+  .area__n {
+    font-size: var(--fs-dish);
+  }
+  .area__b {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .area__t {
+    margin-top: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  /* ── Steps ────────────────────────────────────────────────────────── */
+  .steps {
+    margin: 2.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.8rem 2rem;
+    counter-reset: step;
+  }
+  @media (min-width: 700px) {
+    .steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .step {
+    border-top: 1px solid var(--paper-line);
+    padding-top: 1rem;
+  }
+  .step__n {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--accent-paper);
+  }
+  .step__t {
+    margin-top: 0.5rem;
+    font-size: var(--fs-dish);
+  }
+  .step__d {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+    max-width: 46ch;
+  }
+
+  /* ── Closer ───────────────────────────────────────────────────────── */
+  .closer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .closer__phone {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .closer__phone-l {
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .closer__phone a {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-underline-offset: 4px;
+  }
+</style>

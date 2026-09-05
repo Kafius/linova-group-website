@@ -197,6 +197,24 @@ export const motifs: Record<string, Motif> = {
       <circle cx="297" cy="94" r="5" stroke-width="2" opacity="0.85"/>
       <circle cx="312" cy="150" r="5" stroke-width="2"/>`,
   },
+
+  // Real estate — the lot plan: a surveyed property line, the footprint
+  // inside it, the driveway to the road, and a north arrow. The one drawing
+  // every listing actually has behind it.
+  'lot-plan': {
+    viewBox: '0 0 400 300',
+    svg: `
+      <rect x="28" y="34" width="344" height="222" stroke-width="1.5" stroke-dasharray="10 7" opacity="0.6"/>
+      <path d="M108 88 h152 v70 h60 v92 h-212 z" stroke-width="2.5"/>
+      <path d="M184 88 v162" stroke-width="1.5" opacity="0.7"/>
+      <path d="M108 176 h76" stroke-width="1.5" opacity="0.7"/>
+      <path d="M148 250 a26 26 0 0 0 26 -26" stroke-width="1.5" opacity="0.8"/>
+      <path d="M268 256 v34 M312 256 v34" stroke-width="1.5" opacity="0.6"/>
+      <path d="M14 290 h372" stroke-width="4"/>
+      <path d="M28 34 v-16 M372 34 v-16 M28 24 h344" stroke-width="1.5" opacity="0.55"/>
+      <circle cx="336" cy="70" r="17" stroke-width="1.5" opacity="0.6"/>
+      <path d="M336 56 l8 22 l-8 -8 l-8 8 z" stroke-width="1.5" fill="currentColor"/>`,
+  },
 };
 
 export const getMotif = (id: string): Motif | undefined => motifs[id];

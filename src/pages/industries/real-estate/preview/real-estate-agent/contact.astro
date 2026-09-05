@@ -1,0 +1,605 @@
+---
+// Marlowe demo — contact, and the page where the CRM flag is the design.
+//
+// The form is a qualifying form, not a "get in touch" box: intent, property
+// reference, budget band and timeline are the four things that decide whether
+// the first call is a conversation or an interview. The reference arrives by
+// itself when someone came from a listing card — that is what enquiryFor()
+// puts in the query string, and what the prefill script reads back.
+//
+// NO-OP HANDLER. Nothing here posts anywhere. There is no endpoint and no CRM
+// wired up: a sample site must never quietly swallow a real person's message.
+// On a live build this handler is replaced with the client's own CRM webhook,
+// and the "Where this goes" panel above the form describes exactly that.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoMap from '../../../../../components/demos/DemoMap.astro';
+import { chrome, routes } from '../../../../../lib/demos/marloweChrome';
+import { demoBreadcrumbs } from '../../../../../lib/demos/marloweJsonld';
+import {
+  availability,
+  brokerage,
+  business,
+  contact,
+  pageMeta,
+} from '../../../../../data/demos/real-estate-agent';
+import { formatTime } from '../../../../../lib/demos/shared';
+
+const meta = pageMeta.contact;
+const hourRows = availability.map((day) => ({
+  day: day.day,
+  open: day.note
+    ? `${formatTime(day.open)} – ${formatTime(day.close)} · ${day.note}`
+    : `${formatTime(day.open)} – ${formatTime(day.close)}`,
+}));
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.contact}
+  jsonLd={[
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.contact },
+    ]),
+  ]}
+>
+  <header class="bay ct-head">
+    <div class="wrap">
+      <p class="eyebrow">{contact.eyebrow}</p>
+      <h1 class="ct-title">{contact.heading}</h1>
+      <hr class="rule" />
+      <p class="lede ct-lede">{contact.intro}</p>
+    </div>
+  </header>
+
+  <!-- ── Details and the map ─────────────────────────────────────────── -->
+  <section class="wrap ct-grid">
+    <div class="details">
+      <div class="detail">
+        <h2 class="detail__h">{contact.phoneHeading}</h2>
+        <a class="detail__phone" href={business.phoneHref} data-analytics-event="phone_tap_contact">
+          {business.phone}
+        </a>
+        <p class="detail__note">{contact.phoneNote}</p>
+      </div>
+      <div class="detail">
+        <h2 class="detail__h">{contact.emailHeading}</h2>
+        <a class="detail__link" href={business.emailHref}>{business.email}</a>
+      </div>
+      <div class="detail">
+        <h2 class="detail__h">{contact.officeHeading}</h2>
+        <address class="detail__address">
+          <span>{brokerage.name}</span>
+          <span>{business.address.street}</span>
+          <span>{business.address.city}, {business.address.region} {business.address.postalCode}</span>
+        </address>
+        <p class="detail__note">{contact.officeNote}</p>
+      </div>
+    </div>
+
+    <DemoMap label={contact.mapLabel} seed="real-estate-agent" />
+  </section>
+
+  <!-- ── When calls get answered ─────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="hours-h">
+    <div class="wrap">
+      <h2 id="hours-h" class="section-title">{contact.hoursHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body">{contact.hoursNote}</p>
+      <table class="hours">
+        <thead>
+          <tr>
+            <th scope="col">{contact.hoursTable.day}</th>
+            <th scope="col">{contact.hoursTable.open}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {hourRows.map((row) => (
+            <tr>
+              <th scope="row">{row.day}</th>
+              <td>{row.open}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── The enquiry ─────────────────────────────────────────────────── -->
+  <section class="bay on-paper" id="enquiry" aria-labelledby="enq-h">
+    <div class="wrap enq">
+      <div class="enq__intro">
+        <h2 id="enq-h" class="section-title">{contact.enquiryHeading}</h2>
+        <hr class="rule" />
+        <p class="enq__body">{contact.enquiryBody}</p>
+
+        <div class="crm">
+          <h3 class="crm__h">{contact.crmHeading}</h3>
+          <p class="crm__b">{contact.crmBody}</p>
+        </div>
+      </div>
+
+      <form class="form" data-enquiry-form novalidate>
+        <div class="field">
+          <label class="field__label" for="ef-name">{contact.form.nameLabel}</label>
+          <input
+            class="field__input" id="ef-name" name="name" type="text" required
+            autocomplete="name" placeholder={contact.form.namePlaceholder}
+            aria-describedby="ef-name-err"
+          />
+          <p class="field__err" id="ef-name-err" data-error hidden>{contact.form.nameError}</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="ef-email">{contact.form.emailLabel}</label>
+          <input
+            class="field__input" id="ef-email" name="email" type="email" required
+            autocomplete="email" placeholder={contact.form.emailPlaceholder}
+            aria-describedby="ef-email-err"
+          />
+          <p class="field__err" id="ef-email-err" data-error hidden>{contact.form.emailError}</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="ef-phone">{contact.form.phoneLabel}</label>
+          <input
+            class="field__input" id="ef-phone" name="phone" type="tel" required
+            autocomplete="tel" placeholder={contact.form.phonePlaceholder}
+            aria-describedby="ef-phone-err"
+          />
+          <p class="field__err" id="ef-phone-err" data-error hidden>{contact.form.phoneError}</p>
+        </div>
+
+        <fieldset class="field field--set" aria-describedby="ef-intent-err">
+          <legend class="field__label">{contact.form.intentLabel}</legend>
+          <div class="choices" data-intent>
+            {/* None checked by default. A pre-selected "Buying" would put a
+                guess into the CRM on every enquiry that skipped the question,
+                and a guess in a lead record is worse than a blank. */}
+            {contact.form.intents.map((intent) => (
+              <label class="choice">
+                <input type="radio" name="intent" value={intent.id} required />
+                <span>{intent.label}</span>
+              </label>
+            ))}
+          </div>
+          <p class="field__err" id="ef-intent-err" data-error hidden>{contact.form.intentError}</p>
+        </fieldset>
+
+        <div class="field">
+          <label class="field__label" for="ef-ref">{contact.form.refLabel}</label>
+          <input
+            class="field__input" id="ef-ref" name="reference" type="text"
+            placeholder={contact.form.refPlaceholder} aria-describedby="ef-ref-note"
+          />
+          <p
+            class="field__note" id="ef-ref-note" data-ref-note
+            data-note-prefilled={contact.refPrefillNote}
+          >{contact.form.refNote}</p>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="ef-budget">{contact.form.budgetLabel}</label>
+          <select class="field__input" id="ef-budget" name="budget">
+            <option value="">{contact.form.budgetPlaceholder}</option>
+            {contact.form.budgets.map((band) => <option value={band.id}>{band.label}</option>)}
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="ef-timeline">{contact.form.timelineLabel}</label>
+          <select class="field__input" id="ef-timeline" name="timeline">
+            <option value="">{contact.form.timelinePlaceholder}</option>
+            {contact.form.timelines.map((entry) => <option value={entry.id}>{entry.label}</option>)}
+          </select>
+        </div>
+
+        <div class="field field--wide">
+          <label class="field__label" for="ef-message">{contact.form.messageLabel}</label>
+          <textarea
+            class="field__input field__input--area" id="ef-message" name="message" rows="4"
+            placeholder={contact.form.messagePlaceholder}></textarea>
+        </div>
+
+        <div class="field field--wide">
+          <label class="consent">
+            <input type="checkbox" name="marketing" value="yes" />
+            <span>{contact.form.consentLabel}</span>
+          </label>
+          <p class="field__note">{contact.form.consentNote}</p>
+        </div>
+
+        <button
+          class="btn btn--fill form__submit" type="submit"
+          data-analytics-event="enquiry_submit"
+          data-label-idle={contact.form.submit}
+          data-label-busy={contact.form.submitting}
+        >{contact.form.submit}</button>
+      </form>
+
+      <div class="form__ok" data-form-success hidden role="status">
+        <h3 class="form__ok-h">{contact.form.successHeading}</h3>
+        <p class="form__ok-b">{contact.form.successBody}</p>
+        <button class="btn btn--line" type="button" data-form-again>{contact.form.successAgain}</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Representation, and the disclaimer ──────────────────────────── -->
+  <section class="bay" aria-labelledby="rep-h">
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="rep-h" class="section-title">{contact.representationHeading}</h2>
+        <hr class="rule" />
+        <p class="section-body">{contact.representationBody}</p>
+        <p class="rep__disclaimer">{contact.disclaimer}</p>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<script>
+  // ── Prefill from the listing that sent them ──────────────────────────
+  // enquiryFor() puts the file reference in the query string, so an enquiry
+  // that started on a card arrives knowing which property it is about. This
+  // is the whole reason the reference is the agent's own and not a board's.
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  const refField = document.querySelector<HTMLInputElement>('#ef-ref');
+  const refNote = document.querySelector<HTMLElement>('[data-ref-note]');
+
+  if (ref && refField) {
+    // Whatever arrives in a query string is somebody else's text. It is never
+    // written as markup — only ever assigned to .value, which cannot execute.
+    refField.value = ref.slice(0, 40);
+    // The replacement wording comes off the element, not out of this file:
+    // every string this demo renders lives in its data module.
+    if (refNote?.dataset.notePrefilled) refNote.textContent = refNote.dataset.notePrefilled;
+    refField.closest('.field')?.classList.add('is-prefilled');
+  }
+
+  // ── Validation and the success state, with no delivery ───────────────
+  const form = document.querySelector<HTMLFormElement>('[data-enquiry-form]');
+  const success = document.querySelector<HTMLElement>('[data-form-success]');
+  const again = document.querySelector<HTMLButtonElement>('[data-form-again]');
+
+  if (form && success) {
+    const required = Array.from(
+      form.querySelectorAll<HTMLInputElement>('.field__input[required]')
+    );
+    const submit = form.querySelector<HTMLButtonElement>('[type="submit"]');
+
+    const errorFor = (field: HTMLElement) => {
+      const id = field.getAttribute('aria-describedby');
+      return id ? document.getElementById(id) : null;
+    };
+
+    const validate = (field: HTMLInputElement): boolean => {
+      const valid = field.checkValidity();
+      const error = errorFor(field);
+      if (error) error.hidden = valid;
+      field.setAttribute('aria-invalid', String(!valid));
+      field.classList.toggle('is-invalid', !valid);
+      return valid;
+    };
+
+    // Only nag after a field has been left once, never while still typing.
+    required.forEach((field) => {
+      field.addEventListener('blur', () => validate(field));
+      field.addEventListener('input', () => {
+        if (field.classList.contains('is-invalid')) validate(field);
+      });
+    });
+
+    // The radio group is validated as a group, not per input: four separate
+    // "required" errors for one question is four times the noise.
+    const intents = Array.from(form.querySelectorAll<HTMLInputElement>('input[name="intent"]'));
+    const intentError = document.getElementById('ef-intent-err');
+
+    const validateIntent = (): boolean => {
+      const chosen = intents.some((input) => input.checked);
+      if (intentError) intentError.hidden = chosen;
+      return chosen;
+    };
+
+    intents.forEach((input) => input.addEventListener('change', validateIntent));
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const results = required.map(validate);
+      const intentOk = validateIntent();
+      if (results.includes(false) || !intentOk) {
+        const badField = required.find((field) => field.classList.contains('is-invalid'));
+        (badField ?? (intentOk ? null : intents[0]))?.focus();
+        return;
+      }
+
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = submit.dataset.labelBusy ?? '';
+      }
+
+      // Stands in for the round trip a wired CRM would make. Nothing leaves
+      // the page: there is no fetch here and there is no endpoint to hit.
+      window.setTimeout(() => {
+        form.hidden = true;
+        success.hidden = false;
+        success.querySelector('h3')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }, 550);
+    });
+
+    again?.addEventListener('click', () => {
+      form.reset();
+      form.hidden = false;
+      success.hidden = true;
+      if (submit) {
+        submit.disabled = false;
+        submit.textContent = submit.dataset.labelIdle ?? '';
+      }
+      form.querySelector<HTMLInputElement>('#ef-name')?.focus();
+    });
+  }
+</script>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: var(--measure);
+    color: var(--on-ink-dim);
+  }
+
+  .ct-head {
+    padding-bottom: 1rem;
+  }
+  .ct-title {
+    font-size: var(--fs-display);
+    max-width: 15ch;
+  }
+  .ct-lede {
+    margin-top: 1.3rem;
+    max-width: 52ch;
+  }
+
+  /* ── Details + map ────────────────────────────────────────────────── */
+  .ct-grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3rem);
+    padding-top: 2rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .ct-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .details {
+    display: grid;
+    gap: 1.8rem;
+  }
+  .detail__h {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.55rem;
+  }
+  .detail__phone {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-underline-offset: 4px;
+  }
+  .detail__link {
+    text-underline-offset: 3px;
+  }
+  .detail__address {
+    font-style: normal;
+    display: grid;
+    gap: 0.15rem;
+  }
+  .detail__note {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 40ch;
+  }
+
+  /* ── Hours ────────────────────────────────────────────────────────── */
+  .hours {
+    margin-top: 1.6rem;
+    width: 100%;
+    max-width: 34rem;
+    border-collapse: collapse;
+    font-size: var(--fs-small);
+  }
+  .hours th,
+  .hours td {
+    text-align: left;
+    padding: 0.6rem 0.9rem 0.6rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .hours thead th {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    border-bottom-color: var(--accent);
+  }
+  .hours tbody th {
+    font-weight: 600;
+  }
+  .hours td {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Enquiry ──────────────────────────────────────────────────────── */
+  .enq {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+  @media (min-width: 950px) {
+    .enq {
+      grid-template-columns: 0.85fr 1.15fr;
+    }
+    /* The success panel replaces the form in the same grid column, so the
+       page does not jump a column width when it appears. */
+    .form__ok {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+  .enq__body {
+    margin-top: 1rem;
+    color: var(--on-paper-dim);
+    max-width: 42ch;
+  }
+  .crm {
+    margin-top: 2rem;
+    border-left: 3px solid var(--accent-paper);
+    padding-left: 1.1rem;
+  }
+  .crm__h {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .crm__b {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  .form {
+    display: grid;
+    gap: 1.1rem;
+  }
+  @media (min-width: 620px) {
+    .form {
+      grid-template-columns: 1fr 1fr;
+    }
+    .field--wide,
+    .field--set {
+      grid-column: 1 / -1;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+  .field--set {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .field__label {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-paper-dim);
+    padding: 0;
+  }
+  .field__input {
+    font: inherit;
+    font-size: var(--fs-small);
+    color: var(--on-paper);
+    background: var(--paper-raised);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius, 0);
+    padding: 0.75rem 0.8rem;
+    min-height: 2.9rem;
+    width: 100%;
+  }
+  .field__input--area {
+    min-height: 6rem;
+    resize: vertical;
+  }
+  .field__input::placeholder {
+    color: var(--on-paper-dim);
+  }
+  .field__input.is-invalid {
+    border-color: var(--accent-paper);
+    border-width: 2px;
+  }
+  .field__err {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent-paper);
+  }
+  .field__note {
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .is-prefilled .field__input {
+    border-color: var(--accent-paper);
+  }
+
+  .choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.2rem;
+    margin-top: 0.15rem;
+  }
+  .choice,
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: var(--fs-small);
+    /* 24px minimum target, met by the row rather than by the control. */
+    min-height: 1.6rem;
+    padding-block: 0.2rem;
+    cursor: pointer;
+  }
+  .choice input,
+  .consent input {
+    margin: 0.15rem 0 0;
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent-paper);
+    flex: none;
+  }
+
+  .form__submit {
+    justify-self: start;
+    grid-column: 1 / -1;
+  }
+
+  .form__ok {
+    border: 1px solid var(--paper-line);
+    border-top: 3px solid var(--accent-paper);
+    border-radius: var(--radius, 0);
+    padding: clamp(1.4rem, 3vw, 2rem);
+    background: var(--paper-raised);
+  }
+  .form__ok-h {
+    font-size: var(--fs-heading);
+  }
+  .form__ok-b {
+    margin: 0.8rem 0 1.4rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+
+  .rep__disclaimer {
+    margin-top: 1.4rem;
+    font-size: var(--fs-small);
+    font-style: italic;
+    color: var(--on-ink-dim);
+  }
+</style>

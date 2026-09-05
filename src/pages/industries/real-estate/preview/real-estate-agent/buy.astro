@@ -1,0 +1,63 @@
+---
+// Marlowe demo — homes for sale. The header, the map, the filters and the
+// grid come from MarloweListings; what belongs to this page alone is the
+// schema, the meta, and the small print at the bottom.
+//
+// The small print is not decoration. An agent site that shows prices and
+// invites enquiries is advertising, and the two lines at the foot of this
+// page — who represents the listings, and the solicitation disclaimer — are
+// the ones a brokerage will ask for on day one.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import MarloweListings from '../../../../../components/demos/MarloweListings.astro';
+import { chrome, routes } from '../../../../../lib/demos/marloweChrome';
+import { demoBreadcrumbs, listingList } from '../../../../../lib/demos/marloweJsonld';
+import { business, buyPage, pageMeta } from '../../../../../data/demos/real-estate-agent';
+
+const meta = pageMeta.buy;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.buy}
+  jsonLd={[
+    listingList(routes.buy, 'sale', buyPage.heading),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.buy },
+    ]),
+  ]}
+>
+  <MarloweListings deal="sale" />
+
+  <!-- ── The small print ─────────────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="print-h">
+    {/* .narrow on the same element as .wrap wins the max-width and then
+        centres itself in the viewport, which reads as an indent rather than a
+        measure. Nested, the column starts where every other section does. */}
+    <div class="wrap">
+      <div class="narrow">
+        <h2 id="print-h" class="print-h">{buyPage.disclaimerHeading}</h2>
+        <hr class="rule" />
+        <p class="print-b">{buyPage.disclaimerBody}</p>
+        <p class="print-b print-b--last">{buyPage.solicitation}</p>
+      </div>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .print-h {
+    font-size: var(--fs-heading);
+  }
+  .print-b {
+    margin-top: 1.1rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+  }
+  .print-b--last {
+    font-style: italic;
+  }
+</style>

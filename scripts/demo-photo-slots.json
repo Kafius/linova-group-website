@@ -865,5 +865,157 @@
   "pages": [
    "/industries/venue/preview/venue-event-space/space/"
   ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "agent-hero",
+  "subject": "A woman in her late thirties in a blazer standing on a residential porch, arms relaxed, ordinary street behind her, late-afternoon light. Not posed against a sold sign and not in a studio.",
+  "ratio": 0.8,
+  "maxWidth": 520,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "agent-about",
+  "subject": "The same agent at a kitchen island with a client, paperwork and a laptop between them, mid-sentence. Working, not smiling at camera.",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 560,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/about/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-kerncliff",
+  "subject": "Two-storey brick house on a mature suburban street, trees behind it, late afternoon",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-pine",
+  "subject": "Bright open-plan condo living room with a balcony door and a lake view beyond",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-orchard",
+  "subject": "Semi-detached house with a small front garden on a quiet suburban crescent",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-aldershot",
+  "subject": "Post-war brick bungalow with a wide front lawn and a single driveway",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-millcroft",
+  "subject": "Large two-storey house with a stone front and a three-car driveway, clipped lawn",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-waterdown",
+  "subject": "Modern brick-and-stucco townhouse row, end unit, small landscaped frontage",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-roseland",
+  "subject": "Renovated mid-century side-split with black window frames and a mature front yard",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/buy/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-lease-pine",
+  "subject": "Neutral rental apartment interior, empty, hardwood floor and a balcony door",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/rent/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-lease-farrier",
+  "subject": "Bright lower-level apartment with above-grade windows and pale walls, unfurnished",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/rent/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-lease-orchard",
+  "subject": "Interior of an empty townhouse: open kitchen, island, patio doors to a small yard",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/rent/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-lease-mill",
+  "subject": "Converted mill loft interior with exposed timber beams, brick wall and tall windows",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/rent/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
+ },
+ {
+  "demo": "real-estate-agent",
+  "file": "listing-lease-tyandaga",
+  "subject": "Empty bungalow living room with a picture window and refinished hardwood",
+  "ratio": 1.3333333333333333,
+  "maxWidth": 420,
+  "pages": [
+   "/industries/real-estate/preview/real-estate-agent/rent/",
+   "/industries/real-estate/preview/real-estate-agent/"
+  ]
  }
 ]

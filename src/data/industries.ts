@@ -2004,6 +2004,92 @@ export const industries: Industry[] = [
       title: 'Event venue websites | The Linova Group',
       description: 'Websites for event venues: availability and price bands up front, rooms shown set not empty, floor plans to download, and an enquiry that books the tour.'
     }
+  },
+  {
+    slug: 'real-estate',
+    name: 'Real estate agents',
+    cycleWord: 'realtors',
+    railWord: 'real estate',
+    category: 'trades',
+    covers: [
+      'residential sales',
+      'buyer representation',
+      'rentals & leasing',
+      'condo specialists',
+      'pre-construction',
+      'property management',
+      'commercial & investment',
+      'relocation',
+      'new-build & assignment',
+      'luxury & waterfront',
+      'small brokerages',
+      'agent teams'
+    ],
+    searchTerms: [
+      'realtor',
+      'real estate agent',
+      'broker',
+      'brokerage',
+      'listing agent',
+      'leasing agent',
+      'property manager',
+    ],
+    headline: 'Your listings live on somebody else\'s website, next to your competition.',
+    problem: 'The board feed is where the buyer actually looks, and it puts three other agents beside every one of your listings. What you get in return is a template site with a headshot, a stock skyline, and a search box that hands the lead straight back to the portal. The renter and the buyer land on the same undifferentiated list, and the one thing that would win either of them — that you know four blocks in detail — is a paragraph nobody scrolls to.',
+    approach: [
+      {
+        title: 'Every listing is a page on your domain',
+        detail: 'Its own photos, its own write-up, its own enquiry button — indexed under your name, not a portal\'s. The board feed still does its job; this is the version you can send, post and pay to promote.'
+      },
+      {
+        title: 'Buying and renting split at the front door',
+        detail: 'A renter needs the lease term, what\'s included and the date it\'s free. A buyer needs the taxes, the lot and the closing. One merged list serves neither, so they get separate paths from the homepage down.'
+      },
+      {
+        title: 'The enquiry arrives already qualified',
+        detail: 'The form carries the listing reference, whether they\'re buying, renting or selling, the budget band and the timeline. The first call is a conversation instead of an intake.'
+      },
+      {
+        title: 'You are the product, so you\'re above the fold',
+        detail: 'A real photograph of you, the area you actually work, and how you handle an offer — not a carousel of houses that could be anyone\'s. People choose an agent before they choose a house.'
+      },
+      {
+        title: 'A page per neighbourhood, not one per city',
+        detail: '"Homes for sale in [city]" is a fight with the portals you will not win. "Two-bedroom rentals near [neighbourhood]" is a fight you can, and it\'s where the ready-to-move searches actually are.'
+      }
+    ],
+    marketingAngles: [
+      {
+        channel: 'Neighbourhood search',
+        angle: 'The portals own the city-level terms and always will. The winnable ground is street-level and situational — school catchments, condo buildings by name, "pet-friendly rentals near the GO". Write the page a person searching that would want to land on.'
+      },
+      {
+        channel: 'Instagram and video tours',
+        angle: 'A walkthrough posted the day the listing goes live is the single highest-return thing in this vertical, and it needs somewhere to send people that isn\'t a portal. The link in bio goes to your listing page, with the enquiry on it.'
+      },
+      {
+        channel: 'The past-client list',
+        angle: 'Most of an agent\'s business is repeat and referral, and most agents keep that list in their phone. A quarterly market note to a real email list is cheaper than any ad and converts at a rate no ad matches.'
+      },
+      {
+        channel: 'Sold, not just listed',
+        angle: 'Buyers judge an agent on what closed, not on what is available today. A sold archive that stays up — with what it listed at and what it took — is proof the portal profile does not carry.'
+      }
+    ],
+    status: 'concept',
+    conceptPitch: 'No agent on the roster yet — so we built the site we would want if we were listing. It is spec work, labeled as such: a realtor-first homepage, separate paths for buying and renting, a listings map you can click through, and an enquiry that arrives knowing which property it is about. If you sell or lease, book a call and hold it next to what your brokerage handed you.',
+    motif: 'lot-plan',
+    accent: '#E8B44A',
+    accentName: 'Lockbox Brass',
+    heroPhoto: {
+      subject:
+        'An agent on a residential porch or driveway with a client, mid-conversation, ordinary suburban street behind them. Not a handshake in front of a sign and not an empty staged living room — the person is the subject.',
+      alt: 'A real estate agent talking with a couple on the steps of a house'
+    },
+    seo: {
+      title: 'Real estate agent websites | The Linova Group',
+      description: 'Websites for real estate agents and small brokerages: your listings on your own domain, separate paths for buying and renting, a clickable area map, and enquiries that arrive qualified.'
+    }
   }
 ];
 

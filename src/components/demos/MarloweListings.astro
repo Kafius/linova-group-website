@@ -1,0 +1,382 @@
+---
+// The body shared by /buy and /rent on the Marlowe demo: the header, the area
+// map, the filter row, the grid and the empty state.
+//
+// The two pages stay their own files — their meta, their schema and their
+// closing sections are genuinely different — but this middle is the same
+// machine twice, and a filter script maintained in two places is a filter
+// script that works in one.
+//
+// What is NOT shared is anything a buyer and a renter would answer
+// differently: the price bands, the bedroom steps, the spec rows on the card
+// and the accent all come from the page's own copy object, chosen here by
+// `deal` and nowhere else.
+//
+// CMS-DRIVEN: the grid renders the `listing` collection modelled in
+// real-estate-agent.cms.ts. On a live build a sold property leaves the site
+// when its status changes, without a developer.
+import ListingMap from './ListingMap.astro';
+import MarloweListing from './MarloweListing.astro';
+import type { MapPin } from '../../lib/demos/listingMap';
+import { routes } from '../../lib/demos/marloweChrome';
+import {
+  areasWith,
+  buyPage,
+  listings,
+  rentPage,
+  typesWith,
+  type Deal,
+} from '../../data/demos/real-estate-agent';
+
+interface Props {
+  deal: Deal;
+}
+
+const { deal } = Astro.props;
+const lease = deal === 'lease';
+const copy = lease ? rentPage : buyPage;
+
+const shown = listings.filter((listing) => listing.deal === deal);
+const areas = areasWith(deal);
+const types = typesWith(deal);
+
+const pins: MapPin[] = shown.map((listing, i) => ({
+  id: listing.id,
+  n: i + 1,
+  label: `${i + 1} — ${listing.address}, ${listing.neighbourhood}`,
+  deal,
+  x: listing.pin.x,
+  y: listing.pin.y,
+}));
+---
+
+<div class:list={['world', lease && 'world--lease']} data-listings-root>
+  <header class="bay ls-head">
+    <div class="wrap">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1 class="ls-title">{copy.heading}</h1>
+      <hr class="rule" />
+      <p class="lede ls-lede">{copy.intro}</p>
+      <p class="ls-count">
+        <span data-count>{shown.length}</span>
+        <span class="ls-count__l">{copy.countLabel}</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- ── The map ───────────────────────────────────────────────────── -->
+  <section class="bay ls-map" aria-labelledby="map-h">
+    <div class="wrap">
+      <h2 id="map-h" class="ls-h2">{copy.mapHeading}</h2>
+      <p class="ls-note">{copy.mapBody}</p>
+      <ListingMap
+        pins={pins}
+        label={copy.mapLabel}
+        seed={`marlowe-${deal}`}
+        areaLabel="Burlington & west Halton"
+        waterLabel="Lake Ontario"
+      />
+    </div>
+  </section>
+
+  <!-- ── Filters ───────────────────────────────────────────────────── -->
+  <section class="ls-filters" aria-labelledby="filters-h">
+    <div class="wrap ls-filters__in">
+      <h2 id="filters-h" class="ls-filters__h">{copy.filtersHeading}</h2>
+      {/* No submit: the list narrows on change. There is nothing to send, so a
+          form with a button would be a button that does what already
+          happened. Without JS every listing stays visible, which is the right
+          fallback for a list. */}
+      <div class="ls-filters__row">
+        <p class="field">
+          <label class="field__l" for="f-area">{copy.filterAreaLabel}</label>
+          <select class="field__s" id="f-area" data-filter="area">
+            <option value="">{copy.anyLabel}</option>
+            {areas.map((area) => <option value={area}>{area}</option>)}
+          </select>
+        </p>
+        <p class="field">
+          <label class="field__l" for="f-type">{copy.filterTypeLabel}</label>
+          <select class="field__s" id="f-type" data-filter="type">
+            <option value="">{copy.anyLabel}</option>
+            {types.map((type) => <option value={type}>{type}</option>)}
+          </select>
+        </p>
+        <p class="field">
+          <label class="field__l" for="f-beds">{copy.filterBedsLabel}</label>
+          <select class="field__s" id="f-beds" data-filter="beds">
+            {copy.bedOptions.map((option) => (
+              <option value={option.id} data-min={option.min || ''}>{option.label}</option>
+            ))}
+          </select>
+        </p>
+        <p class="field">
+          <label class="field__l" for="f-price">{copy.filterPriceLabel}</label>
+          <select class="field__s" id="f-price" data-filter="price">
+            {copy.priceBands.map((band) => (
+              <option value={band.id} data-max={Number.isFinite(band.max) ? band.max : ''}>
+                {band.label}
+              </option>
+            ))}
+          </select>
+        </p>
+        <button class="ls-reset" type="button" data-filter-reset hidden>{copy.resetLabel}</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The listings ──────────────────────────────────────────────── -->
+  <section class="bay ls-grid-bay" aria-label={copy.heading}>
+    <div class="wrap">
+      <ul class="ls-grid">
+        {shown.map((listing, i) => <MarloweListing listing={listing} index={i + 1} />)}
+      </ul>
+
+      <div class="ls-empty" data-empty hidden>
+        <h2 class="ls-h2">{copy.emptyHeading}</h2>
+        <p class="ls-note">{copy.emptyBody}</p>
+        <a class="btn btn--fill" href={routes.enquiry} data-analytics-event="enquiry_cta_empty">
+          {copy.emptyCta}
+        </a>
+      </div>
+
+      {/* Announced rather than shown: the count above changes, and a filter
+          that silently rewrites a list is a filter a screen reader user has
+          to go hunting through to understand. */}
+      <p class="sr-live" role="status" aria-live="polite" data-live></p>
+    </div>
+  </section>
+</div>
+
+<script>
+  // ── Filter: four selects over the rendered list ──────────────────────
+  // Everything is already on the page; this hides list items rather than
+  // fetching or re-rendering. With the script absent every listing shows,
+  // which is the correct fallback — a list that needs JS to have contents is
+  // a list that does not exist for a crawler.
+  const root = document.querySelector<HTMLElement>('[data-listings-root]');
+
+  if (root) {
+    const selects = Array.from(root.querySelectorAll<HTMLSelectElement>('[data-filter]'));
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-listing]'));
+    const count = root.querySelector<HTMLElement>('[data-count]');
+    const empty = root.querySelector<HTMLElement>('[data-empty]');
+    const live = root.querySelector<HTMLElement>('[data-live]');
+    const reset = root.querySelector<HTMLButtonElement>('[data-filter-reset]');
+    const countLabel = root.querySelector<HTMLElement>('.ls-count__l')?.textContent ?? '';
+
+    const valueOf = (name: string) =>
+      selects.find((select) => select.dataset.filter === name)?.value ?? '';
+
+    const numberFrom = (name: string, attribute: 'min' | 'max'): number | null => {
+      const select = selects.find((s) => s.dataset.filter === name);
+      const option = select?.selectedOptions[0];
+      const raw = option?.dataset[attribute];
+      return raw ? Number(raw) : null;
+    };
+
+    const apply = () => {
+      const area = valueOf('area');
+      const type = valueOf('type');
+      const minBeds = numberFrom('beds', 'min');
+      const maxPrice = numberFrom('price', 'max');
+
+      let visible = 0;
+
+      items.forEach((item) => {
+        const matches =
+          (!area || item.dataset.area === area) &&
+          (!type || item.dataset.type === type) &&
+          (minBeds === null || Number(item.dataset.beds) >= minBeds) &&
+          (maxPrice === null || Number(item.dataset.price) <= maxPrice);
+
+        item.hidden = !matches;
+        if (matches) visible += 1;
+
+        // The pin follows its card, so the map never offers a route to a
+        // listing the filter has taken away.
+        const pin = root.querySelector<SVGAElement>(`[data-map-pin="${item.dataset.listing}"]`);
+        if (pin) pin.toggleAttribute('hidden', !matches);
+      });
+
+      if (count) count.textContent = String(visible);
+      if (empty) empty.hidden = visible > 0;
+      if (live) live.textContent = `${visible} ${countLabel}`;
+
+      const filtered = Boolean(area || type || minBeds || maxPrice);
+      if (reset) reset.hidden = !filtered;
+    };
+
+    selects.forEach((select) => select.addEventListener('change', apply));
+
+    reset?.addEventListener('click', () => {
+      selects.forEach((select) => {
+        select.selectedIndex = 0;
+      });
+      apply();
+    });
+  }
+</script>
+
+<style>
+  /* The lease side of the site runs on the second accent, and it is set once
+     here rather than on each element: every accent-coloured thing inside —
+     the eyebrow, the rules, the filled buttons, the pins, the cards — reads
+     the variable and follows. */
+  .world--lease {
+    --accent: var(--accent-alt);
+    --accent-paper: var(--accent-alt-paper);
+    --on-accent: var(--on-accent-alt);
+  }
+
+  .ls-head {
+    padding-bottom: 1.5rem;
+  }
+  .ls-title {
+    font-size: var(--fs-display);
+    max-width: 14ch;
+  }
+  .ls-lede {
+    margin-top: 1.3rem;
+    max-width: 54ch;
+  }
+  .ls-count {
+    margin-top: 1.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .ls-count__l {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+
+  .ls-h2 {
+    font-size: var(--fs-heading);
+  }
+  .ls-note {
+    margin-top: 0.6rem;
+    margin-bottom: 1.4rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+    max-width: 56ch;
+  }
+
+  .ls-map {
+    padding-top: 1rem;
+  }
+
+  /* ── Filters ──────────────────────────────────────────────────────── */
+  /* Deliberately not sticky. The ribbon and nav above already stick as one
+     block whose height changes when the nav wraps, so a second sticky bar
+     under it either overlaps or needs the chrome's height measured in JS —
+     and neither is worth it for a four-select row the page scrolls past in
+     one flick. */
+  .ls-filters {
+    background: var(--ink-raised);
+    border-block: 1px solid var(--ink-line);
+  }
+  .ls-filters__in {
+    padding-block: 1rem;
+  }
+  .ls-filters__h {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+    margin-bottom: 0.7rem;
+  }
+  .ls-filters__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.8rem 1.1rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.3rem;
+    min-width: 10rem;
+    flex: 1 1 10rem;
+  }
+  .field__l {
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .field__s {
+    font: inherit;
+    font-size: var(--fs-small);
+    color: var(--on-ink);
+    background: var(--ink);
+    border: 1px solid var(--ink-line);
+    border-radius: var(--radius, 0);
+    padding: 0.6rem 0.7rem;
+    min-height: 2.75rem;
+  }
+  .ls-reset {
+    font: inherit;
+    font-size: var(--fs-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius, 0);
+    padding: 0.7rem 1rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+  }
+  .ls-reset:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  /* ── Grid ─────────────────────────────────────────────────────────── */
+  .ls-grid {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 640px) {
+    .ls-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1050px) {
+    .ls-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .ls-empty {
+    margin-top: 2rem;
+    border: 1px dashed var(--ink-line);
+    border-radius: var(--radius, 0);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .ls-empty .ls-note {
+    margin-bottom: 1.2rem;
+  }
+
+  .sr-live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+// Marlowe demo — properties for lease. Same machine as /buy, and deliberately
+// not the same page: the accent is the second one, the spec rows answer a
+// renter's four questions instead of a buyer's, and the section at the foot
+// is the one thing a leasing page can do that a portal listing never does —
+// tell somebody what they will be asked for before they ask.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import MarloweListings from '../../../../../components/demos/MarloweListings.astro';
+import { chrome, routes } from '../../../../../lib/demos/marloweChrome';
+import { demoBreadcrumbs, listingList } from '../../../../../lib/demos/marloweJsonld';
+import { business, pageMeta, rentPage } from '../../../../../data/demos/real-estate-agent';
+
+const meta = pageMeta.rent;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  current={routes.rent}
+  jsonLd={[
+    listingList(routes.rent, 'lease', rentPage.heading),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.rent },
+    ]),
+  ]}
+>
+  <MarloweListings deal="lease" />
+
+  <!-- ── What a landlord will ask for ────────────────────────────────── -->
+  <section class="bay on-paper apply" aria-labelledby="apply-h">
+    <div class="wrap">
+      <h2 id="apply-h" class="apply-h">{rentPage.applyHeading}</h2>
+      <hr class="rule" />
+      <p class="apply-b">{rentPage.applyBody}</p>
+      <ol class="apply-list">
+        {rentPage.applyItems.map((item, i) => (
+          <li class="apply-item">
+            <p class="apply-item__n">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="apply-item__t">{item.title}</h3>
+            <p class="apply-item__d">{item.detail}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="apply-note">{rentPage.applyNote}</p>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  /* The lease accent carries through to the foot of the page, so a renter
+     never sees the buying colour on this route. */
+  .apply {
+    --accent-paper: var(--accent-alt-paper);
+  }
+
+  .apply-h {
+    font-size: var(--fs-title);
+  }
+  .apply-b {
+    margin-top: 1rem;
+    max-width: var(--measure);
+    color: var(--on-paper-dim);
+  }
+  .apply-list {
+    margin: 2.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.8rem 2rem;
+  }
+  @media (min-width: 700px) {
+    .apply-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .apply-item {
+    border-top: 1px solid var(--paper-line);
+    padding-top: 1rem;
+  }
+  .apply-item__n {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--accent-paper);
+  }
+  .apply-item__t {
+    margin-top: 0.5rem;
+    font-size: var(--fs-dish);
+  }
+  .apply-item__d {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+    max-width: 46ch;
+  }
+  .apply-note {
+    margin-top: 2.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--paper-line);
+    font-size: var(--fs-small);
+    font-style: italic;
+    color: var(--on-paper-dim);
+  }
+</style>

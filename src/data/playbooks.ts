@@ -115,6 +115,7 @@ const CLOVER_VENUE =
   'Enquiry and date-hold forms on the site; venue deposits and final balances are invoiced through Clover.';
 const CLOVER_MOBILE =
   'Clover Go / mobile terminal handles payment on site; the page and social feed carry location, schedule and catering enquiries.';
+const CLOVER_BROKERAGE = `${CLOVER_INVOICING_CRM} Nothing about a transaction can run through the site anyway: a deposit goes to the brokerage's trust account and first-and-last is handled at signing, so Clover covers only what the agent genuinely bills — staging, photography and admin fees.`;
 
 const BASIC = 'Basic Maintenance';
 const STANDARD = 'Standard Maintenance';
@@ -687,6 +688,34 @@ export const playbooks: PackagePlaybook[] = [
         { id: 'order', label: 'pre-order', path: '/industries/restaurants/preview/fnb-bakery-pre-order/pre-order' },
         { id: 'cakes', label: 'custom cakes', path: '/industries/restaurants/preview/fnb-bakery-pre-order/cakes' },
         { id: 'contact', label: 'contact', path: '/industries/restaurants/preview/fnb-bakery-pre-order/contact' },
+      ],
+    },
+  },
+
+  /* 20 ── no clients yet · $4,891 year one if one signs — the spec build */
+  {
+    slug: 'real-estate-agent',
+    industrySlug: 'real-estate',
+    name: 'Real Estate — Agent Site',
+    category: 'Professional & Personal Services',
+    businessTypes: ['Real estate agent', 'Small brokerage', 'Rentals & leasing'],
+    packageTier: 'Standard Package',
+    pageCount: '5–7',
+    features: { seoSetup: true, ecommerce: false, crm: true, cms: true, analytics: true, booking: false, domainHosting: true },
+    cloverFit: CLOVER_BROKERAGE,
+    pricing: { build: 2650, maintenancePlan: STANDARD, maintenanceMonthly: 49, socialMonthly: 0, seoMonthly: 150, totalMonthly: 199, yearOneValue: 4891 },
+    status: 'live',
+    demoUrl: '/industries/real-estate/preview/real-estate-agent/',
+    demo: {
+      displayUrl: 'elenamarlowe.ca',
+      premise:
+        'The only build in the catalogue with two front doors. Buying and renting never merge — separate pages, separate accents, separate spec rows, because a lease term and a tax bill are not the same question. Listings are a CMS collection pinned to a drawn area map, and the enquiry arrives carrying the reference of whichever property sent it.',
+      pages: [
+        { id: 'home', label: 'home', path: '/industries/real-estate/preview/real-estate-agent/' },
+        { id: 'buy', label: 'for sale', path: '/industries/real-estate/preview/real-estate-agent/buy' },
+        { id: 'rent', label: 'for lease', path: '/industries/real-estate/preview/real-estate-agent/rent' },
+        { id: 'about', label: 'about', path: '/industries/real-estate/preview/real-estate-agent/about' },
+        { id: 'contact', label: 'contact', path: '/industries/real-estate/preview/real-estate-agent/contact' },
       ],
     },
   },

@@ -1,0 +1,380 @@
+---
+// One listing card for the Elena Marlowe demo. Rendered on three pages — the
+// homepage's featured strip, /buy and /rent — so it lives here once rather
+// than three times, which is how the sale card and the lease card would
+// quietly grow apart.
+//
+// It renders an <li> and expects to sit inside a <ul>: a set of listings is a
+// list, and the filter on the two listing pages hides whole list items.
+//
+// THE SALE/LEASE SPLIT IS DONE WITH A VARIABLE, NOT A SECOND COMPONENT. A
+// lease card redefines --accent (and --on-accent) to the theme's second
+// accent for its own subtree, so every accent-coloured thing inside it — the
+// price, the chip, the filled button — turns slate without any of them
+// knowing there was a choice. The two spec lists below are genuinely
+// different questions, though, and those are branched explicitly.
+import DemoImage from './DemoImage.astro';
+import { enquiryFor } from '../../lib/demos/marloweChrome';
+import {
+  buyPage,
+  flagLabels,
+  formatMoney,
+  groupDigits,
+  rentPage,
+  type Listing,
+} from '../../data/demos/real-estate-agent';
+
+interface Props {
+  listing: Listing;
+  /** the number on the map pin. Omitted on the homepage, which has no map. */
+  index?: number;
+  /** homepage variant: photo, price, address and one line of specs */
+  compact?: boolean;
+}
+
+const { listing, index, compact = false } = Astro.props;
+const lease = listing.deal === 'lease';
+const copy = lease ? rentPage : buyPage;
+
+const specLine = [
+  listing.type,
+  `${listing.beds} bed`,
+  `${listing.baths} bath`,
+  listing.sqft ? `${groupDigits(listing.sqft)} sq ft` : null,
+]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<li
+  class:list={['lst', lease && 'lst--lease', compact && 'lst--compact']}
+  id={`listing-${listing.id}`}
+  data-listing={listing.id}
+  data-area={listing.neighbourhood}
+  data-type={listing.type}
+  data-price={listing.price}
+  data-beds={listing.beds}
+>
+  <div class="lst__media">
+    <DemoImage
+      demo="real-estate-agent"
+      file={listing.photo.file}
+      subject={listing.photo.subject}
+      alt={listing.photo.alt}
+      ratio="4 / 3"
+      sizes="(min-width: 1000px) 33vw, (min-width: 640px) 48vw, 100vw"
+      widths={[420, 640, 900]}
+      class="lst__shot"
+    />
+    {listing.flag && <p class="lst__flag">{flagLabels[listing.flag]}</p>}
+    {index !== undefined && <p class="lst__n" aria-hidden="true">{index}</p>}
+  </div>
+
+  <div class="lst__body">
+    <p class="lst__price">
+      {formatMoney(listing.price)}
+      {lease && <span class="lst__per">{rentPage.perMonth}</span>}
+    </p>
+
+    <h3 class="lst__addr">{listing.address}</h3>
+    <p class="lst__where">{listing.neighbourhood} · {listing.city}</p>
+    <p class="lst__spec-line">{specLine}</p>
+
+    {listing.openHouse && <p class="lst__open">{listing.openHouse}</p>}
+
+    {!compact && (
+      <>
+        <p class="lst__blurb">{listing.blurb}</p>
+
+        {/* ── The two different questions ──────────────────────────── */}
+        {lease ? (
+          <dl class="lst__spec">
+            <div class="lst__row">
+              <dt>{rentPage.specAvailable}</dt>
+              <dd>{listing.available}</dd>
+            </div>
+            <div class="lst__row">
+              <dt>{rentPage.specTerm}</dt>
+              <dd>{listing.leaseTerm}</dd>
+            </div>
+            <div class="lst__row">
+              <dt>{rentPage.specUtilities}</dt>
+              <dd>{listing.utilities?.join(' · ')}</dd>
+            </div>
+            <div class="lst__row">
+              <dt>{rentPage.specPets}</dt>
+              <dd>{listing.pets}</dd>
+            </div>
+            <div class="lst__row">
+              <dt>{rentPage.specParking}</dt>
+              <dd class="num">{listing.parking === 0 ? 'None' : `${listing.parking} space${listing.parking > 1 ? 's' : ''}`}</dd>
+            </div>
+          </dl>
+        ) : (
+          <dl class="lst__spec">
+            {listing.taxes && (
+              <div class="lst__row">
+                <dt>{buyPage.specTaxes}</dt>
+                <dd class="num">{formatMoney(listing.taxes)} <span class="lst__note">{buyPage.specTaxesNote}</span></dd>
+              </div>
+            )}
+            {listing.lot && (
+              <div class="lst__row">
+                <dt>{buyPage.specLot}</dt>
+                <dd class="num">{listing.lot}</dd>
+              </div>
+            )}
+            {listing.condoFee && (
+              <div class="lst__row">
+                <dt>{buyPage.specFee}</dt>
+                <dd class="num">{formatMoney(listing.condoFee)} <span class="lst__note">{buyPage.specFeeNote}</span></dd>
+              </div>
+            )}
+            {listing.feeIncludes && (
+              <div class="lst__row">
+                <dt>{buyPage.specFeeIncludes}</dt>
+                <dd>{listing.feeIncludes.join(' · ')}</dd>
+              </div>
+            )}
+            <div class="lst__row">
+              <dt>{buyPage.specParking}</dt>
+              <dd class="num">{listing.parking} space{listing.parking > 1 ? 's' : ''}</dd>
+            </div>
+          </dl>
+        )}
+
+        <h4 class="lst__hl-h">{copy.highlightsLabel}</h4>
+        <ul class="lst__hl">
+          {listing.highlights.map((point) => <li>{point}</li>)}
+        </ul>
+      </>
+    )}
+
+    <div class="lst__foot">
+      <a
+        class="btn btn--fill lst__cta"
+        href={enquiryFor(listing.ref)}
+        data-analytics-event={lease ? 'enquiry_cta_lease_card' : 'enquiry_cta_sale_card'}
+      >
+        {copy.enquireCta}
+        <span class="lst__sr"> — {listing.address}</span>
+      </a>
+      {!compact && <p class="lst__ref">{copy.specRef} {listing.ref}</p>}
+    </div>
+  </div>
+</li>
+
+<style>
+  .lst {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ink-line);
+    background: var(--ink);
+    border-radius: var(--radius, 0);
+    overflow: hidden;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  /* The whole lease side of the site runs on the second accent. Redefining
+     the variable here means .btn--fill, the price and the chip all follow
+     without a single one of them naming a colour. */
+  .lst--lease {
+    --accent: var(--accent-alt);
+    --on-accent: var(--on-accent-alt);
+  }
+  .lst.is-lit {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  .lst__media {
+    position: relative;
+  }
+  .lst__flag {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius, 0);
+  }
+  /* The map number. Bottom right so it never sits under the chip. */
+  .lst__n {
+    position: absolute;
+    bottom: 0.7rem;
+    right: 0.7rem;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .lst__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.3rem;
+    padding: clamp(1rem, 2.4vw, 1.5rem);
+  }
+
+  .lst__price {
+    font-family: var(--font-mono);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.55rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .lst__per {
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--on-ink-dim);
+  }
+
+  .lst__addr {
+    font-size: var(--fs-dish);
+    line-height: 1.2;
+  }
+  .lst__where,
+  .lst__spec-line {
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .lst__spec-line {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: -0.01em;
+  }
+
+  .lst__open {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .lst__blurb {
+    margin-top: 0.85rem;
+    font-size: var(--fs-small);
+    line-height: 1.55;
+    color: var(--on-ink-dim);
+  }
+
+  .lst__spec {
+    margin: 1.1rem 0 0;
+    display: grid;
+    gap: 0.35rem;
+    border-top: 1px solid var(--ink-line);
+    padding-top: 0.9rem;
+    font-size: var(--fs-small);
+  }
+  .lst__row {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 0.5rem 0.9rem;
+  }
+  .lst__row dt {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+    padding-top: 0.15rem;
+  }
+  .lst__row dd {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.45;
+  }
+  /* Mono is for figures a buyer reads down a column — a tax bill, a lot size,
+     a fee. On "Heat included · Water included · Hydro paid by tenant" it is
+     just a typewriter, and it costs three lines of wrapping in a card this
+     narrow. */
+  .lst__row dd.num {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+  .lst__note {
+    font-family: var(--font-body);
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+
+  .lst__hl-h {
+    margin-top: 1.1rem;
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .lst__hl {
+    margin: 0.6rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.3rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .lst__hl li {
+    padding-left: 1rem;
+    position: relative;
+  }
+  .lst__hl li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 6px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .lst__foot {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .lst__cta {
+    position: relative;
+    font-size: var(--fs-small);
+    padding: 0.7rem 1.15rem;
+  }
+  /* The visible label is the same on every card, so the address rides along
+     for anyone reading the links out of context. */
+  .lst__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .lst__ref {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--on-ink-dim);
+  }
+
+  .lst--compact .lst__foot {
+    padding-top: 0.9rem;
+  }
+</style>

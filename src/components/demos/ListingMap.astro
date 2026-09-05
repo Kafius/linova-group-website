@@ -1,0 +1,328 @@
+---
+// A drawn area map with a numbered pin per listing, for the two listing pages
+// of the real-estate demo.
+//
+// WHY IT IS DRAWN RATHER THAN EMBEDDED — the same reason DemoMap is, and one
+// more. The agent, the brokerage and every property are fictional, so there is
+// nothing to geocode; a real Maps embed would drop twelve pins on twelve
+// people's actual houses. And even on a live build, the pin on a tenanted
+// rental should be the block and not the door, which an iframe of somebody
+// else's map does not let you decide.
+//
+// So it is generated: a schematic town — grid streets, a highway, a water
+// edge, a ridge — deterministic from the seed, with the pins placed from each
+// listing's own coordinates so the same listing lands in the same place on
+// every build. Explicitly a diagram, and the caption says so.
+//
+// The pins are anchors, not decorated circles: they move focus to the card
+// they belong to, so the map is usable from a keyboard and means something to
+// a screen reader. Hovering or focusing either half lights the other.
+import { hashSeed, mulberry32 } from '../../lib/demos/seed';
+import type { MapPin } from '../../lib/demos/listingMap';
+
+interface Props {
+  pins: MapPin[];
+  /** the map's accessible name and its caption */
+  label: string;
+  /** stable per page, so the same streets are drawn every build */
+  seed: string;
+  /** printed along the top of the drawing */
+  areaLabel?: string;
+  /** printed in the water band; omitted draws no water */
+  waterLabel?: string;
+  ratio?: string;
+  class?: string;
+}
+
+const {
+  pins,
+  label,
+  seed,
+  areaLabel = '',
+  waterLabel = '',
+  ratio = '8 / 5',
+  class: klass,
+} = Astro.props;
+
+const W = 800;
+const H = 500;
+const rand = mulberry32(hashSeed(seed));
+const between = (lo: number, hi: number) => lo + rand() * (hi - lo);
+
+// Streets on a jittered grid. Four running north-south, three east-west, plus
+// the highway cutting across on a diagonal the grid does not respect — which
+// is what actually makes a drawn town read as a town.
+const verticals = [0.16, 0.38, 0.6, 0.83].map((x) => W * (x + between(-0.025, 0.025)));
+const horizontals = [0.2, 0.45, 0.68].map((y) => H * (y + between(-0.03, 0.03)));
+
+const waterY = waterLabel ? H - between(46, 66) : null;
+const highwayY = H * 0.33 + between(-14, 14);
+
+// The ridge — a contour line along the top left, the way a plan sheet draws
+// rising ground.
+const ridgeY = H * 0.11 + between(-8, 8);
+
+// Building footprints, kept off the streets and out of the water so the grid
+// stays legible under the pins.
+const blocks = Array.from({ length: 22 }, () => {
+  const w = between(24, 62);
+  const h = between(18, 44);
+  return { x: between(22, W - w - 22), y: between(40, H - h - 80), w, h, r: rand() > 0.78 };
+}).filter(
+  (b) =>
+    !horizontals.some((y) => Math.abs(b.y + b.h / 2 - y) < 30) &&
+    !verticals.some((x) => Math.abs(b.x + b.w / 2 - x) < 30) &&
+    Math.abs(b.y + b.h / 2 - highwayY) > 34 &&
+    (waterY === null || b.y + b.h < waterY - 12)
+);
+
+const park = {
+  x: between(W * 0.62, W * 0.74),
+  y: between(H * 0.52, H * 0.6),
+  w: between(120, 160),
+  h: between(70, 95),
+};
+
+// A pin draws upward: stem 24 tall, then a 22-radius halo above that. So a
+// coordinate closer to the top than about 66 puts the head outside the
+// viewBox and the number gets clipped. Clamped here rather than trusted to
+// every listing's data being sensible.
+const PIN_HEAD = 66;
+const placed = pins.map((pin) => ({
+  ...pin,
+  cx: Math.round(pin.x * W),
+  cy: Math.max(Math.round(pin.y * H), PIN_HEAD),
+}));
+---
+
+<figure class:list={['lmap', klass]} style={`--lmap-ratio:${ratio}`}>
+  <svg
+    class="lmap__svg"
+    viewBox={`0 0 ${W} ${H}`}
+    role="img"
+    aria-label={label}
+    preserveAspectRatio="xMidYMid slice"
+  >
+    <rect width={W} height={H} class="lmap__ground" />
+
+    {waterY !== null && (
+      <path
+        class="lmap__water"
+        d={`M0 ${waterY} Q ${W * 0.28} ${waterY - 22} ${W * 0.52} ${waterY} T ${W} ${waterY - 10} L ${W} ${H} L 0 ${H} Z`}
+      />
+    )}
+
+    <rect class="lmap__park" x={park.x} y={park.y} width={park.w} height={park.h} rx="5" />
+
+    {blocks.map((b) => (
+      <rect class="lmap__block" x={b.x} y={b.y} width={b.w} height={b.h} rx={b.r ? 3 : 0} />
+    ))}
+
+    {verticals.map((x) => <line class="lmap__road" x1={x} y1="0" x2={x} y2={waterY ?? H} />)}
+    {horizontals.map((y) => <line class="lmap__road" x1="0" y1={y} x2={W} y2={y} />)}
+
+    {/* The highway, drawn over the grid because that is what it does. */}
+    <line
+      class="lmap__road lmap__road--major"
+      x1="0"
+      y1={highwayY + 26}
+      x2={W}
+      y2={highwayY - 26}
+    />
+
+    {/* Rising ground, as a plan sheet draws it: a contour, not a hill. */}
+    <path
+      class="lmap__ridge"
+      d={`M0 ${ridgeY + 26} C ${W * 0.2} ${ridgeY - 6}, ${W * 0.42} ${ridgeY + 30}, ${W * 0.6} ${ridgeY + 6} S ${W * 0.9} ${ridgeY - 12}, ${W} ${ridgeY + 14}`}
+    />
+
+    {areaLabel && <text class="lmap__area" x="22" y="26">{areaLabel}</text>}
+    {waterLabel && waterY !== null && (
+      <text class="lmap__water-label" x="22" y={waterY + 34}>{waterLabel}</text>
+    )}
+
+    {placed.map((pin) => (
+      <a
+        class:list={['lmap__pin', pin.deal === 'lease' && 'lmap__pin--lease']}
+        href={`#listing-${pin.id}`}
+        data-map-pin={pin.id}
+        aria-label={pin.label}
+      >
+        <path class="lmap__pin-stem" d={`M${pin.cx} ${pin.cy} L${pin.cx} ${pin.cy - 24}`} />
+        <circle class="lmap__pin-halo" cx={pin.cx} cy={pin.cy - 40} r="22" />
+        <circle class="lmap__pin-dot" cx={pin.cx} cy={pin.cy - 40} r="16" />
+        <text class="lmap__pin-n" x={pin.cx} y={pin.cy - 34}>{pin.n}</text>
+        <circle class="lmap__pin-base" cx={pin.cx} cy={pin.cy} r="3.5" />
+      </a>
+    ))}
+  </svg>
+  <figcaption class="lmap__caption">{label} — a diagram, not a survey. Pins show the block, not the door.</figcaption>
+</figure>
+
+<script>
+  // Light the card when a pin is hovered or focused, and the pin when the card
+  // is. Nothing here is required for the map to work — the pins are anchors
+  // and the anchors resolve with the script absent.
+  const pins = Array.from(document.querySelectorAll<SVGAElement>('[data-map-pin]'));
+  if (pins.length) {
+    const cardFor = (id: string) => document.querySelector<HTMLElement>(`[data-listing="${id}"]`);
+    const pinFor = (id: string) => document.querySelector<SVGAElement>(`[data-map-pin="${id}"]`);
+
+    const light = (id: string, on: boolean) => {
+      cardFor(id)?.classList.toggle('is-lit', on);
+      pinFor(id)?.classList.toggle('is-lit', on);
+    };
+
+    pins.forEach((pin) => {
+      const id = pin.dataset.mapPin;
+      if (!id) return;
+      pin.addEventListener('mouseenter', () => light(id, true));
+      pin.addEventListener('mouseleave', () => light(id, false));
+      pin.addEventListener('focus', () => light(id, true));
+      pin.addEventListener('blur', () => light(id, false));
+
+      const card = cardFor(id);
+      card?.addEventListener('mouseenter', () => light(id, true));
+      card?.addEventListener('mouseleave', () => light(id, false));
+    });
+  }
+</script>
+
+<style>
+  /* Same contract as DemoMap: every colour goes through a local variable so a
+     section carrying .on-paper can redefine the set, rather than the SVG
+     painting ink tokens onto a dark ground. */
+  .lmap {
+    --lmap-ground: var(--ink-raised);
+    --lmap-ink: var(--on-ink);
+    --lmap-ink-dim: var(--on-ink-dim);
+    --lmap-line: var(--ink-line);
+    --lmap-sale: var(--accent);
+    --lmap-lease: var(--accent-alt);
+    --lmap-on-pin: var(--on-accent);
+
+    margin: 0;
+    position: relative;
+  }
+  :global(.on-paper) .lmap {
+    --lmap-ground: var(--paper-raised);
+    --lmap-ink: var(--on-paper);
+    --lmap-ink-dim: var(--on-paper-dim);
+    --lmap-line: var(--paper-line);
+    --lmap-sale: var(--accent-paper);
+    --lmap-lease: var(--accent-alt-paper);
+    --lmap-on-pin: #10201d;
+  }
+
+  .lmap__svg {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--lmap-ratio, 8 / 5);
+    border: 1px solid var(--lmap-line);
+    background: var(--lmap-ground);
+  }
+
+  .lmap__ground {
+    fill: var(--lmap-ground);
+  }
+  .lmap__water {
+    fill: color-mix(in srgb, var(--lmap-lease) 18%, var(--lmap-ground));
+  }
+  .lmap__park {
+    fill: color-mix(in srgb, var(--lmap-ink) 7%, transparent);
+  }
+  .lmap__block {
+    fill: color-mix(in srgb, var(--lmap-ink) 9%, transparent);
+  }
+  .lmap__road {
+    stroke: color-mix(in srgb, var(--lmap-ink) 15%, transparent);
+    stroke-width: 8;
+    stroke-linecap: square;
+  }
+  .lmap__road--major {
+    stroke: color-mix(in srgb, var(--lmap-ink) 24%, transparent);
+    stroke-width: 16;
+  }
+  .lmap__ridge {
+    fill: none;
+    stroke: color-mix(in srgb, var(--lmap-ink) 30%, transparent);
+    stroke-width: 2;
+    stroke-dasharray: 12 8;
+  }
+
+  .lmap__area,
+  .lmap__water-label {
+    fill: var(--lmap-ink-dim);
+    font-family: var(--font-body);
+    font-size: 17px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .lmap__water-label {
+    font-size: 15px;
+  }
+
+  /* ── Pins ───────────────────────────────────────────────────────────── */
+  .lmap__pin {
+    cursor: pointer;
+  }
+  .lmap__pin-stem {
+    stroke: var(--lmap-sale);
+    stroke-width: 3;
+    fill: none;
+  }
+  .lmap__pin-halo {
+    fill: color-mix(in srgb, var(--lmap-sale) 26%, transparent);
+    opacity: 0;
+    transition: opacity 0.16s ease;
+  }
+  .lmap__pin-dot,
+  .lmap__pin-base {
+    fill: var(--lmap-sale);
+  }
+  .lmap__pin-n {
+    fill: var(--lmap-on-pin);
+    font-family: var(--font-mono);
+    font-size: 17px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+
+  .lmap__pin--lease .lmap__pin-stem {
+    stroke: var(--lmap-lease);
+  }
+  .lmap__pin--lease .lmap__pin-halo {
+    fill: color-mix(in srgb, var(--lmap-lease) 26%, transparent);
+  }
+  .lmap__pin--lease .lmap__pin-dot,
+  .lmap__pin--lease .lmap__pin-base {
+    fill: var(--lmap-lease);
+  }
+  .lmap__pin--lease .lmap__pin-n {
+    fill: var(--on-accent-alt);
+  }
+
+  .lmap__pin:hover .lmap__pin-halo,
+  .lmap__pin:focus-visible .lmap__pin-halo,
+  .lmap__pin.is-lit .lmap__pin-halo {
+    opacity: 1;
+  }
+  .lmap__pin:focus-visible {
+    outline: 2px solid var(--lmap-ink);
+    outline-offset: 2px;
+  }
+
+  .lmap__caption {
+    margin-top: 0.6rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--lmap-ink-dim);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lmap__pin-halo {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,387 @@
+---
+// Marlowe demo — about. The page the whole site is really selling, since in
+// this vertical the person is the product.
+//
+// The sold table is the one piece of proof that matters here, and it is
+// deliberately street-and-area only: a sold record is somebody's home and
+// somebody's finances, and on a live build it publishes with the seller's
+// consent or not at all. The note under the table says so on the page rather
+// than only in this comment.
+import DemoLayout from '../../../../../layouts/DemoLayout.astro';
+import DemoImage from '../../../../../components/demos/DemoImage.astro';
+import { chrome, routes } from '../../../../../lib/demos/marloweChrome';
+import { agentPerson, demoBreadcrumbs } from '../../../../../lib/demos/marloweJsonld';
+import {
+  about,
+  agent,
+  business,
+  formatMoney,
+  neighbourhoods,
+  pageMeta,
+  soldArchive,
+} from '../../../../../data/demos/real-estate-agent';
+
+const meta = pageMeta.about;
+---
+
+<DemoLayout
+  {...chrome}
+  title={meta.title}
+  description={meta.description}
+  ogImage={meta.ogImage}
+  ogType="profile"
+  current={routes.about}
+  jsonLd={[
+    agentPerson(routes.about, meta.ogImage),
+    demoBreadcrumbs([
+      { name: business.shortName, path: routes.home },
+      { name: meta.breadcrumb, path: routes.about },
+    ]),
+  ]}
+>
+  <header class="bay ab-head">
+    <div class="wrap ab-head__in">
+      <div>
+        <p class="eyebrow">{about.eyebrow}</p>
+        <h1 class="ab-title">{about.heading}</h1>
+        <hr class="rule" />
+        <p class="lede ab-lede">{about.intro}</p>
+      </div>
+      <figure class="ab-figure">
+        <DemoImage
+          demo="real-estate-agent"
+          file={agent.photoAbout.file}
+          subject={agent.photoAbout.subject}
+          alt={agent.photoAbout.alt}
+          ratio="4 / 3"
+          sizes="(min-width: 900px) 44vw, 100vw"
+          widths={[560, 900, 1200]}
+          eager
+        />
+        <figcaption class="ab-cap">{about.photoCaption}</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <!-- ── The short version, with the facts beside it ─────────────────── -->
+  <section class="bay" aria-labelledby="story-h">
+    <div class="wrap ab-split">
+      <div class="ab-story">
+        <h2 id="story-h" class="section-title">{about.storyHeading}</h2>
+        <hr class="rule" />
+        {about.story.map((para) => <p class="ab-para">{para}</p>)}
+      </div>
+
+      <aside class="ab-facts" aria-labelledby="facts-h">
+        <h2 id="facts-h" class="ab-facts__h">{about.factsHeading}</h2>
+        <dl class="ab-facts__list">
+          {about.facts.map((fact) => (
+            <div class="ab-fact">
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── What you can hold me to ─────────────────────────────────────── -->
+  <section class="bay on-paper" aria-labelledby="promise-h">
+    <div class="wrap">
+      <h2 id="promise-h" class="section-title">{about.promiseHeading}</h2>
+      <hr class="rule" />
+      <ul class="promises">
+        {about.promises.map((promise) => (
+          <li class="promise">
+            <h3 class="promise__t">{promise.title}</h3>
+            <p class="promise__d">{promise.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Recently sold ───────────────────────────────────────────────── -->
+  <section class="bay" aria-labelledby="sold-h">
+    <div class="wrap">
+      <h2 id="sold-h" class="section-title">{about.soldHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body">{about.soldBody}</p>
+      <div class="table-scroll">
+        <table class="sold">
+          <thead>
+            <tr>
+              <th scope="col">{about.soldTable.where}</th>
+              <th scope="col">{about.soldTable.type}</th>
+              <th scope="col" class="num">{about.soldTable.listed}</th>
+              <th scope="col" class="num">{about.soldTable.sold}</th>
+              <th scope="col" class="num">{about.soldTable.days}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {soldArchive.map((record) => (
+              <tr>
+                <th scope="row">{record.where}</th>
+                <td>{record.type}</td>
+                <td class="num">{formatMoney(record.listed)}</td>
+                <td class="num">{formatMoney(record.sold)}</td>
+                <td class="num">{record.onMarket}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="sold__note">{about.soldNote}</p>
+    </div>
+  </section>
+
+  <!-- ── The areas ───────────────────────────────────────────────────── -->
+  <section class="bay areas-bay" aria-labelledby="areas-h">
+    <div class="wrap">
+      <h2 id="areas-h" class="section-title">{about.areasHeading}</h2>
+      <hr class="rule" />
+      <p class="section-body">{about.areasBody}</p>
+      <ul class="areas">
+        {neighbourhoods.map((area) => (
+          <li class="area">
+            <h3 class="area__n">{area.name}</h3>
+            <p class="area__b">{area.blurb}</p>
+            <p class="area__t">
+              <span class="area__t-l">{about.areasTypicalLabel}</span> {area.typical}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Closer ──────────────────────────────────────────────────────── -->
+  <section class="bay">
+    <div class="wrap closer">
+      <div>
+        <h2 class="section-title">{about.closerHeading}</h2>
+        <p class="section-body">{about.closerBody}</p>
+      </div>
+      <a class="btn btn--fill" href={routes.contact} data-analytics-event="contact_cta_about">
+        {about.closerCta}
+      </a>
+    </div>
+  </section>
+</DemoLayout>
+
+<style>
+  .section-title {
+    font-size: var(--fs-title);
+  }
+  .section-body {
+    margin-top: 0.9rem;
+    max-width: var(--measure);
+    color: var(--on-ink-dim);
+  }
+  .on-paper .section-body {
+    color: var(--on-paper-dim);
+  }
+
+  .ab-head__in {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3rem);
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .ab-head__in {
+      grid-template-columns: 1fr 0.9fr;
+    }
+  }
+  .ab-title {
+    font-size: var(--fs-title);
+    max-width: 18ch;
+  }
+  .ab-lede {
+    margin-top: 1.3rem;
+    max-width: 50ch;
+  }
+  .ab-figure {
+    margin: 0;
+  }
+  .ab-cap {
+    margin-top: 0.6rem;
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+  }
+
+  .ab-split {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .ab-split {
+      grid-template-columns: 1.35fr 1fr;
+    }
+  }
+  .ab-para {
+    margin-top: 1.2rem;
+    max-width: 58ch;
+    color: var(--on-ink-dim);
+  }
+
+  .ab-facts {
+    border: 1px solid var(--ink-line);
+    border-top: 3px solid var(--accent);
+    border-radius: var(--radius, 0);
+    padding: clamp(1.2rem, 3vw, 1.8rem);
+    background: var(--ink-raised);
+  }
+  .ab-facts__h {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+  .ab-facts__list {
+    margin: 1.1rem 0 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .ab-fact dt {
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .ab-fact dd {
+    margin: 0.2rem 0 0;
+    font-size: var(--fs-small);
+  }
+
+  .promises {
+    margin: 2.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.8rem 2rem;
+  }
+  @media (min-width: 700px) {
+    .promises {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .promise {
+    border-top: 1px solid var(--paper-line);
+    padding-top: 1rem;
+  }
+  .promise__t {
+    font-size: var(--fs-dish);
+  }
+  .promise__d {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-paper-dim);
+    max-width: 44ch;
+  }
+
+  /* ── Sold table ───────────────────────────────────────────────────── */
+  .table-scroll {
+    margin-top: 1.8rem;
+    overflow-x: auto;
+  }
+  .sold {
+    width: 100%;
+    min-width: 40rem;
+    border-collapse: collapse;
+    font-size: var(--fs-small);
+  }
+  .sold th,
+  .sold td {
+    text-align: left;
+    padding: 0.75rem 0.9rem 0.75rem 0;
+    border-bottom: 1px solid var(--ink-line);
+  }
+  .sold thead th {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-dim);
+    border-bottom-color: var(--accent);
+  }
+  .sold tbody th {
+    font-weight: 600;
+  }
+  .sold .num {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    padding-right: 0;
+    padding-left: 0.9rem;
+  }
+  .sold__note {
+    margin-top: 1.1rem;
+    font-size: var(--fs-small);
+    font-style: italic;
+    color: var(--on-ink-dim);
+    max-width: 62ch;
+  }
+
+  /* ── Areas ────────────────────────────────────────────────────────── */
+  .areas-bay {
+    background: var(--ink-raised);
+  }
+  .areas {
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1.5rem 2rem;
+  }
+  @media (min-width: 700px) {
+    .areas {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1050px) {
+    .areas {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .area {
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1rem;
+  }
+  .area__n {
+    font-size: var(--fs-dish);
+  }
+  .area__b {
+    margin-top: 0.5rem;
+    font-size: var(--fs-small);
+    color: var(--on-ink-dim);
+  }
+  .area__t {
+    margin-top: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  .area__t-l {
+    font-family: var(--font-body);
+    font-size: var(--fs-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-ink-dim);
+  }
+
+  .closer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+</style>
